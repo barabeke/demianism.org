@@ -85,10 +85,13 @@
     align-items: start;
   }
   /* instructions span full width, below both columns */
-  .instructions { grid-column: 1 / -1; }
+  .instructions { grid-column: 1 / 2; }
+  .comic-section { grid-column: 2 / 3; display: flex; align-items: flex-start; }
 
   @media (max-width: 760px) {
     .workspace { grid-template-columns: 1fr; gap: 2rem; }
+    .instructions { grid-column: 1 / -1; }
+    .comic-section { grid-column: 1 / -1; }
   }
 
   /* ---------- CONTROLS ---------- */
@@ -438,12 +441,19 @@
       </div>
     </div>
 
-    <!-- ===================== INSTRUCTIONS (full width, below) ===================== -->
+    <!-- ===================== INSTRUCTIONS (left col, below) ===================== -->
     <div class="instructions">
       <span class="how-title">HOW TO USE</span>
-      <p>Paste the personal mantra you got from Demian IA in the first box. Customize the design and see how it looks in real time. Whatever is between [these brackets] will be displayed in indigo.</p>
+      <p>Paste the personal mantra you got from Demian IA in the first box.</p>
+      <p>Customize the design and see how it looks in real time. Whatever is between [these brackets] will be displayed in indigo.</p>
       <p>Once you are happy with your mantra card, download it. Keep it precious and at hand. It is valuable only if you set a moment every day to repeat it with concentration and intention.</p>
-      <p>It is your own personal mantra, but if you feel comfortable sharing it on social media, that may strengthen your commitment to it.</p>
+    </div>
+
+    <!-- ===================== COMIC (right col, below preview) ===================== -->
+    <div class="comic-section">
+      <img src="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demian%20comic.png"
+           alt="Demian says: save your mantra and keep it at hand!"
+           style="width:100%; height:auto; border-radius:4px; display:block;">
     </div>
 
   </div>
