@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Personal Mantra — Demian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Noto+Sans:wght@400;500;700&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0b0a19;
+    --panel: #14132c;
+    --panel-2: #1b1a36;
+    --border: rgba(104,100,187,0.22);
+    --border-strong: rgba(104,100,187,0.5);
+    --text: #cfcfd4;
+    --text-soft: rgba(207,207,212,0.6);
+    --text-muted: rgba(207,207,212,0.4);
+    --subtitle: #6864bb;
+    --active: #35327e;
+    --accent: #6864bb;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 1rem 5rem;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% -10%, rgba(53,50,126,0.28) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 90% 95%, rgba(53,50,126,0.16) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1080px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* ---------- HEADER ---------- */
+  header { text-align: center; }
+  header img.brand-logo { width: 58px; height: auto; opacity: 0.95; margin-bottom: 0.9rem; }
+  .logo-word {
+    font-family: 'Inter', 'Noto Sans', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: var(--text);
+    text-transform: uppercase;
+  }
+  .tagline {
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    color: var(--subtitle);
+    text-transform: uppercase;
+    margin-top: 0.6rem;
+    font-weight: 500;
+  }
+
+  /* ---------- TWO-COLUMN LAYOUT (desktop/tablet) ---------- */
+  .workspace {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  /* instructions span full width, below both columns */
+  .instructions { grid-column: 1 / -1; }
+
+  @media (max-width: 760px) {
+    .workspace { grid-template-columns: 1fr; gap: 2rem; }
+  }
+
+  /* ---------- CONTROLS ---------- */
+  .controls { display: flex; flex-direction: column; gap: 1.4rem; }
+  .field { display: flex; flex-direction: column; gap: 0.55rem; }
+
+  label.lbl {
+    font-size: 0.64rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  label.lbl-paste {
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    color: var(--text-soft);
+  }
+
+  .font-size-row { display: flex; gap: 1.5rem; align-items: flex-start; }
+  .font-col { flex: 1; display: flex; flex-direction: column; gap: 0.55rem; }
+  .size-col { display: flex; flex-direction: column; gap: 0.55rem; }
+  .size-controls { display: flex; gap: 0.4rem; }
+  .size-btn {
+    width: 38px; height: 36px;
+    font-size: 1.1rem; font-weight: 700; line-height: 1;
+    border-radius: 2px;
+    border: 0.5px solid var(--border);
+    background: var(--panel);
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: 'Inter','Noto Sans',sans-serif;
+  }
+  .size-btn:hover { border-color: var(--border-strong); color: var(--text); }
+  .size-btn:active { background: var(--active); color: #fff; }
+
+  textarea {
+    background: var(--panel);
+    border: 0.5px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: 'Source Serif 4', 'Noto Serif', serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    padding: 1.1rem 1.25rem;
+    resize: vertical;
+    min-height: 225px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  textarea:focus { border-color: var(--border-strong); }
+  textarea::placeholder { color: var(--text-muted); }
+
+  input[type="text"] {
+    background: var(--panel);
+    border: 0.5px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 400;
+    padding: 0.7rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  input[type="text"]:focus { border-color: var(--border-strong); }
+  input[type="text"]::placeholder { color: var(--text-muted); }
+
+  .char-count {
+    font-size: 0.62rem;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    text-align: right;
+  }
+  .char-count.over { color: #d98a8a; }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .chip {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 0.6rem 1.1rem;
+    border-radius: 2px;
+    border: 0.5px solid var(--border);
+    background: var(--panel);
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .chip:hover { border-color: var(--border-strong); color: var(--text); }
+  .chip.active { border-color: var(--active); background: var(--active); color: #fff; }
+  .chip[data-font="bold"]    { font-family: 'Inter','Noto Sans',sans-serif; font-weight: 800; text-transform: uppercase; }
+  .chip[data-font="regular"] { font-family: 'Source Serif 4','Noto Serif',serif; font-weight: 600; }
+  .chip[data-font="elegant"] { font-family: 'Cormorant Garamond',serif; font-weight: 600; font-size: 0.95rem; font-style: italic; }
+
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .toggle-row .t-label { font-size: 0.78rem; color: var(--text); font-weight: 400; }
+  .switch { position: relative; width: 42px; height: 23px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; inset: 0; background: var(--panel-2); border: 0.5px solid var(--border); border-radius: 23px; transition: 0.2s; }
+  .slider::before { content: ''; position: absolute; height: 15px; width: 15px; left: 3px; top: 3px; background: var(--text-muted); border-radius: 50%; transition: 0.2s; }
+  .switch input:checked + .slider { background: rgba(104,100,187,0.3); border-color: var(--active); }
+  .switch input:checked + .slider::before { transform: translateX(19px); background: var(--accent); }
+
+  /* ---------- PREVIEW ---------- */
+  .preview-section { display: flex; flex-direction: column; gap: 1rem; align-items: center; }
+  .preview-label {
+    font-size: 0.8rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--text-soft); font-weight: 600; text-align: center; width: 100%;
+  }
+  .card-frame { width: 100%; max-width: 400px; }
+
+  /* ============================================================
+     THE EXPORTED CARD  —  4:5 ratio
+     ============================================================ */
+  #mantra-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4% 8% 3%;
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px rgba(53,50,126,0.5), 0 0 38px 4px rgba(53,50,126,0.55);
+  }
+
+  #mantra-card.theme-dark {
+    background:
+      radial-gradient(ellipse 60% 48% at 50% 47%, rgba(53,50,126,0.25) 0%, rgba(53,50,126,0.12) 45%, rgba(53,50,126,0) 75%),
+      #0b0a19;
+    --c-text: #cfcfd4;
+    --c-muted: #6864bb;
+    --c-accent: #6864bb;
+    --c-line: rgba(104,100,187,0.55);
+    --c-rule: rgba(104,100,187,0.25);
+    --c-url: #35327e;
+  }
+  #mantra-card.theme-light {
+    background:
+      radial-gradient(ellipse 60% 48% at 50% 47%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.12) 45%, rgba(255, 255, 255, 0) 75%),
+      #b0aecd;
+    --c-text: #2a2937;
+    --c-muted: #4a4790;
+    --c-accent: #4a4790;
+    --c-line: rgba(74,71,144,0.4);
+    --c-rule: rgba(74,71,144,0.22);
+    --c-url: #6a6885;
+  }
+
+  /* contour + centered logo backdrop */
+  .card-bg {
+    position: absolute;
+    top: 13%; left: 50%;
+    transform: translateX(-50%);
+    width: 83%; height: 70%;
+    z-index: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #mantra-card.theme-dark  .card-bg { opacity: 1; }
+  #mantra-card.theme-light .card-bg { opacity: 1; }
+  .card-contour { position: absolute; inset: 0; }
+  #mantra-card.theme-dark  .card-contour { opacity: 0.9; }
+  #mantra-card.theme-light .card-contour { opacity: 0.45; }
+  .card-contour svg { width: 100%; height: 100%; }
+  .card-contour ellipse { fill: none; stroke: var(--c-line); stroke-width: 1; }
+
+
+  .card-top-mark { position: relative; z-index: 2; text-align: center; padding-top: 6%; }
+  .card-eyebrow {
+    font-size: 0.66rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+    font-weight: 700;
+    font-family: 'Inter','Noto Sans',sans-serif;
+  }
+
+  .card-mantra-wrap {
+    position: relative; z-index: 2;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 3% 0 18%;
+    overflow: hidden;
+  }
+  .card-mantra { text-align: center; color: var(--c-text); width: 100%; }
+  .card-mantra .para { text-wrap: balance; }
+  .card-mantra .para + .para { margin-top: 0.85em; }
+  .card-mantra .actionable { color: var(--c-accent); }
+  .card-mantra.empty { color: var(--c-muted); font-style: italic; }
+
+  /* bottom% resolves against card HEIGHT; export is 1350px tall, so 20px = 1.48% */
+  .card-foot { position: absolute; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; width: 100%; bottom: 1.48%; left: 0; }
+  .card-credit {
+    font-family: 'Inter','Noto Sans',sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.05em;
+    color: var(--c-muted);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .card-foot-logo {
+    width: 20%;
+    height: auto;
+    margin-top: 0.1rem;
+    opacity: 0.95;
+  }
+  #mantra-card.theme-dark .card-foot-logo { filter: brightness(1.25); }
+
+  /* ---------- DOWNLOAD ---------- */
+  .download-wrap { display: flex; justify-content: center; margin-top: 0.25rem; }
+  .btn-download {
+    font-family: 'Inter','Noto Sans',sans-serif;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    border-radius: 2px; padding: 0.95rem 2.4rem; cursor: pointer; transition: all 0.2s;
+    border: 0.5px solid var(--active); background: var(--active); color: #fff;
+  }
+  .btn-download:hover { background: #423fa0; }
+  .btn-download:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* ---------- INSTRUCTIONS ---------- */
+  .instructions {
+    font-family: 'Source Serif 4','Noto Serif',serif;
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    line-height: 1.7;
+    padding: 1.4rem 1.5rem;
+    border: 0.5px solid var(--border);
+    border-radius: 3px;
+    background: var(--panel);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-top: 0.5rem;
+  }
+  .instructions .how-title { color: var(--accent); font-weight: 700; letter-spacing: 0.12em; font-family:'Inter','Noto Sans',sans-serif; font-size: 0.72rem; }
+  .instructions p { margin: 0; }
+
+  @media (max-width: 480px) {
+    .logo-word { font-size: 1.35rem; }
+    #mantra-card { padding: 5% 7% 3.5%; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <img class="brand-logo" src="https://demianism.org/demianismlogo.png" alt="Demianism" crossorigin="anonymous">
+    <div class="logo-word">Your Mantra</div>
+    <div class="tagline">Design it quick &amp; easy with this free tool</div>
+  </header>
+
+  <div class="workspace">
+
+    <!-- ===================== CONTROLS ===================== -->
+    <div class="controls">
+
+      <div class="field">
+        <label class="lbl lbl-paste">Paste here the mantra Demian gave you</label>
+        <textarea id="mantra-input" placeholder="My call is to be a guiding light.&#10;The demands of daily life are real, but they cannot extinguish what was placed in me.&#10;I carry a faith that has survived everything. It will survive this too.&#10;[And today, as a step toward manifesting the future I want, I will...]" oninput="render()"></textarea>
+        <div class="char-count" id="char-count">0 / 320 characters</div>
+      </div>
+
+      <div class="field">
+        <label class="lbl">Theme</label>
+        <div class="chip-row" id="theme-chips">
+          <button class="chip active" data-theme="dark">Dark</button>
+          <button class="chip" data-theme="light">Light</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="font-size-row">
+          <div class="font-col">
+            <label class="lbl">Font</label>
+            <div class="chip-row" id="font-chips">
+              <button class="chip active" data-font="bold">BOLD</button>
+              <button class="chip" data-font="regular">Regular</button>
+              <button class="chip" data-font="elegant">Elegant</button>
+            </div>
+          </div>
+          <div class="size-col">
+            <label class="lbl">Text size</label>
+            <div class="size-controls">
+              <button class="size-btn" id="size-minus" onclick="adjustSize(-1)">−</button>
+              <button class="size-btn" id="size-plus" onclick="adjustSize(1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lbl">Your name (optional)</label>
+        <input type="text" id="name-input" placeholder="Seeker" oninput="render()" />
+      </div>
+
+      <div class="toggle-row">
+        <span class="t-label">Add date (today)</span>
+        <label class="switch"><input type="checkbox" id="toggle-date" onchange="render()"><span class="slider"></span></label>
+      </div>
+
+    </div>
+
+    <!-- ===================== PREVIEW ===================== -->
+    <div class="preview-section">
+      <div class="preview-label">Preview</div>
+      <div class="card-frame">
+        <div id="mantra-card" class="theme-dark" data-font="bold">
+
+          <div class="card-bg">
+            <div class="card-contour">
+              <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                <g id="contour-lines"></g>
+              </svg>
+            </div>
+          </div>
+
+          <div class="card-top-mark">
+            <div class="card-eyebrow">My Personal Mantra</div>
+          </div>
+
+          <div class="card-mantra-wrap">
+            <div class="card-mantra empty" id="card-mantra-text">Your mantra will appear here…</div>
+          </div>
+
+          <div class="card-foot">
+            <div class="card-credit" id="card-credit">Created by Demian IA</div>
+            <img class="card-foot-logo" src="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/Logo%20Demianism%20with%20url.png" alt="demianism.org" crossorigin="anonymous">
+          </div>
+
+        </div>
+      </div>
+
+      <div class="download-wrap">
+        <button class="btn-download" id="download-btn" onclick="downloadCard()" disabled>Download Image</button>
+      </div>
+    </div>
+
+    <!-- ===================== INSTRUCTIONS (full width, below) ===================== -->
+    <div class="instructions">
+      <span class="how-title">HOW TO USE</span>
+      <p>Paste the personal mantra you got from Demian IA in the first box. Customize the design and see how it looks in real time. Whatever is between [these brackets] will be displayed in indigo.</p>
+      <p>Once you are happy with your mantra card, download it. Keep it precious and at hand. It is valuable only if you set a moment every day to repeat it with concentration and intention.</p>
+      <p>It is your own personal mantra, but if you feel comfortable sharing it on social media, that may strengthen your commitment to it.</p>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const MAX_CHARS = 320;
+
+  // Sizes tuned so a full 320-char mantra fits without overflow.
+  const FONTS = {
+    bold:    { family: "'Inter','Noto Sans',sans-serif",      weight: 800, style: 'normal', lh: 1.4,  upper: true  },
+    regular: { family: "'Source Serif 4','Noto Serif',serif", weight: 600, style: 'normal', lh: 1.5,  upper: false },
+    elegant: { family: "'Cormorant Garamond',serif",          weight: 600, style: 'italic', lh: 1.4,  upper: false }
+  };
+  // base font size in rem at the 400px preview width, by font (reduced defaults)
+  const BASE_SIZE = { bold: 1.3, regular: 1.32, elegant: 1.68 };
+
+  let currentFont = 'bold';
+  let currentTheme = 'dark';
+  let sizeMult = 1;                 // user-controlled multiplier via +/-
+  const SIZE_MIN = 0.7, SIZE_MAX = 1.4, SIZE_STEP = 0.08;
+
+  (function buildContours() {
+    const g = document.getElementById('contour-lines');
+    const cx = 150, cy = 150;
+    let out = '';
+    const N = 15;
+    for (let i = 0; i < N; i++) {
+      const rx = 30 + i * 7.3 + (i % 2) * 3;
+      const ry = 33 + i * 7.6;
+      const rot = (i * 7) % 18 - 9;
+      out += '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" transform="rotate('+rot+' '+cx+' '+cy+')" opacity="'+(1 - i/22).toFixed(2)+'"/>';
+    }
+    g.innerHTML = out;
+  })();
+
+  function fmtDate() {
+    return new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  function escapeHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // Color any [bracketed] text with the accent indigo (brackets removed).
+  function colorBrackets(line) {
+    let out = '', last = 0, m;
+    const re = /\[([^\]]*)\]/g;
+    while ((m = re.exec(line)) !== null) {
+      if (m.index > last) out += escapeHtml(line.slice(last, m.index));
+      out += '<span class="actionable">' + escapeHtml(m[1]) + '</span>';
+      last = m.index + m[0].length;
+    }
+    if (last < line.length) out += escapeHtml(line.slice(last));
+    return out;
+  }
+
+  // Each line break in the input = a new paragraph (visual separation).
+  function buildMantraHtml(raw) {
+    const paras = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
+    return paras
+      .map(p => '<div class="para">' + colorBrackets(p) + '</div>')
+      .join('');
+  }
+
+  function render() {
+    const raw     = document.getElementById('mantra-input').value.trim();
+    const name    = document.getElementById('name-input').value.trim();
+    const useDate = document.getElementById('toggle-date').checked;
+
+    const mantraEl = document.getElementById('card-mantra-text');
+    const creditEl = document.getElementById('card-credit');
+    const dlBtn    = document.getElementById('download-btn');
+    const countEl  = document.getElementById('char-count');
+
+    // count excludes any [bracketed] text and collapses whitespace
+    const countLen = raw.replace(/\[[^\]]*\]/g, '').replace(/\s+/g, ' ').trim().length;
+    countEl.textContent = countLen + ' / ' + MAX_CHARS + ' characters';
+    countEl.classList.toggle('over', countLen > MAX_CHARS);
+
+    if (raw) {
+      mantraEl.innerHTML = buildMantraHtml(raw);
+      mantraEl.classList.remove('empty');
+      dlBtn.disabled = false;
+    } else {
+      mantraEl.textContent = 'Your mantra will appear here…';
+      mantraEl.classList.add('empty');
+      dlBtn.disabled = true;
+    }
+
+    const f = FONTS[currentFont];
+    // scale so the full displayed text (incl. bracketed line) fits
+    const displayLen = raw.replace(/[\[\]]/g, '').replace(/\s+/g, ' ').trim().length;
+    let scale = 1;
+    if (displayLen > 120) scale = 0.9;
+    if (displayLen > 180) scale = 0.8;
+    if (displayLen > 240) scale = 0.72;
+    if (displayLen > 290) scale = 0.66;
+    const size = (BASE_SIZE[currentFont] * scale * sizeMult);
+    mantraEl.style.fontFamily = f.family;
+    mantraEl.style.fontWeight = f.weight;
+    mantraEl.style.fontStyle  = f.style;
+    mantraEl.style.lineHeight = f.lh;
+    mantraEl.style.fontSize   = size + 'rem';
+    mantraEl.style.textTransform = f.upper ? 'uppercase' : 'none';
+
+    let credit = 'Created by Demian IA';
+    if (name) credit += ' for ' + name;
+    if (useDate) credit += ' on ' + fmtDate();
+    creditEl.textContent = credit;
+  }
+
+  function adjustSize(dir) {
+    sizeMult = Math.min(SIZE_MAX, Math.max(SIZE_MIN, sizeMult + dir * SIZE_STEP));
+    document.getElementById('size-minus').disabled = sizeMult <= SIZE_MIN + 1e-6;
+    document.getElementById('size-plus').disabled  = sizeMult >= SIZE_MAX - 1e-6;
+    render();
+  }
+
+  document.querySelectorAll('#font-chips .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#font-chips .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentFont = chip.dataset.font;
+      document.getElementById('mantra-card').dataset.font = currentFont;
+      render();
+    });
+  });
+
+  document.querySelectorAll('#theme-chips .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#theme-chips .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentTheme = chip.dataset.theme;
+      const card = document.getElementById('mantra-card');
+      card.classList.remove('theme-dark','theme-light');
+      card.classList.add('theme-' + currentTheme);
+    });
+  });
+
+  async function downloadCard() {
+    const card = document.getElementById('mantra-card');
+    const name = document.getElementById('name-input').value.trim() || 'mantra';
+    const btn  = document.getElementById('download-btn');
+    btn.textContent = 'Generating…';
+    btn.disabled = true;
+    try {
+      const canvas = await html2canvas(card, {
+        backgroundColor: null,
+        scale: 1080 / card.offsetWidth,
+        useCORS: true,
+        logging: false
+      });
+      const link = document.createElement('a');
+      link.download = 'demian-mantra-' + name.toLowerCase().replace(/\s+/g,'-') + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (err) {
+      alert('Could not generate image. Try taking a screenshot instead.');
+      console.error(err);
+    }
+    btn.textContent = 'Download Image';
+    btn.disabled = false;
+  }
+
+  render();
+</script>
+</body>
+</html>
