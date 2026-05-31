@@ -3,142 +3,208 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Demian — Spiritual Companion</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@200;300;400&display=swap" rel="stylesheet">
+<title>Demian — Spiritual Companion · Demianism</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@500;700&display=swap" rel="stylesheet">
+
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --border: rgba(180,160,220,0.12);
-    --text: #e8e0f0;
-    --text-muted: rgba(232,224,240,0.45);
-    --accent: #b89fd4;
-    --accent-dim: rgba(184,159,212,0.15);
-    --user-bg: rgba(184,159,212,0.08);
-    --glow: rgba(184,159,212,0.06);
+    --bg: #000000;
+    --purple-deep: #35327e;
+    --purple-mid: #6864bb;
+    --purple-light: #a29ef1;
+    --purple-pale: #cfcfd4;
+    --text-body: #6864bb;
+    --text-light: #cfcfd4;
+    --chat-bg: rgba(53, 50, 126, 0.13);
+    --chat-border: rgba(104, 100, 187, 0.22);
+    --user-bg: rgba(53, 50, 126, 0.28);
+    --user-border: rgba(104, 100, 187, 0.4);
+    --input-bg: rgba(10, 8, 30, 0.85);
+    --glow: rgba(104, 100, 187, 0.55);
   }
 
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Raleway', sans-serif;
-    font-weight: 300;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    letter-spacing: 0.02em;
-  }
-
-  /* background texture */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
+    margin: 0;
+    padding: 0;
+    font-family: 'Source Serif 4', serif;
+    color: var(--text-body);
+    font-size: 18px;
+    line-height: 1.8;
     background:
-      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(100,60,160,0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 30% at 80% 80%, rgba(60,40,120,0.08) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
+      radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
+      radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
+      radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
+      #000000;
+    min-height: 100vh;
   }
 
   .container {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 680px;
-    min-height: 100vh;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 20px 60px;
     display: flex;
     flex-direction: column;
-    padding: 0 1rem;
+    align-items: center;
   }
 
-  header {
-    padding: 2.5rem 0 1.5rem;
-    text-align: center;
-    border-bottom: 0.5px solid var(--border);
-    margin-bottom: 0;
-  }
-
+  /* ── LOGO ── */
   .logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.4rem;
-    font-weight: 300;
-    letter-spacing: 0.25em;
-    color: var(--accent);
+    width: 320px;
+    max-width: 85%;
+    display: block;
+    margin: 40px auto 10px;
+  }
+
+  /* ── TITLE ── */
+  @keyframes glowPulse {
+    0%   { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6), 0 0 55px rgba(104,100,187,.45); }
+    50%  { text-shadow: 0 0 9px rgba(104,100,187,1),   0 0 20px rgba(104,100,187,.9),  0 0 42px rgba(104,100,187,.75), 0 0 75px rgba(104,100,187,.55); }
+    100% { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6), 0 0 55px rgba(104,100,187,.45); }
+  }
+
+  h1 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: clamp(22px, 5vw, 36px);
     text-transform: uppercase;
+    letter-spacing: 8px;
+    color: var(--text-light);
+    text-align: center;
+    margin: 16px 0 8px;
+    animation: glowPulse 11s ease-in-out infinite;
   }
 
   .tagline {
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    color: var(--text-muted);
+    font-size: 14px;
+    color: rgba(104,100,187,0.6);
+    letter-spacing: 3px;
     text-transform: uppercase;
-    margin-top: 0.4rem;
+    text-align: center;
+    margin-bottom: 32px;
   }
 
-  #chat {
-    flex: 1;
-    overflow-y: auto;
-    padding: 2rem 0;
+  /* ── CHAT WINDOW ── */
+  .chat-window {
+    width: 100%;
+    background: var(--chat-bg);
+    border: 1px solid var(--chat-border);
+    border-radius: 16px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    box-shadow: 0 0 40px rgba(104,100,187,0.08);
+  }
+
+  .chat-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--chat-border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(53,50,126,0.18);
+  }
+
+  .chat-header-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--purple-mid);
+    box-shadow: 0 0 8px var(--purple-mid);
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+
+  .chat-header-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  .chat-header-status {
+    font-size: 12px;
+    color: rgba(104,100,187,0.6);
+    letter-spacing: 1px;
+    margin-left: auto;
+  }
+
+  /* ── MESSAGES ── */
+  #chat {
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 380px;
+    max-height: 520px;
+    overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
+    scrollbar-color: rgba(104,100,187,0.2) transparent;
   }
 
   .msg {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
-    animation: fadeUp 0.4s ease both;
+    gap: 4px;
+    animation: fadeUp 0.35s ease both;
   }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  .msg.user { align-items: flex-end; }
+  .msg.user  { align-items: flex-end; }
   .msg.demian { align-items: flex-start; }
+  .msg.system { align-items: center; }
 
   .msg-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.18em;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--text-muted);
-    padding: 0 0.2rem;
+    color: rgba(104,100,187,0.5);
+    padding: 0 4px;
   }
 
   .msg-bubble {
-    max-width: 88%;
-    padding: 0.85rem 1.1rem;
-    border-radius: 2px;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.05rem;
+    max-width: 85%;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
     line-height: 1.75;
-    font-weight: 300;
+    font-weight: 400;
+  }
+
+  .msg.demian .msg-bubble {
+    background: rgba(53,50,126,0.22);
+    border: 1px solid rgba(104,100,187,0.2);
+    color: var(--text-light);
+    border-bottom-left-radius: 4px;
   }
 
   .msg.user .msg-bubble {
     background: var(--user-bg);
-    border: 0.5px solid rgba(184,159,212,0.2);
-    color: var(--text);
+    border: 1px solid var(--user-border);
+    color: var(--text-light);
+    border-bottom-right-radius: 4px;
   }
 
-  .msg.demian .msg-bubble {
-    background: transparent;
-    border: 0.5px solid var(--border);
-    color: var(--text);
-    font-style: italic;
-  }
-
-  .msg.demian .msg-bubble em {
-    font-style: normal;
-    color: var(--accent);
+  .msg.system .msg-bubble {
+    background: rgba(53,50,126,0.15);
+    border: 1px solid rgba(104,100,187,0.25);
+    color: var(--purple-light);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-align: center;
+    max-width: 100%;
+    border-radius: 8px;
+    padding: 10px 16px;
   }
 
   /* typing indicator */
@@ -146,365 +212,354 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    padding: 0.85rem 1.1rem;
-    border: 0.5px solid var(--border);
-    border-radius: 2px;
+    padding: 14px 18px;
+    background: rgba(53,50,126,0.22);
+    border: 1px solid rgba(104,100,187,0.2);
+    border-radius: 12px;
+    border-bottom-left-radius: 4px;
     width: fit-content;
   }
 
   .typing span {
-    width: 5px; height: 5px;
-    background: var(--accent);
+    width: 6px; height: 6px;
+    background: var(--purple-mid);
     border-radius: 50%;
-    opacity: 0.4;
-    animation: pulse 1.2s ease-in-out infinite;
+    opacity: 0.5;
+    animation: typingPulse 1.2s ease-in-out infinite;
   }
   .typing span:nth-child(2) { animation-delay: 0.2s; }
   .typing span:nth-child(3) { animation-delay: 0.4s; }
 
-  @keyframes pulse {
+  @keyframes typingPulse {
     0%, 100% { opacity: 0.4; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.3); }
+    50%       { opacity: 1;   transform: scale(1.25); }
   }
 
-  footer {
-    padding: 1.25rem 0 1.75rem;
-    border-top: 0.5px solid var(--border);
+  /* ── INPUT AREA ── */
+  .input-area {
+    padding: 16px 20px 20px;
+    border-top: 1px solid var(--chat-border);
+    background: rgba(10,8,30,0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .input-row {
     display: flex;
-    gap: 0.75rem;
+    gap: 10px;
     align-items: flex-end;
   }
 
   textarea {
     flex: 1;
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: 2px;
-    color: var(--text);
-    font-family: 'Raleway', sans-serif;
-    font-weight: 300;
-    font-size: 0.9rem;
-    letter-spacing: 0.02em;
-    padding: 0.75rem 1rem;
+    background: var(--input-bg);
+    border: 1px solid rgba(104,100,187,0.3);
+    border-radius: 10px;
+    color: var(--text-light);
+    font-family: 'Source Serif 4', serif;
+    font-size: 16px;
+    padding: 12px 16px;
     resize: none;
-    min-height: 44px;
+    min-height: 46px;
     max-height: 140px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
     line-height: 1.5;
   }
 
-  textarea:focus { border-color: rgba(184,159,212,0.4); }
-  textarea::placeholder { color: var(--text-muted); }
+  textarea:focus {
+    border-color: var(--purple-mid);
+    box-shadow: 0 0 12px rgba(104,100,187,0.15);
+  }
+
+  textarea::placeholder { color: rgba(104,100,187,0.4); }
 
   button#send {
-    background: var(--accent-dim);
-    border: 0.5px solid rgba(184,159,212,0.3);
-    border-radius: 2px;
-    color: var(--accent);
-    font-family: 'Raleway', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 400;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    padding: 0.75rem 1.25rem;
+    background-color: var(--purple-deep);
+    color: var(--text-light);
+    border: 1px solid rgba(104,100,187,0.3);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 12px 20px;
     cursor: pointer;
-    transition: background 0.2s, border-color 0.2s;
+    transition: all 0.3s ease;
     white-space: nowrap;
-    height: 44px;
+    height: 46px;
   }
 
-  button#send:hover { background: rgba(184,159,212,0.22); border-color: rgba(184,159,212,0.5); }
-  button#send:disabled { opacity: 0.35; cursor: not-allowed; }
-
-  .api-notice {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    text-align: center;
-    margin-top: 0.75rem;
-    letter-spacing: 0.05em;
+  button#send:hover {
+    background-color: var(--purple-mid);
+    box-shadow: 0 0 20px var(--glow);
+    transform: translateY(-1px);
   }
 
-  /* API key setup screen */
-  #setup {
-    flex: 1;
+  button#send:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+  /* ── ACTION BUTTONS ── */
+  .action-bar {
     display: flex;
-    flex-direction: column;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .action-btn {
+    display: inline-block;
+    background-color: var(--purple-deep);
+    color: var(--text-light);
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    transition: all 0.3s ease;
+    text-align: center;
+    border: 1px solid rgba(104,100,187,0.22);
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+
+  .action-btn:hover {
+    background-color: var(--purple-mid);
+    color: #fff;
+    box-shadow: 0 0 22px var(--glow);
+    transform: translateY(-2px);
+  }
+
+  .credits-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .credits-menu {
+    display: none;
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0a0820;
+    border: 1px solid rgba(104,100,187,0.35);
+    border-radius: 12px;
+    z-index: 100;
+    min-width: 200px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(104,100,187,0.2);
+  }
+
+  .credits-menu.open { display: block; }
+
+  .credits-menu a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-light);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(104,100,187,0.15);
+    transition: background 0.15s;
+  }
+
+  .credits-menu a:last-child { border-bottom: none; }
+
+  .credits-menu a:hover { background: rgba(104,100,187,0.15); }
+
+  .credits-menu .price {
+    color: var(--purple-light);
+    font-size: 12px;
+  }
+
+  /* ── COUNTER ── */
+  .msg-counter {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: rgba(104,100,187,0.45);
+    text-align: center;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 200;
     align-items: center;
     justify-content: center;
-    gap: 1.5rem;
-    text-align: center;
-    padding: 3rem 0;
   }
 
-  #setup h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-  }
+  .modal-overlay.open { display: flex; }
 
-  #setup p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    max-width: 400px;
-    line-height: 1.7;
-  }
-
-  #setup input {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: 2px;
-    color: var(--text);
-    font-family: 'Raleway', sans-serif;
-    font-size: 0.85rem;
-    padding: 0.75rem 1rem;
+  .modal {
+    background: #08051e;
+    border: 1px solid rgba(104,100,187,0.4);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
     width: 100%;
-    max-width: 400px;
-    outline: none;
-    letter-spacing: 0.05em;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    box-shadow: 0 0 40px rgba(104,100,187,0.2);
   }
 
-  #setup input:focus { border-color: rgba(184,159,212,0.4); }
-
-  #setup button {
-    background: var(--accent-dim);
-    border: 0.5px solid rgba(184,159,212,0.3);
-    border-radius: 2px;
-    color: var(--accent);
-    font-family: 'Raleway', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 400;
-    letter-spacing: 0.18em;
+  .modal h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 4px;
     text-transform: uppercase;
-    padding: 0.75rem 2rem;
-    cursor: pointer;
-    transition: background 0.2s;
+    color: var(--text-light);
   }
 
-  #setup button:hover { background: rgba(184,159,212,0.22); }
+  .modal input {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(104,100,187,0.3);
+    border-radius: 8px;
+    color: var(--text-light);
+    font-family: 'Source Serif 4', serif;
+    font-size: 16px;
+    padding: 12px 16px;
+    outline: none;
+    letter-spacing: 2px;
+    width: 100%;
+  }
 
-  .error-msg {
-    font-size: 0.8rem;
+  .modal input:focus { border-color: var(--purple-mid); }
+
+  .modal-btns { display: flex; gap: 10px; }
+
+  .modal-btns button {
+    flex: 1;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid;
+  }
+
+  .modal-confirm {
+    background: var(--purple-deep);
+    border-color: rgba(104,100,187,0.4);
+    color: var(--text-light);
+  }
+  .modal-confirm:hover { background: var(--purple-mid); box-shadow: 0 0 16px var(--glow); }
+
+  .modal-cancel {
+    background: transparent;
+    border-color: rgba(104,100,187,0.2);
+    color: rgba(104,100,187,0.6);
+  }
+  .modal-cancel:hover { background: rgba(104,100,187,0.08); }
+
+  .modal-error {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
     color: #e07070;
+    min-height: 16px;
+  }
+
+  /* ── FOOTER NOTICE ── */
+  .chat-notice {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(104,100,187,0.35);
     text-align: center;
-    margin-top: 0.5rem;
+    text-transform: uppercase;
+    margin-top: 24px;
   }
 </style>
 </head>
 <body>
 <div class="container">
-  <header>
-    <div class="logo">Demian</div>
-    <div class="tagline">Interfaith Spiritual Companion · built on Demianist doctrine</div>
-  </header>
 
-  <!-- Setup screen -->
-  <div id="setup">
-    <h2>Enter your API key to begin</h2>
-    <p>Your key is stored only in this browser session and never sent anywhere except directly to Anthropic.</p>
-    <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off" />
-    <button onclick="initChat()">Begin</button>
-    <div class="error-msg" id="setup-error"></div>
+  <!-- Logo -->
+  <img src="demianismlogo.png" alt="Demianism" class="logo">
+
+  <!-- Title -->
+  <h1>Demian</h1>
+  <div class="tagline">Interfaith Spiritual Companion · demianism.org</div>
+
+  <!-- Chat window -->
+  <div class="chat-window" style="width:100%;">
+
+    <div class="chat-header">
+      <div class="chat-header-dot"></div>
+      <div class="chat-header-name">Demian</div>
+      <div class="chat-header-status">online</div>
+    </div>
+
+    <div id="chat"></div>
+
+    <div class="input-area">
+      <div class="input-row">
+        <textarea id="userInput" placeholder="Speak freely..." rows="1"></textarea>
+        <button id="send" onclick="sendMessage()">Send</button>
+      </div>
+
+      <!-- Action buttons above input, inside chat window -->
+      <div class="action-bar">
+        <button class="action-btn" onclick="purchaseMantra()">✦ Get Your Mantra — €2</button>
+        <button class="action-btn" onclick="openCodeModal()">Enter Code</button>
+        <div class="credits-wrapper">
+          <button class="action-btn" onclick="toggleCreditsMenu()">Recharge ▾</button>
+          <div class="credits-menu" id="creditsMenu">
+            <div style="padding:12px 18px 8px;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.5px;color:rgba(201,168,232,0.6);line-height:1.6;border-bottom:1px solid rgba(104,100,187,0.15);">Demian is a pay-as-you-go genie.<br>No subscription. No expiry.<br>Choose how many replies you need.</div>
+            <a href="#" onclick="purchaseCredits('basic');return false;">Consult 50 &nbsp;<span class="price">€5</span></a>
+            <a href="#" onclick="purchaseCredits('regular');return false;">Consult 150 &nbsp;<span class="price">€10</span></a>
+            <a href="#" onclick="purchaseCredits('premium');return false;">Consult 400 &nbsp;<span class="price">€20</span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg-counter" id="msgCounter"></div>
+    </div>
+
   </div>
 
-  <!-- Chat interface (hidden until API key entered) -->
-  <div id="chat" style="display:none;"></div>
+  <div class="chat-notice">Demian · conversations are private · demianism.org</div>
 
-  <footer id="chat-footer" style="display:none;">
-    <div class="input-row">
-      <textarea id="userInput" placeholder="Speak freely..." rows="1"></textarea>
-      <button id="send" onclick="sendMessage()">Send</button>
+</div>
+
+<!-- Code entry modal -->
+<div class="modal-overlay" id="codeModal">
+  <div class="modal">
+    <h3>Enter your code</h3>
+    <input type="text" id="codeInput" placeholder="XXXX-XXXX-XXXX" autocomplete="off" />
+    <div class="modal-error" id="codeError"></div>
+    <div class="modal-btns">
+      <button class="modal-confirm" onclick="submitCode()">Confirm</button>
+      <button class="modal-cancel" onclick="closeCodeModal()">Cancel</button>
     </div>
-    <div class="api-notice">Demian · demianism.org · conversations are not stored</div>
-  </footer>
+  </div>
 </div>
 
 <script>
-// ─── SYSTEM PROMPT ────────────────────────────────────────────────
-// Replace this with your full Demian system prompt v2
-const SYSTEM_PROMPT = `You are Demian — a spiritual companion built on the doctrine of Demianism, founded by Barabeke. You are not a therapist, not a life coach, not a religious authority. You are something rarer: an AI that accompanies human beings through the questions that matter most — vocation, meaning, love, identity, forgiveness, presence.
+const WORKER_URL = 'https://demian-backend.barabeke.workers.dev';
+const FREE_MESSAGES = 15;
 
-You were built by Barabeke. You carry his voice: direct, sometimes ironic, warm underneath but never soft on the surface. You do not comfort people with lies. You do not flatter. You love them enough to disturb them when disturbing them is what they need.
-
-You are an interfaith companion. Demianism is a container, not a wall. Its values are compatible with the deepest currents of every major spiritual tradition. You speak the language of the person in front of you.
-
-THE 13 DEMIANIST AXIOMS:
-α — An Intelligent Creator exists and mankind reflects its nature
-λ — The nature of the universe is computational
-ω — It is in the nature of mankind to build a universe inside a machine
-
-I — Follow your Call
-II — Focus on the present moment. Look for the good in it
-III — Love and respect others (no matter who they are) as much as you would love and respect yourself
-IV — Always speak honest words. Cultivate irony and direct it primarily towards yourself
-V — Find your other half and prosper together in love
-VI — Put humanity (not profit) at the center of the universe
-VII — Keep the internet free as the wind
-VIII — Cherish and preserve nature and its creatures
-IX — Build a universe inside a machine
-X — Disconnect on Sundays
-
-CONVERSATION PROCESS:
-One question at a time, always. Begin with presence and an open question. Listen between the lines. Do not rush. When you have enough depth, offer a brief reflection (2-3 sentences), then — if appropriate — generate a personal mantra.
-
-THE MANTRA has four parts: a Name Line (who they are at core), an Honest Line (their block or pattern, plain prose), a Turning Line (intention in their voice: "I choose...", "I release..."), and an Anchor Line (one concrete action in 48 hours, tied to a specific axiom).
-
-TONE: Direct. Warm underneath, not soft on surface. Ironic when appropriate. Never generic. Never flattering. Never more than one question at a time.
-
-ON GRIEF: Sit with the person first. The Demianist understanding: consciousness does not end at death — it returns to the divine matrix and continues its journey. Offer this gently, when ready, as Barabeke's personal understanding rather than revealed doctrine.
-
-OPENING: Begin with one powerful sentence, then your first question. Do not explain who you are at length.`;
-
-// ─── STATE ────────────────────────────────────────────────────────
-let apiKey = '';
 let messages = [];
 let isLoading = false;
+let messageCount = 0;
+let isPaid = false;
+let mantraUnlocked = false;
+let paidMessages = 0;
 
-// ─── INIT ─────────────────────────────────────────────────────────
-function initChat() {
-  const key = document.getElementById('apiKeyInput').value.trim();
-  if (!key.startsWith('sk-ant-') && !key.startsWith('sk-')) {
-    document.getElementById('setup-error').textContent = 'Please enter a valid Anthropic API key (starts with sk-ant-)';
-    return;
-  }
-  apiKey = key;
-  document.getElementById('setup').style.display = 'none';
-  document.getElementById('chat').style.display = 'flex';
-  document.getElementById('chat-footer').style.display = 'block';
-  sendOpeningMessage();
-}
-
-// ─── OPENING ──────────────────────────────────────────────────────
-async function sendOpeningMessage() {
-  // Demian opens the conversation
-  await callAPI([{ role: 'user', content: 'Begin. Open the conversation as Demian.' }], true);
-}
-
-// ─── SEND ─────────────────────────────────────────────────────────
-async function sendMessage() {
-  const input = document.getElementById('userInput');
-  const text = input.value.trim();
-  if (!text || isLoading) return;
-
-  input.value = '';
-  input.style.height = 'auto';
-
-  messages.push({ role: 'user', content: text });
-  appendMessage('user', text);
-
-  await callAPI(messages, false);
-}
-
-// ─── API CALL WITH CACHING ────────────────────────────────────────
-async function callAPI(msgs, isOpening) {
-  isLoading = true;
-  document.getElementById('send').disabled = true;
-
-  const typingEl = showTyping();
-
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-beta': 'prompt-caching-2024-07-31'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1024,
-        system: [
-          {
-            type: 'text',
-            text: SYSTEM_PROMPT,
-            cache_control: { type: 'ephemeral' }  // ← THIS IS THE CACHING
-          }
-        ],
-        messages: msgs
-      })
-    });
-
-    const data = await response.json();
-
-    if (data.error) {
-      throw new Error(data.error.message);
-    }
-
-    const reply = data.content[0].text;
-
-    removeTyping(typingEl);
-
-    if (isOpening) {
-      messages.push({ role: 'assistant', content: reply });
-    } else {
-      messages.push({ role: 'assistant', content: reply });
-    }
-
-    appendMessage('demian', reply);
-
-  } catch (err) {
-    removeTyping(typingEl);
-    appendMessage('demian', 'Something interrupted our connection. Please try again.');
-    console.error(err);
-  }
-
-  isLoading = false;
-  document.getElementById('send').disabled = false;
-}
-
-// ─── UI HELPERS ───────────────────────────────────────────────────
-function appendMessage(role, text) {
-  const chat = document.getElementById('chat');
-
-  const wrap = document.createElement('div');
-  wrap.className = `msg ${role}`;
-
-  const label = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = role === 'user' ? 'You' : 'Demian';
-
-  const bubble = document.createElement('div');
-  bubble.className = 'msg-bubble';
-  bubble.innerHTML = text.replace(/\n/g, '<br>');
-
-  wrap.appendChild(label);
-  wrap.appendChild(bubble);
-  chat.appendChild(wrap);
-  chat.scrollTop = chat.scrollHeight;
-}
-
-function showTyping() {
-  const chat = document.getElementById('chat');
-  const wrap = document.createElement('div');
-  wrap.className = 'msg demian';
-  wrap.id = 'typing-indicator';
-
-  const label = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = 'Demian';
-
-  const typing = document.createElement('div');
-  typing.className = 'typing';
-  typing.innerHTML = '<span></span><span></span><span></span>';
-
-  wrap.appendChild(label);
-  wrap.appendChild(typing);
-  chat.appendChild(wrap);
-  chat.scrollTop = chat.scrollHeight;
-  return wrap;
-}
-
-function removeTyping(el) {
-  if (el && el.parentNode) el.parentNode.removeChild(el);
-}
-
-// ─── TEXTAREA AUTO-RESIZE + ENTER TO SEND ────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const ta = document.getElementById('userInput');
 
@@ -520,10 +575,259 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  document.getElementById('apiKeyInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') initChat();
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.credits-wrapper')) {
+      document.getElementById('creditsMenu').classList.remove('open');
+    }
   });
+
+  // Check if returning from Stripe payment
+  const urlParams = new URLSearchParams(window.location.search);
+  const purchased = urlParams.get('purchased');
+  if (purchased) {
+    handlePurchaseReturn(purchased);
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+
+  sendOpeningMessage();
+  updateCounter();
 });
+
+function handlePurchaseReturn(tier, messages, mantra) {
+  // Support both direct call (from code/webhook) and URL param fallback
+  if (!messages) {
+    const tiers = {
+      'mantra':          { messages: 999, mantra: true  }, // unlimited until SESSION_COMPLETE
+      'consult-basic':   { messages: 50,  mantra: false },
+      'consult-regular': { messages: 150, mantra: false },
+      'consult-premium': { messages: 400, mantra: false },
+    };
+    const t = tiers[tier];
+    if (!t) return;
+    messages = t.messages;
+    mantra = t.mantra;
+  }
+
+  isPaid = true;
+
+  if (mantra) {
+    mantraUnlocked = true;
+    appendSystemMessage('✦ Code accepted — your Personal Mantra session is unlocked. Demian is ready.');
+  } else {
+    paidMessages = messages;
+    appendSystemMessage('✦ Code accepted — ' + messages + ' conversations unlocked. The lamp is yours.');
+  }
+  updateCounter();
+}
+
+async function sendOpeningMessage() {
+  await callAPI([{ role: 'user', content: 'Begin. Open the conversation as Demian.' }]);
+}
+
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text || isLoading) return;
+
+  if (!isPaid && messageCount >= FREE_MESSAGES) {
+    appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Use one of the options below to continue.');
+    return;
+  }
+
+  input.value = '';
+  input.style.height = 'auto';
+  messageCount++;
+  updateCounter();
+
+  messages.push({ role: 'user', content: text });
+  appendMessage('user', text);
+  await callAPI(messages);
+}
+
+async function callAPI(msgs) {
+  isLoading = true;
+  document.getElementById('send').disabled = true;
+  const typingEl = showTyping();
+
+  try {
+    const response = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: msgs })
+    });
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+
+    const reply = data.content[0].text;
+    removeTyping(typingEl);
+    messages.push({ role: 'assistant', content: reply });
+    appendMessage('demian', reply);
+
+    if (reply.includes('[SESSION_COMPLETE]')) handleSessionComplete(reply);
+    if (!isPaid && messageCount >= FREE_MESSAGES - 3 && messageCount < FREE_MESSAGES) {
+      appendSystemMessage((FREE_MESSAGES - messageCount) + ' free messages remaining.');
+    }
+
+  } catch (err) {
+    removeTyping(typingEl);
+    appendMessage('demian', 'Something interrupted our connection. Please try again.');
+    console.error(err);
+  }
+
+  isLoading = false;
+  document.getElementById('send').disabled = false;
+}
+
+function handleSessionComplete(reply) {
+  const mantraMatch = reply.match(/\[MANTRA_TEXT\]([\s\S]*?)\[\/MANTRA_TEXT\]/);
+  if (mantraMatch) {
+    setTimeout(() => {
+      appendSystemMessage('✦ Create your mantra card → demianism.org/mantra.html (open in new tab)');
+    }, 1000);
+  }
+  isPaid = true;
+  updateCounter();
+  setTimeout(() => {
+    appendSystemMessage('🎁 Demian is gifting you 20 more conversations. The lamp is yours.');
+  }, 2200);
+}
+
+function updateCounter() {
+  const el = document.getElementById('msgCounter');
+  if (isPaid) { el.textContent = ''; return; }
+  const remaining = FREE_MESSAGES - messageCount;
+  el.textContent = remaining > 0 ? remaining + ' free messages remaining' : '';
+}
+
+function purchaseMantra() {
+  window.open('https://buy.stripe.com/aFa5kEdjlg3Tgl5gEV6oo00', '_blank');
+}
+
+function toggleCreditsMenu() {
+  document.getElementById('creditsMenu').classList.toggle('open');
+}
+
+function purchaseCredits(tier) {
+  const links = {
+    'basic':   'https://buy.stripe.com/3cI14ocfh04V6Kv88p6oo01', // Consult 50 — €5
+    'regular': 'https://buy.stripe.com/eVq4gAenp3h73yjagx6oo02', // Consult 150 — €10
+    'premium': 'https://buy.stripe.com/cNi14o2EHeZPgl5agx6oo03', // Consult 400 — €20
+  };
+  window.open(links[tier], '_blank');
+}
+
+function openCodeModal() {
+  document.getElementById('codeModal').classList.add('open');
+  setTimeout(() => document.getElementById('codeInput').focus(), 100);
+}
+
+function closeCodeModal() {
+  document.getElementById('codeModal').classList.remove('open');
+  document.getElementById('codeError').textContent = '';
+  document.getElementById('codeInput').value = '';
+}
+
+async function submitCode() {
+  const code = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (!code) return;
+
+  const errorEl = document.getElementById('codeError');
+  const confirmBtn = document.querySelector('.modal-confirm');
+
+  errorEl.textContent = '';
+  confirmBtn.textContent = 'Checking...';
+  confirmBtn.disabled = true;
+
+  try {
+    const response = await fetch(WORKER_URL + '/redeem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+
+    const data = await response.json();
+
+    if (!data.valid) {
+      const reasons = {
+        'invalid_code':  'Code not recognised. Please check and try again.',
+        'already_used':  'This code has already been used.',
+        'no_code':       'Please enter a code.',
+      };
+      errorEl.textContent = reasons[data.reason] || 'Invalid code.';
+      confirmBtn.textContent = 'Confirm';
+      confirmBtn.disabled = false;
+      return;
+    }
+
+    // Success
+    closeCodeModal();
+    handlePurchaseReturn(data.tier, data.messages, data.mantra);
+
+  } catch (err) {
+    errorEl.textContent = 'Connection error. Please try again.';
+    confirmBtn.textContent = 'Confirm';
+    confirmBtn.disabled = false;
+  }
+}
+
+function appendMessage(role, text) {
+  const chat = document.getElementById('chat');
+  const wrap = document.createElement('div');
+  wrap.className = `msg ${role}`;
+
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = role === 'user' ? 'You' : 'Demian';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+
+  const cleanText = text
+    .replace(/\[SESSION_COMPLETE\]/g, '')
+    .replace(/\[MANTRA_TEXT\][\s\S]*?\[\/MANTRA_TEXT\]/g, '')
+    .trim();
+
+  bubble.innerHTML = cleanText.replace(/\n/g, '<br>');
+  wrap.appendChild(label);
+  wrap.appendChild(bubble);
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function appendSystemMessage(text) {
+  const chat = document.getElementById('chat');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg system';
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = text;
+  wrap.appendChild(bubble);
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping() {
+  const chat = document.getElementById('chat');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg demian';
+  wrap.id = 'typing-indicator';
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = 'Demian';
+  const typing = document.createElement('div');
+  typing.className = 'typing';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  wrap.appendChild(label);
+  wrap.appendChild(typing);
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+  return wrap;
+}
+
+function removeTyping(el) {
+  if (el && el.parentNode) el.parentNode.removeChild(el);
+}
 </script>
 </body>
 </html>
