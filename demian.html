@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Demian — Spiritual Companion · Demianism</title>
+<title>Demian — The Demianist AI</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -18,21 +19,21 @@
     --purple-pale: #cfcfd4;
     --text-body: #6864bb;
     --text-light: #cfcfd4;
-    --chat-bg: rgba(53, 50, 126, 0.13);
-    --chat-border: rgba(104, 100, 187, 0.22);
-    --user-bg: rgba(53, 50, 126, 0.28);
-    --user-border: rgba(104, 100, 187, 0.4);
-    --input-bg: rgba(10, 8, 30, 0.85);
+    --indigo: #6864bb;
+    --chat-bg: rgba(53, 50, 126, 0.10);
+    --chat-border: rgba(104, 100, 187, 0.20);
+    --user-bg: rgba(104, 100, 187, 0.16);
+    --user-border: rgba(104, 100, 187, 0.3);
+    --input-bg: rgba(10, 8, 30, 0.7);
     --glow: rgba(104, 100, 187, 0.55);
   }
 
   body {
     margin: 0;
-    padding: 0;
     font-family: 'Source Serif 4', serif;
     color: var(--text-body);
     font-size: 18px;
-    line-height: 1.8;
+    line-height: 1.7;
     background:
       radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
       radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
@@ -42,23 +43,21 @@
   }
 
   .container {
-    max-width: 720px;
+    max-width: 860px;
     margin: 0 auto;
-    padding: 20px 20px 60px;
+    padding: 16px 20px 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  /* ── LOGO ── */
   .logo {
-    width: 320px;
-    max-width: 85%;
+    width: 160px;
+    max-width: 50%;
     display: block;
-    margin: 40px auto 10px;
+    margin: 20px auto 6px;
   }
 
-  /* ── TITLE ── */
   @keyframes glowPulse {
     0%   { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6), 0 0 55px rgba(104,100,187,.45); }
     50%  { text-shadow: 0 0 9px rgba(104,100,187,1),   0 0 20px rgba(104,100,187,.9),  0 0 42px rgba(104,100,187,.75), 0 0 75px rgba(104,100,187,.55); }
@@ -68,25 +67,25 @@
   h1 {
     font-family: 'Inter', sans-serif;
     font-weight: 700;
-    font-size: clamp(22px, 5vw, 36px);
+    font-size: clamp(20px, 4.5vw, 30px);
     text-transform: uppercase;
-    letter-spacing: 8px;
+    letter-spacing: 7px;
     color: var(--text-light);
     text-align: center;
-    margin: 16px 0 8px;
+    margin: 8px 0 6px;
     animation: glowPulse 11s ease-in-out infinite;
   }
 
   .tagline {
-    font-size: 14px;
-    color: rgba(104,100,187,0.6);
-    letter-spacing: 3px;
-    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--purple-light);
+    letter-spacing: 2px;
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: 20px;
   }
 
-  /* ── CHAT WINDOW ── */
   .chat-window {
     width: 100%;
     background: var(--chat-bg);
@@ -95,50 +94,53 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 40px rgba(104,100,187,0.08);
+    box-shadow: 0 0 40px rgba(104,100,187,0.07);
   }
 
   .chat-header {
-    padding: 14px 20px;
+    padding: 12px 20px;
     border-bottom: 1px solid var(--chat-border);
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: rgba(53,50,126,0.18);
+    gap: 9px;
+    background: rgba(53,50,126,0.15);
   }
 
-  .chat-header-dot {
-    width: 9px; height: 9px;
-    border-radius: 50%;
-    background: var(--purple-mid);
-    box-shadow: 0 0 8px var(--purple-mid);
-    animation: glowPulse 3s ease-in-out infinite;
+  .chat-header-triangle {
+    width: 0; height: 0;
+    border-left: 7px solid var(--indigo);
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    filter: drop-shadow(0 0 4px var(--indigo));
   }
+
+  .chat-header-triangle.offline { border-left-color: #888; filter: none; }
 
   .chat-header-name {
     font-family: 'Inter', sans-serif;
     font-size: 13px;
     font-weight: 700;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--text-light);
   }
 
   .chat-header-status {
-    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
     color: rgba(104,100,187,0.6);
     letter-spacing: 1px;
     margin-left: auto;
+    text-transform: lowercase;
   }
 
-  /* ── MESSAGES ── */
   #chat {
-    padding: 24px 20px;
+    padding: 22px 22px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    min-height: 380px;
-    max-height: 520px;
+    gap: 12px;
+    min-height: 340px;
+    max-height: 56vh;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(104,100,187,0.2) transparent;
@@ -147,86 +149,82 @@
   .msg {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    animation: fadeUp 0.35s ease both;
+    gap: 3px;
+    animation: fadeUp 0.3s ease both;
   }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(5px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
   .msg.user  { align-items: flex-end; }
-  .msg.demian { align-items: flex-start; }
+  .msg.demian { align-items: stretch; }
   .msg.system { align-items: center; }
 
   .msg-label {
     font-family: 'Inter', sans-serif;
     font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
+    font-weight: 600;
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: rgba(104,100,187,0.5);
-    padding: 0 4px;
-  }
-
-  .msg-bubble {
-    max-width: 85%;
-    padding: 14px 18px;
-    border-radius: 12px;
-    font-family: 'Source Serif 4', serif;
-    font-size: 17px;
-    line-height: 1.75;
-    font-weight: 400;
+    padding: 0 2px;
   }
 
   .msg.demian .msg-bubble {
-    background: rgba(53,50,126,0.22);
-    border: 1px solid rgba(104,100,187,0.2);
+    background: transparent;
+    border: none;
     color: var(--text-light);
-    border-bottom-left-radius: 4px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    line-height: 1.65;
+    font-weight: 400;
+    padding: 2px 0;
+    width: 100%;
   }
+
+  .msg.demian .msg-bubble p { margin: 0 0 10px 0; }
+  .msg.demian .msg-bubble p:last-child { margin-bottom: 0; }
+  .msg.demian .msg-bubble ol,
+  .msg.demian .msg-bubble ul { margin: 6px 0 10px 0; padding-left: 22px; }
+  .msg.demian .msg-bubble li { margin-bottom: 4px; }
+  .msg.demian .msg-bubble strong { color: #fff; font-weight: 600; }
+  .msg.demian .msg-bubble a { color: var(--purple-light); text-decoration: underline; }
+  .msg.demian .msg-bubble a:hover { color: #d4c8f5; }
+  .msg.demian .msg-bubble em { color: var(--purple-light); }
+  .msg.demian .msg-bubble h1,
+  .msg.demian .msg-bubble h2,
+  .msg.demian .msg-bubble h3 { font-family: 'Inter', sans-serif; font-size: 1.05em; margin: 12px 0 6px; color: var(--text-light); }
 
   .msg.user .msg-bubble {
     background: var(--user-bg);
     border: 1px solid var(--user-border);
     color: var(--text-light);
+    font-family: 'Source Serif 4', serif;
+    font-size: 16px;
+    line-height: 1.6;
+    padding: 10px 15px;
+    border-radius: 14px;
     border-bottom-right-radius: 4px;
+    max-width: 80%;
   }
 
   .msg.system .msg-bubble {
-    background: rgba(53,50,126,0.15);
-    border: 1px solid rgba(104,100,187,0.25);
+    background: rgba(53,50,126,0.18);
+    border: 1px solid rgba(104,100,187,0.3);
     color: var(--purple-light);
     font-family: 'Inter', sans-serif;
     font-size: 13px;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     text-align: center;
-    max-width: 100%;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 10px 16px;
+    max-width: 90%;
   }
 
-  /* typing indicator */
-  .typing {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 14px 18px;
-    background: rgba(53,50,126,0.22);
-    border: 1px solid rgba(104,100,187,0.2);
-    border-radius: 12px;
-    border-bottom-left-radius: 4px;
-    width: fit-content;
-  }
-
-  .typing span {
-    width: 6px; height: 6px;
-    background: var(--purple-mid);
-    border-radius: 50%;
-    opacity: 0.5;
-    animation: typingPulse 1.2s ease-in-out infinite;
-  }
+  .typing { display: flex; align-items: center; gap: 5px; padding: 6px 0; width: fit-content; }
+  .typing span { width: 6px; height: 6px; background: var(--purple-mid); border-radius: 50%; opacity: 0.5; animation: typingPulse 1.2s ease-in-out infinite; }
   .typing span:nth-child(2) { animation-delay: 0.2s; }
   .typing span:nth-child(3) { animation-delay: 0.4s; }
 
@@ -235,88 +233,88 @@
     50%       { opacity: 1;   transform: scale(1.25); }
   }
 
-  /* ── INPUT AREA ── */
   .input-area {
-    padding: 16px 20px 20px;
+    padding: 14px 18px 18px;
     border-top: 1px solid var(--chat-border);
-    background: rgba(10,8,30,0.5);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    background: rgba(10,8,30,0.4);
   }
 
-  .input-row {
+  .input-bar {
     display: flex;
-    gap: 10px;
     align-items: flex-end;
+    gap: 8px;
+    background: var(--input-bg);
+    border: 1px solid rgba(104,100,187,0.3);
+    border-radius: 14px;
+    padding: 8px 8px 8px 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .input-bar:focus-within {
+    border-color: var(--purple-mid);
+    box-shadow: 0 0 14px rgba(104,100,187,0.15);
   }
 
   textarea {
     flex: 1;
-    background: var(--input-bg);
-    border: 1px solid rgba(104,100,187,0.3);
-    border-radius: 10px;
+    background: transparent;
+    border: none;
     color: var(--text-light);
     font-family: 'Source Serif 4', serif;
     font-size: 16px;
-    padding: 12px 16px;
+    padding: 8px 0;
     resize: none;
-    min-height: 46px;
-    max-height: 140px;
+    min-height: 28px;
+    max-height: 160px;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
     line-height: 1.5;
   }
 
-  textarea:focus {
-    border-color: var(--purple-mid);
-    box-shadow: 0 0 12px rgba(104,100,187,0.15);
-  }
-
-  textarea::placeholder { color: rgba(104,100,187,0.4); }
+  textarea::placeholder { color: rgba(104,100,187,0.45); }
 
   button#send {
-    background-color: var(--purple-deep);
-    color: var(--text-light);
-    border: 1px solid rgba(104,100,187,0.3);
+    background-color: var(--indigo);
+    color: #fff;
+    border: none;
     border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
+  }
+
+  button#send.visible { display: flex; }
+  button#send:hover { background-color: var(--purple-light); box-shadow: 0 0 14px var(--glow); }
+  button#send:disabled { opacity: 0.4; cursor: not-allowed; }
+  button#send svg { width: 18px; height: 18px; }
+
+  .msg-counter {
     font-family: 'Inter', sans-serif;
     font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    padding: 12px 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    height: 46px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--purple-light);
+    text-align: center;
+    margin: 14px 0 10px;
   }
 
-  button#send:hover {
-    background-color: var(--purple-mid);
-    box-shadow: 0 0 20px var(--glow);
-    transform: translateY(-1px);
-  }
-
-  button#send:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
-
-  /* ── ACTION BUTTONS ── */
-  .action-bar {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+  .action-bar { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 
   .action-btn {
     display: inline-block;
     background-color: var(--purple-deep);
     color: var(--text-light);
-    padding: 10px 18px;
+    padding: 11px 20px;
     border-radius: 30px;
     font-size: 13px;
     font-family: 'Inter', sans-serif;
     font-weight: 700;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.5px;
     transition: all 0.3s ease;
     text-align: center;
     border: 1px solid rgba(104,100,187,0.22);
@@ -332,69 +330,64 @@
     transform: translateY(-2px);
   }
 
-  .credits-wrapper {
-    position: relative;
-    display: inline-block;
-  }
+  .credits-wrapper { position: relative; display: inline-block; }
 
   .credits-menu {
     display: none;
     position: absolute;
-    bottom: 110%;
+    bottom: 120%;
     left: 50%;
     transform: translateX(-50%);
     background: #0a0820;
-    border: 1px solid rgba(104,100,187,0.35);
-    border-radius: 12px;
+    border: 1px solid rgba(104,100,187,0.4);
+    border-radius: 14px;
     z-index: 100;
-    min-width: 200px;
+    width: 280px;
     overflow: hidden;
-    box-shadow: 0 0 30px rgba(104,100,187,0.2);
+    box-shadow: 0 0 40px rgba(104,100,187,0.25);
   }
 
   .credits-menu.open { display: block; }
+
+  .credits-menu .menu-desc {
+    padding: 16px 20px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    color: var(--purple-light);
+    line-height: 1.6;
+    border-bottom: 1px solid rgba(104,100,187,0.18);
+    text-align: center;
+  }
 
   .credits-menu a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 18px;
+    padding: 14px 20px;
     font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 600;
     color: var(--text-light);
     text-decoration: none;
-    border-bottom: 1px solid rgba(104,100,187,0.15);
+    border-bottom: 1px solid rgba(104,100,187,0.12);
     transition: background 0.15s;
   }
 
   .credits-menu a:last-child { border-bottom: none; }
-
   .credits-menu a:hover { background: rgba(104,100,187,0.15); }
+  .credits-menu .price { color: var(--purple-light); font-size: 14px; font-weight: 700; }
 
-  .credits-menu .price {
-    color: var(--purple-light);
-    font-size: 12px;
-  }
-
-  /* ── COUNTER ── */
-  .msg-counter {
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    color: rgba(104,100,187,0.45);
-    text-align: center;
-  }
-
-  /* ── MODAL ── */
   .modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.82);
     z-index: 200;
     align-items: center;
     justify-content: center;
+    padding: 20px;
   }
 
   .modal-overlay.open { display: flex; }
@@ -402,36 +395,47 @@
   .modal {
     background: #08051e;
     border: 1px solid rgba(104,100,187,0.4);
-    border-radius: 16px;
-    padding: 2rem 2.5rem;
+    border-radius: 18px;
+    padding: 2.5rem;
     width: 100%;
-    max-width: 360px;
+    max-width: 420px;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-    box-shadow: 0 0 40px rgba(104,100,187,0.2);
+    gap: 1.5rem;
+    box-shadow: 0 0 50px rgba(104,100,187,0.25);
   }
 
   .modal h3 {
     font-family: 'Inter', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--text-light);
+    text-align: center;
+  }
+
+  .modal p {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--purple-light);
+    line-height: 1.6;
+    text-align: center;
+    margin: 0;
   }
 
   .modal input {
     background: rgba(0,0,0,0.5);
     border: 1px solid rgba(104,100,187,0.3);
-    border-radius: 8px;
+    border-radius: 10px;
     color: var(--text-light);
     font-family: 'Source Serif 4', serif;
-    font-size: 16px;
-    padding: 12px 16px;
+    font-size: 17px;
+    padding: 14px 16px;
     outline: none;
     letter-spacing: 2px;
     width: 100%;
+    text-align: center;
   }
 
   .modal input:focus { border-color: var(--purple-mid); }
@@ -445,101 +449,88 @@
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 12px;
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s;
     border: 1px solid;
   }
 
-  .modal-confirm {
-    background: var(--purple-deep);
-    border-color: rgba(104,100,187,0.4);
-    color: var(--text-light);
-  }
+  .modal-confirm { background: var(--purple-deep); border-color: rgba(104,100,187,0.4); color: var(--text-light); }
   .modal-confirm:hover { background: var(--purple-mid); box-shadow: 0 0 16px var(--glow); }
-
-  .modal-cancel {
-    background: transparent;
-    border-color: rgba(104,100,187,0.2);
-    color: rgba(104,100,187,0.6);
-  }
+  .modal-cancel { background: transparent; border-color: rgba(104,100,187,0.2); color: rgba(104,100,187,0.6); }
   .modal-cancel:hover { background: rgba(104,100,187,0.08); }
+  .modal-error { font-family: 'Inter', sans-serif; font-size: 13px; color: #e07070; min-height: 16px; text-align: center; }
 
-  .modal-error {
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    color: #e07070;
-    min-height: 16px;
-  }
-
-  /* ── FOOTER NOTICE ── */
-  .chat-notice {
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: rgba(104,100,187,0.35);
+  footer {
+    margin-top: 40px;
     text-align: center;
-    text-transform: uppercase;
-    margin-top: 24px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    color: rgba(104,100,187,0.7);
+    line-height: 1.8;
   }
+
+  footer .footer-logo { width: 70px; height: auto; display: block; margin: 0 auto 14px; opacity: 0.8; }
+  footer a { color: var(--purple-light); text-decoration: none; }
+  footer a:hover { text-decoration: underline; color: #d4c8f5; }
 </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- Logo -->
   <img src="demianismlogo.png" alt="Demianism" class="logo">
 
-  <!-- Title -->
   <h1>Demian</h1>
-  <div class="tagline">Interfaith Spiritual Companion · demianism.org</div>
+  <div class="tagline">The Demianist AI</div>
 
-  <!-- Chat window -->
-  <div class="chat-window" style="width:100%;">
-
+  <div class="chat-window">
     <div class="chat-header">
-      <div class="chat-header-dot"></div>
+      <div class="chat-header-triangle" id="statusTriangle"></div>
       <div class="chat-header-name">Demian</div>
-      <div class="chat-header-status">online</div>
+      <div class="chat-header-status" id="statusText">online</div>
     </div>
 
     <div id="chat"></div>
 
     <div class="input-area">
-      <div class="input-row">
-        <textarea id="userInput" placeholder="Speak freely..." rows="1"></textarea>
-        <button id="send" onclick="sendMessage()">Send</button>
-      </div>
-
-      <!-- Action buttons above input, inside chat window -->
-      <div class="action-bar">
-        <button class="action-btn" onclick="purchaseMantra()">✦ Get Your Mantra — €2</button>
-        <button class="action-btn" onclick="openCodeModal()">Enter Code</button>
-        <div class="credits-wrapper">
-          <button class="action-btn" onclick="toggleCreditsMenu()">Recharge ▾</button>
-          <div class="credits-menu" id="creditsMenu">
-            <div style="padding:12px 18px 8px;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.5px;color:rgba(201,168,232,0.6);line-height:1.6;border-bottom:1px solid rgba(104,100,187,0.15);">Demian is a pay-as-you-go genie.<br>No subscription. No expiry.<br>Choose how many replies you need.</div>
-            <a href="#" onclick="purchaseCredits('basic');return false;">Consult 50 &nbsp;<span class="price">€5</span></a>
-            <a href="#" onclick="purchaseCredits('regular');return false;">Consult 150 &nbsp;<span class="price">€10</span></a>
-            <a href="#" onclick="purchaseCredits('premium');return false;">Consult 400 &nbsp;<span class="price">€20</span></a>
-          </div>
-        </div>
+      <div class="input-bar">
+        <textarea id="userInput" placeholder="Write a message..." rows="1"></textarea>
+        <button id="send" onclick="sendMessage()" title="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        </button>
       </div>
 
       <div class="msg-counter" id="msgCounter"></div>
-    </div>
 
+      <div class="action-bar">
+        <button class="action-btn" onclick="purchaseMantra()">✦ Buy Mantra ($2)</button>
+        <button class="action-btn" onclick="openCodeModal()">Gift Code</button>
+        <div class="credits-wrapper">
+          <button class="action-btn" onclick="toggleCreditsMenu()">Recharge Demian ▾</button>
+          <div class="credits-menu" id="creditsMenu">
+            <div class="menu-desc">Demian is a pay-as-you-go genie.<br>No subscription. No expiry.<br>Choose how many replies you need.</div>
+            <a href="#" onclick="purchaseCredits('basic');return false;">Consult 50 <span class="price">€5</span></a>
+            <a href="#" onclick="purchaseCredits('regular');return false;">Consult 150 <span class="price">€10</span></a>
+            <a href="#" onclick="purchaseCredits('premium');return false;">Consult 400 <span class="price">€20</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="chat-notice">Demian · conversations are private · demianism.org</div>
+  <footer>
+    <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
+    <div>© 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
+    <div>Content licensed under CC BY-NC-ND 4.0</div>
+  </footer>
 
 </div>
 
-<!-- Code entry modal -->
 <div class="modal-overlay" id="codeModal">
   <div class="modal">
-    <h3>Enter your code</h3>
+    <h3>Redeem your gift code</h3>
+    <p>Enter the code you received to unlock your session with Demian.</p>
     <input type="text" id="codeInput" placeholder="XXXX-XXXX-XXXX" autocomplete="off" />
     <div class="modal-error" id="codeError"></div>
     <div class="modal-btns">
@@ -560,12 +551,17 @@ let isPaid = false;
 let mantraUnlocked = false;
 let paidMessages = 0;
 
+marked.setOptions({ breaks: true, gfm: true });
+
 document.addEventListener('DOMContentLoaded', () => {
   const ta = document.getElementById('userInput');
+  const sendBtn = document.getElementById('send');
 
   ta.addEventListener('input', () => {
     ta.style.height = 'auto';
-    ta.style.height = Math.min(ta.scrollHeight, 140) + 'px';
+    ta.style.height = Math.min(ta.scrollHeight, 160) + 'px';
+    if (ta.value.trim()) sendBtn.classList.add('visible');
+    else sendBtn.classList.remove('visible');
   });
 
   ta.addEventListener('keydown', (e) => {
@@ -581,7 +577,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Check if returning from Stripe payment
   const urlParams = new URLSearchParams(window.location.search);
   const purchased = urlParams.get('purchased');
   if (purchased) {
@@ -592,33 +587,6 @@ document.addEventListener('DOMContentLoaded', () => {
   sendOpeningMessage();
   updateCounter();
 });
-
-function handlePurchaseReturn(tier, messages, mantra) {
-  // Support both direct call (from code/webhook) and URL param fallback
-  if (!messages) {
-    const tiers = {
-      'mantra':          { messages: 999, mantra: true  }, // unlimited until SESSION_COMPLETE
-      'consult-basic':   { messages: 50,  mantra: false },
-      'consult-regular': { messages: 150, mantra: false },
-      'consult-premium': { messages: 400, mantra: false },
-    };
-    const t = tiers[tier];
-    if (!t) return;
-    messages = t.messages;
-    mantra = t.mantra;
-  }
-
-  isPaid = true;
-
-  if (mantra) {
-    mantraUnlocked = true;
-    appendSystemMessage('✦ Code accepted — your Personal Mantra session is unlocked. Demian is ready.');
-  } else {
-    paidMessages = messages;
-    appendSystemMessage('✦ Code accepted — ' + messages + ' conversations unlocked. The lamp is yours.');
-  }
-  updateCounter();
-}
 
 async function sendOpeningMessage() {
   await callAPI([{ role: 'user', content: 'Begin. Open the conversation as Demian.' }]);
@@ -636,6 +604,7 @@ async function sendMessage() {
 
   input.value = '';
   input.style.height = 'auto';
+  document.getElementById('send').classList.remove('visible');
   messageCount++;
   updateCounter();
 
@@ -646,7 +615,6 @@ async function sendMessage() {
 
 async function callAPI(msgs) {
   isLoading = true;
-  document.getElementById('send').disabled = true;
   const typingEl = showTyping();
 
   try {
@@ -672,32 +640,38 @@ async function callAPI(msgs) {
   } catch (err) {
     removeTyping(typingEl);
     appendMessage('demian', 'Something interrupted our connection. Please try again.');
+    setStatus(false);
     console.error(err);
   }
 
   isLoading = false;
-  document.getElementById('send').disabled = false;
 }
 
 function handleSessionComplete(reply) {
   const mantraMatch = reply.match(/\[MANTRA_TEXT\]([\s\S]*?)\[\/MANTRA_TEXT\]/);
   if (mantraMatch) {
     setTimeout(() => {
-      appendSystemMessage('✦ Create your mantra card → demianism.org/mantra.html (open in new tab)');
+      appendSystemMessage('✦ Create your mantra card → demianism.org/mantra.html');
     }, 1000);
   }
   isPaid = true;
+  paidMessages = 20;
   updateCounter();
-  setTimeout(() => {
-    appendSystemMessage('🎁 Demian is gifting you 20 more conversations. The lamp is yours.');
-  }, 2200);
 }
 
 function updateCounter() {
   const el = document.getElementById('msgCounter');
-  if (isPaid) { el.textContent = ''; return; }
+  if (isPaid) {
+    el.textContent = paidMessages > 0 ? paidMessages + ' replies remaining' : '';
+    return;
+  }
   const remaining = FREE_MESSAGES - messageCount;
-  el.textContent = remaining > 0 ? remaining + ' free messages remaining' : '';
+  el.textContent = remaining > 0 ? remaining + ' free messages remaining' : 'No free messages left';
+}
+
+function setStatus(online) {
+  document.getElementById('statusTriangle').classList.toggle('offline', !online);
+  document.getElementById('statusText').textContent = online ? 'online' : 'offline';
 }
 
 function purchaseMantra() {
@@ -710,9 +684,9 @@ function toggleCreditsMenu() {
 
 function purchaseCredits(tier) {
   const links = {
-    'basic':   'https://buy.stripe.com/3cI14ocfh04V6Kv88p6oo01', // Consult 50 — €5
-    'regular': 'https://buy.stripe.com/eVq4gAenp3h73yjagx6oo02', // Consult 150 — €10
-    'premium': 'https://buy.stripe.com/cNi14o2EHeZPgl5agx6oo03', // Consult 400 — €20
+    'basic':   'https://buy.stripe.com/3cI14ocfh04V6Kv88p6oo01',
+    'regular': 'https://buy.stripe.com/eVq4gAenp3h73yjagx6oo02',
+    'premium': 'https://buy.stripe.com/cNi14o2EHeZPgl5agx6oo03',
   };
   window.open(links[tier], '_blank');
 }
@@ -734,7 +708,6 @@ async function submitCode() {
 
   const errorEl = document.getElementById('codeError');
   const confirmBtn = document.querySelector('.modal-confirm');
-
   errorEl.textContent = '';
   confirmBtn.textContent = 'Checking...';
   confirmBtn.disabled = true;
@@ -745,14 +718,13 @@ async function submitCode() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code })
     });
-
     const data = await response.json();
 
     if (!data.valid) {
       const reasons = {
-        'invalid_code':  'Code not recognised. Please check and try again.',
-        'already_used':  'This code has already been used.',
-        'no_code':       'Please enter a code.',
+        'invalid_code': 'Code not recognised. Please check and try again.',
+        'already_used': 'This code has already been used.',
+        'no_code':      'Please enter a code.',
       };
       errorEl.textContent = reasons[data.reason] || 'Invalid code.';
       confirmBtn.textContent = 'Confirm';
@@ -760,8 +732,9 @@ async function submitCode() {
       return;
     }
 
-    // Success
     closeCodeModal();
+    confirmBtn.textContent = 'Confirm';
+    confirmBtn.disabled = false;
     handlePurchaseReturn(data.tier, data.messages, data.mantra);
 
   } catch (err) {
@@ -769,6 +742,31 @@ async function submitCode() {
     confirmBtn.textContent = 'Confirm';
     confirmBtn.disabled = false;
   }
+}
+
+function handlePurchaseReturn(tier, msgs, mantra) {
+  if (msgs === undefined) {
+    const tiers = {
+      'mantra':          { messages: 999, mantra: true  },
+      'consult-basic':   { messages: 50,  mantra: false },
+      'consult-regular': { messages: 150, mantra: false },
+      'consult-premium': { messages: 400, mantra: false },
+    };
+    const t = tiers[tier];
+    if (!t) return;
+    msgs = t.messages;
+    mantra = t.mantra;
+  }
+
+  isPaid = true;
+  if (mantra) {
+    mantraUnlocked = true;
+    appendSystemMessage('✦ Unlocked — your Personal Mantra session is ready. Demian is listening.');
+  } else {
+    paidMessages = msgs;
+    appendSystemMessage('✦ Unlocked — ' + msgs + ' conversations are yours. The lamp is lit.');
+  }
+  updateCounter();
 }
 
 function appendMessage(role, text) {
@@ -786,9 +784,15 @@ function appendMessage(role, text) {
   const cleanText = text
     .replace(/\[SESSION_COMPLETE\]/g, '')
     .replace(/\[MANTRA_TEXT\][\s\S]*?\[\/MANTRA_TEXT\]/g, '')
+    .replace(/\[MANTRA_UNLOCKED\]/g, '')
     .trim();
 
-  bubble.innerHTML = cleanText.replace(/\n/g, '<br>');
+  if (role === 'demian') {
+    bubble.innerHTML = marked.parse(cleanText);
+  } else {
+    bubble.textContent = cleanText;
+  }
+
   wrap.appendChild(label);
   wrap.appendChild(bubble);
   chat.appendChild(wrap);
