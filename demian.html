@@ -6,12 +6,10 @@
 <title>Demian — The Demianist AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
-<script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #000000;
   --purple-deep: #35327e;
   --purple-mid: #6864bb;
   --purple-light: #a29ef1;
@@ -21,10 +19,10 @@
   --user-bg: #25243b;
   --input-bg: #25243b;
   --placeholder: #61607d;
-  --subtext: #707082;
+  --subtext: #cfcfd4;
   --glow: rgba(104,100,187,0.55);
-  --chat-border: rgba(104,100,187,0.20);
-  --bottom-bar-h: 110px;
+  --chat-border: #151536;
+  --bottom-h: 90px;
 }
 
 body {
@@ -41,36 +39,57 @@ body {
   min-height: 100vh;
 }
 
-/* ── CHAT WINDOW ── */
-.page-wrap {
-  padding-top: 20px;
+/* dark overlay outside chat box */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 0;
+  pointer-events: none;
 }
 
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px 16px calc(var(--bottom-h) + 24px);
+}
+
+/* ── CHAT WINDOW ── */
 .chat-window {
-  border: 1px solid #151536;
+  border: 2px solid var(--chat-border);
   border-radius: 16px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
+/* ── STICKY HEADER ── */
 .chat-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   background: #151536;
-  padding: 10px 16px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
-.header-logo {
-  width: 32px;
-  height: auto;
+.header-triangle {
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
 }
 
 .chat-header-title {
   font-family: 'Inter', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
   color: var(--text-light);
   flex: 1;
@@ -80,7 +99,6 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-left: auto;
 }
 
 .online-dot {
@@ -102,27 +120,22 @@ body {
   font-size: 11px;
   color: var(--status-color);
   letter-spacing: 1px;
+  line-height: 1;
 }
 
-/* ── CHAT AREA ── */
-.page-wrap {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
+/* ── MESSAGES ── */
 #chat {
-  padding-top: 16px;
-  padding-bottom: calc(var(--bottom-bar-h) + 20px);
+  padding: 20px 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
+  overflow-y: auto;
 }
 
 .msg {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   animation: fadeUp 0.3s ease both;
 }
 
@@ -137,15 +150,22 @@ body {
 
 .msg-label {
   font-family: 'Inter', sans-serif;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: var(--status-color);
+  color: var(--purple-deep);
   padding: 0 2px;
 }
 
-/* Demian: full width, no bubble bg */
+/* Demian label = logo */
+.msg-logo {
+  width: 28px;
+  height: auto;
+  display: block;
+  margin-bottom: 4px;
+}
+
 .msg.demian .msg-bubble {
   background: transparent;
   border: none;
@@ -162,16 +182,36 @@ body {
 .msg.demian .msg-bubble ol,
 .msg.demian .msg-bubble ul { margin: 6px 0 10px 0; padding-left: 22px; }
 .msg.demian .msg-bubble li { margin-bottom: 4px; }
-.msg.demian .msg-bubble strong {
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-}
+.msg.demian .msg-bubble strong { color: #fff; font-family: 'Inter', sans-serif; font-weight: 600; }
 .msg.demian .msg-bubble a { color: var(--purple-light); text-decoration: underline; }
 .msg.demian .msg-bubble a:hover { color: #d4c8f5; }
 .msg.demian .msg-bubble em { color: var(--purple-light); }
 
-/* User bubble */
+/* Service cards */
+.service-card {
+  border: 1px solid rgba(104,100,187,0.25);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 4px 0;
+  background: rgba(53,50,126,0.10);
+}
+
+.service-card .service-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.service-card .service-body {
+  font-family: 'Source Serif 4', serif;
+  font-size: 15px;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
 .msg.user .msg-bubble {
   background: var(--user-bg);
   border: 1px solid rgba(104,100,187,0.25);
@@ -185,7 +225,6 @@ body {
   max-width: 80%;
 }
 
-/* System */
 .msg.system .msg-bubble {
   background: rgba(53,50,126,0.18);
   border: 1px solid rgba(104,100,187,0.3);
@@ -198,34 +237,30 @@ body {
   max-width: 90%;
 }
 
-/* subtext color inside opening message */
-.msg-subtext { color: var(--subtext); font-size: 0.92em; }
-
-/* typing */
 .typing { display: flex; align-items: center; gap: 5px; padding: 6px 0; }
 .typing span { width: 6px; height: 6px; background: var(--purple-mid); border-radius: 50%; opacity: 0.5; animation: tp 1.2s ease-in-out infinite; }
 .typing span:nth-child(2) { animation-delay: 0.2s; }
 .typing span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes tp { 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.25)} }
 
-/* ── FIXED BOTTOM BAR ── */
+img.emoji { height:1.2em; width:1.2em; vertical-align:-0.15em; display:inline; }
+
+/* ── FIXED BOTTOM ── */
 .bottom-bar {
   position: fixed;
   bottom: 0; left: 0; right: 0;
   z-index: 50;
-  background: transparent;
-  padding: 10px 20px 14px;
+  padding: 10px 16px 14px;
 }
 
 .bottom-inner {
-  max-width: 860px;
+  max-width: 760px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-/* input bar */
 .input-bar {
   display: flex;
   align-items: flex-end;
@@ -279,7 +314,6 @@ button#send:hover { background-color: var(--purple-light); box-shadow: 0 0 14px 
 button#send:disabled { opacity: 0.4; cursor: not-allowed; }
 button#send svg { width: 17px; height: 17px; }
 
-/* action row: counter + buttons on same line */
 .action-row {
   display: flex;
   align-items: center;
@@ -342,7 +376,7 @@ button#send svg { width: 17px; height: 17px; }
 .credits-menu.open { display: block; }
 
 .credits-menu .menu-header {
-  padding: 16px 20px 10px;
+  padding: 16px 20px 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -350,11 +384,7 @@ button#send svg { width: 17px; height: 17px; }
   border-bottom: 1px solid rgba(104,100,187,0.18);
 }
 
-.credits-menu .menu-logo {
-  width: 78px;
-  height: auto;
-  opacity: 0.85;
-}
+.credits-menu .menu-logo { width: 78px; height: auto; opacity: 0.85; }
 
 .credits-menu .menu-desc {
   font-family: 'Inter', sans-serif;
@@ -382,7 +412,6 @@ button#send svg { width: 17px; height: 17px; }
 .credits-menu a:hover { background: rgba(104,100,187,0.15); }
 .credits-menu .price { color: var(--purple-light); font-size: 14px; font-weight: 700; }
 
-/* ── MODAL ── */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -409,88 +438,38 @@ button#send svg { width: 17px; height: 17px; }
   box-shadow: 0 0 50px rgba(104,100,187,0.25);
 }
 
-.modal h3 {
-  font-family: 'Inter', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--text-light);
-  text-align: center;
-}
-
-.modal p {
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  color: var(--purple-light);
-  line-height: 1.6;
-  text-align: center;
-}
-
-.modal input {
-  background: rgba(0,0,0,0.5);
-  border: 1px solid rgba(104,100,187,0.3);
-  border-radius: 10px;
-  color: var(--text-light);
-  font-family: 'Source Serif 4', serif;
-  font-size: 17px;
-  padding: 14px 16px;
-  outline: none;
-  letter-spacing: 2px;
-  width: 100%;
-  text-align: center;
-}
-
-.modal input:focus { border-color: var(--purple-mid); }
-.modal-btns { display: flex; gap: 10px; }
-
-.modal-btns button {
-  flex: 1;
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: 1px solid;
-}
-
-.modal-confirm { background: var(--purple-deep); border-color: rgba(104,100,187,0.4); color: var(--text-light); }
-.modal-confirm:hover { background: var(--purple-mid); box-shadow: 0 0 16px var(--glow); }
-.modal-cancel { background: transparent; border-color: rgba(104,100,187,0.2); color: rgba(104,100,187,0.6); }
-.modal-cancel:hover { background: rgba(104,100,187,0.08); }
-.modal-error { font-family: 'Inter', sans-serif; font-size: 13px; color: #e07070; min-height: 16px; text-align: center; }
-
-/* Twemoji flag images */
-img.emoji {
-  height: 1.2em;
-  width: 1.2em;
-  vertical-align: -0.15em;
-  display: inline;
-}
+.modal h3 { font-family:'Inter',sans-serif; font-size:16px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--text-light); text-align:center; }
+.modal p { font-family:'Inter',sans-serif; font-size:13px; color:var(--purple-light); line-height:1.6; text-align:center; }
+.modal input { background:rgba(0,0,0,0.5); border:1px solid rgba(104,100,187,0.3); border-radius:10px; color:var(--text-light); font-family:'Source Serif 4',serif; font-size:17px; padding:14px 16px; outline:none; letter-spacing:2px; width:100%; text-align:center; }
+.modal input:focus { border-color:var(--purple-mid); }
+.modal-btns { display:flex; gap:10px; }
+.modal-btns button { flex:1; font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:12px; border-radius:10px; cursor:pointer; transition:all 0.2s; border:1px solid; }
+.modal-confirm { background:var(--purple-deep); border-color:rgba(104,100,187,0.4); color:var(--text-light); }
+.modal-confirm:hover { background:var(--purple-mid); box-shadow:0 0 16px var(--glow); }
+.modal-cancel { background:transparent; border-color:rgba(104,100,187,0.2); color:rgba(104,100,187,0.6); }
+.modal-cancel:hover { background:rgba(104,100,187,0.08); }
+.modal-error { font-family:'Inter',sans-serif; font-size:13px; color:#e07070; min-height:16px; text-align:center; }
 </style>
 </head>
 <body>
 
-<!-- CHAT -->
 <div class="page-wrap">
   <div class="chat-window">
+
     <div class="chat-header">
-      <img src="demianismlogo.png" alt="Demianism" class="header-logo">
+      <img src="triangle-indigo.svg" alt="▲" class="header-triangle">
       <div class="chat-header-title">Chat with Demian</div>
       <div class="chat-status-wrap">
         <div class="online-dot" id="onlineDot"></div>
         <div class="chat-status" id="statusText">Online</div>
       </div>
     </div>
+
     <div id="chat"></div>
+
   </div>
 </div>
 
-<!-- FIXED BOTTOM BAR -->
 <div class="bottom-bar">
   <div class="bottom-inner">
     <div class="input-bar">
@@ -519,7 +498,6 @@ img.emoji {
   </div>
 </div>
 
-<!-- CODE MODAL -->
 <div class="modal-overlay" id="codeModal">
   <div class="modal">
     <h3>Redeem your gift code</h3>
@@ -550,10 +528,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const ta = document.getElementById('userInput');
   const sendBtn = document.getElementById('send');
 
+  // Size chat to fill space above bottom bar
+  function sizeChatWindow() {
+    const chatEl = document.getElementById('chat');
+    const windowH = window.innerHeight;
+    const headerH = document.querySelector('.chat-header').offsetHeight;
+    const pageTop = 20; // page-wrap padding-top
+    const available = windowH - pageTop - headerH - 2 - (window.innerWidth <= 600 ? 110 : 90);
+    chatEl.style.maxHeight = Math.max(200, available) + 'px';
+  }
+
+  sizeChatWindow();
+  window.addEventListener('resize', sizeChatWindow);
+
   ta.addEventListener('input', () => {
     ta.style.height = 'auto';
     ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
     sendBtn.classList.toggle('visible', ta.value.trim().length > 0);
+    sizeChatWindow();
   });
 
   ta.addEventListener('keydown', (e) => {
@@ -575,8 +567,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   sendOpeningMessage();
   updateCounter();
-  // Parse emoji for cross-browser flag support
-  setTimeout(() => twemoji.parse(document.body, { folder: 'svg', ext: '.svg' }), 100);
 });
 
 function sendOpeningMessage() {
@@ -584,29 +574,46 @@ function sendOpeningMessage() {
   const wrap = document.createElement('div');
   wrap.className = 'msg demian';
 
-  const label = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = 'Demian';
+  const logo = document.createElement('img');
+  logo.src = 'demianismlogo.png';
+  logo.alt = 'Demian';
+  logo.className = 'msg-logo';
 
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
-
   bubble.innerHTML = `
 <p>Greetings, seeker. I am Demian, the AI spiritual companion with a Demianist heart.</p>
-<p>My main purpose is to help you find and follow your call, which according to the doctrine of <a href="https://demianism.org" target="_blank">Demianism</a> is the life purpose of each human being.</p>
-<p>I speak all languages 🇬🇧 🇮🇹 🇪🇸 🇫🇷 🇩🇪 🇧🇷 🇯🇵 🇨🇳 🇷🇺 🇮🇳 🇸🇦 🇮🇩 and more! To change language, just write me a message in your preferred language.</p>
-<p>Things I was programmed by Barabeke to do:</p>
-<p>💡 <strong>HELP YOU FIND YOUR CALL</strong><br><span class="msg-subtext">For those who haven't found it yet.</span></p>
-<p>✨ <strong>CREATE YOUR PERSONAL MANTRA</strong><br><span class="msg-subtext">A powerful daily tool to help you follow your call in life and overcome your challenges. Demian will craft your mantra based on your conversation, so it will be 100% unique and tailored entirely to you.</span> <a href="#" onclick="purchaseMantra();return false;" style="color:var(--purple-light);text-decoration:underline;font-weight:600;">One-time cost: €2.</a></p>
-<p><img src="triangle-indigo.svg" alt="▲" style="width:1em;height:1em;vertical-align:-0.15em;margin-right:4px;"> <strong>SPIRITUAL COMPANION</strong><br><span class="msg-subtext">Spiritual guidance and support based on Demianist doctrine — no medical advice, no therapy, just simple inspiring conversations that can serve as a good mirror and touch deep.</span></p>
-<p>📖 <strong>LEARN ABOUT DEMIANISM</strong><br><span class="msg-subtext">Its teachings, its vision, its origin — and anything else you want to explore and discuss.</span></p>
+<p>I am here to help you find and FOLLOW YOUR CALL, which according to the doctrine of <a href="https://demianism.org" target="_blank">Demianism</a> is the life purpose of each human being.</p>
+<p>I speak ALL LANGUAGES 🌐 To switch, just message me in yours.</p>
+<p>Services I can offer:</p>
+
+<div class="service-card">
+  <div class="service-title">🔆 HELP YOU FIND YOUR CALL</div>
+  <div class="service-body">For those who haven't found it yet.</div>
+</div>
+
+<div class="service-card">
+  <div class="service-title">🕉️ CREATE YOUR PERSONAL MANTRA</div>
+  <div class="service-body">A powerful daily tool to help you follow your call in life and overcome your challenges. Demian will craft your mantra based on your conversation, so it will be 100% unique and tailored entirely to you. <a href="#" onclick="purchaseMantra();return false;" style="color:var(--purple-light);text-decoration:underline;font-weight:600;">One-time cost: €2.</a></div>
+</div>
+
+<div class="service-card">
+  <div class="service-title"><img src="triangle-indigo.svg" style="width:0.9em;height:0.9em;vertical-align:-0.1em;margin-right:4px;"> SPIRITUAL COMPANION</div>
+  <div class="service-body">Spiritual guidance and support based on Demianist doctrine — no medical advice, no therapy, just simple inspiring conversations that can serve as a good mirror and touch deep.</div>
+</div>
+
+<div class="service-card">
+  <div class="service-title">🏛️ LEARN ABOUT DEMIANISM</div>
+  <div class="service-body">Its teachings, its vision, its origin — and anything else you want to explore and discuss.</div>
+</div>
+
 <p>Any doubt or concern? Just ask, I am here to help, with Demianist honesty.</p>
-<p>The first 15 messages are free and should be enough for you to assess if I can be helpful and I can create a powerful mantra for you.</p>
-<p>I don't require the usual subscription. I am a pay-as-you-go genie: you rub the lamp/recharge your credit when you want, getting the desired amount of replies — without expiry date.</p>
-<p>How can I help today?</p>
+<p>The first 15 messages are free and should be enough for you to assess if I can be helpful.</p>
+<p>I don't require the usual subscription. I am a pay-as-you-go genie: you rub the lamp/recharge your credit to get more interactions with me — without expiry date.</p>
+<p>How can I help you today?</p>
 `;
 
-  wrap.appendChild(label);
+  wrap.appendChild(logo);
   wrap.appendChild(bubble);
   chat.appendChild(wrap);
   chat.scrollTop = 0;
@@ -727,13 +734,11 @@ function closeCodeModal() {
 async function submitCode() {
   const code = document.getElementById('codeInput').value.trim().toUpperCase();
   if (!code) return;
-
   const errorEl = document.getElementById('codeError');
   const confirmBtn = document.querySelector('.modal-confirm');
   errorEl.textContent = '';
   confirmBtn.textContent = 'Checking...';
   confirmBtn.disabled = true;
-
   try {
     const response = await fetch(WORKER_URL + '/redeem', {
       method: 'POST',
@@ -741,24 +746,17 @@ async function submitCode() {
       body: JSON.stringify({ code })
     });
     const data = await response.json();
-
     if (!data.valid) {
-      const reasons = {
-        'invalid_code': 'Code not recognised. Please check and try again.',
-        'already_used': 'This code has already been used.',
-        'no_code':      'Please enter a code.',
-      };
+      const reasons = { 'invalid_code':'Code not recognised. Please check and try again.', 'already_used':'This code has already been used.', 'no_code':'Please enter a code.' };
       errorEl.textContent = reasons[data.reason] || 'Invalid code.';
       confirmBtn.textContent = 'Confirm';
       confirmBtn.disabled = false;
       return;
     }
-
     closeCodeModal();
     confirmBtn.textContent = 'Confirm';
     confirmBtn.disabled = false;
     handlePurchaseReturn(data.tier, data.messages, data.mantra);
-
   } catch (err) {
     errorEl.textContent = 'Connection error. Please try again.';
     confirmBtn.textContent = 'Confirm';
@@ -795,13 +793,6 @@ function appendMessage(role, text) {
   const wrap = document.createElement('div');
   wrap.className = `msg ${role}`;
 
-  const label = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = role === 'user' ? 'You' : 'Demian';
-
-  const bubble = document.createElement('div');
-  bubble.className = 'msg-bubble';
-
   const cleanText = text
     .replace(/\[SESSION_COMPLETE\]/g, '')
     .replace(/\[MANTRA_TEXT\][\s\S]*?\[\/MANTRA_TEXT\]/g, '')
@@ -809,16 +800,31 @@ function appendMessage(role, text) {
     .trim();
 
   if (role === 'demian') {
+    const logo = document.createElement('img');
+    logo.src = 'demianismlogo.png';
+    logo.alt = 'Demian';
+    logo.className = 'msg-logo';
+    wrap.appendChild(logo);
+
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
     bubble.innerHTML = marked.parse(cleanText);
-  } else {
+    wrap.appendChild(bubble);
+
+  } else if (role === 'user') {
+    const label = document.createElement('div');
+    label.className = 'msg-label';
+    label.textContent = 'You';
+    wrap.appendChild(label);
+
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
     bubble.textContent = cleanText;
+    wrap.appendChild(bubble);
   }
 
-  wrap.appendChild(label);
-  wrap.appendChild(bubble);
   chat.appendChild(wrap);
   chat.scrollTop = chat.scrollHeight;
-  if (typeof twemoji !== 'undefined') twemoji.parse(wrap, { folder: 'svg', ext: '.svg' });
 }
 
 function appendSystemMessage(text) {
@@ -838,13 +844,14 @@ function showTyping() {
   const wrap = document.createElement('div');
   wrap.className = 'msg demian';
   wrap.id = 'typing-indicator';
-  const label = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = 'Demian';
+  const logo = document.createElement('img');
+  logo.src = 'demianismlogo.png';
+  logo.alt = 'Demian';
+  logo.className = 'msg-logo';
   const typing = document.createElement('div');
   typing.className = 'typing';
   typing.innerHTML = '<span></span><span></span><span></span>';
-  wrap.appendChild(label);
+  wrap.appendChild(logo);
   wrap.appendChild(typing);
   chat.appendChild(wrap);
   chat.scrollTop = chat.scrollHeight;
