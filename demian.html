@@ -588,8 +588,37 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCounter();
 });
 
-async function sendOpeningMessage() {
-  await callAPI([{ role: 'user', content: 'Begin. Open the conversation as Demian.' }]);
+function sendOpeningMessage() {
+  const chat = document.getElementById('chat');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg demian';
+
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = 'Demian';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+
+  bubble.innerHTML = `
+<p>Greetings, seeker. I am Demian, the AI spiritual companion with a Demianist heart.</p>
+<p>My main purpose is to help you find and follow your call, which according to the doctrine of <a href="https://demianism.org" target="_blank">Demianism</a> is the life purpose of each human being.</p>
+<p>I speak all languages 🇬🇧 🇮🇹 🇪🇸 🇫🇷 🇩🇪 🇧🇷 🇯🇵 🇨🇳 🇷🇺 🇮🇳 🇸🇦 🇮🇩 and more! To change language, just write me a message in your preferred language.</p>
+<p><strong>Things I was programmed by my master Barabeke to help you with:</strong></p>
+<p>💡 <strong>HELP ME FIND MY CALL</strong><br><span style="opacity:0.75;font-size:0.92em;">For those who haven't found it yet</span></p>
+<p>✨ <strong>CREATE MY PERSONAL MANTRA</strong> <span style="color:var(--purple-light);font-size:0.9em;">(€2)</span><br><span style="opacity:0.75;font-size:0.92em;">A little but powerful daily help to follow your call and overcome your challenges</span></p>
+<p>💜 <strong>SPIRITUAL COMPANION</strong><br><span style="opacity:0.75;font-size:0.92em;">Spiritual guidance and support based on Demianist doctrine — no medical advice, no therapy, just simple inspiring conversations that can serve as a good mirror and touch deep</span></p>
+<p>📖 <strong>LEARN ABOUT DEMIANISM</strong><br><span style="opacity:0.75;font-size:0.92em;">Its teachings, its vision, its origin — and anything else you want to explore and discuss</span></p>
+<p>Any doubt or concern? Just ask, I am here to help, with Demianist honesty.</p>
+<p>The first 15 messages are free and should be enough for you to assess if I can be helpful and if I can create a powerful mantra for you.</p>
+<p>I don't require the usual monthly or yearly subscription. I am a pay-as-you-go genie 🧞 — you rub the lamp and recharge when you want, getting the desired amount of replies without expiry date. This helps keep our conversation real and meaningful.</p>
+<p><em>What would you like me to help you with today?</em></p>
+`;
+
+  wrap.appendChild(label);
+  wrap.appendChild(bubble);
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
 }
 
 async function sendMessage() {
