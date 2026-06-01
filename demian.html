@@ -6,6 +6,7 @@
 <title>Demian — The Demianist AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
+<script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -40,50 +41,63 @@ body {
   min-height: 100vh;
 }
 
-/* ── PAGE HEADER ── */
-.page-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 20px 0 12px;
+/* ── CHAT WINDOW ── */
+.page-wrap {
+  padding-top: 20px;
 }
 
-.top-logo {
-  width: 63px;
+.chat-window {
+  border: 1px solid #151536;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.chat-header {
+  background: #151536;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo {
+  width: 32px;
   height: auto;
   flex-shrink: 0;
 }
 
-.chat-title {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  flex: 1;
-}
-
-/* Correct right-pointing triangle - CSS only, no rotation */
-.status-triangle {
-  display: inline-block;
-  width: 0; height: 0;
-  border-style: solid;
-  border-width: 5px 0 5px 9px;
-  border-color: transparent transparent transparent var(--indigo);
-  flex-shrink: 0;
-  filter: drop-shadow(0 0 4px var(--indigo));
-}
-.status-triangle.offline { border-color: transparent transparent transparent #555; filter: none; }
-
-.chat-title-text {
+.chat-header-title {
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--text-light);
+  flex: 1;
+}
+
+.chat-status-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.online-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e, 0 0 12px rgba(34,197,94,0.4);
+  flex-shrink: 0;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.online-dot.offline {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444, 0 0 12px rgba(239,68,68,0.4);
 }
 
 .chat-status {
-  margin-left: auto;
   font-family: 'Inter', sans-serif;
   font-size: 11px;
   color: var(--status-color);
@@ -98,7 +112,7 @@ body {
 }
 
 #chat {
-  padding-top: 10px;
+  padding-top: 16px;
   padding-bottom: calc(var(--bottom-bar-h) + 20px);
   display: flex;
   flex-direction: column;
@@ -449,21 +463,31 @@ button#send svg { width: 17px; height: 17px; }
 .modal-cancel { background: transparent; border-color: rgba(104,100,187,0.2); color: rgba(104,100,187,0.6); }
 .modal-cancel:hover { background: rgba(104,100,187,0.08); }
 .modal-error { font-family: 'Inter', sans-serif; font-size: 13px; color: #e07070; min-height: 16px; text-align: center; }
+
+/* Twemoji flag images */
+img.emoji {
+  height: 1.2em;
+  width: 1.2em;
+  vertical-align: -0.15em;
+  display: inline;
+}
 </style>
 </head>
 <body>
 
 <!-- CHAT -->
 <div class="page-wrap">
-  <div class="page-header">
-    <img src="demianismlogo.png" alt="Demianism" class="top-logo">
-    <div class="chat-title">
-      <div class="status-triangle" id="statusTriangle"></div>
-      <div class="chat-title-text">Chat with Demian</div>
+  <div class="chat-window">
+    <div class="chat-header">
+      <img src="demianismlogo.png" alt="Demianism" class="header-logo">
+      <div class="chat-header-title">Chat with Demian</div>
+      <div class="chat-status-wrap">
+        <div class="online-dot" id="onlineDot"></div>
+        <div class="chat-status" id="statusText">Online</div>
+      </div>
     </div>
-    <div class="chat-status" id="statusText">online</div>
+    <div id="chat"></div>
   </div>
-  <div id="chat"></div>
 </div>
 
 <!-- FIXED BOTTOM BAR -->
@@ -477,7 +501,7 @@ button#send svg { width: 17px; height: 17px; }
     </div>
     <div class="action-row">
       <div class="msg-counter" id="msgCounter"></div>
-      <button class="action-btn" onclick="purchaseMantra()">✨ GET YOUR MANTRA ($2)</button>
+      <button class="action-btn" onclick="purchaseMantra()">✨ GET YOUR MANTRA (€2)</button>
       <button class="action-btn" onclick="openCodeModal()">🎁 GIFT CODE</button>
       <div class="credits-wrapper">
         <button class="action-btn" onclick="toggleCreditsMenu()">⚡ RECHARGE ▾</button>
@@ -551,6 +575,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   sendOpeningMessage();
   updateCounter();
+  // Parse emoji for cross-browser flag support
+  setTimeout(() => twemoji.parse(document.body, { folder: 'svg', ext: '.svg' }), 100);
 });
 
 function sendOpeningMessage() {
@@ -571,7 +597,7 @@ function sendOpeningMessage() {
 <p>I speak all languages 🇬🇧 🇮🇹 🇪🇸 🇫🇷 🇩🇪 🇧🇷 🇯🇵 🇨🇳 🇷🇺 🇮🇳 🇸🇦 🇮🇩 and more! To change language, just write me a message in your preferred language.</p>
 <p>Things I was programmed by Barabeke to do:</p>
 <p>💡 <strong>HELP YOU FIND YOUR CALL</strong><br><span class="msg-subtext">For those who haven't found it yet.</span></p>
-<p>✨ <strong>CREATE YOUR PERSONAL MANTRA</strong><br><span class="msg-subtext">A powerful daily tool to help you follow your call in life and overcome your challenges. Demian will craft your mantra based on your conversation, so it will be 100% unique and tailored entirely to you.</span> <strong>One-time cost: $2.</strong></p>
+<p>✨ <strong>CREATE YOUR PERSONAL MANTRA</strong><br><span class="msg-subtext">A powerful daily tool to help you follow your call in life and overcome your challenges. Demian will craft your mantra based on your conversation, so it will be 100% unique and tailored entirely to you.</span> <a href="#" onclick="purchaseMantra();return false;" style="color:var(--purple-light);text-decoration:underline;font-weight:600;">One-time cost: €2.</a></p>
 <p>💜 <strong>SPIRITUAL COMPANION</strong><br><span class="msg-subtext">Spiritual guidance and support based on Demianist doctrine — no medical advice, no therapy, just simple inspiring conversations that can serve as a good mirror and touch deep.</span></p>
 <p>📖 <strong>LEARN ABOUT DEMIANISM</strong><br><span class="msg-subtext">Its teachings, its vision, its origin — and anything else you want to explore and discuss.</span></p>
 <p>Any doubt or concern? Just ask, I am here to help, with Demianist honesty.</p>
@@ -664,8 +690,10 @@ function updateCounter() {
 }
 
 function setStatus(online) {
-  document.getElementById('statusTriangle').classList.toggle('offline', !online);
-  document.getElementById('statusText').textContent = online ? 'online' : 'offline';
+  const dot = document.getElementById('onlineDot');
+  const text = document.getElementById('statusText');
+  if (dot) dot.classList.toggle('offline', !online);
+  if (text) text.textContent = online ? 'Online' : 'Offline';
 }
 
 function purchaseMantra() {
@@ -790,6 +818,7 @@ function appendMessage(role, text) {
   wrap.appendChild(bubble);
   chat.appendChild(wrap);
   chat.scrollTop = chat.scrollHeight;
+  if (typeof twemoji !== 'undefined') twemoji.parse(wrap, { folder: 'svg', ext: '.svg' });
 }
 
 function appendSystemMessage(text) {
