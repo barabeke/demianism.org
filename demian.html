@@ -40,22 +40,16 @@ body {
   min-height: 100vh;
 }
 
-/* ── TOP BAR ── */
-.top-bar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 50;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--chat-border);
+/* ── PAGE HEADER ── */
+.page-header {
   display: flex;
   align-items: center;
-  padding: 10px 20px;
   gap: 14px;
+  padding: 20px 0 12px;
 }
 
 .top-logo {
-  width: 90px;
+  width: 63px;
   height: auto;
   flex-shrink: 0;
 }
@@ -67,16 +61,17 @@ body {
   flex: 1;
 }
 
-/* Proper right-pointing triangle with flat base */
+/* Correct right-pointing triangle - CSS only, no rotation */
 .status-triangle {
+  display: inline-block;
   width: 0; height: 0;
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-left: 10px solid var(--indigo);
+  border-style: solid;
+  border-width: 5px 0 5px 9px;
+  border-color: transparent transparent transparent var(--indigo);
   flex-shrink: 0;
   filter: drop-shadow(0 0 4px var(--indigo));
 }
-.status-triangle.offline { border-left-color: #555; filter: none; }
+.status-triangle.offline { border-color: transparent transparent transparent #555; filter: none; }
 
 .chat-title-text {
   font-family: 'Inter', sans-serif;
@@ -103,7 +98,7 @@ body {
 }
 
 #chat {
-  padding-top: 74px; /* below top bar */
+  padding-top: 10px;
   padding-bottom: calc(var(--bottom-bar-h) + 20px);
   display: flex;
   flex-direction: column;
@@ -204,10 +199,8 @@ body {
   position: fixed;
   bottom: 0; left: 0; right: 0;
   z-index: 50;
-  background: rgba(0,0,0,0.92);
-  backdrop-filter: blur(12px);
-  border-top: 1px solid var(--chat-border);
-  padding: 10px 20px 12px;
+  background: transparent;
+  padding: 10px 20px 14px;
 }
 
 .bottom-inner {
@@ -344,7 +337,7 @@ button#send svg { width: 17px; height: 17px; }
 }
 
 .credits-menu .menu-logo {
-  width: 60px;
+  width: 78px;
   height: auto;
   opacity: 0.85;
 }
@@ -460,18 +453,16 @@ button#send svg { width: 17px; height: 17px; }
 </head>
 <body>
 
-<!-- TOP BAR -->
-<div class="top-bar">
-  <img src="demianismlogo.png" alt="Demianism" class="top-logo">
-  <div class="chat-title">
-    <div class="status-triangle" id="statusTriangle"></div>
-    <div class="chat-title-text">Chat with Demian</div>
-  </div>
-  <div class="chat-status" id="statusText">online</div>
-</div>
-
 <!-- CHAT -->
 <div class="page-wrap">
+  <div class="page-header">
+    <img src="demianismlogo.png" alt="Demianism" class="top-logo">
+    <div class="chat-title">
+      <div class="status-triangle" id="statusTriangle"></div>
+      <div class="chat-title-text">Chat with Demian</div>
+    </div>
+    <div class="chat-status" id="statusText">online</div>
+  </div>
   <div id="chat"></div>
 </div>
 
@@ -493,7 +484,7 @@ button#send svg { width: 17px; height: 17px; }
         <div class="credits-menu" id="creditsMenu">
           <div class="menu-header">
             <img src="demianismlogo.png" alt="Demianism" class="menu-logo">
-            <div class="menu-desc">Recharge your chat: How many replies do you want to add?<br><br>No subscription. No expiry.</div>
+            <div class="menu-desc">Demian is a pay-as-you-go genie.<br>No expiration date. Use your replies whenever you want.<br><br>How many replies would you like to add?</div>
           </div>
           <a href="#" onclick="purchaseCredits('basic');return false;">Consult 50 <span class="price">€5</span></a>
           <a href="#" onclick="purchaseCredits('regular');return false;">Consult 150 <span class="price">€10</span></a>
@@ -577,15 +568,15 @@ function sendOpeningMessage() {
   bubble.innerHTML = `
 <p>Greetings, seeker. I am Demian, the AI spiritual companion with a Demianist heart.</p>
 <p>My main purpose is to help you find and follow your call, which according to the doctrine of <a href="https://demianism.org" target="_blank">Demianism</a> is the life purpose of each human being.</p>
-<p>I speak all languages &#127468;&#127463; &#127470;&#127481; &#127466;&#127480; &#127467;&#127479; &#127465;&#127466; &#127463;&#127479; &#127471;&#127477; &#127464;&#127475; &#127479;&#127482; &#127470;&#127475; &#127480;&#127462; &#127470;&#127465; and more! To change language, just write me a message in your preferred language.</p>
-<p><strong>Things I was programmed by Barabeke to do:</strong></p>
+<p>I speak all languages 🇬🇧 🇮🇹 🇪🇸 🇫🇷 🇩🇪 🇧🇷 🇯🇵 🇨🇳 🇷🇺 🇮🇳 🇸🇦 🇮🇩 and more! To change language, just write me a message in your preferred language.</p>
+<p>Things I was programmed by Barabeke to do:</p>
 <p>💡 <strong>HELP YOU FIND YOUR CALL</strong><br><span class="msg-subtext">For those who haven't found it yet.</span></p>
-<p>✨ <strong>CREATE YOUR PERSONAL MANTRA</strong><br><span class="msg-subtext">A powerful daily tool to help you follow your call in life and overcome your challenges. Demian will craft your mantra based on your conversation, so it will be 100% unique and tailored entirely to you.</span><br><strong>One-time cost: $2</strong></p>
+<p>✨ <strong>CREATE YOUR PERSONAL MANTRA</strong><br><span class="msg-subtext">A powerful daily tool to help you follow your call in life and overcome your challenges. Demian will craft your mantra based on your conversation, so it will be 100% unique and tailored entirely to you.</span> <strong>One-time cost: $2.</strong></p>
 <p>💜 <strong>SPIRITUAL COMPANION</strong><br><span class="msg-subtext">Spiritual guidance and support based on Demianist doctrine — no medical advice, no therapy, just simple inspiring conversations that can serve as a good mirror and touch deep.</span></p>
 <p>📖 <strong>LEARN ABOUT DEMIANISM</strong><br><span class="msg-subtext">Its teachings, its vision, its origin — and anything else you want to explore and discuss.</span></p>
 <p>Any doubt or concern? Just ask, I am here to help, with Demianist honesty.</p>
-<p>The first 15 messages are free and should be enough for you to assess if I can be helpful and if I can create a powerful mantra for you.</p>
-<p>I don't require the usual monthly or yearly subscription. I am a pay-as-you-go genie: you rub the lamp/recharge your credit when you want, getting the desired amount of replies — without expiry date.</p>
+<p>The first 15 messages are free and should be enough for you to assess if I can be helpful and I can create a powerful mantra for you.</p>
+<p>I don't require the usual subscription. I am a pay-as-you-go genie: you rub the lamp/recharge your credit when you want, getting the desired amount of replies — without expiry date.</p>
 <p>How can I help today?</p>
 `;
 
