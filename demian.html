@@ -38,9 +38,6 @@ body {
   max-width: 760px;
   margin: 0 auto;
   padding: 20px 16px 24px;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 /* ── CHAT WINDOW ── */
@@ -50,8 +47,6 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
   background:
     radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
     radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
@@ -112,12 +107,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  overflow-y: auto;
-  flex: 1;
-  min-height: 0;
-  scrollbar-width: none;
 }
-#chat::-webkit-scrollbar { display: none; }
 
 .msg {
   display: flex;
@@ -179,7 +169,7 @@ body {
   border-radius: 12px;
   overflow: hidden;
   margin: 6px 0;
-  background: #25243b;
+  background: rgba(37,36,59,0.55);
   padding: 6px 4px;
 }
 
@@ -371,17 +361,19 @@ button#send svg { width: 17px; height: 17px; }
 .credits-menu.open { display: block; }
 
 .credits-menu .menu-header {
-  padding: 18px 20px 14px;
+  padding: 16px 20px 10px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 4px;
-  border-bottom: 1px solid rgba(104,100,187,0.18);
+  text-align: center;
 }
+
+.credits-menu .menu-logo { width: 52px; height: auto; opacity: 0.9; margin-bottom: 6px; }
 
 .credits-menu .menu-title {
   font-family: 'Inter', sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.2px;
@@ -389,23 +381,23 @@ button#send svg { width: 17px; height: 17px; }
 
 .credits-menu .menu-sub {
   font-family: 'Source Serif 4', serif;
-  font-size: 13px;
-  color: rgba(255,255,255,0.65);
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
   line-height: 1.5;
 }
 
 .credits-menu .menu-choose {
   font-family: 'Inter', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 2px;
-  color: rgba(255,255,255,0.5);
+  letter-spacing: 1.5px;
+  color: #ffffff;
   text-transform: uppercase;
   margin-top: 10px;
 }
 
 .credits-menu .pkg-list {
-  padding: 12px 14px;
+  padding: 8px 14px 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -440,11 +432,12 @@ button#send svg { width: 17px; height: 17px; }
 
 .pkg-name {
   font-family: 'Inter', sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.5px;
   color: #ffffff;
   text-transform: uppercase;
+  line-height: 1.1;
 }
 
 .pkg-desc {
@@ -452,6 +445,7 @@ button#send svg { width: 17px; height: 17px; }
   font-size: 12px;
   color: rgba(255,255,255,0.6);
   font-weight: 300;
+  line-height: 1.2;
 }
 
 .pkg-price {
@@ -509,6 +503,7 @@ button#send svg { width: 17px; height: 17px; }
           <button class="action-btn" onclick="toggleCreditsMenu()">⚡ RECHARGE ▾</button>
           <div class="credits-menu" id="creditsMenu">
             <div class="menu-header">
+              <img src="demianismlogo.png" alt="Demianism" class="menu-logo">
               <div class="menu-title">Pay only for what you use</div>
               <div class="menu-sub">No recurring fees. No expiration date.<br>Use whenever you need.</div>
               <div class="menu-choose">Choose your package</div>
@@ -606,7 +601,7 @@ function sendOpeningMessage() {
 
   // One-off centered logo marking the start of the conversation
   const logoWrap = document.createElement('div');
-  logoWrap.style.cssText = 'display:flex;justify-content:center;margin-bottom:8px;';
+  logoWrap.style.cssText = 'display:flex;justify-content:center;margin-bottom:2px;';
   const bigLogo = document.createElement('img');
   bigLogo.src = 'demianismlogo.png';
   bigLogo.alt = 'Demian';
@@ -638,11 +633,11 @@ function sendOpeningMessage() {
   </div>
   <div class="service-card">
     <div class="service-title"><img src="spiral-indigo.svg" style="height:1em;width:auto;vertical-align:-0.12em;margin-right:4px;"> YOUR PERSONAL MANTRA</div>
-    <div class="service-body">Crafted by Demian based on your conversation — 100% unique and tailored to you. A simple but powerful tool to help you overcome challenges and pursue your calling.<a href="#" onclick="purchaseMantra();return false;" class="service-cost">One-time cost: €2</a></div>
+    <div class="service-body">Crafted by Demian based on your conversation — 100% unique and tailored to you. A powerful daily anchor to strengthen your grounding and fortitude, overcome challenges, and move toward the life you really want.<a href="#" onclick="purchaseMantra();return false;" class="service-cost">One-time cost: €2</a></div>
   </div>
   <div class="service-card">
     <div class="service-title"><img src="triangle-indigo.svg" style="height:1em;width:auto;vertical-align:-0.12em;"> SPIRITUAL COMPANION</div>
-    <div class="service-body">Guidance and support based on Demianism. No therapy or medical advice — just inspiring conversations that can serve as a mirror to bring clarity to your path and inner growth.</div>
+    <div class="service-body">Grounded on Demianist philosophy and ethics. No therapy or medical advice — just inspiring conversations that serve as a mirror to bring clarity to your path and support your inner growth.</div>
   </div>
   <div class="service-card">
     <div class="service-title">🏛️ LEARN ABOUT DEMIANISM</div>
