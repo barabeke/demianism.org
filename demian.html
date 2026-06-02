@@ -29,11 +29,7 @@ body {
   color: var(--text-light);
   font-size: 17px;
   line-height: 1.65;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
-    radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
-    radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
-    #000000;
+  background: #06060d;
   min-height: 100vh;
 }
 
@@ -41,27 +37,32 @@ body {
 .page-wrap {
   max-width: 760px;
   margin: 0 auto;
-  padding: 20px 16px calc(var(--bottom-h) + 32px);
+  padding: 20px 16px 24px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── CHAT WINDOW ── */
 .chat-window {
   border: 2px solid #151536;
   border-radius: 16px;
-  overflow: visible;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: transparent;
+  flex: 1;
+  min-height: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
+    radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
+    radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
+    #000000;
 }
 
 /* ── STICKY HEADER ── */
 .chat-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
   background: #151536;
-  border-radius: 14px 14px 0 0;
-  padding: 9px 16px;
+  padding: 11px 18px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -107,12 +108,16 @@ body {
 
 /* ── MESSAGES ── */
 #chat {
-  padding: 20px 20px;
+  padding: 22px 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  overflow: visible;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  scrollbar-width: none;
 }
+#chat::-webkit-scrollbar { display: none; }
 
 .msg {
   display: flex;
@@ -171,19 +176,16 @@ body {
 
 /* Services container */
 .services-block {
-  border: 1px solid rgba(104,100,187,0.22);
   border-radius: 12px;
   overflow: hidden;
   margin: 6px 0;
-  background: rgba(53,50,126,0.08);
+  background: #151536;
+  padding: 6px 4px;
 }
 
 .service-card {
-  padding: 13px 16px;
-  border-bottom: 1px solid rgba(104,100,187,0.15);
+  padding: 12px 16px;
 }
-
-.service-card:last-child { border-bottom: none; }
 
 .service-card .service-title {
   font-family: 'Inter', sans-serif;
@@ -244,20 +246,14 @@ body {
 .typing span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes tp { 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.25)} }
 
-/* ── FIXED BOTTOM ── */
-.bottom-bar {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  z-index: 50;
-  padding: 10px 16px 14px;
-}
-
-.bottom-inner {
-  max-width: 760px;
-  margin: 0 auto;
+/* ── INPUT ZONE (inside chat window) ── */
+.input-zone {
+  background: #151536;
+  padding: 12px 16px 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .input-bar {
@@ -442,34 +438,32 @@ button#send svg { width: 17px; height: 17px; }
 
     <div id="chat"></div>
 
-  </div>
-</div>
-
-<div class="bottom-bar">
-  <div class="bottom-inner">
-    <div class="input-bar">
-      <textarea id="userInput" placeholder="Write your message here..." rows="1"></textarea>
-      <button id="send" onclick="sendMessage()" title="Send">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-      </button>
-    </div>
-    <div class="action-row">
-      <div class="msg-counter" id="msgCounter"></div>
-      <button class="action-btn" onclick="purchaseMantra()">✨ GET YOUR MANTRA (€2)</button>
-      <button class="action-btn" onclick="openCodeModal()">🎁 GIFT CODE</button>
-      <div class="credits-wrapper">
-        <button class="action-btn" onclick="toggleCreditsMenu()">⚡ RECHARGE ▾</button>
-        <div class="credits-menu" id="creditsMenu">
-          <div class="menu-header">
-            <img src="demianismlogo.png" alt="Demianism" class="menu-logo">
-            <div class="menu-desc">Demian is a pay-as-you-go genie.<br>No expiration date. Use whenever you need.<br><br>How many messages would you like to add?</div>
+    <div class="input-zone">
+      <div class="input-bar">
+        <textarea id="userInput" placeholder="Write your message here..." rows="1"></textarea>
+        <button id="send" onclick="sendMessage()" title="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        </button>
+      </div>
+      <div class="action-row">
+        <div class="msg-counter" id="msgCounter"></div>
+        <button class="action-btn" onclick="purchaseMantra()">✨ GET YOUR MANTRA (€2)</button>
+        <button class="action-btn" onclick="openCodeModal()">🎁 GIFT CODE</button>
+        <div class="credits-wrapper">
+          <button class="action-btn" onclick="toggleCreditsMenu()">⚡ RECHARGE ▾</button>
+          <div class="credits-menu" id="creditsMenu">
+            <div class="menu-header">
+              <img src="demianismlogo.png" alt="Demianism" class="menu-logo">
+              <div class="menu-desc">Demian is a pay-as-you-go genie.<br>No expiration date. Use whenever you need.<br><br>How many messages would you like to add?</div>
+            </div>
+            <a href="#" onclick="purchaseCredits('basic');return false;">Consult 50 <span class="price">€5</span></a>
+            <a href="#" onclick="purchaseCredits('regular');return false;">Consult 150 <span class="price">€10</span></a>
+            <a href="#" onclick="purchaseCredits('premium');return false;">Consult 400 <span class="price">€20</span></a>
           </div>
-          <a href="#" onclick="purchaseCredits('basic');return false;">Consult 50 <span class="price">€5</span></a>
-          <a href="#" onclick="purchaseCredits('regular');return false;">Consult 150 <span class="price">€10</span></a>
-          <a href="#" onclick="purchaseCredits('premium');return false;">Consult 400 <span class="price">€20</span></a>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -532,21 +526,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function sendOpeningMessage() {
   const chat = document.getElementById('chat');
+
+  // One-off centered logo marking the start of the conversation
+  const logoWrap = document.createElement('div');
+  logoWrap.style.cssText = 'display:flex;justify-content:center;margin-bottom:8px;';
+  const bigLogo = document.createElement('img');
+  bigLogo.src = 'demianismlogo.png';
+  bigLogo.alt = 'Demian';
+  bigLogo.style.cssText = 'width:72px;height:auto;';
+  logoWrap.appendChild(bigLogo);
+  chat.appendChild(logoWrap);
+
   const wrap = document.createElement('div');
   wrap.className = 'msg demian';
 
-  const logo = document.createElement('img');
-  logo.src = 'demianismlogo.png';
-  logo.alt = 'Demian';
-  logo.className = 'msg-logo';
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = 'Demian';
+  wrap.appendChild(label);
 
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   bubble.innerHTML = `
 <p>Greetings, seeker. I am Demian, the AI spiritual companion with a Demianist heart.</p>
-<p>I am here to help you find and <span class="semibold">FOLLOW YOUR CALL</span>, which according to the doctrine of <a href="https://demianism.org" target="_blank">Demianism</a> is the life purpose of each human being.</p>
-<p>I speak <span class="semibold">ALL LANGUAGES</span> 🌐 To switch, just message me in yours.</p>
-<p>Services I can offer:</p>
+<p>I am here to help you find and <span class="semibold">FOLLOW YOUR CALL</span>, which according to <a href="https://demianism.org" target="_blank">Demianism</a> is the life purpose of each human being.</p>
+<p>I speak <span class="semibold">ALL LANGUAGES</span> 🌐 To switch, just message me in your language.</p>
+<p>My services:</p>
 
 <div class="services-block">
   <div class="service-card">
@@ -555,25 +560,23 @@ function sendOpeningMessage() {
   </div>
   <div class="service-card">
     <div class="service-title">🕉️ YOUR PERSONAL MANTRA</div>
-    <div class="service-body">A powerful daily tool to help you follow your call in life and overcome your challenges. Crafted by Demian based on your conversation — 100% unique and tailored to you.<a href="#" onclick="purchaseMantra();return false;" class="service-cost">One-time cost: €2</a></div>
+    <div class="service-body">Crafted by Demian based on your conversation — 100% unique and tailored to you. A simple but powerful tool to help you overcome challenges and pursue your calling.<a href="#" onclick="purchaseMantra();return false;" class="service-cost">One-time cost: €2</a></div>
   </div>
   <div class="service-card">
-    <div class="service-title"><img src="triangle-indigo.svg" style="width:0.85em;height:0.85em;vertical-align:-0.05em;"> SPIRITUAL COMPANION</div>
-    <div class="service-body">Guidance and support based on Demianist philosophy. No therapy or medical advice — just inspiring conversations that can serve as a mirror to bring clarity to your path and inner growth.</div>
+    <div class="service-title"><img src="triangle-indigo.svg" style="height:1em;width:auto;vertical-align:-0.12em;"> SPIRITUAL COMPANION</div>
+    <div class="service-body">Guidance and support based on Demianism. No therapy or medical advice — just inspiring conversations that can serve as a mirror to bring clarity to your path and inner growth.</div>
   </div>
   <div class="service-card">
     <div class="service-title">🏛️ LEARN ABOUT DEMIANISM</div>
-    <div class="service-body">Discover its axioms, revolutionary metaphysics, ethics, and vision for society. Openly discuss anything that matters to you.</div>
+    <div class="service-body">Discover its 13 axioms, revolutionary metaphysics, ethics, and vision for society. Openly discuss anything that matters to you.</div>
   </div>
 </div>
 
-<p>Any doubt or concern? Just ask, I am here to help, with Demianist honesty.</p>
-<p>The first 15 messages are free and should be enough for you to assess if I can be helpful.</p>
-<p>I don't require the usual subscription. I am a pay-as-you-go genie: you rub the lamp/recharge your credit to get more interactions with me — without expiry date.</p>
+<p>The first 15 messages are free. Enough for you to assess if I can be helpful.</p>
+<p>No recurring subscription. I am a pay-as-you-go genie: you rub the lamp/recharge your credit to get more interactions with me — without expiry date.</p>
 <p>How can I help you today?</p>
 `;
 
-  wrap.appendChild(logo);
   wrap.appendChild(bubble);
   chat.appendChild(wrap);
   chat.scrollTop = 0;
@@ -759,26 +762,19 @@ function appendMessage(role, text) {
     .replace(/\[MANTRA_UNLOCKED\]/g, '')
     .trim();
 
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = role === 'demian' ? 'Demian' : 'You';
+  wrap.appendChild(label);
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
   if (role === 'demian') {
-    const logo = document.createElement('img');
-    logo.src = 'demianismlogo.png';
-    logo.alt = 'Demian';
-    logo.className = 'msg-logo';
-    wrap.appendChild(logo);
-    const bubble = document.createElement('div');
-    bubble.className = 'msg-bubble';
     bubble.innerHTML = marked.parse(cleanText);
-    wrap.appendChild(bubble);
   } else {
-    const label = document.createElement('div');
-    label.className = 'msg-label';
-    label.textContent = 'You';
-    wrap.appendChild(label);
-    const bubble = document.createElement('div');
-    bubble.className = 'msg-bubble';
     bubble.textContent = cleanText;
-    wrap.appendChild(bubble);
   }
+  wrap.appendChild(bubble);
 
   chat.appendChild(wrap);
   chat.scrollTop = chat.scrollHeight;
@@ -801,14 +797,13 @@ function showTyping() {
   const wrap = document.createElement('div');
   wrap.className = 'msg demian';
   wrap.id = 'typing-indicator';
-  const logo = document.createElement('img');
-  logo.src = 'demianismlogo.png';
-  logo.alt = 'Demian';
-  logo.className = 'msg-logo';
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = 'Demian';
   const typing = document.createElement('div');
   typing.className = 'typing';
   typing.innerHTML = '<span></span><span></span><span></span>';
-  wrap.appendChild(logo);
+  wrap.appendChild(label);
   wrap.appendChild(typing);
   chat.appendChild(wrap);
   chat.scrollTop = chat.scrollHeight;
