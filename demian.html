@@ -586,6 +586,22 @@ let paidMessages = 0;
 marked.setOptions({ breaks: true, gfm: true });
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  function alignInputZone() {
+    const chatWindow = document.querySelector('.chat-window');
+    const inputZone = document.querySelector('.input-zone');
+    if (!chatWindow || !inputZone) return;
+    const rect = chatWindow.getBoundingClientRect();
+    inputZone.style.left = rect.left + 'px';
+    inputZone.style.width = rect.width + 'px';
+    // Remove bottom-inner max-width constraint — let it fill the zone
+    const inner = inputZone.querySelector('.bottom-inner');
+    if (inner) { inner.style.maxWidth = '100%'; inner.style.padding = '0'; }
+  }
+
+  alignInputZone();
+  window.addEventListener('resize', alignInputZone);
+
   const ta = document.getElementById('userInput');
   const sendBtn = document.getElementById('send');
 
