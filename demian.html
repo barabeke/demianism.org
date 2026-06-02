@@ -37,7 +37,7 @@ body {
 .page-wrap {
   max-width: 760px;
   margin: 0 auto;
-  padding: 20px 16px 0;
+  padding: 20px 16px 110px;
 }
 
 /* ── CHAT WINDOW ── */
@@ -238,15 +238,24 @@ body {
 
 /* ── INPUT ZONE (inside chat window) ── */
 .input-zone {
-  position: sticky;
+  position: fixed;
   bottom: 0;
+  left: 0;
+  right: 0;
   background: #151536;
   padding: 12px 16px 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  flex-shrink: 0;
-  z-index: 10;
+  z-index: 50;
+}
+
+.input-zone .bottom-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .input-bar {
@@ -492,8 +501,12 @@ button#send svg { width: 17px; height: 17px; }
 
     <div id="chat"></div>
 
-    <div class="input-zone">
-      <div class="input-bar">
+  </div><!-- end chat-window -->
+</div><!-- end page-wrap -->
+
+<div class="input-zone">
+  <div class="bottom-inner">
+    <div class="input-bar">
         <textarea id="userInput" placeholder="Write your message here..." rows="1"></textarea>
         <button id="send" onclick="sendMessage()" title="Send">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
