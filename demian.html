@@ -37,7 +37,7 @@ body {
 .page-wrap {
   max-width: 760px;
   margin: 0 auto;
-  padding: 20px 16px 24px;
+  padding: 20px 16px 0;
 }
 
 /* ── CHAT WINDOW ── */
@@ -238,12 +238,15 @@ body {
 
 /* ── INPUT ZONE (inside chat window) ── */
 .input-zone {
+  position: sticky;
+  bottom: 0;
   background: #151536;
   padding: 12px 16px 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   flex-shrink: 0;
+  z-index: 10;
 }
 
 .input-bar {
@@ -361,7 +364,7 @@ button#send svg { width: 17px; height: 17px; }
 .credits-menu.open { display: block; }
 
 .credits-menu .menu-header {
-  padding: 16px 20px 10px;
+  padding: 20px 20px 6px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -369,7 +372,7 @@ button#send svg { width: 17px; height: 17px; }
   text-align: center;
 }
 
-.credits-menu .menu-logo { width: 52px; height: auto; opacity: 0.9; margin-bottom: 6px; }
+.credits-menu .menu-logo { width: 68px; height: auto; opacity: 1.0; margin-bottom: 6px; }
 
 .credits-menu .menu-title {
   font-family: 'Inter', sans-serif;
@@ -393,7 +396,8 @@ button#send svg { width: 17px; height: 17px; }
   letter-spacing: 1.5px;
   color: #ffffff;
   text-transform: uppercase;
-  margin-top: 10px;
+  margin-top: 12px;
+  margin-bottom: -2px;
 }
 
 .credits-menu .pkg-list {
@@ -461,15 +465,15 @@ button#send svg { width: 17px; height: 17px; }
 .modal-overlay.open { display:flex; }
 .modal { background:#08051e; border:1px solid rgba(104,100,187,0.4); border-radius:18px; padding:2.5rem; width:100%; max-width:420px; display:flex; flex-direction:column; gap:1.5rem; box-shadow:0 0 50px rgba(104,100,187,0.25); }
 .modal h3 { font-family:'Inter',sans-serif; font-size:16px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--text-light); text-align:center; }
-.modal p { font-family:'Inter',sans-serif; font-size:13px; color:var(--purple-light); line-height:1.6; text-align:center; }
+.modal p { font-family:'Source Serif 4',serif; font-size:13px; color:rgba(255,255,255,0.65); line-height:1.5; text-align:center; }
 .modal input { background:rgba(0,0,0,0.5); border:1px solid rgba(104,100,187,0.3); border-radius:10px; color:var(--text-light); font-family:'Source Serif 4',serif; font-size:17px; padding:14px 16px; outline:none; letter-spacing:2px; width:100%; text-align:center; }
 .modal input:focus { border-color:var(--purple-mid); }
 .modal-btns { display:flex; gap:10px; }
 .modal-btns button { flex:1; font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:12px; border-radius:10px; cursor:pointer; transition:all 0.2s; border:1px solid; }
 .modal-confirm { background:var(--purple-deep); border-color:rgba(104,100,187,0.4); color:var(--text-light); }
 .modal-confirm:hover { background:var(--purple-mid); box-shadow:0 0 16px var(--glow); }
-.modal-cancel { background:transparent; border-color:rgba(104,100,187,0.2); color:rgba(104,100,187,0.6); }
-.modal-cancel:hover { background:rgba(104,100,187,0.08); }
+.modal-cancel { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.2); color:rgba(255,255,255,0.5); }
+.modal-cancel:hover { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.35); color:rgba(255,255,255,0.7); }
 .modal-error { font-family:'Inter',sans-serif; font-size:13px; color:#e07070; min-height:16px; text-align:center; }
 </style>
 </head>
@@ -542,7 +546,7 @@ button#send svg { width: 17px; height: 17px; }
 <div class="modal-overlay" id="codeModal">
   <div class="modal">
     <h3>Redeem your gift code</h3>
-    <p>Enter the code you received to unlock your session with Demian.</p>
+    <p>Paste or enter the code you received to unlock your session with Demian.</p>
     <input type="text" id="codeInput" placeholder="XXXX-XXXX-XXXX" autocomplete="off" />
     <div class="modal-error" id="codeError"></div>
     <div class="modal-btns">
