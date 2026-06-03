@@ -241,21 +241,21 @@ body {
 .input-zone {
   position: fixed;
   bottom: 0;
+  left: 0;
+  right: 0;
   background: #06060d;
-  padding: 14px 0 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  padding: 0 0 14px;
   z-index: 50;
 }
 
 .input-zone .bottom-inner {
-  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 14px 16px 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
   border-top: 1px solid rgba(53,50,126,0.4);
-  padding-top: 14px;
 }
 
 .input-bar {
@@ -515,7 +515,7 @@ button#send svg { width: 17px; height: 17px; }
         </button>
       </div>
       <div class="action-row">
-        <a href="/privacy.html" target="_blank" style="font-family:'Inter',sans-serif;font-size:10px;letter-spacing:0.8px;color:rgba(162,158,241,0.38);text-decoration:none;margin-right:auto;white-space:nowrap;">Privacy</a>
+        <a href="/privacy.html" target="_blank" style="font-family:'Inter',sans-serif;font-size:10px;letter-spacing:0.8px;color:rgba(162,158,241,0.3);text-decoration:none;margin-right:auto;white-space:nowrap;">Privacy</a>
         <div class="msg-counter" id="msgCounter"></div>
         <button class="action-btn" onclick="purchaseMantra()"><img src="spiral-indigo.svg" style="height:0.9em;width:auto;vertical-align:-0.08em;margin-right:4px;filter:brightness(2);"> GET YOUR MANTRA (€2)</button>
         <button class="action-btn" onclick="openCodeModal()">🎁 GIFT CODE</button>
@@ -587,17 +587,6 @@ marked.setOptions({ breaks: true, gfm: true });
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  function alignInputZone() {
-    const chatWindow = document.querySelector('.chat-window');
-    const inputZone = document.querySelector('.input-zone');
-    if (!chatWindow || !inputZone) return;
-    const rect = chatWindow.getBoundingClientRect();
-    inputZone.style.left = rect.left + 'px';
-    inputZone.style.width = rect.width + 'px';
-  }
-
-  alignInputZone();
-  window.addEventListener('resize', alignInputZone);
 
   const ta = document.getElementById('userInput');
   const sendBtn = document.getElementById('send');
