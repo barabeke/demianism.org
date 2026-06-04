@@ -21,6 +21,10 @@
   --placeholder: #78778d;
   --glow: rgba(104,100,187,0.55);
   --bottom-h: 90px;
+  --sidebar-w: 280px;
+  --sidebar-collapsed: 56px;
+  --sidebar-bg: #0a0820;
+  --topbar-h: 52px;
 }
 
 body {
@@ -360,16 +364,18 @@ button#send svg { width: 17px; height: 17px; }
 
 .credits-menu {
   display: none;
-  position: absolute;
-  bottom: 120%;
-  right: 0;
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
   background: #0a0820;
   border: 1px solid rgba(104,100,187,0.4);
   border-radius: 14px;
-  z-index: 100;
+  z-index: 300;
   width: 300px;
   overflow: hidden;
   box-shadow: 0 0 40px rgba(104,100,187,0.25);
+  pointer-events: auto;
 }
 
 .credits-menu.open { display: block; }
@@ -486,76 +492,437 @@ button#send svg { width: 17px; height: 17px; }
 .modal-cancel { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.2); color:rgba(255,255,255,0.5); }
 .modal-cancel:hover { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.35); color:rgba(255,255,255,0.7); }
 .modal-error { font-family:'Inter',sans-serif; font-size:13px; color:#e07070; min-height:16px; text-align:center; }
+
+/* ═══════════════════════════════════════════════════════
+   SIDEBAR + REVAMP
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Layout shell ── */
+.app-shell { display: flex; min-height: 100vh; }
+
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-collapsed);
+  background: var(--sidebar-bg);
+  border-right: 1px solid rgba(104,100,187,0.12);
+  display: flex;
+  flex-direction: column;
+  z-index: 120;
+  transition: width 0.22s ease;
+  overflow: hidden;
+}
+
+.sidebar.open { width: var(--sidebar-w); }
+
+/* ── Sidebar header (logo zone) ── */
+.sb-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px;
+  height: var(--topbar-h);
+  flex-shrink: 0;
+  position: relative;
+  cursor: pointer;
+}
+
+.sb-logo-tri {
+  width: 26px; height: 26px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.sb-logo-tri svg { width: 22px; height: 22px; display: block; }
+
+/* collapse/open icon hidden by default, shown on hover (collapsed) or always (open) */
+.sb-collapse-icon {
+  width: 22px; height: 22px;
+  flex-shrink: 0;
+  display: none;
+  align-items: center; justify-content: center;
+  color: var(--purple-light);
+}
+.sb-collapse-icon svg { width: 20px; height: 20px; }
+
+/* When collapsed and hovering the sidebar, swap triangle → open icon */
+.sidebar:not(.open):hover .sb-logo-tri { display: none; }
+.sidebar:not(.open):hover .sb-collapse-icon { display: flex; }
+
+.sb-wordmark {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  color: #fff;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  flex: 1;
+}
+.sidebar.open .sb-wordmark { opacity: 1; }
+
+/* In open state, collapse icon sits at the right */
+.sidebar.open .sb-collapse-icon { display: flex; margin-left: auto; }
+.sidebar.open .sb-logo-tri { display: flex; }
+
+/* ── Nav items ── */
+.sb-nav { display: flex; flex-direction: column; padding: 6px 0; flex: 0 0 auto; }
+.sb-bottom { margin-top: auto; padding: 6px 0 10px; display: flex; flex-direction: column; }
+
+.sb-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: var(--text-light);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  position: relative;
+  text-decoration: none;
+  transition: background 0.15s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+.sb-item:hover { background: rgba(104,100,187,0.12); }
+
+.sb-icon {
+  width: 24px; height: 24px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--purple-light);
+}
+.sb-icon svg { width: 21px; height: 21px; }
+
+.sb-label {
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none;
+}
+.sidebar.open .sb-label { opacity: 1; pointer-events: auto; }
+
+/* ── Tooltip (collapsed state, on hover) ── */
+.sb-tooltip {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1b1840;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  z-index: 200;
+}
+.sidebar:not(.open) .sb-head:hover .sb-tooltip,
+.sidebar:not(.open) .sb-item:hover .sb-tooltip { opacity: 1; }
+
+/* ── Section headers (only visible when open) ── */
+.sb-section {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(162,158,241,0.45);
+  padding: 14px 16px 6px;
+  opacity: 0;
+  transition: opacity 0.18s;
+  white-space: nowrap;
+}
+.sidebar.open .sb-section { opacity: 1; }
+.sidebar:not(.open) .sb-section { height: 0; padding: 0; overflow: hidden; }
+
+/* Recent sessions list */
+.sb-sessions { display: flex; flex-direction: column; overflow-y: auto; }
+.sidebar:not(.open) .sb-sessions { display: none; }
+.sb-session {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-light);
+  padding: 8px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.15s;
+}
+.sb-session:hover { background: rgba(104,100,187,0.12); }
+.sb-session.active { background: rgba(104,100,187,0.18); color: #fff; }
+
+/* ── Messages-remaining indicator ── */
+.sb-remaining {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+}
+.sb-remaining .rem-num {
+  font-size: 22px; font-weight: 700; color: var(--purple-light);
+  flex-shrink: 0; min-width: 24px; text-align: center;
+}
+.sb-remaining .rem-txt {
+  font-size: 14px; font-weight: 500; color: var(--purple-light);
+  opacity: 0; transition: opacity 0.18s;
+}
+.sidebar.open .sb-remaining .rem-txt { opacity: 1; }
+
+/* ── Account block ── */
+.sb-account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(104,100,187,0.12);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.sb-account:hover { background: rgba(104,100,187,0.1); }
+.sb-avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--purple-deep);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', sans-serif; font-weight: 700; font-size: 14px;
+  flex-shrink: 0;
+}
+.sb-account-info { display: flex; flex-direction: column; opacity: 0; transition: opacity 0.18s; overflow: hidden; }
+.sidebar.open .sb-account-info { opacity: 1; }
+.sb-account-title { font-family:'Inter',sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); }
+.sb-account-sub { font-family:'Inter',sans-serif; font-size: 12px; color: var(--placeholder); overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
+
+/* ── Main content area shifts with sidebar ── */
+.main-area {
+  flex: 1;
+  margin-left: var(--sidebar-collapsed);
+  transition: margin-left 0.22s ease;
+  min-height: 100vh;
+}
+/* main does NOT shift when sidebar opens (overlay style on open) - keeps chat centered */
+
+/* ── Mobile top bar (hidden on desktop) ── */
+.topbar { display: none; }
+
+/* ── Overlay for mobile drawer ── */
+.sb-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 110;
+}
+.sb-overlay.show { display: block; }
+
+/* ═══════════ MOBILE ═══════════ */
+@media (max-width: 720px) {
+  .sidebar {
+    width: var(--sidebar-w);
+    transform: translateX(-100%);
+    transition: transform 0.24s ease;
+  }
+  .sidebar.open { transform: translateX(0); width: var(--sidebar-w); }
+  .sidebar .sb-label, .sidebar .sb-section, .sidebar .sb-wordmark,
+  .sidebar .rem-txt, .sidebar .sb-account-info { opacity: 1; }
+  .sidebar .sb-sessions { display: flex; }
+
+  .main-area { margin-left: 0; padding-top: var(--topbar-h); }
+
+  .topbar {
+    display: flex;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--topbar-h);
+    background: #151536;
+    align-items: center;
+    padding: 0 14px;
+    z-index: 100;
+  }
+  .topbar-burger {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--purple-light);
+    cursor: pointer; background: none; border: none;
+    position: absolute; left: 12px;
+  }
+  .topbar-burger svg { width: 24px; height: 24px; }
+  .topbar-center {
+    margin: 0 auto;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .topbar-center svg { width: 20px; height: 20px; }
+  .topbar-center .tb-word {
+    font-family:'Inter',sans-serif; font-weight: 600; font-size: 18px; color: #fff;
+  }
+}
 </style>
 </head>
 <body>
 
-<div class="page-wrap">
-  <div class="chat-window">
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-head" id="sbHead" onclick="toggleSidebar()">
+    <div class="sb-logo-tri">
+      <svg viewBox="0 0 28 25" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 26,23 2,23" fill="#6864bb"/></svg>
+    </div>
+    <div class="sb-collapse-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+    </div>
+    <div class="sb-wordmark">Demian</div>
+    <div class="sb-tooltip">Open sidebar</div>
+  </div>
 
-    <div class="chat-header">
-      <div class="chat-header-title">Consult with Demian</div>
-      <div class="chat-status-wrap">
-        <div class="online-dot" id="onlineDot"></div>
-        <div class="chat-status" id="statusText">Online</div>
+  <nav class="sb-nav">
+    <button class="sb-item" onclick="newChat()">
+      <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
+      <span class="sb-label">New Chat</span>
+      <span class="sb-tooltip">New Chat</span>
+    </button>
+    <a class="sb-item" href="https://demianism.org" target="_blank">
+      <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+      <span class="sb-label">About Demianism</span>
+      <span class="sb-tooltip">About Demianism</span>
+    </a>
+  </nav>
+
+  <!-- RECENT sessions (only when logged in) -->
+  <div id="sbRecentWrap" style="display:none; flex-direction:column; overflow:hidden;">
+    <div class="sb-section">Recent</div>
+    <div class="sb-sessions" id="sbSessions"></div>
+  </div>
+
+  <!-- RESOURCES -->
+  <div class="sb-section">Resources</div>
+  <nav class="sb-nav">
+    <a class="sb-item" href="#" target="_blank">
+      <span class="sb-icon">📖</span><span class="sb-label">Demianism (book)</span><span class="sb-tooltip">Demianism (book)</span>
+    </a>
+    <a class="sb-item" href="#" target="_blank">
+      <span class="sb-icon">📄</span><span class="sb-label">The Manifesto</span><span class="sb-tooltip">The Manifesto</span>
+    </a>
+    <a class="sb-item" href="#" target="_blank">
+      <span class="sb-icon">✍️</span><span class="sb-label">The Odd Gospel</span><span class="sb-tooltip">The Odd Gospel</span>
+    </a>
+    <a class="sb-item" href="#" target="_blank">
+      <span class="sb-icon">🎨</span><span class="sb-label">Barabeke (art + NFT)</span><span class="sb-tooltip">Barabeke (art + NFT)</span>
+    </a>
+    <a class="sb-item" href="#" target="_blank">
+      <span class="sb-icon">📚</span><span class="sb-label">Novels</span><span class="sb-tooltip">Novels</span>
+    </a>
+  </nav>
+
+  <!-- DONATE -->
+  <div class="sb-section">Donate</div>
+  <nav class="sb-nav">
+    <a class="sb-item" href="#" target="_blank">
+      <span class="sb-icon">₿</span><span class="sb-label">Crypto</span><span class="sb-tooltip">Crypto</span>
+    </a>
+    <a class="sb-item" href="#" target="_blank">
+      <span class="sb-icon">💳</span><span class="sb-label">Card</span><span class="sb-tooltip">Card</span>
+    </a>
+  </nav>
+
+  <!-- BOTTOM: remaining + recharge + mantra + account -->
+  <div class="sb-bottom">
+    <div class="sb-remaining" id="sbRemaining">
+      <span class="rem-num" id="remNum">15</span>
+      <span class="rem-txt">Msg remaining</span>
+    </div>
+    <button class="sb-item" onclick="toggleCreditsMenu()">
+      <span class="sb-icon"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+      <span class="sb-label">Recharge</span>
+      <span class="sb-tooltip">Recharge</span>
+    </button>
+    <button class="sb-item" id="buyMantraItem" onclick="purchaseMantra()">
+      <span class="sb-icon"><img src="spiral-indigo.svg" style="width:20px;height:20px;"></span>
+      <span class="sb-label">Buy Mantra</span>
+      <span class="sb-tooltip">Buy Mantra</span>
+    </button>
+    <a class="sb-item" href="/privacy.html" target="_blank">
+      <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      <span class="sb-label">Privacy</span>
+      <span class="sb-tooltip">Privacy</span>
+    </a>
+    <div class="sb-account" id="sbAccount" onclick="handleAccountClick()">
+      <div class="sb-avatar" id="sbAvatar">?</div>
+      <div class="sb-account-info">
+        <div class="sb-account-title" id="sbAccountTitle">Sign in</div>
+        <div class="sb-account-sub" id="sbAccountSub">Save your conversations</div>
       </div>
     </div>
+  </div>
+</aside>
 
-    <div id="chat"></div>
+<div class="sb-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
 
-  </div><!-- end chat-window -->
-</div><!-- end page-wrap -->
+<!-- ═══ MOBILE TOP BAR ═══ -->
+<div class="topbar">
+  <button class="topbar-burger" onclick="openSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="topbar-center">
+    <svg viewBox="0 0 28 25" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 26,23 2,23" fill="#6864bb"/></svg>
+    <span class="tb-word">Demian</span>
+  </div>
+</div>
+
+<!-- ═══ MAIN AREA ═══ -->
+<div class="main-area">
+  <div class="page-wrap">
+    <div class="chat-window">
+      <div id="chat"></div>
+    </div>
+  </div>
+</div>
 
 <div class="input-zone">
   <div class="bottom-inner">
     <div class="input-bar">
-        <textarea id="userInput" placeholder="Write your message here..." rows="1"></textarea>
-        <button id="send" onclick="sendMessage()" title="Send">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-        </button>
-      </div>
-      <div class="action-row">
-        <a href="/privacy.html" target="_blank" style="font-family:'Inter',sans-serif;font-size:10px;letter-spacing:0.8px;color:rgba(162,158,241,0.3);text-decoration:none;margin-right:auto;white-space:nowrap;">Privacy</a>
-        <div class="msg-counter" id="msgCounter"></div>
-        <button class="action-btn" onclick="purchaseMantra()"><img src="spiral-indigo.svg" style="height:0.9em;width:auto;vertical-align:-0.08em;margin-right:4px;filter:brightness(2);"> GET YOUR MANTRA (€2)</button>
-        <button class="action-btn" onclick="openCodeModal()">🎁 GIFT CODE</button>
-        <div class="credits-wrapper">
-          <button class="action-btn" onclick="toggleCreditsMenu()">⚡ RECHARGE ▾</button>
-          <div class="credits-menu" id="creditsMenu">
-            <div class="menu-header">
-              <img src="demianismlogo.png" alt="Demianism" class="menu-logo">
-              <div class="menu-title">Pay only for what you use</div>
-              <div class="menu-sub">No recurring fees. No expiration date.<br>Use whenever you need.</div>
-              <div class="menu-choose">Choose your package</div>
-            </div>
-            <div class="pkg-list">
-              <a class="pkg-btn" href="#" onclick="purchaseCredits('basic');return false;">
-                <div class="pkg-left">
-                  <div class="pkg-name">Consult 50</div>
-                  <div class="pkg-desc">50 interactions with Demian</div>
-                </div>
-                <div class="pkg-price">€5</div>
-              </a>
-              <a class="pkg-btn" href="#" onclick="purchaseCredits('regular');return false;">
-                <div class="pkg-left">
-                  <div class="pkg-name">Consult 150</div>
-                  <div class="pkg-desc">150 interactions with Demian</div>
-                </div>
-                <div class="pkg-price">€10</div>
-              </a>
-              <a class="pkg-btn" href="#" onclick="purchaseCredits('premium');return false;">
-                <div class="pkg-left">
-                  <div class="pkg-name">Consult 400</div>
-                  <div class="pkg-desc">400 interactions with Demian</div>
-                </div>
-                <div class="pkg-price">€20</div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <textarea id="userInput" placeholder="Message Demian" rows="1"></textarea>
+      <button id="send" onclick="sendMessage()" title="Send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+      </button>
     </div>
+  </div>
+</div>
 
+<!-- Hidden credits menu (reused) -->
+<div class="credits-wrapper" style="position:fixed; bottom:0; left:0; z-index:0; opacity:0; pointer-events:none;">
+  <div class="credits-menu" id="creditsMenu">
+    <div class="menu-header">
+      <img src="demianismlogo.png" alt="Demianism" class="menu-logo">
+      <div class="menu-title">Pay only for what you use</div>
+      <div class="menu-sub">No recurring fees. No expiration date.<br>Use whenever you need.</div>
+      <div class="menu-choose">Choose your package</div>
+    </div>
+    <div class="pkg-list">
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('basic');return false;">
+        <div class="pkg-left"><div class="pkg-name">Consult 50</div><div class="pkg-desc">50 interactions with Demian</div></div>
+        <div class="pkg-price">€5</div>
+      </a>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('regular');return false;">
+        <div class="pkg-left"><div class="pkg-name">Consult 150</div><div class="pkg-desc">150 interactions with Demian</div></div>
+        <div class="pkg-price">€10</div>
+      </a>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('premium');return false;">
+        <div class="pkg-left"><div class="pkg-name">Consult 400</div><div class="pkg-desc">400 interactions with Demian</div></div>
+        <div class="pkg-price">€20</div>
+      </a>
+    </div>
   </div>
 </div>
 
@@ -572,6 +939,20 @@ button#send svg { width: 17px; height: 17px; }
   </div>
 </div>
 
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <h3 id="loginTitle">Sign in to Demian</h3>
+    <p id="loginDesc">Enter your email and we'll send you a secure access link. No password needed.</p>
+    <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email" style="letter-spacing:0.5px;" />
+    <div class="modal-error" id="loginError"></div>
+    <div class="modal-btns">
+      <button class="modal-confirm" onclick="submitLogin()">Send link</button>
+      <button class="modal-cancel" onclick="closeLoginModal()">Cancel</button>
+    </div>
+    <p style="font-size:11px;color:rgba(255,255,255,0.4);">By continuing you accept our <a href="/privacy.html" target="_blank" style="color:var(--purple-light);">Privacy Policy</a>.</p>
+  </div>
+</div>
+
 <script>
 const WORKER_URL = 'https://demian-backend.barabeke.workers.dev';
 const FREE_MESSAGES = 15;
@@ -583,10 +964,13 @@ let isPaid = false;
 let mantraUnlocked = false;
 let paidMessages = 0;
 
+// Auth state
+let authToken = localStorage.getItem('demian_auth') || null;
+let userEmail = null;
+
 marked.setOptions({ breaks: true, gfm: true });
 
 document.addEventListener('DOMContentLoaded', () => {
-
 
   const ta = document.getElementById('userInput');
   const sendBtn = document.getElementById('send');
@@ -602,12 +986,22 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.credits-wrapper')) {
+    if (!e.target.closest('.credits-wrapper') && !e.target.closest('[onclick*="toggleCreditsMenu"]')) {
       document.getElementById('creditsMenu').classList.remove('open');
     }
   });
 
   const urlParams = new URLSearchParams(window.location.search);
+
+  // Magic link verification
+  const authParam = urlParams.get('auth');
+  if (authParam) {
+    verifyMagicLink(authParam);
+    window.history.replaceState({}, '', window.location.pathname);
+  } else if (authToken) {
+    loadUser();
+  }
+
   const purchased = urlParams.get('purchased');
   if (purchased) {
     handlePurchaseReturn(purchased);
@@ -616,28 +1010,145 @@ document.addEventListener('DOMContentLoaded', () => {
 
   sendOpeningMessage();
   updateCounter();
+  updateAccountUI();
 });
+
+/* ═══ SIDEBAR CONTROLS ═══ */
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  if (window.innerWidth <= 720) { openSidebar(); return; }
+  sb.classList.toggle('open');
+}
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  if (window.innerWidth <= 720) document.getElementById('sbOverlay').classList.add('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbOverlay').classList.remove('show');
+}
+
+/* ═══ AUTH ═══ */
+async function submitLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const errEl = document.getElementById('loginError');
+  const btn = document.querySelector('#loginModal .modal-confirm');
+  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email.'; return; }
+  errEl.textContent = '';
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  try {
+    const res = await fetch(WORKER_URL + '/auth/request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      document.getElementById('loginTitle').textContent = 'Check your inbox';
+      document.getElementById('loginDesc').textContent = 'We sent a secure access link to ' + email + '. It expires in 15 minutes.';
+      document.querySelector('#loginModal .modal-btns').style.display = 'none';
+      document.getElementById('loginEmail').style.display = 'none';
+    } else {
+      errEl.textContent = 'Something went wrong. Please try again.';
+      btn.textContent = 'Send link'; btn.disabled = false;
+    }
+  } catch (err) {
+    errEl.textContent = 'Connection error. Please try again.';
+    btn.textContent = 'Send link'; btn.disabled = false;
+  }
+}
+
+async function verifyMagicLink(token) {
+  try {
+    const res = await fetch(WORKER_URL + '/auth/verify?token=' + encodeURIComponent(token));
+    const data = await res.json();
+    if (data.ok) {
+      authToken = data.authToken;
+      userEmail = data.email;
+      localStorage.setItem('demian_auth', authToken);
+      updateAccountUI();
+    }
+  } catch (err) { console.error('verify failed', err); }
+}
+
+async function loadUser() {
+  try {
+    const res = await fetch(WORKER_URL + '/auth/me', { headers: { 'X-Auth-Token': authToken } });
+    const data = await res.json();
+    if (data.ok) {
+      userEmail = data.email;
+      updateAccountUI();
+    } else {
+      // invalid/expired session
+      authToken = null;
+      localStorage.removeItem('demian_auth');
+      updateAccountUI();
+    }
+  } catch (err) { console.error('loadUser failed', err); }
+}
+
+function handleAccountClick() {
+  if (userEmail) {
+    // logged in — for now, offer sign out
+    if (confirm('Sign out of Demian?')) signOut();
+  } else {
+    openLoginModal();
+  }
+}
+
+function signOut() {
+  authToken = null;
+  userEmail = null;
+  localStorage.removeItem('demian_auth');
+  updateAccountUI();
+}
+
+function updateAccountUI() {
+  const avatar = document.getElementById('sbAvatar');
+  const title = document.getElementById('sbAccountTitle');
+  const sub = document.getElementById('sbAccountSub');
+  const recentWrap = document.getElementById('sbRecentWrap');
+  if (userEmail) {
+    avatar.textContent = userEmail.charAt(0).toUpperCase();
+    title.textContent = 'Your Account';
+    sub.textContent = userEmail;
+    recentWrap.style.display = 'flex';
+  } else {
+    avatar.textContent = '?';
+    title.textContent = 'Sign in';
+    sub.textContent = 'Save your conversations';
+    recentWrap.style.display = 'none';
+  }
+}
+
+function openLoginModal() {
+  document.getElementById('loginModal').classList.add('open');
+  setTimeout(() => document.getElementById('loginEmail').focus(), 100);
+}
+function closeLoginModal() {
+  document.getElementById('loginModal').classList.remove('open');
+  document.getElementById('loginError').textContent = '';
+}
+
+function newChat() {
+  if (!isPaid && messageCount >= FREE_MESSAGES) {
+    toggleCreditsMenu();
+    return;
+  }
+  messages = [];
+  messageCount = 0;
+  document.getElementById('chat').innerHTML = '';
+  sendOpeningMessage();
+  updateCounter();
+  if (window.innerWidth <= 720) closeSidebar();
+}
 
 function sendOpeningMessage() {
   const chat = document.getElementById('chat');
 
-  // One-off centered logo marking the start of the conversation
-  const logoWrap = document.createElement('div');
-  logoWrap.style.cssText = 'display:flex;justify-content:center;margin-bottom:2px;';
-  const bigLogo = document.createElement('img');
-  bigLogo.src = 'demianismlogo.png';
-  bigLogo.alt = 'Demian';
-  bigLogo.style.cssText = 'width:72px;height:auto;';
-  logoWrap.appendChild(bigLogo);
-  chat.appendChild(logoWrap);
-
   const wrap = document.createElement('div');
   wrap.className = 'msg demian';
-
-  const label = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = 'Demian';
-  wrap.appendChild(label);
 
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
@@ -745,13 +1256,22 @@ function handleSessionComplete(reply) {
 }
 
 function updateCounter() {
-  const el = document.getElementById('msgCounter');
+  const remNum = document.getElementById('remNum');
+  const remTxt = document.querySelector('#sbRemaining .rem-txt');
+  const buyMantra = document.getElementById('buyMantraItem');
+
+  let remaining;
   if (isPaid) {
-    el.textContent = paidMessages > 0 ? paidMessages + ' messages remaining' : '';
-    return;
+    remaining = paidMessages;
+  } else {
+    remaining = FREE_MESSAGES - messageCount;
   }
-  const remaining = FREE_MESSAGES - messageCount;
-  el.textContent = remaining > 0 ? remaining + ' messages remaining' : '';
+  if (remaining < 0) remaining = 0;
+  remNum.textContent = remaining;
+  remTxt.textContent = remaining === 1 ? 'Msg remaining' : 'Msg remaining';
+
+  // Buy Mantra only visible to non-paying users (free, or registered without purchase)
+  if (buyMantra) buyMantra.style.display = isPaid ? 'none' : '';
 }
 
 function setStatus(online) {
@@ -857,11 +1377,6 @@ function appendMessage(role, text) {
     .replace(/\[MANTRA_UNLOCKED\]/g, '')
     .trim();
 
-  const label = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = role === 'demian' ? 'Demian' : 'You';
-  wrap.appendChild(label);
-
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   if (role === 'demian') {
@@ -892,13 +1407,9 @@ function showTyping() {
   const wrap = document.createElement('div');
   wrap.className = 'msg demian';
   wrap.id = 'typing-indicator';
-  const label = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = 'Demian';
   const typing = document.createElement('div');
   typing.className = 'typing';
   typing.innerHTML = '<span></span><span></span><span></span>';
-  wrap.appendChild(label);
   wrap.appendChild(typing);
   chat.appendChild(wrap);
   chat.scrollTop = chat.scrollHeight;
