@@ -1103,16 +1103,19 @@ let messages = [];
 let isLoading = false;
 let messageCount = 0;
 let isPaid = false;
+let canNewChat = false;
 let mantraUnlocked = false;
-let paidMessages = 0;
+let messagesBalance = 0;
 
-// Auth state
+// Auth + session state
 let authToken = localStorage.getItem('demian_auth') || null;
 let userEmail = null;
+let currentSessionId = localStorage.getItem('demian_session') || null;
+let userTier = null;
 
 marked.setOptions({ breaks: true, gfm: true });
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
   const ta = document.getElementById('userInput');
   const sendBtn = document.getElementById('send');
@@ -1144,10 +1147,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Magic link verification
   const authParam = urlParams.get('auth');
   if (authParam) {
-    verifyMagicLink(authParam);
+    await verifyMagicLink(authParam);
     window.history.replaceState({}, '', window.location.pathname);
   } else if (authToken) {
-    loadUser();
+    await loadUser();
   }
 
   const purchased = urlParams.get('purchased');
@@ -1156,7 +1159,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.history.replaceState({}, '', window.location.pathname);
   }
 
-  sendOpeningMessage();
+  // Try to restore previous session
+  await restoreSession();
+
   updateCounter();
   updateAccountUI();
 });
@@ -1214,8 +1219,14 @@ async function verifyMagicLink(token) {
     if (data.ok) {
       authToken = data.authToken;
       userEmail = data.email;
+      messagesBalance = data.messagesBalance || 0;
+      mantraUnlocked = data.mantraUnlocked || false;
+      canNewChat = data.canNewChat || false;
+      isPaid = messagesBalance > 0 || mantraUnlocked;
       localStorage.setItem('demian_auth', authToken);
       updateAccountUI();
+      updateCounter();
+      await loadSessionList();
     }
   } catch (err) { console.error('verify failed', err); }
 }
@@ -1226,9 +1237,15 @@ async function loadUser() {
     const data = await res.json();
     if (data.ok) {
       userEmail = data.email;
+      messagesBalance = data.messagesBalance || 0;
+      mantraUnlocked = data.mantraUnlocked || false;
+      canNewChat = data.canNewChat || false;
+      userTier = data.tier || null;
+      isPaid = messagesBalance > 0 || mantraUnlocked;
       updateAccountUI();
+      updateCounter();
+      await loadSessionList();
     } else {
-      // invalid/expired session
       authToken = null;
       localStorage.removeItem('demian_auth');
       updateAccountUI();
@@ -1246,10 +1263,22 @@ function handleAccountClick() {
 }
 
 function signOut() {
+  if (authToken) {
+    fetch(WORKER_URL + '/auth/logout', { method: 'POST', headers: { 'X-Auth-Token': authToken } }).catch(() => {});
+  }
   authToken = null;
   userEmail = null;
+  messagesBalance = 0;
+  mantraUnlocked = false;
+  canNewChat = false;
+  isPaid = false;
+  userTier = null;
+  currentSessionId = null;
   localStorage.removeItem('demian_auth');
+  localStorage.removeItem('demian_session');
   updateAccountUI();
+  updateCounter();
+  renderSessionList([]);
 }
 
 function updateAccountUI() {
@@ -1275,11 +1304,128 @@ function updateAccountUI() {
 }
 
 function updateHistoryVisibility() {
-  // Chat history only shows from 2+ sessions; placeholder logic for now
   const wrap = document.getElementById('sbHistoryWrap');
   if (!wrap) return;
   const sessionCount = document.querySelectorAll('#sbSessions .sb-session').length;
   wrap.style.display = sessionCount >= 1 ? 'flex' : 'none';
+}
+
+/* ═══ SESSION MANAGEMENT ═══ */
+
+async function restoreSession() {
+  if (authToken && currentSessionId) {
+    // Logged in: load session from KV
+    try {
+      const res = await fetch(`${WORKER_URL}/sessions/${currentSessionId}`, {
+        headers: { 'X-Auth-Token': authToken }
+      });
+      const data = await res.json();
+      if (data.ok && data.session.messages.length > 0) {
+        // Restore chat from saved history
+        renderRestoredChat(data.session.messages, data.session.title);
+        return;
+      }
+    } catch (err) { console.error('restoreSession failed', err); }
+  } else if (!authToken) {
+    // Free user: restore from localStorage
+    const savedMessages = localStorage.getItem('demian_messages');
+    if (savedMessages) {
+      try {
+        const parsed = JSON.parse(savedMessages);
+        if (parsed.length > 0) {
+          messages = parsed;
+          renderRestoredChat(parsed, null);
+          return;
+        }
+      } catch (e) { /* ignore */ }
+    }
+  }
+  // No session to restore — show opening message
+  sendOpeningMessage();
+}
+
+function renderRestoredChat(savedMessages, title) {
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '';
+  // Show opening message first
+  sendOpeningMessage();
+  // Then replay messages (skip opening content)
+  for (const msg of savedMessages) {
+    const role = msg.role === 'assistant' ? 'demian' : 'user';
+    appendMessage(role, msg.content);
+  }
+  messages = savedMessages.map(m => ({
+    role: m.role === 'assistant' ? 'assistant' : 'user',
+    content: m.content
+  }));
+}
+
+async function loadSessionList() {
+  if (!authToken) return;
+  try {
+    const res = await fetch(WORKER_URL + '/sessions', { headers: { 'X-Auth-Token': authToken } });
+    const data = await res.json();
+    if (data.ok) renderSessionList(data.sessions);
+  } catch (err) { console.error('loadSessionList failed', err); }
+}
+
+function renderSessionList(sessions) {
+  const container = document.getElementById('sbSessions');
+  container.innerHTML = '';
+  for (const s of sessions) {
+    const el = document.createElement('div');
+    el.className = 'sb-session' + (s.id === currentSessionId ? ' active' : '');
+    el.textContent = s.title;
+    el.title = s.title;
+    el.onclick = () => switchSession(s.id, s.title);
+    // Double-click to rename
+    el.ondblclick = (e) => { e.stopPropagation(); startRename(el, s.id, s.title); };
+    container.appendChild(el);
+  }
+  updateHistoryVisibility();
+}
+
+async function switchSession(sessionId, title) {
+  if (sessionId === currentSessionId) { if (window.innerWidth <= 720) closeSidebar(); return; }
+  try {
+    const res = await fetch(`${WORKER_URL}/sessions/${sessionId}`, { headers: { 'X-Auth-Token': authToken } });
+    const data = await res.json();
+    if (data.ok) {
+      currentSessionId = sessionId;
+      localStorage.setItem('demian_session', sessionId);
+      renderRestoredChat(data.session.messages, title);
+      // Update active state in sidebar
+      document.querySelectorAll('.sb-session').forEach(el => {
+        el.classList.toggle('active', el.textContent === title);
+      });
+      if (window.innerWidth <= 720) closeSidebar();
+    }
+  } catch (err) { console.error('switchSession failed', err); }
+}
+
+function startRename(el, sessionId, currentTitle) {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = currentTitle;
+  input.style.cssText = 'background:#1a1840;border:1px solid #6864bb;color:#cfcfd4;font-family:Inter,sans-serif;font-size:13px;padding:3px 8px;border-radius:6px;width:100%;';
+  el.innerHTML = '';
+  el.appendChild(input);
+  input.focus();
+  input.select();
+  const save = async () => {
+    const newTitle = input.value.trim() || currentTitle;
+    el.textContent = newTitle;
+    el.title = newTitle;
+    try {
+      await fetch(`${WORKER_URL}/sessions/${sessionId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'X-Auth-Token': authToken },
+        body: JSON.stringify({ title: newTitle })
+      });
+    } catch (e) { /* ignore */ }
+  };
+  input.onblur = save;
+  input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); input.blur(); } if (e.key === 'Escape') { el.textContent = currentTitle; } };
 }
 
 function openLoginModal() {
@@ -1291,18 +1437,31 @@ function closeLoginModal() {
   document.getElementById('loginError').textContent = '';
 }
 
-function newChat() {
+async function newChat() {
   const isRegistered = !!userEmail;
-  if (!isRegistered || !isPaid) {
+  const canOpen = isRegistered && canNewChat && messagesBalance > 0;
+  if (!canOpen) {
     openSidePopup('newChatMenu');
     return;
   }
-  messages = [];
-  messageCount = 0;
-  document.getElementById('chat').innerHTML = '';
-  sendOpeningMessage();
-  updateCounter();
-  if (window.innerWidth <= 720) closeSidebar();
+  try {
+    const res = await fetch(WORKER_URL + '/sessions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Auth-Token': authToken }
+    });
+    const data = await res.json();
+    if (data.ok) {
+      currentSessionId = data.sessionId;
+      localStorage.setItem('demian_session', currentSessionId);
+      messages = [];
+      messageCount = 0;
+      document.getElementById('chat').innerHTML = '';
+      sendOpeningMessage();
+      updateCounter();
+      await loadSessionList();
+      if (window.innerWidth <= 720) closeSidebar();
+    }
+  } catch (err) { console.error('newChat failed', err); }
 }
 
 // Generic: open a fixed side popup positioned like the recharge menu
@@ -1376,19 +1535,31 @@ async function sendMessage() {
   const text = input.value.trim();
   if (!text || isLoading) return;
 
-  if (!isPaid && messageCount >= FREE_MESSAGES) {
+  // Free limit check (logged-out users)
+  if (!authToken && messageCount >= FREE_MESSAGES) {
     appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Use one of the options below to continue.');
+    return;
+  }
+  // Paid logged-in limit check
+  if (authToken && !mantraUnlocked && messagesBalance <= 0) {
+    appendSystemMessage('No messages remaining. Please recharge to continue.');
     return;
   }
 
   input.value = '';
   input.style.height = 'auto';
   document.getElementById('send').classList.remove('visible');
-  messageCount++;
+  if (!authToken) { messageCount++; }
   updateCounter();
 
   messages.push({ role: 'user', content: text });
   appendMessage('user', text);
+
+  // Save free user messages to localStorage
+  if (!authToken) {
+    localStorage.setItem('demian_messages', JSON.stringify(messages));
+  }
+
   await callAPI(messages);
 }
 
@@ -1397,23 +1568,62 @@ async function callAPI(msgs) {
   const typingEl = showTyping();
 
   try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (authToken) headers['X-Auth-Token'] = authToken;
+
+    const body = { messages: msgs };
+    if (currentSessionId) body.sessionId = currentSessionId;
+
     const response = await fetch(WORKER_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: msgs })
+      headers,
+      body: JSON.stringify(body)
     });
 
     const data = await response.json();
-    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    if (data.error) {
+      if (data.error.message === 'free_limit_reached') {
+        removeTyping(typingEl);
+        appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Use one of the options below to continue.');
+        isLoading = false;
+        return;
+      }
+      throw new Error(data.error.message || JSON.stringify(data.error));
+    }
 
     const reply = data.content[0].text;
     removeTyping(typingEl);
     messages.push({ role: 'assistant', content: reply });
     appendMessage('demian', reply);
 
+    // Update balance from server response
+    if (data._session) {
+      if (data._session.messagesBalance !== null && data._session.messagesBalance !== undefined) {
+        messagesBalance = data._session.messagesBalance;
+      }
+      if (data._session.mantraUnlocked !== null) mantraUnlocked = data._session.mantraUnlocked;
+      if (data._session.canNewChat !== null) canNewChat = data._session.canNewChat;
+      if (data._session.sessionId && !currentSessionId) {
+        currentSessionId = data._session.sessionId;
+        localStorage.setItem('demian_session', currentSessionId);
+        // Refresh session list
+        if (authToken) loadSessionList();
+      }
+    }
+    updateCounter();
+
     if (reply.includes('[SESSION_COMPLETE]')) handleSessionComplete(reply);
-    if (!isPaid && messageCount >= FREE_MESSAGES - 3 && messageCount < FREE_MESSAGES) {
+
+    // Low balance warnings
+    if (authToken && !mantraUnlocked && messagesBalance <= 5 && messagesBalance > 0) {
+      appendSystemMessage(messagesBalance + ' messages remaining.');
+    } else if (!authToken && messageCount >= FREE_MESSAGES - 3 && messageCount < FREE_MESSAGES) {
       appendSystemMessage((FREE_MESSAGES - messageCount) + ' messages remaining.');
+    }
+
+    // Save free user messages to localStorage
+    if (!authToken) {
+      localStorage.setItem('demian_messages', JSON.stringify(messages));
     }
 
   } catch (err) {
@@ -1433,28 +1643,12 @@ function handleSessionComplete(reply) {
       appendSystemMessage('✦ Create your mantra card → demianism.org/mantra.html');
     }, 1000);
   }
+  // Backend has set messagesBalance to 20 — counter will update from _session
+  mantraUnlocked = false;
   isPaid = true;
-  paidMessages = 20;
+  // Refresh session list to show updated title
+  if (authToken) loadSessionList();
   updateCounter();
-}
-
-function updateCounter() {
-  const remNum = document.getElementById('remNum');
-  const remTxt = document.querySelector('#sbRemaining .rem-txt');
-  const buyMantra = document.getElementById('buyMantraItem');
-
-  let remaining;
-  if (isPaid) {
-    remaining = paidMessages;
-  } else {
-    remaining = FREE_MESSAGES - messageCount;
-  }
-  if (remaining < 0) remaining = 0;
-  remNum.textContent = remaining;
-  remTxt.textContent = remaining === 1 ? 'Msg remaining' : 'Msg remaining';
-
-  // Buy Mantra only visible to non-paying users (free, or registered without purchase)
-  if (buyMantra) buyMantra.style.display = isPaid ? 'none' : '';
 }
 
 function setStatus(online) {
@@ -1501,10 +1695,12 @@ async function submitCode() {
   confirmBtn.textContent = 'Checking...';
   confirmBtn.disabled = true;
   try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (authToken) headers['X-Auth-Token'] = authToken;
     const response = await fetch(WORKER_URL + '/redeem', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code })
+      headers,
+      body: JSON.stringify({ code, authToken })
     });
     const data = await response.json();
     if (!data.valid) {
@@ -1543,10 +1739,13 @@ function handlePurchaseReturn(tier, msgs, mantra) {
     mantraUnlocked = true;
     appendSystemMessage('✦ Unlocked — your Personal Mantra session is ready. Demian is listening.');
   } else {
-    paidMessages = msgs;
-    appendSystemMessage('✦ Unlocked — ' + msgs + ' conversations are yours. The lamp is lit.');
+    messagesBalance = msgs;
+    canNewChat = true;
+    appendSystemMessage('✦ Unlocked — ' + msgs + ' messages are yours. The lamp is lit.');
   }
-  updateCounter();
+  // If logged in, reload user to get fresh balance from KV
+  if (authToken) loadUser();
+  else updateCounter();
 }
 
 function appendMessage(role, text) {
