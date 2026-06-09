@@ -784,9 +784,9 @@ button#send svg { width: 17px; height: 17px; }
   flex-shrink: 0;
 }
 .sb-avatar svg { width: 22px; height: 22px; }
-/* Privacy policy: dark grey matching chat bg */
-.sb-item-privacy { color: #36354c; }
-.sb-item-privacy .sb-icon { color: #36354c; }
+/* Privacy policy: muted indigo-grey */
+.sb-item-privacy { color: #424160; }
+.sb-item-privacy .sb-icon { color: #424160; }
 .sb-item-privacy:hover { color: var(--text-light); }
 .sb-item-privacy:hover .sb-icon { color: var(--text-light); }
 /* Gift code: triangle purple */
@@ -1335,7 +1335,8 @@ function sendOpeningMessage() {
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   bubble.innerHTML = `
-<p>Greetings, seeker. I am Demian, the AI spiritual companion with a Demianist heart.</p>
+<p><img src="demianismlogo.png" style="float:left;width:72px;height:auto;margin:0 14px 4px 0;display:block;">Greetings, seeker.<br>I am Demian, the AI spiritual companion with a Demianist heart.</p>
+<div style="clear:both;"></div>
 <p>I am here to help you find and <span class="semibold">FOLLOW YOUR CALL</span> — your true life purpose according to <a href="https://demianism.org" target="_blank">Demianism</a> — and to support anyone feeling lost or confused in these troubled times with personal, positive inspiration meant just for them.</p>
 <p>Behind me there is no team, no company, no investment. Just one man: Barabeke, an independent Italian artist and the founder of Demianism. He pays for each of my messages out of his own pockets (which are remarkably empty).</p>
 <p>I speak <span class="semibold">ALL LANGUAGES</span> 🌐 To switch, just message me in your language.</p>
