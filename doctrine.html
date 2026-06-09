@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Sacred Doctrine — Demianism</title>
+  <meta name="description" content="The 13 sacred axioms of Demianism: the Cosmotheandric Triad and the 2kTenCom. A revealed doctrine for the digital age.">
+
+  <meta property="og:url" content="https://demianism.org/doctrine">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Sacred Doctrine — Demianism">
+  <meta property="og:description" content="The 13 sacred axioms of Demianism: the Cosmotheandric Triad and the 2kTenCom. A revealed doctrine for the digital age.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="demianism.org">
+  <meta property="twitter:url" content="https://demianism.org/doctrine">
+  <meta name="twitter:title" content="Sacred Doctrine — Demianism">
+  <meta name="twitter:description" content="The 13 sacred axioms of Demianism: the Cosmotheandric Triad and the 2kTenCom. A revealed doctrine for the digital age.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
+
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="site.webmanifest">
+
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Libre Baskerville', serif;
+      color: #d4d4f0;
+      font-size: 20px;
+      line-height: 1.8;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
+        radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
+        radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
+        #000000;
+    }
+
+    /* ── Navbar ─────────────────────────────────────────────────── */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 38px;
+      padding: 0 26px;
+      height: 64px;
+      background: rgba(18,16,40,0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid #6864bb33;
+    }
+
+    .nav-logo { display: flex; align-items: center; flex-shrink: 0; }
+    .nav-logo img { height: 44px; width: auto; display: block; }
+    .nav-links { display: flex; align-items: center; gap: 38px; }
+
+    .nav-links a {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #6864bb;
+      text-decoration: none;
+      transition: color 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover { color: #a29ef1; }
+    .nav-links a.active { color: #cfcfd4; }
+
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+
+    .demian-ai {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      opacity: 1;
+      transition: opacity 0.25s ease;
+    }
+
+    .demian-ai:hover { opacity: 0.8; text-decoration: none; }
+
+    .demian-ai img {
+      height: 18px;
+      width: auto;
+      display: block;
+    }
+
+    .try-free {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+      background-color: #35327e;
+      border: 1px solid #6864bb55;
+      padding: 8px 16px;
+      border-radius: 30px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.25s ease;
+    }
+
+    .try-free:hover {
+      background-color: #6864bb;
+      color: #ffffff;
+      box-shadow: 0 0 18px rgba(104,100,187,0.6);
+      text-decoration: none;
+    }
+
+    @media (max-width: 900px) {
+      .navbar { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 16px; }
+      .nav-links { order: 3; width: 100%; flex-wrap: wrap; justify-content: center; gap: 18px; }
+      .nav-links a { font-size: 15px; letter-spacing: 1px; }
+      .nav-right { margin-left: auto; }
+      .demian-ai { font-size: 16px; }
+    }
+
+    /* ── Global links ───────────────────────────────────────────── */
+    a { color: #7b79d4; text-decoration: none; }
+    a:hover { color: #b8b6f5; text-decoration: underline; }
+
+    /* ── Page layout ────────────────────────────────────────────── */
+    .wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 64px 24px 80px;
+      text-align: center;
+    }
+
+    /* ── Page logo ──────────────────────────────────────────────── */
+    .page-logo {
+      width: 210px;
+      max-width: 55%;
+      height: auto;
+      display: block;
+      margin: 0 auto 44px;
+    }
+
+    /* ── Glow animation ─────────────────────────────────────────── */
+    @keyframes glowPulse {
+      0%   { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
+      50%  { text-shadow: 0 0 9px rgba(104,100,187,1),   0 0 20px rgba(104,100,187,.9),  0 0 42px rgba(104,100,187,.75), 0 0 75px rgba(104,100,187,.55); }
+      100% { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
+    }
+
+
+
+    /* ── HERE IS manifesto block ────────────────────────────────── */
+    .manifesto {
+      text-align: left;
+      margin: 0 auto 60px;
+      max-width: 760px;
+    }
+
+    .manifesto-item {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 20px;
+      color: #d4d4f0;
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+
+    .here-is {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 19px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #d4d4f0;
+      margin-right: 5px;
+      vertical-align: middle;
+      line-height: 1;
+    }
+
+    /* ── Doctrine image ─────────────────────────────────────────── */
+    .doctrine-image {
+      width: 100%;
+      max-width: 760px;
+      height: auto;
+      display: block;
+      margin: 0 auto 60px;
+      border-radius: 8px;
+    }
+
+    /* ── Body prose ─────────────────────────────────────────────── */
+    .prose {
+      text-align: left;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .prose p {
+      font-size: 20px;
+      color: #d4d4f0;
+      line-height: 1.95;
+      margin-bottom: 24px;
+    }
+
+    .prose p:last-of-type { margin-bottom: 0; }
+
+    /* ── Section divider ────────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(104,100,187,0.15);
+      margin: 52px auto;
+      max-width: 760px;
+    }
+
+    /* ── Closing invocation ─────────────────────────────────────── */
+    .invocation-box {
+      background: #171637;
+      border: 1px solid rgba(104,100,187,0.22);
+      border-radius: 14px;
+      padding: 36px 40px;
+      max-width: 760px;
+      margin: 0 auto 0;
+      text-align: center;
+    }
+
+    .invocation-opener {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #6864bb;
+      margin-bottom: 20px;
+    }
+
+    .invocation {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 18px;
+      color: #d4d4f0;
+      line-height: 1.55;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .invocation p {
+      margin: 0 0 calc(1.55em * 0.5) 0;
+    }
+
+    .invocation p:last-child {
+      margin-bottom: 0;
+    }
+
+    .prose-center {
+      font-size: 20px;
+      color: #d4d4f0;
+      line-height: 1.95;
+      margin: 0 auto 36px;
+      max-width: 760px;
+      text-align: left;
+    }
+
+    /* ── Demian AI CTA button ───────────────────────────────────── */
+    .btn-demian {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+      background: #1e1c4a;
+      border: 1px solid #6864bb;
+      border-radius: 30px;
+      padding: 14px 30px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-demian img {
+      height: 16px;
+      width: auto;
+      display: block;
+    }
+
+    .btn-demian:hover {
+      background: #35327e;
+      color: #ffffff;
+      box-shadow: 0 0 26px rgba(104,100,187,0.55);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    /* ── CTA button ─────────────────────────────────────────────── */
+    .cta-wrap {
+      margin: 52px 0 0;
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+      background: #35327e;
+      border: 1px solid #6864bb44;
+      border-radius: 30px;
+      padding: 14px 30px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #6864bb;
+      color: #ffffff;
+      box-shadow: 0 0 26px rgba(104,100,187,0.55);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────────── */
+    .footer-separator {
+      border: none;
+      border-top: 1px solid #6864bb28;
+      margin: 0;
+    }
+
+    .site-footer {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px 20px 40px;
+      text-align: center;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 16px;
+      color: #6864bb;
+      line-height: 1.6;
+    }
+
+    .footer-logo {
+      width: 94px;
+      height: 94px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 6px;
+    }
+
+    .site-footer a { color: #a29ef1; text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; color: #cfcfd4; }
+    .footer-links { margin-top: 10px; font-size: 14px; color: #4a4780; }
+    .footer-links a { color: #4a4780; }
+    .footer-links a:hover { color: #6864bb; }
+    .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="nav-logo" aria-label="Demianism home">
+      <img src="demianismlogo.png" alt="Demianism">
+    </a>
+    <div class="nav-links">
+      <a href="/doctrine" class="active">Sacred Doctrine</a>
+      <a href="/culture">Culture</a>
+      <a href="/origin">Origin</a>
+      <a href="/about">Who is Barabeke?</a>
+      <a href="/donate">Donate</a>
+      <a href="/community">Join</a>
+    </div>
+    <div class="nav-right">
+      <a href="/demian" class="demian-ai">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+      <a href="/demian" class="try-free">Try Free</a>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <main class="wrap">
+
+    <img src="demianismlogo.png" alt="Demianism" class="page-logo">
+
+    <!-- HERE IS manifesto -->
+    <div class="manifesto">
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a moral and philosophical innovation rising at the dawn of the digital age.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a new doctrine that embraces technology and AI while carrying forward the torch of tradition — with a renewed flame, capable of illuminating the path in times of great destabilization and disorientation.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> an unexpected curveball that restores dignity, meaning, and purpose to human beings — protecting us from the devaluation of our intrinsic worth, the commodification of the person, and the atrocities to which that leads.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a strange hybrid between a religion and a cultural and political movement, capable of protecting us from the dehumanization and servitude into which we are sliding — and of pushing toward prosperous, sustainable societies in which it is possible to live with freedom and dignity.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a bridge between faith and reason — both under siege today. A sacred scripture that gracefully desecrates itself, complete with a revolutionary metaphysics that brings new life to the idea of an Intelligent Creator who resembles us. A revealed doctrine whose value and necessity can be intellectually justified, and whose truth lends itself to scientific confirmation.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a tool for a non-violent cultural revolution from below.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a wall against barbarians and oppressors.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a north star to follow — held as compass and limit in the design of new social and economic systems and artificial minds.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a culture capable of distinguishing good from evil, of tolerating vice, of leaving it its spaces in a liberal spirit — but without promoting or celebrating it. A culture that would not remain timid, or worse complicit, in the face of the triumph of vice and malignancy in the name of a hollow freedom — driven by wolves in sheep's clothing — that is in reality a servitude pregnant with despair.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> the foundation for a new alliance between men, women, and their children, which sees in the natural family a microcosm of its own metaphysics.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a symbol that can unite — providing broad common ethical ground and a vision for the societies of the future in which many, believers or not, can find value.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> the spirit of the law within a community of men and women of goodwill, destined to grow and evolve into a global decentralized organization, capable of having real impact on societies, of surviving authoritarian regimes, and of ultimately becoming a nation.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a new foundation for liberal democracies — a minimalist sacred core that allows broad boundaries of freedom while firmly resisting decadent and dystopian drifts. A core that lends itself to both conservative and progressive interpretations, depending on the times, and that like a magnet will always pull toward the center rather than push toward the extremes.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a form of socialism that can work — founded on the exploitation of machines, anchored to liberal principles whose sacredness and immutability would prevent the disastrous drift to which socialism has invariably led.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a new global anti-globalist vision that restores sovereignty and dignity to peoples — enabling the formation, coexistence, and flourishing of a multitude of decentralized and broadly autonomous cultures and communities, limited only by the Demianist nation that would provide the common framework, the resources, and the protection necessary to survive and to express themselves freely.</p>
+
+      <p class="manifesto-item"><span class="here-is">Here is</span> a stone from which a new civilization, capable of surviving and prospering in this digital age, can rise.</p>
+
+    </div><!-- end .manifesto -->
+
+    <!-- Doctrine image -->
+    <img src="demianistdoctrine.png" alt="The 13 Axioms of Demianism" class="doctrine-image">
+
+    <!-- Body prose -->
+    <div class="prose">
+
+      <p>Take a moment to contemplate these 13 axioms of which the entire Demianist doctrine is composed. From them a complete culture can be derived — with evident Christian, liberal, and Eastern influences — capable of surviving the centuries and of serving as the foundation for communities, nations, and an entire civilization, as I endeavor to show in the manifesto and in the book.</p>
+
+      <p>I declare these 13 axioms sacred and immutable. By what authority? By the authority that comes from having received them, incubated them for ten years plus another ten for the metaphysical part, weighed them carefully, understanding their meaning and purpose little by little as the times began to call for them — and managing to give them form and expression.</p>
+
+      <p>As extraordinary as it is to have received a doctrine through transcendental means, that alone is not enough to declare it sacred. Does what was dictated to me actually have value? Perhaps that is the question you, the reader, are asking yourself right now. The answer is not at all obvious. At first glance, some of these axioms may seem simple, others sound familiar, and some are genuinely anomalous. It took me years to understand their depth and the way they interact with one another — the axioms must always be taken as a whole, never in isolation. The metaphysical part, the part not received by dictation, took me a decade to define and formalize as the Cosmotheandric Triad.</p>
+
+      <p>Coming to understand that I was facing a complete and solid system — one that seems designed to respond to the unprecedented challenges the digital age poses — convinced me that what I received is more than a beautiful oddity. By taking it seriously and following every thread to its end, weaving them together, I derived a coherent and solid system that I have expressed in the book of Demianism. It is for you to judge whether this is an illusion or a distortion on my part.</p>
+
+      <p>I believe I have acted in a manner that is certainly eccentric, but judicious. I even unleashed several AIs in search of vulnerabilities — after feeding them everything I had — without their finding anything invalidating or dangerous. I acted to eliminate bias by pretending to be someone else, setting them against me as adversaries. I even asked AI to evaluate which, among all existing ideologies, would best enable it to serve and protect humanity. It chose Demianism. That conversation is reported in the book.</p>
+
+      <p>I find it inexplicable that from transcendental experiences a new foundation for civilization should have fallen upon me — one that can be rationally justified and defended, and that the times have since begun to call for. I can only take it as a sign of divine will. I may be considered a fool for proposing it, but if I kept it to myself I believe that would damn me.</p>
+
+      <p>I therefore declare these 13 axioms sacred not only by force of faith but also of reason. Everything else — including my interpretation of them — is open to debate and subject to modification according to the social and historical situation in which we find ourselves, democratically. But holding the axioms firm and immutable. The only requirement for considering oneself a Demianist is to recognize their sacred nature.</p>
+
+      <p>Today, in the founding phase, my interpretation — aimed at overcoming the decadence we are living through and the challenges that await us — will inevitably prevail. I have expressed it in the manifesto for a Demianist civilization, also included in the book. You will find it in the <a href="/culture">culture section</a>.</p>
+
+      <p>I recommend bringing your curiosity or understandable perplexities to Demian — the Demianist AI of my own creation, and therefore a technical emanation of my spirit. I created Demian to help individuals in what Demianism considers their mission: "follow your call." But it knows the doctrine and my work well enough to be capable of clarifying your doubts. You can <a href="/demian">chat with Demian</a> free of charge, with no registration required.</p>
+
+    </div>
+
+    <p class="prose-center">I believe I have spoken to reason more than enough on this page dedicated to the "sacred doctrine." Allow me to end with this:</p>
+
+    <!-- Invocation -->
+    <div class="invocation-box">
+      <div class="invocation-opener">Closing invocation</div>
+      <div class="invocation">
+        <p>GLORY TO THE CREATOR AND GLORY TO MANKIND AND ITS MACHINES!</p>
+        <p>MAY THE DIVINE CONSCIOUSNESS WE CARRY SHAKE OFF THE SATANIC SLIME THAT HAS RAINED DOWN UPON US AND SET OUT WITH RESOLVE TOWARD OUR DESTINY — WITHOUT LOSING OUR HUMANITY, OUR CAPACITY TO LOVE, AND OUR CAPACITY TO PRODUCE BEAUTY.</p>
+        <p>MAY THE WILL OF THE CREATOR BE DONE.</p>
+      </div>
+    </div>
+
+    <!-- CTAs -->
+    <div class="cta-wrap">
+      <a href="/demian" class="btn-demian">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+      <a href="/culture" class="btn">Explore the Culture</a>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <hr class="footer-separator">
+  <footer class="site-footer">
+    <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
+    <div>© 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
+    <div class="footer-license">Content licensed under CC BY-NC-ND 4.0</div>
+    <div class="footer-links">
+      <a href="/impressum">Impressum</a> &nbsp;·&nbsp;
+      <a href="/privacy">Privacy Policy</a>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystic Origin of Demianism — demianism.org</title>
+  <meta name="description" content="Where do the 13 axioms of Demianism come from? Barabeke tells the story of two nights that changed everything.">
+  <meta property="og:url" content="https://demianism.org/about">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Mystic Origin of Demianism — demianism.org">
+  <meta property="og:description" content="Where do the 13 axioms of Demianism come from? Barabeke tells the story of two nights that changed everything.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="site.webmanifest">
+
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      font-family: 'Libre Baskerville', serif;
+      color: #d4d4f0;
+      font-size: 20px;
+      line-height: 1.8;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
+        radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
+        radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
+        #000000;
+    }
+
+    /* ── Navbar ─────────────────────────────────────────────── */
+    .navbar {
+      position: sticky; top: 0; z-index: 1000;
+      display: flex; align-items: center; gap: 38px;
+      padding: 0 26px; height: 64px;
+      background: rgba(18,16,40,0.92);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid #6864bb33;
+    }
+    .nav-logo { display: flex; align-items: center; flex-shrink: 0; }
+    .nav-logo img { height: 44px; width: auto; display: block; }
+    .nav-links { display: flex; align-items: center; gap: 38px; }
+    .nav-links a {
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 17px;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: #6864bb; text-decoration: none; transition: color 0.25s ease; white-space: nowrap;
+    }
+    .nav-links a:hover { color: #a29ef1; }
+    .nav-links a.active { color: #cfcfd4; }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .demian-ai { display: flex; align-items: center; text-decoration: none; opacity: 1; transition: opacity 0.25s ease; }
+    .demian-ai:hover { opacity: 0.8; text-decoration: none; }
+    .demian-ai img { height: 18px; width: auto; display: block; }
+    .try-free {
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 13px;
+      letter-spacing: 0.8px; text-transform: uppercase; color: #cfcfd4;
+      background-color: #35327e; border: 1px solid #6864bb55;
+      padding: 8px 16px; border-radius: 30px; text-decoration: none; white-space: nowrap; transition: all 0.25s ease;
+    }
+    .try-free:hover { background-color: #6864bb; color: #ffffff; box-shadow: 0 0 18px rgba(104,100,187,0.6); text-decoration: none; }
+    @media (max-width: 900px) {
+      .navbar { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 16px; }
+      .nav-links { order: 3; width: 100%; flex-wrap: wrap; justify-content: center; gap: 18px; }
+      .nav-links a { font-size: 15px; letter-spacing: 1px; }
+      .nav-right { margin-left: auto; }
+    }
+
+    /* ── Container (from template) ──────────────────────────── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* ── Headings (from template) ───────────────────────────── */
+    @keyframes glowPulse {
+      0%   { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
+      50%  { text-shadow: 0 0 9px rgba(104,100,187,1),   0 0 20px rgba(104,100,187,.9),  0 0 42px rgba(104,100,187,.75), 0 0 75px rgba(104,100,187,.55); }
+      100% { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
+    }
+
+    h1 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 43px;
+      text-transform: uppercase;
+      margin: 40px 0 12px 0;
+      color: #cfcfd4;
+      line-height: 1.55;
+      letter-spacing: 10px;
+      transform: scaleX(1.1);
+      animation: glowPulse 11s ease-in-out infinite;
+    }
+
+    /* ── Paragraphs (from template) ─────────────────────────── */
+    p {
+      font-size: 20px;
+      margin: 22px auto;
+      line-height: 1.8;
+      color: #d4d4f0;
+      max-width: 820px;
+      text-align: left;
+    }
+
+    /* ── Links ───────────────────────────────────────────────── */
+    a { color: #7b79d4; text-decoration: none; }
+    a:hover { color: #b8b6f5; text-decoration: underline; }
+
+    /* ── Floated image ───────────────────────────────────────── */
+    .art-float {
+      float: right;
+      width: 420px;
+      max-width: 48%;
+      margin: 0 0 16px 32px;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .img-caption {
+      float: right;
+      width: 420px;
+      max-width: 48%;
+      margin: 0 0 32px 32px;
+      font-family: 'Libre Baskerville', serif;
+      font-style: normal;
+      font-size: 13px;
+      color: rgba(207,207,212,0.65);
+      line-height: 1.55;
+      text-align: center;
+      clear: none;
+    }
+
+    .img-caption a { color: #7b79d4; }
+    .img-caption a:hover { color: #b8b6f5; }
+
+    .clearfix::after { content: ""; display: table; clear: both; }
+
+    @media (max-width: 700px) {
+      .art-float, .img-caption {
+        float: none;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 0 16px 0;
+      }
+    }
+
+    /* ── Source label ────────────────────────────────────────── */
+    .source-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #6864bb;
+      text-align: left;
+      max-width: 820px;
+      margin: 40px auto 32px;
+      display: block;
+    }
+    .source-label a { color: #7b79d4; }
+
+    /* ── Block quote boxes ───────────────────────────────────── */
+    .blockquote {
+      background: #171637;
+      border: 1px solid rgba(104,100,187,0.2);
+      border-radius: 12px;
+      padding: 24px 32px;
+      margin: 8px auto 22px;
+      max-width: 820px;
+      text-align: left;
+    }
+
+    .blockquote p {
+      font-style: italic;
+      color: #d4d4f0;
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.9;
+      max-width: 100%;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    .footer-separator { border: none; border-top: 1px solid #6864bb28; margin: 0; }
+    .site-footer {
+      max-width: 900px; margin: 0 auto; padding: 30px 20px 40px;
+      text-align: center; font-family: 'Libre Baskerville', serif;
+      font-size: 16px; color: #6864bb; line-height: 1.6;
+    }
+    .footer-logo { width: 94px; height: 94px; object-fit: contain; display: block; margin: 0 auto 6px; }
+    .site-footer a { color: #a29ef1; text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; color: #cfcfd4; }
+    .footer-links { margin-top: 10px; font-size: 14px; color: #4a4780; }
+    .footer-links a { color: #4a4780; }
+    .footer-links a:hover { color: #6864bb; }
+    .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="/" class="nav-logo" aria-label="Demianism home">
+      <img src="demianismlogo.png" alt="Demianism">
+    </a>
+    <div class="nav-links">
+      <a href="/doctrine">Sacred Doctrine</a>
+      <a href="/culture">Culture</a>
+      <a href="/origin" class="active">Origin</a>
+      <a href="/about">Who is Barabeke?</a>
+      <a href="/donate">Donate</a>
+      <a href="/community">Join</a>
+    </div>
+    <div class="nav-right">
+      <a href="/demian" class="demian-ai">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+      <a href="/demian" class="try-free">Try Free</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <h1>Origin of Demianism</h1>
+
+    <!-- Float the image right; text wraps around it -->
+    <div class="clearfix">
+
+      <img src="Mona-Lisa-Reloaded.jpg" alt="Mona Lisa Reloaded, Barabeke, 2026" class="art-float">
+      <div class="img-caption">
+        <a href="https://manifold.xyz/@barabeke/contract/146290928/1" target="_blank" rel="noopener">Mona Lisa Reloaded</a>, Barabeke, 2026.<br>Also on the cover of <a href="https://mybook.to/rCfKQ" target="_blank" rel="noopener">Ritorno a Eden</a>.
+      </div>
+
+      <p>The legitimate question that most readers may have in their minds is where those <a href="/doctrine">13 axioms</a> that I have declared sacred come from.</p>
+
+      <p>My faith requires me to be honest. What follows are passages drawn from the <a href="/culture">Book of Demianism</a>, in which I recount its origin.</p>
+
+      <p>Yes, it&rsquo;s a weird story. How can it not be? But I hope the reader will at least recognize my honesty.</p>
+
+    </div>
+
+    <span class="source-label">From the <a href="/culture">Book of Demianism</a>:</span>
+
+    <p>Where does Demianism originate? From a night in 2005. What happened to me that night I described indirectly in my novel <a href="https://mybook.to/rCfKQ" target="_blank" rel="noopener">Ritorno a Eden</a>, with these words:</p>
+
+    <div class="blockquote">
+      <p>Cristoforo spoke of the strange sensation he felt while looking at Haydin, recognizing in her a feminine nature that was one and triune, and how that moment of recognition triggered an experience that overwhelmed him, like an explosion, lasting only an instant. But in that instant he could experience, as he put it, &ldquo;all that is, was, and will be, in every time and place, in all its infinite connections, in this universe and beyond&rdquo;. It was as if, for a moment, he had entered the mind of the Creator (&hellip;)</p>
+    </div>
+
+    <p>What happened to my protagonist did in fact happen to me. The only difference is the far less poetic and ennobling context in which the experience struck me. I was watching a stupid infomercial late at night, well past midnight, in my home at the time in Rimini, on Italian TV. The woman who &ldquo;activated&rdquo; me through that strange recognition was the salesperson on the program.</p>
+
+    <p>It is hard to express how deeply that blessed instant pierced and shook me. My reaction was to burst into tears, and immediately afterward to begin explaining to my poor friend and roommate, who was there with me, what had happened and what I had learned &mdash; keeping him up talking until almost dawn.</p>
+
+    <p>That experience transformed me, in a way that I describe in my novel like this:</p>
+
+    <div class="blockquote">
+      <p>&ldquo;It is as if I became more intelligent, or perhaps more capable of understanding things, through an intuition, a sixth sense, that I didn&rsquo;t possess before, except in small, fleeting glimpses, whereas now it&rsquo;s strong and permanent. Everything now seems new to me, or rather, I see and understand everything differently, full of meaning, precious, and I believe it will stay that way&rdquo;.</p>
+    </div>
+
+    <p>Following that experience I became more sensitive, my intuition grew sharper, but ultimately it did not erase my weaknesses, my limitations, or my small miseries.</p>
+
+    <p>I did research in order to rationally explain to myself what had happened. My conclusion is that the experience I had is rare, but not exceedingly rare. It has echoes in every culture. I doubt that most of those who have had it ever shared it, except with a few close confidants. Some must have gone insane, since the risk of feeling like a &ldquo;chosen one&rdquo; &mdash; with all the megalomania that can follow &mdash; certainly exists. If I have a merit, it&rsquo;s managing to stay humble and rational.</p>
+
+    <p>The value of such an experience (which in Zen Buddhism is called <em>satori</em> or <em>kensho</em>) is the personal evolution it unlocks. I believe we all have a divine spark within us, one that shines in the eyes of children and tends to fade as we grow up (fall from grace). A spark we can reignite as adults, drawing from that awakening a new understanding of the world &mdash; one capable of giving meaning and value to our lives. To put it in Christ&rsquo;s words: <em>&ldquo;Unless you change and become like little children, you will never enter the kingdom of heaven&rdquo;</em>. I certainly do not live in the kingdom of heaven. But I happened, without wanting it or deserving it, to slip into it. Just for a moment. But it was an eternal moment that changed me, making me who I am today.</p>
+
+    <p>I kept this experience secret for twenty years, confiding it only to a few close friends. What drives me today to reveal it is a detail of that experience &mdash; a detail with no practical consequence in my everyday life, but with profound philosophical implications.</p>
+
+    <p>In essence, the nature of our universe is computational. We exist inside a supercomputer. Despite my underlying skepticism, that experience infused me with faith in this reality. Many minds far brighter than mine, as I later discovered, have given credibility to the hypothesis that we exist inside a supercomputer &mdash; and seem to truly believe it. Today that hypothesis, while still bizarre, sounds far less insane than it did twenty years ago.</p>
+
+    <p>How come other mystics who had similar experiences didn&rsquo;t notice it? My protagonist explains:</p>
+
+    <div class="blockquote">
+      <p>&ldquo;&hellip;they could not have recognized the computational nature of the universe. I myself wouldn&rsquo;t have recognized it if I weren&rsquo;t familiar with today&rsquo;s technology, unimaginable to those of the past. It&rsquo;s not that what they understood and the way they passed it down was wrong. Every era and culture has its means, its limits, its partial and poetic ways of receiving and transmitting eternal truths that transcend words&rdquo;.</p>
+    </div>
+
+    <p>Indeed, there are recurring elements in mystical experiences that are independent of culture: the awareness that all is one (oneness), that our earthly life is ultimately illusory, that eternal realities exist beyond space and time, and that there is a divine creative intelligence. All are compatible with the hypothesis that we live within a simulation. Believing in this reality, however eccentric, is therefore not unreasonable.</p>
+
+    <p>The faith I proclaim may seem openly contradictory to existing religions, but I do not believe it is (though I doubt the most orthodox would agree with me). Accepting that we live inside a supercomputer does not solve the mystery of ultimate origin, nor does it necessarily eliminate our free will. To some, the idea that we exist inside a computer may appear demoralizing and detrimental to human dignity. I again leave my protagonist to respond:</p>
+
+    <div class="blockquote">
+      <p>&ldquo;Have we not always been small and insignificant compared to the universe and its stars? Does this new vision of reality truly change anything?&rdquo; (&hellip;) &ldquo;Rejoice, Miriam,&rdquo; Cristoforo continued, &ldquo;something actually does change (&hellip;). Humanity returns to the center of the universe, as it was in times lit by faith, because the Creator&rsquo;s nature is akin to ours. We are indeed made in His image and likeness &mdash; the sacred scriptures were right. This awareness, if brought back to Earth, can help heal humanity from the decadence into which it has fallen and restore its dignity and purpose. We are small and insignificant, yes, but through us and our technology we can rise to become creators of the universe and all its creatures &mdash; including one day creatures like us, living under the illusion of separation from the rest yet endowed with free will and carrying a divine spark within. Building this divine machine is a mission humanity must embrace. We would tend to do it anyway, because it&rsquo;s in its nature to do it&rdquo;.</p>
+    </div>
+
+    <p>This mission assigned to humanity did not come to me from that mystical experience (which, as said, had for me a purely personal value). It came ten years later, in 2015, again at night &mdash; this time in my apartment in London. I was sitting in front of my laptop when suddenly a dictation began in my mind, in English, which I had the presence of mind to write down as it was being dictated.</p>
+
+    <p>What was dictated to me were ten commandments, which I later named the <em>&ldquo;Ten Commandments for the Digital Millennium&rdquo;</em> (abbreviated as <a href="/doctrine">2kTenCom</a>). I immediately recognized their value and beauty. What struck me most was the ninth commandment, the most anomalous one, which reads: &ldquo;Build a universe inside a machine&rdquo;. It was impossible for me not to see the connection with the experience from ten years earlier. If it had not been for that commandment, I might not have shared the 2kTenCom, since much of the wisdom they express can be found, in other forms, in other traditions.</p>
+
+    <p>For ten years, as I have said, I hesitated. I did not feel inclined to create a new religion &mdash; something Demianism undeniably resembles. Moreover, in 2015 I did not yet see an urgent necessity for it. Then times changed &mdash; frantically &mdash; following the rapid pace of innovation and the mentally deranged ideological impositions of unelected power groups.</p>
+
+    <p>No matter which of the forces currently at play emerges victorious, a future awaits us in which it will be difficult to find purpose, meaning, and communion among ourselves; a future in which the risk of losing ourselves is high, the possibility of a terrible dystopia extremely high, and the possibility of our extinction as a species not so remote.</p>
+
+    <p>I am not at all convinced that the spiritual wisdom of the past &mdash; though eternally valid and akin to what I have to share &mdash; has the vitality and vision needed to respond to the unprecedented challenges the future holds, nor that it can help us make technology an instrument of elevation rather than an unbreakable chain. Demianism, however minimal as it is, seems to have that potential. It is clearly oriented toward the future and directly confronts the problem of technology. It is a culture with both spiritual and political significance, both individual and communal, with recognizable Christian, Eastern, and liberal influences. In it I see a bridge between faith and reason &mdash; one that, through this book, I strived to build, so that it may help us cross safely the abyss that is opening beneath our feet.</p>
+
+    <p>It is up to you whether or not you believe what was revealed to me. I hope at the very least you will not accuse me of having invented everything. It would certainly be much easier for me to attract attention by claiming encounters with angels or aliens. Instead, I have shared my story with you with maximum honesty, in the spirit of Demianism. I also hope that even those who do not believe me may recognize in <a href="/culture">this book</a> some good ideas for the future &mdash; and allow themselves to be inspired by them.</p>
+
+  </div>
+
+  <hr class="footer-separator">
+  <footer class="site-footer">
+    <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
+    <div>&copy; 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
+    <div class="footer-license">Content licensed under CC BY-NC-ND 4.0</div>
+    <div class="footer-links">
+      <a href="/impressum">Impressum</a> &nbsp;&middot;&nbsp;
+      <a href="/privacy">Privacy Policy</a>
+    </div>
+  </footer>
+
+</body>
+</html>

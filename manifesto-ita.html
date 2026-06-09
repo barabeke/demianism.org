@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-227Q00420W"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -69,40 +67,14 @@
     }
 
     .logo {
-      width: 500px;
+      width: 250px;
       height: auto;
       max-width: 100%;
       display: block;
       margin: 40px auto 50px auto;
     }
 
-    .home-button {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      display: block;
-      width: 64px;
-      height: 64px;
-      transition: all 0.25s ease;
-    }
-
-    .home-button:hover {
-      transform: scale(1.15);
-      filter: drop-shadow(0 4px 12px rgba(104, 100, 187, 0.5));
-    }
-
-    .home-button img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-
     @media (max-width: 900px) {
-  .home-button {
-    display: none !important;
-  }
 }
 
     .main-title {
@@ -201,30 +173,13 @@
     }
 
     a {
-      color: #a29ef1;
+      color: #7b79d4;
       text-decoration: none;
     }
 
     a:hover {
-      color: #cfcfd4;
+      color: #b8b6f5;
       text-decoration: underline;
-    }
-
-    footer {
-      margin-top: 80px;
-      padding: 30px 0 40px;
-      font-size: 17px;
-      color: #6864bb;
-      font-family: 'Libre Baskerville', serif;
-      text-align: center;
-      border-top: 1px solid rgba(162, 158, 241, 0.15);
-    }
-
-    .footer-logo {
-      width: 94px;
-      height: 94px;
-      object-fit: contain;
-      margin-bottom: 12px;
     }
 
     @media (max-width: 650px) {
@@ -237,15 +192,83 @@
       .container { padding: 25px 18px 80px; }
       .logo { margin: 30px auto 35px; }
     }
+
+    /* ── Navbar ─────────────────────────────────────────────── */
+    .navbar {
+      position: sticky; top: 0; z-index: 1000;
+      display: flex; align-items: center; gap: 38px;
+      padding: 0 26px; height: 64px;
+      background: rgba(18,16,40,0.92);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid #6864bb33;
+    }
+    .nav-logo { display: flex; align-items: center; flex-shrink: 0; }
+    .nav-logo img { height: 44px; width: auto; display: block; }
+    .nav-links { display: flex; align-items: center; gap: 38px; }
+    .nav-links a {
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 17px;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: #6864bb; text-decoration: none; transition: color 0.25s ease; white-space: nowrap;
+    }
+    .nav-links a:hover { color: #a29ef1; text-decoration: none; }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .demian-ai { display: flex; align-items: center; text-decoration: none; opacity: 1; transition: opacity 0.25s ease; }
+    .demian-ai:hover { opacity: 0.8; }
+    .demian-ai img { height: 18px; width: auto; display: block; }
+    .try-free {
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 13px;
+      letter-spacing: 0.8px; text-transform: uppercase; color: #cfcfd4;
+      background-color: #35327e; border: 1px solid #6864bb55;
+      padding: 8px 16px; border-radius: 30px; text-decoration: none;
+      white-space: nowrap; transition: all 0.25s ease;
+    }
+    .try-free:hover { background-color: #6864bb; color: #ffffff; box-shadow: 0 0 18px rgba(104,100,187,0.6); text-decoration: none; }
+    @media (max-width: 900px) {
+      .navbar { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 16px; }
+      .nav-links { order: 3; width: 100%; flex-wrap: wrap; justify-content: center; gap: 18px; }
+      .nav-links a { font-size: 15px; letter-spacing: 1px; }
+      .nav-right { margin-left: auto; }
+    }
+
+    .site-footer {
+      max-width: 900px; margin: 0 auto; padding: 30px 20px 40px;
+      text-align: center; font-family: 'Libre Baskerville', serif;
+      font-size: 16px; color: #6864bb; line-height: 1.6;
+    }
+    .footer-logo-f { width: 94px; height: 94px; object-fit: contain; display: block; margin: 0 auto 6px; }
+    .footer-separator { border: none; border-top: 1px solid #6864bb28; margin: 60px 0 0; }
+    .site-footer a { color: #a29ef1; text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; color: #cfcfd4; }
+    .footer-links { margin-top: 10px; font-size: 14px; color: #4a4780; }
+    .footer-links a { color: #4a4780; }
+    .footer-links a:hover { color: #6864bb; }
+    .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
   </style>
 </head>
 
 <body>
-  <div class="container">
 
-    <a href="https://demianism.org" class="home-button" title="Torna alla Home">
-      <img src="home-icon.png" alt="Home">
+  <nav class="navbar">
+    <a href="https://demianism.org" class="nav-logo" aria-label="Demianism home">
+      <img src="demianismlogo.png" alt="Demianism">
     </a>
+    <div class="nav-links">
+      <a href="https://demianism.org/doctrine">Sacred Doctrine</a>
+      <a href="https://demianism.org/culture" style="color:#cfcfd4;">Culture</a>
+      <a href="https://demianism.org/origin">Origin</a>
+      <a href="https://demianism.org/about">Who is Barabeke?</a>
+      <a href="https://demianism.org/donate">Donate</a>
+      <a href="https://demianism.org/community">Join</a>
+    </div>
+    <div class="nav-right">
+      <a href="https://demianism.org/demian" class="demian-ai">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+      <a href="https://demianism.org/demian" class="try-free">Try Free</a>
+    </div>
+  </nav>
+
+  <div class="container">
 
     <img src="demianismlogo.png" alt="Demianism Logo" class="logo">
 
@@ -253,7 +276,7 @@
     <div class="main-subtitle">PER LA CIVILTÀ DEMIANISTA</div>
     <div class="byline">di Barabeke</div>
 
-    <p class="available">Disponibile anche come <a href="https://heyzine.com/flip-book/bd5a1560d9.html" target="_blank">flip-book</a>, <a href="https://archive.org/details/manifesto-demianista" target="_blank">PDF/eBook</a> oppure <a href="https://manifesto.demianism.org/" target="_blank">in inglese</a></p>
+    <p class="available">Disponibile anche come <a href="https://heyzine.com/flip-book/bd5a1560d9.html" target="_blank">flip-book</a>, <a href="https://archive.org/details/manifesto-demianista" target="_blank">PDF/eBook</a> oppure <a href="https://demianism.org/manifesto" target="_blank">in inglese</a></p>
 
     <h2>LA SITUAZIONE</h2>
     <p>Una grande sciagura incombe sui popoli. Non serve essere dei veggenti per intravederla. La decadenza dei nostri tempi è gravida di disperazione, schiavitù, caos, atrocità e distruzione. La testa dell'Occidente sta già sotto il bordo della fossa che si sta scavando. Anche se non lo fosse, la ragione da sola non ci salverebbe.</p>
@@ -703,21 +726,14 @@
       <p>Siate specchio in cui io mi possa specchiare e acqua da cui mi possa abbeverare, e possa io essere lo stesso per voi.</p>
       <p>Barabeke</p>
 
-    <div class="links">
-      <h3>LINK</h3>
-      <p><a href="https://demianism.org" target="_blank">demianism.org</a> — Portale principale con il libro disponibile per il download, ulteriori informazioni e la possibilità di fare donazioni (con carta o criptovalute).</p>
-      <p><a href="https://manifold.xyz/@barabeke/id/4083525872" target="_blank">The Revealed Doctrine</a> — Open mint NFT con i 13 assiomi del demianesimo. Collezionalo (su Base) per supportare questa missione.</p>
-      <p><a href="https://www.amazon.it/dp/B0GX34QX8S" target="_blank">Ritorno a Eden</a> — Il romanzo/saga di Barabeke, veicolo letterario indiretto del demianesimo.</p>
-      <p><a href="https://heyzine.com/flip-book/3b03034a08.html" target="_blank">The Art of Barabeke</a> — Libro che offre una panoramica dell'arte di Barabeke, in particolare quella visiva</p>
-    </div>
-
-    <footer>
-      <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
-      <div>
-        © 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a>
-      </div>
-      <div>
-        Contenuto distribuito con licenza CC BY-NC-ND 4.0
+    <hr class="footer-separator">
+    <footer class="site-footer">
+      <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo-f">
+      <div>&copy; 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
+      <div class="footer-license">Contenuto distribuito con licenza CC BY-NC-ND 4.0</div>
+      <div class="footer-links">
+        <a href="https://demianism.org/impressum">Impressum</a> &nbsp;&middot;&nbsp;
+        <a href="https://demianism.org/privacy">Privacy Policy</a>
       </div>
     </footer>
 

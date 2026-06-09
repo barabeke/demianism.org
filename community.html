@@ -3,13 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coming Soon — demianism.org</title>
-  <meta name="description" content="Something is coming.">
+  <title>Join the Community — demianism.org</title>
+  <meta name="description" content="Join the first nucleus of the Demianist community.">
+  <meta property="og:url" content="https://demianism.org/community">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Join the Community — demianism.org">
+  <meta property="og:description" content="Join the first nucleus of the Demianist community.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96">
   <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
   <link rel="manifest" href="site.webmanifest">
+
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -49,7 +57,7 @@
     .nav-links a.active { color: #cfcfd4; }
     .nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
     .demian-ai { display: flex; align-items: center; text-decoration: none; opacity: 1; transition: opacity 0.25s ease; }
-    .demian-ai:hover { opacity: 0.8; }
+    .demian-ai:hover { opacity: 0.8; text-decoration: none; }
     .demian-ai img { height: 18px; width: auto; display: block; }
     .try-free {
       font-family: 'Inter', sans-serif; font-weight: 700; font-size: 13px;
@@ -58,7 +66,7 @@
       padding: 8px 16px; border-radius: 30px; text-decoration: none;
       white-space: nowrap; transition: all 0.25s ease;
     }
-    .try-free:hover { background-color: #6864bb; color: #ffffff; box-shadow: 0 0 18px rgba(104,100,187,0.6); }
+    .try-free:hover { background-color: #6864bb; color: #ffffff; box-shadow: 0 0 18px rgba(104,100,187,0.6); text-decoration: none; }
     @media (max-width: 900px) {
       .navbar { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 16px; }
       .nav-links { order: 3; width: 100%; flex-wrap: wrap; justify-content: center; gap: 18px; }
@@ -85,7 +93,7 @@
       font-weight: 700;
       font-size: 43px;
       text-transform: uppercase;
-      margin: 60px 0 48px 0;
+      margin: 40px 0 12px 0;
       color: #cfcfd4;
       line-height: 1.55;
       letter-spacing: 10px;
@@ -93,17 +101,55 @@
       animation: glowPulse 11s ease-in-out infinite;
     }
 
-    /* ── Bonk image ──────────────────────────────────────────── */
-    .bonk-wrap {
-      margin: 0 auto 60px;
+    /* ── Subtitle ────────────────────────────────────────────── */
+    .hero-subtitle {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(19px, 2.3vw, 25px);
+      color: #a29ef1;
+      max-width: 820px;
+      line-height: 1.75;
+      margin: 0 auto 36px;
     }
-    .bonk-wrap img {
-      max-width: 100%;
+
+    /* ── Full-width image + caption ──────────────────────────── */
+    .full-image-wrap {
+      max-width: 820px;
+      margin: 0 auto 8px;
+    }
+
+    .full-image-wrap img {
+      width: 100%;
       height: auto;
       display: block;
-      margin: 0 auto;
       border-radius: 8px;
     }
+
+    .img-caption {
+      max-width: 820px;
+      margin: 0 auto 36px;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 13px;
+      color: rgba(207,207,212,0.65);
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    .img-caption a { color: #7b79d4; }
+    .img-caption a:hover { color: #b8b6f5; }
+
+    /* ── Paragraphs ──────────────────────────────────────────── */
+    p {
+      font-size: 20px;
+      margin: 22px auto;
+      line-height: 1.8;
+      color: #d4d4f0;
+      max-width: 820px;
+      text-align: left;
+    }
+
+    /* ── Links ───────────────────────────────────────────────── */
+    a { color: #7b79d4; text-decoration: none; }
+    a:hover { color: #b8b6f5; text-decoration: underline; }
 
     /* ── Footer ──────────────────────────────────────────────── */
     .footer-separator { border: none; border-top: 1px solid #6864bb28; margin: 0; }
@@ -119,10 +165,6 @@
     .footer-links a { color: #4a4780; }
     .footer-links a:hover { color: #6864bb; }
     .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      h1 { animation: none; }
-    }
   </style>
 </head>
 
@@ -138,7 +180,7 @@
       <a href="/origin">Origin</a>
       <a href="/about">Who is Barabeke?</a>
       <a href="/donate">Donate</a>
-      <a href="/community">Join</a>
+      <a href="/community" class="active">Join</a>
     </div>
     <div class="nav-right">
       <a href="/demian" class="demian-ai">
@@ -149,10 +191,28 @@
   </nav>
 
   <div class="container">
-    <h1>Coming Soon&hellip;</h1>
-    <div class="bonk-wrap">
-      <img src="bonk.jpg" alt="">
+
+    <h1>Join the Community</h1>
+
+    <p class="hero-subtitle">Who&rsquo;s brave enough to jump aboard this ghost ship rising from the mists? It will truly take a leap of faith from someone special.</p>
+
+    <div class="full-image-wrap">
+      <img src="isle-of-the-immortals.jpg" alt="Isle of the Immortals, Barabeke, 2025">
     </div>
+    <div class="img-caption">
+      <em>Isle of the Immortals</em>, Barabeke, 2026. Also on the cover of <a href="https://mybook.to/rCfKQ" target="_blank" rel="noopener"><em>Ritorno a Eden</em></a> (2nd book).
+    </div>
+
+    <p>Whether Demianism ever becomes a living culture will depend on you. The goal today is to get started &mdash; to form the first nucleus of the Demianist community. I think getting to the first ten will be harder than getting from ten to one thousand. I am not at all certain I can manage it, especially with zero resources.</p>
+
+    <p>Will there ever be a second Demianist? That will be for Providence to decide. The wheels of destiny cannot be controlled &mdash; the most we can do is oil them. I believe I have done all I could do without support and visibility. If anyone feels even a vague sense of this calling, I invite them to go deeper &mdash; by <a href="/culture">reading the book</a> or <a href="/demian">chatting with Demian</a>. The next step is to connect with me directly, human to human. I will be glad to provide whatever clarity you seek.</p>
+
+    <p>Frankly, I wouldn&rsquo;t know what to ask of you. I expect you to inspire and motivate me. Mine has been a long solitary crossing through the desert. If you feel that Demianism is for you, make it yours. You have all you need: <a href="/doctrine">the 13 axioms</a> plus the orientation and inspiration I have provided. Use your talents to serve this mission and to shape its future. The impact of the first Demianists can be huge.</p>
+
+    <p>In the beginning I must necessarily serve as leader and guardian of Demianism, but my goal is to ferry it toward the next phase &mdash; one in which it can stand on its own, taking on a democratic form inspired and bounded by the 13 axioms, and proof against their corruption. It will take time. Perhaps the rest of my life won&rsquo;t be enough. But with a vital community and sufficient funding, I believe it is technically possible to get there in ten years — that&rsquo;s the most optimistic scenario.</p>
+
+    <p>If I remained the only Demianist in the world, I would be sorry, but I would not feel I have failed. I have done my duty. I have planted the seed. It might not be for me to make it grow &mdash; perhaps that falls to another generation. The Demianist mission is, after all, millennial in its vocation. But I would be surprised if I were not its ferryman, given that life &mdash; by roundabout ways &mdash; has formed me for this role. Plus, being the source, I don&rsquo;t see how Demianism could do without me in its founding phase. Therefore, if you want to give Demianism a chance, please <a href="/donate">support my work</a>.</p>
+
   </div>
 
   <hr class="footer-separator">

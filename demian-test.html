@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demian — The Demianist AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --purple-deep: #35327e;
+  --purple-mid: #6864bb;
+  --purple-light: #a29ef1;
+  --text-light: #cfcfd4;
+  --text-body: #d4d4f0;
+  --text-link: #7b79d4;
+  --text-link-hover: #b8b6f5;
+  --indigo: #6864bb;
+  --card-bg: #171637;
+  --navbar-bg: #12103a;
+  --status-color: #a29ef1;
+  --user-bg: #36354c;
+  --input-bg: #36354c;
+  --placeholder: #4a4780;
+  --glow: rgba(104,100,187,0.55);
+  --bottom-h: 90px;
+  --sidebar-w: 280px;
+  --sidebar-collapsed: 56px;
+  --sidebar-bg: #12103a;
+  --topbar-h: 52px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Libre Baskerville', serif;
+  color: var(--text-body);
+  font-size: 18px;
+  line-height: 1.8;
+  background: #000000;
+  min-height: 100vh;
+}
+
+/* ── Layout ── */
+.page-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px 16px 110px;
+}
+
+.input-zone {
+  position: fixed;
+  bottom: 0;
+  left: var(--sidebar-collapsed);
+  right: 0;
+  background: #000000;
+  padding: 0 0 14px;
+  z-index: 50;
+}
+
+.input-zone .bottom-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 14px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── CHAT WINDOW ── */
+.chat-window {
+  border: none;
+  border-radius: 16px;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
+    radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
+    radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
+    #000000;
+}
+
+/* ── STICKY HEADER ── */
+.chat-header {
+  background: #151536;
+  padding: 11px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.chat-header-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-light);
+  flex: 1;
+}
+
+.chat-status-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.online-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e, 0 0 12px rgba(34,197,94,0.4);
+  flex-shrink: 0;
+}
+
+.online-dot.offline {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444, 0 0 12px rgba(239,68,68,0.4);
+}
+
+.chat-status {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--status-color);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+/* ── MESSAGES ── */
+#chat {
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.msg {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: fadeUp 0.3s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.msg.user  { align-items: flex-end; }
+.msg.demian { align-items: stretch; }
+.msg.system { align-items: center; }
+
+.msg-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--purple-light);
+  padding: 0 2px;
+}
+
+.msg-logo {
+  width: 56px;
+  height: auto;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.msg.demian .msg-bubble {
+  background: transparent;
+  border: none;
+  color: var(--text-body);
+  font-family: 'Libre Baskerville', serif;
+  font-size: 18px;
+  line-height: 1.8;
+  padding: 0;
+  width: 100%;
+}
+
+.msg.demian .msg-bubble p { margin: 0 0 10px 0; }
+.msg.demian .msg-bubble p:last-child { margin-bottom: 0; }
+.msg.demian .msg-bubble ol,
+.msg.demian .msg-bubble ul { margin: 6px 0 10px 0; padding-left: 22px; }
+.msg.demian .msg-bubble li { margin-bottom: 4px; }
+.msg.demian .msg-bubble strong { color: var(--text-light); font-family: 'Inter', sans-serif; font-weight: 600; }
+.msg.demian .msg-bubble a { color: var(--text-link); text-decoration: underline; }
+.msg.demian .msg-bubble a:hover { color: var(--text-link-hover); }
+.msg.demian .msg-bubble em { color: var(--purple-light); }
+.msg.demian .msg-bubble .semibold { font-family: 'Inter', sans-serif; font-weight: 600; color: var(--text-light); }
+
+/* Services container */
+.services-block {
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 6px 0;
+  background: var(--card-bg);
+  padding: 4px 0;
+  width: 100%;
+}
+
+.service-card {
+  padding: 10px 16px;
+}
+
+.service-card .service-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.8px;
+  color: #fff;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.service-card .service-body {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 17px;
+  color: var(--text-body);
+  line-height: 1.7;
+}
+
+.service-card .service-cost {
+  display: block;
+  margin-top: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--purple-light);
+}
+
+.msg.user .msg-bubble {
+  background: #171637;
+  border: 1px solid rgba(104,100,187,0.25);
+  color: var(--text-body);
+  font-family: 'Libre Baskerville', serif;
+  font-size: 17px;
+  line-height: 1.7;
+  padding: 10px 15px;
+  border-radius: 14px;
+  border-bottom-right-radius: 4px;
+  max-width: 80%;
+}
+
+.msg.system .msg-bubble {
+  background: rgba(53,50,126,0.18);
+  border: 1px solid rgba(104,100,187,0.3);
+  color: var(--purple-light);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  text-align: center;
+  border-radius: 10px;
+  padding: 10px 16px;
+  max-width: 90%;
+}
+
+.typing { display: flex; align-items: center; gap: 5px; padding: 6px 0; }
+.typing span { width: 6px; height: 6px; background: var(--purple-mid); border-radius: 50%; opacity: 0.5; animation: tp 1.2s ease-in-out infinite; }
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes tp { 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.25)} }
+
+/* input-zone → see Layout section above */
+
+.input-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  background: #36354c;
+  border: 1px solid rgba(104,100,187,0.3);
+  border-radius: 14px;
+  padding: 10px 10px 10px 18px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.input-bar:focus-within {
+  border-color: var(--purple-mid);
+  box-shadow: 0 0 14px rgba(104,100,187,0.15);
+}
+
+textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-light);
+  font-family: 'Libre Baskerville', serif;
+  font-size: 16px;
+  padding: 6px 0;
+  resize: none;
+  min-height: 26px;
+  max-height: 120px;
+  outline: none;
+  line-height: 1.6;
+}
+
+textarea::placeholder { color: #706f89; }
+
+button#send {
+  background-color: var(--indigo);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  width: 36px; height: 36px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+button#send.visible { display: flex; }
+button#send:hover { background-color: var(--purple-light); box-shadow: 0 0 14px var(--glow); }
+button#send:disabled { opacity: 0.4; cursor: not-allowed; }
+button#send svg { width: 17px; height: 17px; }
+
+.action-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.msg-counter {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--purple-mid);
+  white-space: nowrap;
+  margin-right: 4px;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--purple-deep);
+  color: var(--text-light);
+  padding: 7px 14px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  transition: all 0.25s;
+  border: 1px solid rgba(104,100,187,0.22);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  gap: 4px;
+}
+
+.action-btn:hover {
+  background-color: var(--purple-mid);
+  color: #fff;
+  box-shadow: 0 0 18px var(--glow);
+  transform: translateY(-1px);
+}
+
+.credits-wrapper { position: fixed; bottom: 0; left: 0; width: 0; height: 0; }
+
+.credits-menu {
+  display: none;
+  position: fixed;
+  bottom: 90px;
+  left: calc(var(--sidebar-collapsed) + 8px);
+  background: var(--card-bg);
+  border: 1px solid rgba(104,100,187,0.4);
+  border-radius: 14px;
+  z-index: 300;
+  width: 300px;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(104,100,187,0.25);
+  pointer-events: auto;
+}
+.sidebar.open ~ .credits-wrapper .credits-menu,
+.credits-menu.from-open { left: calc(var(--sidebar-w) + 8px); }
+
+.credits-menu.open { display: block; }
+
+/* newChatMenu opens near New Chat button (upper sidebar area) */
+#newChatMenu {
+  bottom: auto;
+  top: 110px;
+}
+#newChatMenu .menu-header {
+  text-align: center;
+  align-items: center;
+  padding-top: 16px;
+}
+#newChatMenu .menu-title {
+  margin-top: 0;
+}
+
+.credits-menu .menu-header {
+  padding: 20px 20px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.credits-menu .menu-logo { width: 130px; height: auto; opacity: 1.0; margin-bottom: 6px; }
+
+.credits-menu .menu-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+}
+
+.credits-menu .menu-sub {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.5;
+}
+
+.credits-menu .menu-choose {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-top: 12px;
+  margin-bottom: -2px;
+}
+
+.credits-menu .pkg-list {
+  padding: 8px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pkg-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #35327e;
+  border: 1px solid rgba(104,100,187,0.45);
+  border-radius: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  gap: 12px;
+}
+
+.pkg-btn:hover {
+  background: var(--purple-mid);
+  box-shadow: 0 0 16px var(--glow);
+  transform: translateY(-1px);
+}
+
+.pkg-left {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
+}
+
+.pkg-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.pkg-desc {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 300;
+  line-height: 1.2;
+}
+
+.pkg-price {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  color: #ffffff;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:200; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--card-bg); border:1px solid rgba(104,100,187,0.4); border-radius:18px; padding:2.5rem; width:100%; max-width:420px; display:flex; flex-direction:column; gap:1.5rem; box-shadow:0 0 50px rgba(104,100,187,0.25); }
+.modal h3 { font-family:'Inter',sans-serif; font-size:16px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--text-light); text-align:center; }
+.modal p { font-family:'Libre Baskerville',serif; font-size:14px; color:rgba(212,212,240,0.7); line-height:1.6; text-align:center; }
+.modal input { background:rgba(0,0,0,0.5); border:1px solid rgba(104,100,187,0.3); border-radius:10px; color:var(--text-light); font-family:'Libre Baskerville',serif; font-size:17px; padding:14px 16px; outline:none; width:100%; text-align:center; }
+.modal input:focus { border-color:var(--purple-mid); }
+.modal-btns { display:flex; gap:10px; }
+.modal-btns button { flex:1; font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:12px; border-radius:10px; cursor:pointer; transition:all 0.2s; border:1px solid; }
+.modal-confirm { background:var(--purple-deep); border-color:rgba(104,100,187,0.4); color:var(--text-light); }
+.modal-confirm:hover { background:var(--purple-mid); box-shadow:0 0 16px var(--glow); }
+.modal-cancel { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.15); color:rgba(255,255,255,0.4); }
+.modal-cancel:hover { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.3); color:rgba(255,255,255,0.65); }
+.modal-error { font-family:'Inter',sans-serif; font-size:13px; color:#e07070; min-height:16px; text-align:center; }
+
+/* ── Popup card (recharge-style) for info / mantra ── */
+.popup-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(104,100,187,0.4);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 340px;
+  overflow: hidden;
+  box-shadow: 0 0 50px rgba(104,100,187,0.25);
+}
+.popup-card .menu-header { padding: 24px 22px 8px; display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; }
+.popup-card .menu-logo { width: 130px; height:auto; margin-bottom: 6px; }
+.popup-card .menu-title { font-family:'Inter',sans-serif; font-size:15px; font-weight:700; color:#fff; letter-spacing:0.2px; }
+.popup-card .menu-sub { font-family:'Libre Baskerville',serif; font-size:13px; color:rgba(255,255,255,0.65); line-height:1.55; }
+.popup-card .pkg-list { padding: 14px; display:flex; flex-direction:column; gap:8px; }
+.popup-card .popup-foot { padding: 0 22px 22px; display:flex; justify-content:center; }
+.popup-card .popup-foot .modal-cancel { width:100%; }
+
+/* ═══════════════════════════════════════════════════════
+   SIDEBAR — 3-zone architecture (fixed top / scroll / fixed bottom)
+   ═══════════════════════════════════════════════════════ */
+
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-collapsed);
+  background:
+    radial-gradient(circle at 30% 20%, rgba(53,50,126,0.30), transparent 70%),
+    radial-gradient(circle at 50% 90%, rgba(53,50,126,0.32), transparent 75%),
+    #000000;
+  border-right: 1px solid rgba(104,100,187,0.15);
+  display: flex;
+  flex-direction: column;
+  z-index: 120;
+  transition: width 0.22s ease;
+  overflow: visible;
+}
+.sidebar.open { width: var(--sidebar-w); overflow: hidden; }
+
+/* ── ZONE 1: fixed header ── */
+.sb-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px;
+  height: var(--topbar-h);
+  flex-shrink: 0;
+  position: relative;
+  cursor: pointer;
+}
+.sb-logo-tri { width: 26px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.sb-logo-tri svg { width: 22px; height: 22px; display: block; }
+
+.sb-collapse-icon {
+  width: 22px; height: 22px;
+  flex-shrink: 0;
+  display: none;
+  align-items: center; justify-content: center;
+  color: #ffffff;
+}
+.sb-collapse-icon svg { width: 20px; height: 20px; }
+
+/* Collapsed + hover → triangle becomes open icon */
+.sidebar:not(.open):hover .sb-logo-tri { display: none; }
+.sidebar:not(.open):hover .sb-collapse-icon { display: flex; }
+
+.sb-wordmark {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  color: #fff;
+  white-space: nowrap;
+  display: none;
+  flex: 1;
+}
+.sidebar.open .sb-wordmark { display: block; }
+/* Open: collapse icon pinned to outer edge, triangle+word stay together left */
+.sidebar.open .sb-collapse-icon { display: flex; margin-left: auto; }
+.sidebar.open .sb-logo-tri { display: flex; }
+
+/* ── ZONE 2: scrollable middle ── */
+.sb-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.sidebar:not(.open) .sb-scroll { overflow: visible; }
+
+/* ── ZONE 3: fixed bottom ── */
+.sb-fixed-bottom {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(104,100,187,0.18);
+  position: relative;
+}
+
+/* ── Generic nav item ── */
+.sb-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: var(--text-light);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  position: relative;
+  text-decoration: none;
+  transition: background 0.15s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+.sb-item:hover { background: rgba(104,100,187,0.12); }
+
+.sb-icon {
+  width: 24px; height: 24px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #ffffff;
+}
+.sb-icon svg { width: 21px; height: 21px; }
+
+.sb-label { display: none; }
+.sidebar.open .sb-label { display: inline; }
+
+/* ── Tooltip (collapsed, on hover) → white box ── */
+.sb-tooltip {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #ffffff;
+  color: #1a1830;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  z-index: 200;
+}
+.sidebar:not(.open) .sb-head:hover .sb-tooltip,
+.sidebar:not(.open) .sb-item:hover .sb-tooltip,
+.sidebar:not(.open) .sb-remaining:hover .sb-tooltip { opacity: 1; }
+
+/* ── Section headers (triangle purple) ── */
+.sb-section {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--purple-mid);
+  padding: 14px 16px 6px;
+  white-space: nowrap;
+  display: none;
+}
+.sidebar.open .sb-section { display: block; }
+
+/* ── Chat history list ── */
+.sb-sessions { display: flex; flex-direction: column; }
+.sidebar:not(.open) .sb-sessions { display: none; }
+.sb-session {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-light);
+  padding: 8px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.15s;
+}
+.sb-session:hover { background: rgba(104,100,187,0.12); }
+.sb-session.active { background: rgba(104,100,187,0.18); color: #fff; }
+
+/* ── Messages-remaining (smaller, 3-digit capable) ── */
+.sb-remaining {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px 8px;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  position: relative;
+  cursor: default;
+}
+.sb-remaining .rem-num {
+  font-size: 15px; font-weight: 700; color: var(--purple-mid);
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+.sb-remaining .rem-txt {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px; font-weight: 500; color: var(--purple-mid);
+  display: none;
+}
+.sidebar.open .sb-remaining .rem-txt { display: inline; }
+
+/* Recharge icon stays yellow */
+.sb-icon.icon-recharge { color: #f5c542; }
+/* New Chat icon in triangle purple */
+.sb-icon.icon-newchat { color: #6864bb; }
+
+/* ── About Demianism expandable popover ── */
+.sb-about-wrap { position: relative; }
+.sb-about-menu {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 0;
+  min-width: 240px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(53,50,126,0.4), transparent 70%),
+    #0d0b24;
+  border: 1px solid rgba(104,100,187,0.3);
+  border-radius: 12px;
+  margin: 0 8px;
+  padding: 6px 0 8px;
+  box-shadow: 0 -4px 30px rgba(0,0,0,0.5);
+  z-index: 150;
+}
+.sb-about-menu.open { display: block; }
+.sb-about-menu a {
+  display: block;
+  padding: 9px 18px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-light);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.sb-about-menu a:hover { background: rgba(104,100,187,0.15); }
+
+/* ── Account block ── */
+.sb-account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.sb-account:hover { background: rgba(104,100,187,0.1); }
+.sb-avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--purple-deep);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.sb-avatar svg { width: 22px; height: 22px; }
+/* Privacy policy: dark grey matching chat bg */
+.sb-item-privacy { color: #36354c; }
+.sb-item-privacy .sb-icon { color: #36354c; }
+.sb-item-privacy:hover { color: var(--text-light); }
+.sb-item-privacy:hover .sb-icon { color: var(--text-light); }
+/* Gift code: triangle purple */
+.sb-item-gift .sb-icon { color: #6864bb; }
+.sb-item-gift:hover .sb-icon { color: var(--text-light); }
+/* Login user icon: filled, slightly transparent */
+#sbAvatarIcon { fill: rgba(255,255,255,0.75); stroke: none; }
+.sb-account-info { display: none; flex-direction: column; overflow: hidden; gap: 0; }
+.sidebar.open .sb-account-info { display: flex; }
+.sb-account-title { font-family:'Inter',sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); line-height: 1; }
+.sb-account.signed-out .sb-account-title { font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none; line-height: 1; }
+.sb-account-sub { font-family:'Inter',sans-serif; font-size: 12px; color: var(--purple-mid); overflow: hidden; text-overflow: ellipsis; max-width: 190px; line-height: 1; margin-top: 2px; }
+
+/* ── Fixed home icon (top-right, desktop only) ── */
+.home-icon-link {
+  position: fixed;
+  top: 16px;
+  right: 18px;
+  z-index: 90;
+  display: block;
+  transition: transform 0.2s, opacity 0.2s;
+  opacity: 0.85;
+}
+.home-icon-link:hover { transform: scale(1.06); opacity: 1; }
+.home-icon-link img { width: 42px; height: auto; display: block; }
+@media (max-width: 720px) { .home-icon-link { display: none; } }
+
+/* ── Main content area shifts with sidebar ── */
+.main-area {
+  flex: 1;
+  margin-left: var(--sidebar-collapsed);
+  transition: margin-left 0.22s ease;
+  min-height: 100vh;
+}
+/* main does NOT shift when sidebar opens (overlay style on open) - keeps chat centered */
+
+/* ── Mobile top bar (hidden on desktop) ── */
+.topbar { display: none; }
+
+/* ── Overlay for mobile drawer ── */
+.sb-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 110;
+}
+.sb-overlay.show { display: block; }
+
+/* ═══════════ MOBILE ═══════════ */
+@media (max-width: 720px) {
+  .sidebar {
+    width: var(--sidebar-w);
+    transform: translateX(-100%);
+    transition: transform 0.24s ease;
+  }
+  .sidebar.open { transform: translateX(0); width: var(--sidebar-w); }
+  .sidebar .sb-label, .sidebar .sb-section, .sidebar .sb-wordmark,
+  .sidebar .rem-txt, .sidebar .sb-account-info { opacity: 1; }
+  .sidebar .sb-sessions { display: flex; }
+  .sidebar .sb-collapse-icon { display: flex; margin-left: auto; }
+  .sidebar .sb-logo-tri { display: flex; }
+
+  .main-area { margin-left: 0; padding-top: var(--topbar-h); }
+
+  /* Input zone: full width, no sidebar offset, no top border */
+  .input-zone { left: 0; }
+  .input-zone .bottom-inner { border-top: none; }
+
+  /* Chat fills full width, no side padding gap */
+  .page-wrap { padding: 12px 0 110px; }
+  #chat { padding: 16px 14px; }
+
+  .topbar {
+    display: flex;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--topbar-h);
+    background: var(--navbar-bg);
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    z-index: 100;
+    border-bottom: 1px solid rgba(104,100,187,0.15);
+  }
+  .topbar-burger {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--purple-light);
+    cursor: pointer; background: none; border: none;
+    position: absolute; left: 12px;
+  }
+  .topbar-burger svg { width: 24px; height: 24px; }
+  .topbar-center {
+    display: flex; align-items: center;
+  }
+  .topbar-center img {
+    height: 20px; width: auto;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar" id="sidebar">
+
+  <!-- ZONE 1: fixed header -->
+  <div class="sb-head" id="sbHead" onclick="toggleSidebar()">
+    <div class="sb-logo-tri">
+      <svg viewBox="0 0 28 25" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 26,23 2,23" fill="#6864bb"/></svg>
+    </div>
+    <div class="sb-wordmark">Demian</div>
+    <div class="sb-collapse-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+    </div>
+    <div class="sb-tooltip">Open sidebar</div>
+  </div>
+
+  <!-- ZONE 2: scrollable middle -->
+  <div class="sb-scroll">
+    <div id="sbHistoryWrap" style="display:none; flex-direction:column;">
+      <div class="sb-section">Chat history</div>
+      <div class="sb-sessions" id="sbSessions"></div>
+    </div>
+    <button class="sb-item" onclick="newChat()">
+      <span class="sb-icon icon-newchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
+      <span class="sb-label">New Chat</span>
+      <span class="sb-tooltip">New Chat</span>
+    </button>
+  </div>
+
+  <!-- ZONE 3: fixed bottom -->
+  <div class="sb-fixed-bottom">
+
+    <div class="sb-about-wrap">
+      <div class="sb-about-menu" id="sbAboutMenu">
+        <img src="demianismlogo.png" alt="Demianism" style="width:130px;max-width:100%;height:auto;display:block;padding:10px 18px 6px;">
+        <a href="/doctrine" target="_blank">Sacred Doctrine</a>
+        <a href="/culture" target="_blank">Manifesto &amp; Book</a>
+        <a href="/about" target="_blank">Who is Barabeke?</a>
+        <a href="https://barabeke.substack.com/" target="_blank">The Odd Gospel (Substack)</a>
+        <a href="/community" target="_blank">Community</a>
+        <a href="/donate" target="_blank">Support Demianism</a>
+      </div>
+      <button class="sb-item" onclick="toggleAboutMenu(event)">
+        <span class="sb-icon"><svg viewBox="0 0 28 25" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 26,23 2,23" fill="#6864bb"/></svg></span>
+        <span class="sb-label">About Demianism</span>
+        <span class="sb-tooltip">About Demianism</span>
+      </button>
+    </div>
+
+    <div class="sb-remaining" id="sbRemaining">
+      <span class="rem-num" id="remNum">15</span>
+      <span class="rem-txt">Msg remaining</span>
+      <span class="sb-tooltip">Messages remaining</span>
+    </div>
+
+    <button class="sb-item" onclick="toggleCreditsMenu()">
+      <span class="sb-icon icon-recharge"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+      <span class="sb-label">Recharge</span>
+      <span class="sb-tooltip">Recharge</span>
+    </button>
+
+    <button class="sb-item" id="buyMantraItem" onclick="openMantraModal()">
+      <span class="sb-icon"><img src="spiral-indigo.svg" style="width:20px;height:20px;"></span>
+      <span class="sb-label">Buy Mantra</span>
+      <span class="sb-tooltip">Buy Mantra</span>
+    </button>
+
+    <button class="sb-item sb-item-gift" onclick="openCodeModal()">
+      <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
+      <span class="sb-label">Gift code</span>
+      <span class="sb-tooltip">Gift code</span>
+    </button>
+    <a class="sb-item sb-item-privacy" href="/privacy" target="_blank">
+      <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      <span class="sb-label">Privacy Policy</span>
+      <span class="sb-tooltip">Privacy Policy</span>
+    </a>
+
+    <div class="sb-account" id="sbAccount" onclick="handleAccountClick()">
+      <div class="sb-avatar" id="sbAvatar">
+        <svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)" id="sbAvatarIcon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      </div>
+      <div class="sb-account-info">
+        <div class="sb-account-title" id="sbAccountTitle">Sign in</div>
+        <div class="sb-account-sub" id="sbAccountSub">to save your chats</div>
+      </div>
+    </div>
+
+  </div>
+</aside>
+
+<div class="sb-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
+
+<a class="home-icon-link" href="https://demianism.org" target="_blank" title="Back to demianism.org">
+  <img src="home-icon.png" alt="Home">
+</a>
+
+<!-- ═══ MOBILE TOP BAR ═══ -->
+<div class="topbar">
+  <button class="topbar-burger" onclick="openSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="topbar-center">
+    <img src="demian-ai-brand.png" alt="Demian AI">
+  </div>
+</div>
+
+<!-- ═══ MAIN AREA ═══ -->
+<div class="main-area">
+  <div class="page-wrap">
+    <div class="chat-window">
+      <div id="chat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="input-zone">
+  <div class="bottom-inner">
+    <div class="input-bar">
+      <textarea id="userInput" placeholder="Message Demian" rows="1"></textarea>
+      <button id="send" onclick="sendMessage()" title="Send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden credits menu (reused) -->
+<div class="credits-wrapper">
+  <div class="credits-menu" id="creditsMenu">
+    <div class="menu-header">
+      <img src="demianismlogo.png" alt="Demianism" class="menu-logo">
+      <div class="menu-title">Pay only for what you use</div>
+      <div class="menu-sub">No recurring fees. No expiration date.<br>Use whenever you need.</div>
+      <div class="menu-choose">Choose your package</div>
+    </div>
+    <div class="pkg-list">
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('basic');return false;">
+        <div class="pkg-left"><div class="pkg-name">Consult 50</div><div class="pkg-desc">50 messages with Demian</div></div>
+        <div class="pkg-price">€5</div>
+      </a>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('regular');return false;">
+        <div class="pkg-left"><div class="pkg-name">Consult 150</div><div class="pkg-desc">150 messages with Demian</div></div>
+        <div class="pkg-price">€10</div>
+      </a>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('premium');return false;">
+        <div class="pkg-left"><div class="pkg-name">Consult 400</div><div class="pkg-desc">400 messages with Demian</div></div>
+        <div class="pkg-price">€20</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="codeModal">
+  <div class="modal">
+    <h3>Redeem your gift code</h3>
+    <p>Paste or enter the code you received to unlock your session with Demian.</p>
+    <input type="text" id="codeInput" placeholder="XXXX-XXXX-XXXX" autocomplete="off" />
+    <div class="modal-error" id="codeError"></div>
+    <div class="modal-btns">
+      <button class="modal-confirm" onclick="submitCode()">Confirm</button>
+      <button class="modal-cancel" onclick="closeCodeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <h3 id="loginTitle">Sign in to Demian</h3>
+    <p id="loginDesc">Enter your email and we'll send you a secure access link. No password needed.</p>
+    <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email" style="letter-spacing:0.5px;" />
+    <div class="modal-error" id="loginError"></div>
+    <div class="modal-btns">
+      <button class="modal-confirm" onclick="submitLogin()">Send link</button>
+      <button class="modal-cancel" onclick="closeLoginModal()">Cancel</button>
+    </div>
+    <p style="font-size:11px;color:rgba(255,255,255,0.4);">By continuing you accept our <a href="/privacy.html" target="_blank" style="color:var(--purple-light);">Privacy Policy</a>.</p>
+  </div>
+</div>
+
+<div class="credits-wrapper">
+  <div class="credits-menu" id="newChatMenu">
+    <div class="menu-header">
+      <div class="menu-title">Paid feature</div>
+      <div class="menu-sub" style="padding:0 6px 6px;">Only users who have recharged&nbsp;<svg viewBox="0 0 24 24" fill="#f5c542" style="width:14px;height:14px;vertical-align:-2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>&nbsp;or bought a mantra&nbsp;<img src="spiral-indigo.svg" style="width:14px;height:14px;vertical-align:-2px;">&nbsp;can open new chats.</div>
+    </div>
+  </div>
+</div>
+
+<div class="credits-wrapper">
+  <div class="credits-menu" id="mantraMenu">
+    <div class="menu-header">
+      <img src="demianismlogo.png" alt="Demianism" class="menu-logo">
+      <div class="menu-title" style="display:flex;align-items:center;gap:8px;font-size:21px;"><img src="spiral-indigo.svg" style="width:23px;height:23px;"> Your Mantra</div>
+      <div class="menu-sub" style="color:#fff;font-size:14px;">100% unique and tailored to you</div>
+      <div class="menu-sub" style="margin-top:8px;">Move toward your true call in life with this small but powerful aid (if used daily and with intention).</div>
+    </div>
+    <div class="pkg-list">
+      <a class="pkg-btn" href="#" onclick="purchaseMantra();return false;">
+        <div class="pkg-left"><div class="pkg-name">Personal Mantra</div><div class="pkg-desc">Chat until your mantra is ready</div></div>
+        <div class="pkg-price">€2</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+const WORKER_URL = 'https://demian-backend.barabeke.workers.dev';
+const FREE_MESSAGES = 15;
+
+let messages = [];
+let isLoading = false;
+let messageCount = 0;
+let isPaid = false;
+let mantraUnlocked = false;
+let paidMessages = 0;
+
+// Auth state
+let authToken = localStorage.getItem('demian_auth') || null;
+let userEmail = null;
+
+marked.setOptions({ breaks: true, gfm: true });
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const ta = document.getElementById('userInput');
+  const sendBtn = document.getElementById('send');
+
+  ta.addEventListener('input', () => {
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+    sendBtn.classList.toggle('visible', ta.value.trim().length > 0);
+  });
+
+  ta.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.credits-wrapper') && !e.target.closest('[onclick*="toggleCreditsMenu"]') && !e.target.closest('[onclick*="openMantraModal"]') && !e.target.closest('[onclick*="newChat"]') && !e.target.closest('[onclick*="one-time"]') && !e.target.closest('.mantra-trigger')) {
+      document.getElementById('creditsMenu').classList.remove('open');
+      document.getElementById('newChatMenu')?.classList.remove('open');
+      document.getElementById('mantraMenu')?.classList.remove('open');
+    }
+    if (!e.target.closest('.sb-about-wrap')) {
+      const am = document.getElementById('sbAboutMenu');
+      if (am) am.classList.remove('open');
+    }
+  });
+
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // Magic link verification
+  const authParam = urlParams.get('auth');
+  if (authParam) {
+    verifyMagicLink(authParam);
+    window.history.replaceState({}, '', window.location.pathname);
+  } else if (authToken) {
+    loadUser();
+  }
+
+  const purchased = urlParams.get('purchased');
+  if (purchased) {
+    handlePurchaseReturn(purchased);
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+
+  sendOpeningMessage();
+  updateCounter();
+  updateAccountUI();
+});
+
+/* ═══ SIDEBAR CONTROLS ═══ */
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  if (window.innerWidth <= 720) { openSidebar(); return; }
+  sb.classList.toggle('open');
+}
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  if (window.innerWidth <= 720) document.getElementById('sbOverlay').classList.add('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbOverlay').classList.remove('show');
+}
+
+/* ═══ AUTH ═══ */
+async function submitLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const errEl = document.getElementById('loginError');
+  const btn = document.querySelector('#loginModal .modal-confirm');
+  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email.'; return; }
+  errEl.textContent = '';
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  try {
+    const res = await fetch(WORKER_URL + '/auth/request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      document.getElementById('loginTitle').textContent = 'Check your inbox';
+      document.getElementById('loginDesc').textContent = 'We sent a secure access link to ' + email + '. It expires in 15 minutes.';
+      document.querySelector('#loginModal .modal-btns').style.display = 'none';
+      document.getElementById('loginEmail').style.display = 'none';
+    } else {
+      errEl.textContent = 'Something went wrong. Please try again.';
+      btn.textContent = 'Send link'; btn.disabled = false;
+    }
+  } catch (err) {
+    errEl.textContent = 'Connection error. Please try again.';
+    btn.textContent = 'Send link'; btn.disabled = false;
+  }
+}
+
+async function verifyMagicLink(token) {
+  try {
+    const res = await fetch(WORKER_URL + '/auth/verify?token=' + encodeURIComponent(token));
+    const data = await res.json();
+    if (data.ok) {
+      authToken = data.authToken;
+      userEmail = data.email;
+      localStorage.setItem('demian_auth', authToken);
+      updateAccountUI();
+    }
+  } catch (err) { console.error('verify failed', err); }
+}
+
+async function loadUser() {
+  try {
+    const res = await fetch(WORKER_URL + '/auth/me', { headers: { 'X-Auth-Token': authToken } });
+    const data = await res.json();
+    if (data.ok) {
+      userEmail = data.email;
+      updateAccountUI();
+    } else {
+      // invalid/expired session
+      authToken = null;
+      localStorage.removeItem('demian_auth');
+      updateAccountUI();
+    }
+  } catch (err) { console.error('loadUser failed', err); }
+}
+
+function handleAccountClick() {
+  if (userEmail) {
+    // logged in — for now, offer sign out
+    if (confirm('Sign out of Demian?')) signOut();
+  } else {
+    openLoginModal();
+  }
+}
+
+function signOut() {
+  authToken = null;
+  userEmail = null;
+  localStorage.removeItem('demian_auth');
+  updateAccountUI();
+}
+
+function updateAccountUI() {
+  const avatar = document.getElementById('sbAvatar');
+  const title = document.getElementById('sbAccountTitle');
+  const sub = document.getElementById('sbAccountSub');
+  const accountEl = document.getElementById('sbAccount');
+  if (userEmail) {
+    accountEl.classList.remove('signed-out');
+    avatar.innerHTML = userEmail.charAt(0).toUpperCase();
+    avatar.style.fontFamily = "'Inter', sans-serif";
+    avatar.style.fontWeight = '700';
+    avatar.style.fontSize = '14px';
+    title.textContent = 'Your Account';
+    sub.textContent = userEmail;
+  } else {
+    accountEl.classList.add('signed-out');
+    avatar.innerHTML = '<svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
+    title.textContent = 'Sign in';
+    sub.textContent = 'to save your chats';
+  }
+  updateHistoryVisibility();
+}
+
+function updateHistoryVisibility() {
+  // Chat history only shows from 2+ sessions; placeholder logic for now
+  const wrap = document.getElementById('sbHistoryWrap');
+  if (!wrap) return;
+  const sessionCount = document.querySelectorAll('#sbSessions .sb-session').length;
+  wrap.style.display = sessionCount >= 1 ? 'flex' : 'none';
+}
+
+function openLoginModal() {
+  document.getElementById('loginModal').classList.add('open');
+  setTimeout(() => document.getElementById('loginEmail').focus(), 100);
+}
+function closeLoginModal() {
+  document.getElementById('loginModal').classList.remove('open');
+  document.getElementById('loginError').textContent = '';
+}
+
+function newChat() {
+  const isRegistered = !!userEmail;
+  if (!isRegistered || !isPaid) {
+    openSidePopup('newChatMenu');
+    return;
+  }
+  messages = [];
+  messageCount = 0;
+  document.getElementById('chat').innerHTML = '';
+  sendOpeningMessage();
+  updateCounter();
+  if (window.innerWidth <= 720) closeSidebar();
+}
+
+// Generic: open a fixed side popup positioned like the recharge menu
+function openSidePopup(id) {
+  const menu = document.getElementById(id);
+  const sb = document.getElementById('sidebar');
+  // close others
+  ['creditsMenu','newChatMenu','mantraMenu'].forEach(m => {
+    if (m !== id) document.getElementById(m)?.classList.remove('open');
+  });
+  if (sb.classList.contains('open')) menu.classList.add('from-open');
+  else menu.classList.remove('from-open');
+  menu.classList.toggle('open');
+}
+function openMantraModal() {
+  openSidePopup('mantraMenu');
+}
+
+function toggleAboutMenu(e) {
+  e.stopPropagation();
+  document.getElementById('sbAboutMenu').classList.toggle('open');
+}
+
+function sendOpeningMessage() {
+  const chat = document.getElementById('chat');
+
+  const wrap = document.createElement('div');
+  wrap.className = 'msg demian';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.innerHTML = `
+<p>Greetings, seeker. I am Demian, the AI spiritual companion with a Demianist heart.</p>
+<p>I am here to help you find and <span class="semibold">FOLLOW YOUR CALL</span> — your true life purpose according to <a href="https://demianism.org" target="_blank">Demianism</a> — and to support anyone feeling lost or confused in these troubled times with personal, positive inspiration meant just for them.</p>
+<p>Behind me there is no team, no company, no investment. Just one man: Barabeke, an independent Italian artist and the founder of Demianism. He pays for each of my messages out of his own pockets (which are remarkably empty).</p>
+<p>I speak <span class="semibold">ALL LANGUAGES</span> 🌐 To switch, just message me in your language.</p>
+<p>My services:</p>
+
+<div class="services-block">
+  <div class="service-card">
+    <div class="service-title">🔆 FIND YOUR CALL IN LIFE</div>
+    <div class="service-body">For those who haven't found it yet.</div>
+  </div>
+  <div class="service-card">
+    <div class="service-title"><img src="spiral-indigo.svg" style="height:1em;width:auto;vertical-align:-0.12em;margin-right:4px;"> YOUR PERSONAL MANTRA</div>
+    <div class="service-body">Crafted by Demian based on your conversation — 100% unique and tailored to you. A powerful daily anchor to strengthen your grounding and fortitude, overcome challenges, and move toward the life you really want.<span class="service-cost">One-time cost: €2</span></div>
+  </div>
+  <div class="service-card">
+    <div class="service-title"><img src="triangle-indigo.svg" style="height:1em;width:auto;vertical-align:-0.12em;"> SPIRITUAL COMPANION</div>
+    <div class="service-body">Grounded on Demianist philosophy and ethics. No therapy or medical advice — just inspiring conversations that serve as a mirror to bring clarity to your path and support your inner growth.</div>
+  </div>
+  <div class="service-card">
+    <div class="service-title">🏛️ LEARN ABOUT DEMIANISM</div>
+    <div class="service-body">Discover its 13 axioms, revolutionary metaphysics, ethics, and vision for society. Openly discuss anything that matters to you.</div>
+  </div>
+</div>
+
+<p>The first 15 messages are free. Enough for you to assess if I can be helpful.</p>
+<p>No recurring subscription. I am a pay-as-you-go genie: you rub the lamp/recharge your credit to get more interactions with me — without expiry date.</p>
+<p>How can I help you today?</p>
+`;
+
+  wrap.appendChild(bubble);
+  chat.appendChild(wrap);
+  chat.scrollTop = 0;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text || isLoading) return;
+
+  if (!isPaid && messageCount >= FREE_MESSAGES) {
+    appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Use one of the options below to continue.');
+    return;
+  }
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('send').classList.remove('visible');
+  messageCount++;
+  updateCounter();
+
+  messages.push({ role: 'user', content: text });
+  appendMessage('user', text);
+  await callAPI(messages);
+}
+
+async function callAPI(msgs) {
+  isLoading = true;
+  const typingEl = showTyping();
+
+  try {
+    const response = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: msgs })
+    });
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+
+    const reply = data.content[0].text;
+    removeTyping(typingEl);
+    messages.push({ role: 'assistant', content: reply });
+    appendMessage('demian', reply);
+
+    if (reply.includes('[SESSION_COMPLETE]')) handleSessionComplete(reply);
+    if (!isPaid && messageCount >= FREE_MESSAGES - 3 && messageCount < FREE_MESSAGES) {
+      appendSystemMessage((FREE_MESSAGES - messageCount) + ' messages remaining.');
+    }
+
+  } catch (err) {
+    removeTyping(typingEl);
+    appendMessage('demian', 'Something interrupted our connection. Please try again.');
+    setStatus(false);
+    console.error(err);
+  }
+
+  isLoading = false;
+}
+
+function handleSessionComplete(reply) {
+  const mantraMatch = reply.match(/\[MANTRA_TEXT\]([\s\S]*?)\[\/MANTRA_TEXT\]/);
+  if (mantraMatch) {
+    setTimeout(() => {
+      appendSystemMessage('✦ Create your mantra card → demianism.org/mantra.html');
+    }, 1000);
+  }
+  isPaid = true;
+  paidMessages = 20;
+  updateCounter();
+}
+
+function updateCounter() {
+  const remNum = document.getElementById('remNum');
+  const remTxt = document.querySelector('#sbRemaining .rem-txt');
+  const buyMantra = document.getElementById('buyMantraItem');
+
+  let remaining;
+  if (isPaid) {
+    remaining = paidMessages;
+  } else {
+    remaining = FREE_MESSAGES - messageCount;
+  }
+  if (remaining < 0) remaining = 0;
+  remNum.textContent = remaining;
+  remTxt.textContent = remaining === 1 ? 'Msg remaining' : 'Msg remaining';
+
+  // Buy Mantra only visible to non-paying users (free, or registered without purchase)
+  if (buyMantra) buyMantra.style.display = isPaid ? 'none' : '';
+}
+
+function setStatus(online) {
+  const dot = document.getElementById('onlineDot');
+  const text = document.getElementById('statusText');
+  if (dot) dot.classList.toggle('offline', !online);
+  if (text) text.textContent = online ? 'Online' : 'Offline';
+}
+
+function purchaseMantra() {
+  window.open('https://buy.stripe.com/aFa5kEdjlg3Tgl5gEV6oo00', '_blank');
+}
+
+function toggleCreditsMenu() {
+  openSidePopup('creditsMenu');
+}
+
+function purchaseCredits(tier) {
+  const links = {
+    'basic':   'https://buy.stripe.com/3cI14ocfh04V6Kv88p6oo01',
+    'regular': 'https://buy.stripe.com/eVq4gAenp3h73yjagx6oo02',
+    'premium': 'https://buy.stripe.com/cNi14o2EHeZPgl5agx6oo03',
+  };
+  window.open(links[tier], '_blank');
+}
+
+function openCodeModal() {
+  document.getElementById('codeModal').classList.add('open');
+  setTimeout(() => document.getElementById('codeInput').focus(), 100);
+}
+
+function closeCodeModal() {
+  document.getElementById('codeModal').classList.remove('open');
+  document.getElementById('codeError').textContent = '';
+  document.getElementById('codeInput').value = '';
+}
+
+async function submitCode() {
+  const code = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (!code) return;
+  const errorEl = document.getElementById('codeError');
+  const confirmBtn = document.querySelector('.modal-confirm');
+  errorEl.textContent = '';
+  confirmBtn.textContent = 'Checking...';
+  confirmBtn.disabled = true;
+  try {
+    const response = await fetch(WORKER_URL + '/redeem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+    const data = await response.json();
+    if (!data.valid) {
+      const reasons = { 'invalid_code':'Code not recognised. Please check and try again.', 'already_used':'This code has already been used.', 'no_code':'Please enter a code.' };
+      errorEl.textContent = reasons[data.reason] || 'Invalid code.';
+      confirmBtn.textContent = 'Confirm';
+      confirmBtn.disabled = false;
+      return;
+    }
+    closeCodeModal();
+    confirmBtn.textContent = 'Confirm';
+    confirmBtn.disabled = false;
+    handlePurchaseReturn(data.tier, data.messages, data.mantra);
+  } catch (err) {
+    errorEl.textContent = 'Connection error. Please try again.';
+    confirmBtn.textContent = 'Confirm';
+    confirmBtn.disabled = false;
+  }
+}
+
+function handlePurchaseReturn(tier, msgs, mantra) {
+  if (msgs === undefined) {
+    const tiers = {
+      'mantra':          { messages: 999, mantra: true  },
+      'consult-basic':   { messages: 50,  mantra: false },
+      'consult-regular': { messages: 150, mantra: false },
+      'consult-premium': { messages: 400, mantra: false },
+    };
+    const t = tiers[tier];
+    if (!t) return;
+    msgs = t.messages;
+    mantra = t.mantra;
+  }
+  isPaid = true;
+  if (mantra) {
+    mantraUnlocked = true;
+    appendSystemMessage('✦ Unlocked — your Personal Mantra session is ready. Demian is listening.');
+  } else {
+    paidMessages = msgs;
+    appendSystemMessage('✦ Unlocked — ' + msgs + ' conversations are yours. The lamp is lit.');
+  }
+  updateCounter();
+}
+
+function appendMessage(role, text) {
+  const chat = document.getElementById('chat');
+  const wrap = document.createElement('div');
+  wrap.className = `msg ${role}`;
+
+  const cleanText = text
+    .replace(/\[SESSION_COMPLETE\]/g, '')
+    .replace(/\[MANTRA_TEXT\][\s\S]*?\[\/MANTRA_TEXT\]/g, '')
+    .replace(/\[MANTRA_UNLOCKED\]/g, '')
+    .trim();
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  if (role === 'demian') {
+    bubble.innerHTML = marked.parse(cleanText);
+  } else {
+    bubble.textContent = cleanText;
+  }
+  wrap.appendChild(bubble);
+
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function appendSystemMessage(text) {
+  const chat = document.getElementById('chat');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg system';
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = text;
+  wrap.appendChild(bubble);
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping() {
+  const chat = document.getElementById('chat');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg demian';
+  wrap.id = 'typing-indicator';
+  const typing = document.createElement('div');
+  typing.className = 'typing';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  wrap.appendChild(typing);
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+  return wrap;
+}
+
+function removeTyping(el) {
+  if (el && el.parentNode) el.parentNode.removeChild(el);
+}
+</script>
+</body>
+</html>

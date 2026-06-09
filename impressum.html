@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Impressum — demianism.org</title>
+
+<!-- Favicons -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+<link rel="manifest" href="site.webmanifest">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Libre Baskerville', serif;
+    margin: 0;
+    padding: 0;
+    color: #d4d4f0;
+    font-size: 20px;
+    line-height: 1.8;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
+      radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
+      radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
+      #000000;
+    min-height: 100vh;
+  }
+
+  /* ── Navbar ─────────────────────────────────────────────────────── */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 38px;
+    padding: 0 26px;
+    height: 64px;
+    background: rgba(18,16,40,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #6864bb33;
+  }
+
+  .nav-logo { display: flex; align-items: center; flex-shrink: 0; }
+  .nav-logo img { height: 44px; width: auto; display: block; }
+
+  .nav-links { display: flex; align-items: center; gap: 38px; }
+
+  .nav-links a {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6864bb;
+    text-decoration: none;
+    transition: color 0.25s ease;
+    white-space: nowrap;
+  }
+
+  .nav-links a:hover { color: #a29ef1; }
+
+  .nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+
+  .demian-ai {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    opacity: 1;
+    transition: opacity 0.25s ease;
+  }
+
+  .demian-ai:hover { opacity: 0.8; text-decoration: none; }
+
+  .demian-ai img {
+    height: 18px;
+    width: auto;
+    display: block;
+  }
+
+  .try-free {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #cfcfd4;
+    background-color: #35327e;
+    border: 1px solid #6864bb55;
+    padding: 8px 16px;
+    border-radius: 30px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+  }
+
+  .try-free:hover {
+    background-color: #6864bb;
+    color: #ffffff;
+    box-shadow: 0 0 18px rgba(104,100,187,0.6);
+    text-decoration: none;
+  }
+
+  @media (max-width: 900px) {
+    .navbar { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 16px; }
+    .nav-links { order: 3; width: 100%; flex-wrap: wrap; justify-content: center; gap: 18px; }
+    .nav-links a { font-size: 15px; letter-spacing: 1px; }
+    .nav-right { margin-left: auto; }
+  }
+
+  /* ── Page layout ─────────────────────────────────────────────────── */
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+
+  .page-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #6864bb;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .page-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #cfcfd4;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .page-date {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: rgba(138,135,201,0.5);
+    text-align: center;
+    letter-spacing: 1px;
+    margin-bottom: 52px;
+  }
+
+  /* ── Sections ────────────────────────────────────────────────────── */
+  h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #a29ef1;
+    margin: 40px 0 14px;
+    scroll-margin-top: 80px;
+  }
+
+  p {
+    color: #d4d4f0;
+    margin-bottom: 14px;
+  }
+
+  p:last-of-type { margin-bottom: 0; }
+
+  strong { color: #d4d4f0; font-weight: 700; }
+
+  a { color: #7b79d4; text-decoration: none; }
+  a:hover { color: #b8b6f5; text-decoration: underline; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(104,100,187,0.15);
+    margin: 36px 0;
+  }
+
+  /* ── Contact block ───────────────────────────────────────────────── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 8px 16px;
+    margin-top: 18px;
+    align-items: baseline;
+  }
+
+  .contact-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(138,135,201,0.5);
+    padding-top: 1px;
+  }
+
+  .contact-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #d4d4f0;
+  }
+
+  .contact-value a {
+    color: #6864bb;
+    text-decoration: none;
+  }
+
+  .contact-value a:hover {
+    color: #a29ef1;
+    text-decoration: underline;
+  }
+
+  /* ── Legal note box ──────────────────────────────────────────────── */
+  .legal-note {
+    background: #171637;
+    border: 1px solid rgba(104,100,187,0.2);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-top: 44px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: rgba(138,135,201,0.45);
+    line-height: 1.7;
+  }
+
+  .legal-note a {
+    color: rgba(104,100,187,0.6);
+  }
+
+  .legal-note a:hover {
+    color: #6864bb;
+    text-decoration: underline;
+  }
+
+  /* ── Back button ─────────────────────────────────────────────────── */
+  .back-wrap { margin-top: 52px; }
+
+  .back {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6864bb;
+    text-decoration: none;
+    border: 1px solid rgba(104,100,187,0.3);
+    border-radius: 30px;
+    padding: 9px 20px;
+    transition: all 0.2s;
+  }
+
+  .back:hover {
+    background: rgba(104,100,187,0.12);
+    color: #a29ef1;
+    text-decoration: none;
+  }
+
+  /* ── Footer ──────────────────────────────────────────────────────── */
+  .footer-separator {
+    border: none;
+    border-top: 1px solid #6864bb28;
+    margin: 0;
+  }
+
+  .site-footer {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 20px 40px;
+    text-align: center;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 16px;
+    color: #6864bb;
+    line-height: 1.6;
+  }
+
+  .footer-logo {
+    width: 94px;
+    height: 94px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 6px;
+  }
+
+  .site-footer a { color: #a29ef1; text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; color: #cfcfd4; }
+  .footer-links { margin-top: 10px; font-size: 14px; color: #4a4780; }
+  .footer-links a { color: #4a4780; }
+  .footer-links a:hover { color: #6864bb; }
+  .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
+</style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="nav-logo" aria-label="Demianism home">
+      <img src="demianismlogo.png" alt="Demianism">
+    </a>
+    <div class="nav-links">
+      <a href="/doctrine">Sacred Doctrine</a>
+      <a href="/culture">Culture</a>
+      <a href="/origin">Origin</a>
+      <a href="/about">Who is Barabeke?</a>
+      <a href="/donate">Donate</a>
+      <a href="/community" class="active">Join</a>
+    </div>
+    <div class="nav-right">
+      <a href="/demian" class="demian-ai">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+      <a href="/demian" class="try-free">Try Free</a>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <main class="wrap">
+
+    <div class="page-eyebrow">demianism.org</div>
+    <h1 class="page-title">Impressum</h1>
+    <div class="page-date">Provider identification · June 2026</div>
+
+    <h2>Who is behind this site</h2>
+
+    <p>
+      This website is operated by <strong>Barabeke</strong>, an Italian artist and independent
+      cultural figure active online since 2006. Barabeke is the messenger of the Demianist doctrine,
+      the author of the novel-saga <em>Return to Eden</em>, and the creator of Demian AI. This is a one-person
+      project: no company, no team, no institution behind it.
+    </p>
+
+    <p>
+      Barabeke is a public figure under an artist name — consistent with a long tradition of
+      artists, writers, and thinkers who publish under a pseudonym. The name Barabeke is
+      permanently and publicly associated with a traceable body of work, a verifiable online
+      presence, and direct, open contact channels. There is no intent to conceal identity from
+      those who legitimately need to reach the operator of this site. Anyone who does is
+      one message away.
+    </p>
+
+    <hr class="divider">
+
+    <h2>What this is</h2>
+
+    <p>
+      Demianism.org is a cultural and spiritual project, not a commercial one in any conventional
+      sense. Demianism is a revealed doctrine — a complete metaphysical, ethical, and civilizational
+      system received by Barabeke in 2005 and 2015 — with its own axioms and a published body of
+      work. It is, by any reasonable definition, a new spiritual and cultural movement.
+    </p>
+
+    <p>
+      The only product associated with this site is <strong>Demian AI</strong>, a spiritual
+      companion powered by the Claude API and grounded in Demianist doctrine. Demian carries
+      operational costs — API usage, infrastructure, development — that its pricing is designed
+      to cover. It is not a revenue-generating enterprise: the project sustains itself through
+      Demian's pricing and free donations from those who believe in its value. Any surplus goes
+      back into the work.
+    </p>
+
+    <hr class="divider">
+
+    <h2>On privacy — mine and yours</h2>
+
+    <p>
+      As a dissident artist and independent cultural voice, Barabeke has been the target of
+      coordinated harassment and ideological hostility. For this reason, the operator of this
+      site claims a reasonable degree of personal privacy — the same privacy extended to every
+      visitor and user of this site.
+    </p>
+
+    <p>
+      This is not anonymity. Barabeke is fully reachable, publicly associated with this work,
+      and has never hidden from anyone with a legitimate reason to make contact. What is withheld
+      here is a home address — information that serves no protective function for users and
+      creates a documented personal safety risk for the operator.
+    </p>
+
+    <p>
+      This position is consistent with the spirit of transparency that provider identification
+      laws were designed to ensure: the public has a right to know <em>who</em> is behind a
+      site and <em>how to reach them</em>. Both are answered below.
+    </p>
+
+    <hr class="divider">
+
+    <h2>Contact</h2>
+
+    <div class="contact-grid">
+      <span class="contact-label">Name</span>
+      <span class="contact-value">Barabeke</span>
+
+      <span class="contact-label">Origin</span>
+      <span class="contact-value">Italy · operating from the EU</span>
+
+      <span class="contact-label">X</span>
+      <span class="contact-value"><a href="https://x.com/barabeke" target="_blank">@barabeke</a></span>
+
+      <span class="contact-label">Telegram</span>
+      <span class="contact-value"><a href="https://t.me/barabeke" target="_blank">t.me/barabeke</a></span>
+
+      <span class="contact-label">Substack</span>
+      <span class="contact-value"><a href="https://barabeke.substack.com" target="_blank">barabeke.substack.com</a></span>
+
+      <span class="contact-label">Web</span>
+      <span class="contact-value"><a href="https://linktr.ee/barabeke" target="_blank">linktr.ee/barabeke</a></span>
+    </div>
+
+    <!-- Legal note -->
+    <div class="legal-note">
+      This Impressum is provided in good faith in accordance with the intent of §5 TDDDG
+      (formerly TMG). The operator has chosen not to publish a physical address on the grounds
+      of documented personal safety concerns, consistent with the right to protection of
+      personal data under GDPR Art. 9 and the fundamental right to private life under Art. 7
+      of the EU Charter of Fundamental Rights. Full contact information is available to
+      competent authorities upon request through the channels listed above.
+      For the privacy policy of this site and its sub-service Demian AI, see
+      <a href="/privacy">demianism.org/privacy</a>.
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <hr class="footer-separator">
+  <footer class="site-footer">
+    <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
+    <div>© 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
+    <div class="footer-license">Content licensed under CC BY-NC-ND 4.0</div>
+    <div class="footer-links">
+      <a href="/impressum">Impressum</a> &nbsp;·&nbsp;
+      <a href="/privacy">Privacy Policy</a>
+    </div>
+  </footer>
+
+</body>
+</html>

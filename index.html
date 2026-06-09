@@ -1,36 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-P8WRS2SW');</script>
-  <!-- End Google Tag Manager -->
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Demianism: a New Culture for the Digital Age</title>
-<meta name="description" content="Demianism is a revealed doctrine upon which a civilization that is fit to survive & thrive in times of AI and robots can be built.">
+  <title>Demianism: a New Culture for the Digital Age</title>
+  <meta name="description" content="Demianism is a revealed doctrine upon which a civilization that is fit to survive & thrive in times of AI and robots can be built.">
 
-<!-- Facebook Meta Tags -->
-<meta property="og:url" content="https://demianism.org/">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Demianism: a New Culture for the Digital Age">
-<meta property="og:description" content="Demianism is a revealed doctrine upon which a civilization that is fit to survive & thrive in times of AI and robots can be built.">
-<meta property="og:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
+  <!-- OG / Twitter -->
+  <meta property="og:url" content="https://demianism.org/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Demianism: a New Culture for the Digital Age">
+  <meta property="og:description" content="Demianism is a revealed doctrine upon which a civilization that is fit to survive & thrive in times of AI and robots can be built.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="demianism.org">
+  <meta property="twitter:url" content="https://demianism.org/">
+  <meta name="twitter:title" content="Demianism: a New Culture for the Digital Age">
+  <meta name="twitter:description" content="Demianism is a revealed doctrine upon which a civilization that is fit to survive & thrive in times of AI and robots can be built.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
 
-<!-- Twitter Meta Tags -->
-<meta name="twitter:card" content="summary_large_image">
-<meta property="twitter:domain" content="demianism.org">
-<meta property="twitter:url" content="https://demianism.org/">
-<meta name="twitter:title" content="Demianism: a New Culture for the Digital Age">
-<meta name="twitter:description" content="Demianism is a revealed doctrine upon which a civilization that is fit to survive & thrive in times of AI and robots can be built.">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
-
-  <!-- Favicons – using your existing files -->
+  <!-- Favicons -->
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96">
@@ -38,605 +29,615 @@
   <link rel="manifest" href="site.webmanifest">
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
+    /* =====================================================================
+       RESET & BASE
+       ===================================================================== */
+    *, *::before, *::after { box-sizing: border-box; }
+
     body {
       margin: 0;
       padding: 0;
-      text-align: center;
-      font-family: 'Source Serif 4', serif;
-      color: #6864bb;
-      font-size: 24px;
+      font-family: 'Libre Baskerville', serif;
+      color: #d4d4f0;
+      font-size: 20px;
       line-height: 1.8;
-
-      background: radial-gradient(circle at 20% 20%, rgba(53, 50, 126, 0.28), transparent 60%),
-                  radial-gradient(circle at 80% 30%, rgba(53, 50, 126, 0.22), transparent 65%),
-                  radial-gradient(circle at 50% 80%, rgba(53, 50, 126, 0.35), transparent 70%),
-                  #000000;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
+        radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
+        radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
+        #000000;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
+    /* =====================================================================
+       NAVBAR
+       ===================================================================== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 38px;
+      padding: 0 26px;
+      height: 64px;
+      background: rgba(18,16,40,0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid #6864bb33;
     }
 
-    .logo {
-      width: 500px;
-      height: auto;
-      max-width: 100%;
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .nav-logo img {
+      height: 44px;
+      width: auto;
       display: block;
-      margin: 40px auto 30px auto;
-      object-fit: contain;
     }
 
-    @keyframes glowPulse {
-      0% {
-        text-shadow:
-          0px 0px 6px  rgba(104, 100, 187, 0.85),
-          0px 0px 13px rgba(104, 100, 187, 0.75),
-          0px 0px 27px rgba(104, 100, 187, 0.6),
-          0px 0px 55px rgba(104, 100, 187, 0.45);
-      }
-      50% {
-        text-shadow:
-          0px 0px 9px  rgba(104, 100, 187, 1),
-          0px 0px 20px rgba(104, 100, 187, 0.9),
-          0px 0px 42px rgba(104, 100, 187, 0.75),
-          0px 0px 75px rgba(104, 100, 187, 0.55);
-      }
-      100% {
-        text-shadow:
-          0px 0px 6px  rgba(104, 100, 187, 0.85),
-          0px 0px 13px rgba(104, 100, 187, 0.75),
-          0px 0px 27px rgba(104, 100, 187, 0.6),
-          0px 0px 55px rgba(104, 100, 187, 0.45);
-      }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 38px;
     }
 
-    h1, h2 {
+    .nav-links a {
       font-family: 'Inter', sans-serif;
       font-weight: 700;
-      font-size: 43px;
+      font-size: 17px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      margin: 70px 0 12px 0;
+      color: #6864bb;
+      text-decoration: none;
+      transition: color 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover { color: #a29ef1; }
+
+    .nav-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .demian-ai {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      opacity: 1;
+      transition: opacity 0.25s ease;
+    }
+
+    .demian-ai:hover { opacity: 0.8; text-decoration: none; }
+
+    .demian-ai img {
+      height: 18px;
+      width: auto;
+      display: block;
+    }
+
+    .try-free {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
       color: #cfcfd4;
-      line-height: 1.55;
+      background-color: #35327e;
+      border: 1px solid #6864bb55;
+      padding: 8px 16px;
+      border-radius: 30px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.25s ease;
+    }
+
+    .try-free:hover {
+      background-color: #6864bb;
+      color: #ffffff;
+      box-shadow: 0 0 18px rgba(104,100,187,0.6);
+      text-decoration: none;
+    }
+
+    /* =====================================================================
+       HERO
+       ===================================================================== */
+    @keyframes glowPulse {
+      0%   { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6), 0 0 55px rgba(104,100,187,.45); }
+      50%  { text-shadow: 0 0 9px rgba(104,100,187,1),   0 0 20px rgba(104,100,187,.9),  0 0 42px rgba(104,100,187,.75),0 0 75px rgba(104,100,187,.55); }
+      100% { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6), 0 0 55px rgba(104,100,187,.45); }
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 60px 20px 20px;
+    }
+
+    .hero-logo {
+      width: 210px;
+      max-width: 55%;
+      height: auto;
+      display: block;
+      margin: 0 auto 36px;
+    }
+
+    .hero h1 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: clamp(28px, 4vw, 46px);
+      text-transform: uppercase;
       letter-spacing: 10px;
+      color: #cfcfd4;
+      line-height: 1.45;
+      margin: 0 0 28px;
       transform: scaleX(1.1);
       animation: glowPulse 11s ease-in-out infinite;
     }
 
-    h1 {
-      margin-top: 10px;
-    }
-
-p {
-  font-size: 24px;
-  margin: 22px auto;
-  line-height: 1.8;
-  color: #6864bb;
-  max-width: 820px;
-}
-
-/* Blessing - make sure it's properly 24px */
-.blessing {
-  font-size: 24px;
-  margin-top: 40px;
-  color: #6864bb;
-  line-height: 1.8;
-  white-space: nowrap;
-}
-
-.intro-copy {
-  font-size: 24px;
-  color: #6864bb;
-  margin-bottom: 0;
-}
-
-    /* ===== ALL LINKS ===== */
-    a {
+    .hero-subtitle {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(19px, 2.3vw, 25px);
       color: #a29ef1;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-      color: #d4c8f5;
-    }
-
-    /* Image styles */
-    .cover,
-    .coverman,
-    .doctrine,
-    .art,
-    .isle {
-      width: 100%;
-      height: auto;
-      display: block;
-      margin: 0 auto 5px auto;
-      border-radius: 8px;
-    }
-
-    .cover      { max-width: 639px; }
-    .coverman   { max-width: 536px; }
-    .doctrine   { max-width: 1080px; }
-    .art        { max-width: 800px; }
-    .isle       { max-width: 1000px; }
-
-    .button-main {
-      display: inline-block;
-      background-color: #35327e;
-      color: #cfcfd4;
-      padding: 14px 24px;
-      margin: 10px;
-      border-radius: 30px;
-      font-size: 15px;
-      text-decoration: none;
-      font-family: 'Inter', sans-serif;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-      transition: all 0.3s ease;
-      text-align: center;
-      line-height: 1.35;
-      min-width: 170px;
-      border: 1px solid #6864bb22;
-    }
-
-    .button-main.donation-button {
-      text-transform: uppercase;
-    }
-
-    .button-main:hover {
-      background-color: #6864bb;
-      color: #ffffff;
-      box-shadow: 0px 0px 28px rgba(104, 100, 187, 0.65);
-      transform: translateY(-2px);
-      text-decoration: none;
-      border-color: #6864bb88;
-    }
-
-    .read-button {
-      font-size: 14px;
-      padding: 13px 22px;
-      min-width: 180px;   /* slightly wider to match header text */
-      letter-spacing: 0.6px;
+      max-width: 660px;
+      line-height: 1.75;
+      margin: 0 auto;
     }
 
     /* =====================================================================
-       BOOK ROW  (manifesto – 2 buttons per language row, no headers)
-       FLAG | BTN-LEFT | BTN-RIGHT
-       Column gap halved for flag→buttons; button columns spaced 2× wider.
+       CARD GRID
        ===================================================================== */
-    .book-row {
+    .cards-section {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 20px 28px 54px;
+    }
+
+    .cards-grid {
       display: grid;
-      /* col 1: flag  col 2: left button  col 3: right button */
-      grid-template-columns: 42px 1fr 1fr;
-      column-gap: 0;                 /* we control spacing via dedicated gap columns instead */
-      align-items: center;
-      justify-content: center;
-      margin: 26px auto;
-      max-width: 620px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 36px;
     }
 
-    /* Use explicit gap columns so we can set flag→btn and btn↔btn independently */
-    .book-row {
-      grid-template-columns: 42px 17px 1fr 7px 1fr;
-      /* col1=flag  col2=half-gap  col3=btn-left  col4=double-gap  col5=btn-right */
+    @media (max-width: 700px) {
+      .cards-grid { grid-template-columns: 1fr; }
     }
 
-    /* =====================================================================
-       BOOK TABLE  (Demianism book – has header row + language rows)
-       COL1=flag  COL2=free-digital btn  COL3=amazon btn
-       ===================================================================== */
-    .book-table {
-      display: grid;
-      grid-template-columns: 42px 17px 1fr 7px 1fr;
-      /* col1=flag  col2=half-gap  col3=btn-left  col4=double-gap  col5=btn-right */
-      row-gap: 16px;
-      align-items: center;
-      justify-content: center;
-      margin: 26px auto;
-      max-width: 640px;
-    }
-
-    /* Header row: empty cell for flag+gap columns, then two headers over btn columns */
-    .book-header {
-      /* spans only the button column it labels */
-      justify-self: center;
-      text-align: center;
-      font-family: 'Inter', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      color: #cfcfd4;
-      letter-spacing: 0.5px;
-      line-height: 1.3;
-      width: 100%;         /* fill the column so centering is relative to button width */
-    }
-
-    .book-header.empty {
-      visibility: hidden;
-    }
-
-    /* The flag lives in col 1; gap cols 2 & 4 are filled by spacer divs */
-    .flag {
-      height: 42px;
-      width: auto;
-      border-radius: 50%;
-      object-fit: contain;
-      justify-self: center;
-      grid-column: 1;
-    }
-
-    /* Invisible spacer divs that occupy the gap columns */
-    .col-gap {
-      /* no content, just occupies the gap column */
-    }
-
-    .amazon-button {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      padding: 0;
-      margin: 0;
-      background: none;
-      border: none;
-      box-shadow: none;
-      transform: none;
-      line-height: 0;
-    }
-
-    .amazon-button:hover {
-      background: none;
-      border: none;
-      box-shadow: none;
-      transform: none;
-    }
-
-    .amazon-button img {
-      display: block;
-      height: 54px;
-      width: auto;
-    }
-
-    .amazon-button:hover img {
-      content: url("amazon-hover.png");
-    }
-
-    /* =====================================================================
-       MOBILE  ≤ 600 px  – stack everything vertically, centred
-       ===================================================================== */
-    @media (max-width: 600px) {
-      .book-row,
-      .book-table {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-        max-width: 100%;
-      }
-
-      /* hide the invisible spacers & empty header on mobile */
-      .col-gap,
-      .book-header.empty {
-        display: none;
-      }
-
-      .book-header {
-        font-size: 14px;
-        width: auto;
-      }
-
-      .flag {
-        height: 38px;
-      }
-
-      .button-main.read-button,
-      .amazon-button {
-        width: 240px;
-        max-width: 90%;
-      }
-    }
-
-    .donation-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 60px;
-      flex-wrap: wrap;
-      margin-top: 45px;
-      margin-bottom: 20px;
-    }
-
-    .donation-item {
-      width: 200px;
+    .card {
+      background: #171637;
+      border: 1px solid #6864bb30;
+      border-radius: 12px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: #6864bb88;
+      box-shadow: 0 0 32px rgba(104,100,187,0.18);
+    }
+
+    /* 
+     * CARD IMAGE
+     * Recommended image size: 800 × 480 px  (aspect ratio 5:3)
+     * Format: JPG, saved at 80–85% quality
+     */
+    .card-img {
+      width: 100%;
+      aspect-ratio: 5 / 3;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-body {
+      padding: 28px 28px 32px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #a29ef1;
+      margin: 0 0 14px;
+      line-height: 1.4;
+    }
+
+    .card-desc {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 16px;
+      color: #d4d4f0;
+      line-height: 1.8;
+      margin: 0 0 28px;
+      flex: 1;
+    }
+
+    .card-btn {
+      display: inline-block;
+      align-self: flex-start;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+      background: #35327e;
+      border: 1px solid #6864bb33;
+      border-radius: 30px;
+      padding: 12px 26px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .card-btn:hover {
+      background: #6864bb;
+      color: #ffffff;
+      box-shadow: 0 0 22px rgba(104,100,187,0.55);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    /* =====================================================================
+       BAND SECTION
+       Two-column: image left, text right. Stacks vertically on mobile.
+       To use a background image instead of the solid colour,
+       set background-image on .band and remove background-color.
+       Recommended bg image size: 1600 × 700 px (JPG, 80% quality)
+       ===================================================================== */
+    .band {
+      width: 100%;
+      background-color: #171637;
+      border-top:    1px solid #6864bb28;
+      border-bottom: 1px solid #6864bb28;
+    }
+
+    .band-inner {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 60px 28px;
+      gap: 56px;
+    }
+
+    .band-image-col {
+      flex: 0 0 auto;
+      display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 180px;
     }
 
-    .donation-link {
-      display: inline-block;
+    .band-image-col img {
+      width: 240px;
+      height: auto;
+      display: block;
     }
 
-    .donation-icon {
-      width: 96px;
-      height: 96px;
-      object-fit: contain;
-      margin-bottom: 18px;
-      transition: transform 0.25s ease;
+    .band-text-col {
+      flex: 1;
+      text-align: left;
     }
 
-    .donation-icon.mint-logo {
-      width: 111px;
-      height: 96px;
-      margin-top: 0;
-      margin-bottom: 18px;
-      object-fit: contain;
+    .band-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: clamp(22px, 3vw, 38px);
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: #a29ef1;
+      margin: 0 0 18px;
+      line-height: 1.45;
     }
 
-    .donation-item:hover .donation-icon {
-      transform: translateY(-2px);
-    }
-
-    .donation-item:hover .button-main {
-      background-color: #6864bb;
-      color: #ffffff;
-      box-shadow: 0px 0px 28px rgba(104, 100, 187, 0.65);
-      transform: translateY(-2px);
-    }
-
-    /* Hover image replacements */
-    .donation-item.card:hover img  { content: url("credit-card-hover.png"); }
-    .donation-item.crypto:hover img { content: url("crypto-hover.png"); }
-    .donation-item.mint:hover img  { content: url("logo-hover.png"); }
-
-    /* ===== CAPTION BELOW ISLE IMAGE ===== */
-    .caption {
-      font-size: 17px;
-      color: #6864bb;
-      max-width: 1000px;
-      margin: 8px auto 40px auto;
-      line-height: 1.6;
-    }
-
-    footer {
-      margin-top: 25px;
-      padding: 20px 0 30px 0;
-      font-size: 17px;
-      color: #6864bb;
+    .band-desc {
       font-family: 'Libre Baskerville', serif;
-      font-weight: 400;
-      line-height: 1.3;
+      font-size: clamp(15px, 1.6vw, 18px);
+      color: #d4d4f0;
+      line-height: 1.85;
+      margin: 0 0 32px;
+    }
+
+    .band-btn {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+      background: #35327e;
+      border: 1px solid #6864bb55;
+      border-radius: 30px;
+      padding: 14px 34px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .band-btn:hover {
+      background: #6864bb;
+      color: #ffffff;
+      box-shadow: 0 0 28px rgba(104,100,187,0.6);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .btn-demian {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+      background: #1e1c4a;
+      border: 1px solid #6864bb;
+      border-radius: 30px;
+      padding: 14px 30px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-demian img {
+      height: 16px;
+      width: auto;
+      display: block;
+    }
+
+    .btn-demian:hover {
+      background: #35327e;
+      color: #ffffff;
+      box-shadow: 0 0 26px rgba(104,100,187,0.55);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    @media (max-width: 700px) {
+      .band-inner {
+        flex-direction: column;
+        gap: 32px;
+        padding: 48px 20px;
+        text-align: center;
+      }
+      .band-text-col { text-align: center; }
+      .band-image-col img { width: 180px; }
+    }
+
+    /* =====================================================================
+       FOOTER
+       ===================================================================== */
+    .footer-separator {
+      border: none;
+      border-top: 1px solid #6864bb28;
+      margin: 0;
+    }
+
+    .site-footer {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px 20px 40px;
+      text-align: center;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 16px;
+      color: #6864bb;
+      line-height: 1.6;
     }
 
     .footer-logo {
       width: 94px;
       height: 94px;
       object-fit: contain;
-      margin-bottom: 2px;
+      margin-bottom: 6px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    footer a {
-      color: #a29ef1;
-      text-decoration: none;
-      font-weight: 400;
+    .site-footer a { color: #a29ef1; text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; color: #cfcfd4; }
+
+    .footer-links {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #4a4780;
     }
 
-    footer a:hover {
-      text-decoration: underline;
-      color: #d4c8f5;
-    }
+    .footer-links a { color: #4a4780; }
+    .footer-links a:hover { color: #6864bb; }
 
-    @media (max-width: 850px) {
-      .donation-row { gap: 40px; }
-      .donation-item { width: 100%; }
-      .blessing { white-space: normal; }
-      .logo { width: 90%; }
+    .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
+
+    /* =====================================================================
+       GLOBAL LINKS
+       ===================================================================== */
+    a { color: #6864bb; text-decoration: none; }
+    a:hover { text-decoration: underline; color: #a29ef1; }
+
+    /* =====================================================================
+       MOBILE NAV
+       ===================================================================== */
+    @media (max-width: 900px) {
+      .navbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px 16px;
+        gap: 16px;
+      }
+      .nav-links {
+        order: 3;
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 18px;
+      }
+      .nav-links a { font-size: 15px; letter-spacing: 1px; }
+      .nav-right { margin-left: auto; }
+
     }
   </style>
 </head>
 
 <body>
-  <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P8WRS2SW"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-  <div class="container">
 
-    <img src="demianismlogo.png" alt="Demianism Logo" class="logo">
-
-    <h1>
-      A NEW CULTURE<br>
-      FOR THE DIGITAL AGE
-    </h1>
-
-    <p class="intro-copy">
-      Demianism is a revealed doctrine upon which a civilization that is fit to survive & thrive in times of AI and robots can be built.
-    </p>
-
-    <h2>The Demianist Doctrine</h2>
-
-    <p>
-      Our culture is entirely encapsulated in these 13 axioms received by Barabeke: Cosmotheandric Triad (the metaphisical foundation) + 2kTenCom (Ten Commandments for the Digital Millennium).
-    </p>
-
-<img src="demianistdoctrine.png" alt="The 13 axioms of Demianism: the Cosmotheandric Triad (Lambda, Alpha, Omega) and the 2kTenCom — Ten Commandments for the Digital Millennium" class="doctrine">
-<p style="font-size: 15px; color: #6864bb99; max-width: 820px; margin: 10px auto 40px auto;">
-The 13 axioms of Demianism. <i>Above</i>: The <b>2kTenCom</b> (Ten Commandments for the Digital Millennium), of an ethical, social, and political nature. Received by Barabeke through dictation in 2015. <i>Below</i>: The <b>Cosmotheandric Triad</b>, the metaphysical foundation of Demianism.
-</p>
-
-        <h2>Understand its value</h2>
-
-    <p>
-      This Manifesto transforms our doctrine into a powerful civilizational response to today’s problems and those on the horizon.
-    </p>
-
-    <img src="manifestocover.png" alt="Manifesto" class="coverman">
-
-     <!-- NEW: READ THE MANIFESTO header + 3-button table -->
-    <div style="margin: 35px auto 18px auto; text-align: center;">
-      <div class="book-header" style="font-size: 17px; color: #cfcfd4; letter-spacing: 4px;">READ THE MANIFESTO</div>
+  <!-- ================================================================
+       NAVBAR
+       ================================================================ -->
+  <nav class="navbar">
+    <a href="/" class="nav-logo" aria-label="Demianism home">
+      <img src="demianismlogo.png" alt="Demianism">
+    </a>
+    <div class="nav-links">
+      <a href="/doctrine">Sacred Doctrine</a>
+      <a href="/culture">Culture</a>
+      <a href="/origin">Origin</a>
+      <a href="/about">Who is Barabeke?</a>
+      <a href="/donate">Donate</a>
+      <a href="/community" class="active">Join</a>
     </div>
-
-    <div class="book-table" style="grid-template-columns: 42px 12px 1fr 8px 1fr 8px 1fr; max-width: 720px;">
-
-      <!-- English row -->
-      <img src="gb.png" class="flag" alt="English">
-      <div class="col-gap"></div>
-      <a href="https://heyzine.com/flip-book/680d129cb3.html" class="button-main read-button" style="font-size:13.5px; padding: 13px 12px;" target="_blank" rel="noopener noreferrer">Flip-book</a>
-      <div class="col-gap"></div>
-      <a href="https://manifesto.demianism.org/" class="button-main read-button" style="font-size:13.5px; padding: 13px 12px;" target="_blank" rel="noopener noreferrer">Web</a>
-      <div class="col-gap"></div>
-      <a href="https://archive.org/details/manifesto-demianism" class="button-main read-button" style="font-size:13.5px; padding: 13px 12px;" target="_blank" rel="noopener noreferrer">PDF/eBook</a>
-
-      <!-- Italian row -->
-      <img src="it.png" class="flag" alt="Italiano">
-      <div class="col-gap"></div>
-      <a href="https://heyzine.com/flip-book/bd5a1560d9.html" class="button-main read-button" style="font-size:13.5px; padding: 13px 12px;" target="_blank" rel="noopener noreferrer">Flip-book</a>
-      <div class="col-gap"></div>
-      <a href="https://manifesto-ita.demianism.org/" class="button-main read-button" style="font-size:13.5px; padding: 13px 12px;" target="_blank" rel="noopener noreferrer">Web</a>
-      <div class="col-gap"></div>
-      <a href="https://archive.org/details/manifesto-demianista" class="button-main read-button" style="font-size:13.5px; padding: 13px 12px;" target="_blank" rel="noopener noreferrer">PDF/eBook</a>
-
-    </div>
-
-    <h2 id="book">Get deeper</h2>
-
-    <p>
-      In the Book of Demianism you’ll find commentary on each axiom, the story behind the origin of Demianism, and bold ideas for the future.<br>Open and democratic — only the 13 axioms are immutable.
-    </p>
-
-    <img src="demianismcover.png" alt="Demianism Book Cover" class="cover">
-
-        <!-- Book table: header row + language rows -->
-    <div class="book-table">
-      <!-- Header row -->
-      <div class="book-header empty"></div>
-      <div class="col-gap"></div>
-      <div class="book-header">FREE PDF/EBOOK</div>
-      <div class="col-gap"></div>
-      <div class="book-header">PAPERBACK/HARDCOVER</div>
-
-      <!-- English row -->
-      <img src="gb.png" class="flag" alt="English">
-      <div class="col-gap"></div>
-      <a href="https://archive.org/details/demianism/" 
-         class="button-main read-button" 
-         target="_blank" 
-         rel="noopener noreferrer">GET</a>
-      <div class="col-gap"></div>
-      <a href="https://mybook.to/2VGW" 
-         class="amazon-button" 
-         target="_blank" 
-         rel="noopener noreferrer">
-        <img src="amazon.png" alt="Buy now on Amazon">
+    <div class="nav-right">
+      <a href="/demian" class="demian-ai">
+        <img src="demian-ai-brand.png" alt="Demian AI">
       </a>
-
-      <!-- Italian row -->
-      <img src="it.png" class="flag" alt="Italiano">
-      <div class="col-gap"></div>
-      <a href="https://archive.org/details/demianesimo" 
-         class="button-main read-button" 
-         target="_blank" 
-         rel="noopener noreferrer">OTTIENI</a>
-      <div class="col-gap"></div>
-      <a href="https://mybook.to/qdVLiF" 
-         class="amazon-button" 
-         target="_blank" 
-         rel="noopener noreferrer">
-        <img src="amazon.png" alt="Buy now on Amazon">
-      </a>
+      <a href="/demian" class="try-free">Try Free</a>
     </div>
+  </nav>
 
-    <h2>Who is Barabeke?</h2>
-
-    <p>
-      Not a guru, not a saint, simply an eccentric Italian artist who in 2005 and 2015 received the revelations on which Demianism is based.
+  <!-- ================================================================
+       HERO
+       ================================================================ -->
+  <section class="hero">
+    <img src="demianismlogo.png" alt="Demianism Logo" class="hero-logo">
+    <h1>Welcome to Demianism</h1>
+    <p class="hero-subtitle">
+      A new culture is born. One that can help us stay free and dignified in times of AI and robots.
     </p>
+  </section>
 
-    <p>
-      To learn more about Barabeke and his art have a look at this book below.
-    </p>
+  <!-- ================================================================
+       CARDS ROW 1 — first 2 cards
+       Image size for all cards: 800 × 480 px (5:3 ratio), JPG 80–85%
+       ================================================================ -->
+  <section class="cards-section" style="padding-bottom: 54px;">
+    <div class="cards-grid">
 
-    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" data-darkreader-inline-border-top="" data-darkreader-inline-border-right="" data-darkreader-inline-border-bottom="" data-darkreader-inline-border-left="" class="fp-iframe" style="border: 1px solid lightgray; width: 100%; height: 400px; --darkreader-inline-border-top: var(--darkreader-border-d3d3d3, #3c4144); --darkreader-inline-border-right: var(--darkreader-border-d3d3d3, #3c4144); --darkreader-inline-border-bottom: var(--darkreader-border-d3d3d3, #3c4144); --darkreader-inline-border-left: var(--darkreader-border-d3d3d3, #3c4144);" src="https://heyzine.com/flip-book/3b03034a08.html"></iframe>
-
-    <h2>Join the community</h2>
-
-    <p>
-      Who’s brave enough to jump aboard this ghost ship rising from the mists?<br>It demands courage, Providence, and a leap of faith. If you feel the calling, reach out <a href="https://x.com/barabeke" target="_blank">on X</a> or <a href="https://t.me/barabeke" target="_blank">on Telegram</a>. Blessed be the brave souls!
-    </p>
-
-    <!-- Isle image + caption -->
-    <img src="isle-of-the-immortals.jpg" alt="Isle of the Immortals" class="isle">
-    <p class="caption">
-      <i>Isle of the Immortals</i>, Barabeke, 2025. Also on the cover of <i><a href="https://mybook.to/rCfKQ" target="_blank">Return to Eden</a></i> (2nd book).
-    </p>
-
-    <h2>Support Demianism</h2>
-
-    <p>
-      Nothing will be possible without your help. Support this mission with a donation or by minting "The Revealed Doctrine" on Base (open edition).
-    </p>
-
-    <div class="donation-row">
-
-      <div class="donation-item card">
-        <a class="donation-link" href="https://donate.stripe.com/5kQfZgdea31TcFDe8XdnW00">
-          <img src="credit-card.png" alt="Donate with Card" class="donation-icon">
-        </a>
-        <a href="https://donate.stripe.com/5kQfZgdea31TcFDe8XdnW00" class="button-main donation-button">
-          DONATE<br>WITH CARD
-        </a>
+      <!-- Card 1 -->
+      <div class="card">
+        <img src="demianist-doctrine.jpg" alt="Sacred Doctrine" class="card-img">
+        <div class="card-body">
+          <h2 class="card-title">The Sacred Doctrine</h2>
+          <p class="card-desc">
+            Demianist culture is entirely based on the 13 axioms received by Barabeke: 3 metaphysical ones (Cosmotheandric Triad) + 10 of ethical, social, and political nature (2kTenCom).
+          </p>
+          <a href="/doctrine" class="card-btn">Learn More</a>
+        </div>
       </div>
 
-      <div class="donation-item crypto">
-        <a class="donation-link" href="https://donate.demianism.org">
-          <img src="crypto.png" alt="Donate with Crypto" class="donation-icon">
-        </a>
-        <a href="https://donate.demianism.org" class="button-main donation-button">
-          DONATE<br>WITH CRYPTO
-        </a>
-      </div>
-
-      <div class="donation-item mint">
-        <a class="donation-link" href="https://manifold.xyz/@barabeke/id/4083525872">
-          <img src="demianismlogo.png" alt="Mint Demianism" class="donation-icon mint-logo">
-        </a>
-        <a href="https://manifold.xyz/@barabeke/id/4083525872" class="button-main donation-button">
-          MINT<br>DEMIANISM
-        </a>
+      <!-- Card 2 -->
+      <div class="card">
+        <img src="books.jpg" alt="The Manifesto & The Book" class="card-img">
+        <div class="card-body">
+          <h2 class="card-title">The Manifesto & The Book</h2>
+          <p class="card-desc">
+            How from the 13 axioms of Demianism it is possible to derive a complete culture upon which a civilization that is fit to survive and prosper in the digital age.
+          </p>
+          <a href="/doctrine#book" class="card-btn">Explore the culture</a>
+        </div>
       </div>
 
     </div>
+  </section>
 
-    <p class="blessing">
-      Blessed be the men & women of goodwill that will give Demianism a chance 🙏
-    </p>
-<br>
-<img src="oddgospelsubstack.png" 
-     alt="The Odd Gospel substack" 
-     style="width: 100%; max-width: 320px; height: auto; display: block; margin: 15px auto 20px;">
-    <p>
-      Subscribe to <i>The Odd Gospel</i> substack for updates.
-    </p>
-<iframe src="https://barabeke.substack.com/embed?transparent=1&light=1" width="480" height="150" style="border: 0; background: transparent" frameborder="0" scrolling="no"></iframe>
-<br>
-    <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6GtwlVUPhH36X8im25rxD9?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-
-    <footer>
-      <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
-      <div>
-        © 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a>
+  <!-- ================================================================
+       BAND SECTION
+       Left: demian-ai-sq.png image · Right: text + button
+       On mobile: image stacks on top, text below.
+       ─────────────────────────────────────────────────────────────────
+       To use a BG image instead of the solid colour, add to .band:
+         background-image: url('band-bg.jpg');
+         background-size: cover;
+         background-position: center;
+       and remove background-color.
+       Recommended bg image size: 1600 × 700 px, JPG 80%
+       ================================================================ -->
+  <div class="band">
+    <div class="band-inner">
+      <div class="band-image-col">
+        <img src="demian-ai-sq.png" alt="Demian AI — Online">
       </div>
-      <div>
-        Content licensed under CC BY-NC-ND 4.0
+      <div class="band-text-col">
+        <h2 class="band-title">Meet Demian</h2>
+        <p class="band-desc">
+          The AI spiritual companion with a Demianist heart. Talk to Demian, ask whatever you want, let it help you find and/or follow your call in life, and get your personal mantra — 100% unique and tailored to you.
+        </p>
+        <a href="/demian" class="band-btn">Chat with Demian</a>
       </div>
-    </footer>
-
+    </div>
   </div>
+
+  <!-- ================================================================
+       CARDS ROW 2 — last 2 cards
+       ================================================================ -->
+  <section class="cards-section" style="padding-top: 54px; padding-bottom: 60px;">
+    <div class="cards-grid">
+
+      <!-- Card 3 -->
+      <div class="card">
+        <img src="whois-barabeke.jpg" alt="Demian AI" class="card-img">
+        <div class="card-body">
+          <h2 class="card-title">The founder</h2>
+          <p class="card-desc">
+            Who is the mysterious founder of Demianism? Where is he from? Why is he doing this? How did he receive the doctrine? Is he really acting alone and independently?
+          </p>
+          <a href="/demian" class="card-btn">More info</a>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="card">
+        <img src="isle-of-the-immortals.jpg" alt="Join the Community" class="card-img">
+        <div class="card-body">
+          <h2 class="card-title">Join the Community</h2>
+          <p class="card-desc">
+            Becoming a Demianist is easy: just tattoo the logo of Demianism on your arm, then chop your arm off as send it by post to Barabeke. If his dog appreciates the gift, you are in! 
+          </p>
+          <a href="/community" class="card-btn">Why so easy?</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FOOTER
+       ================================================================ -->
+  <hr class="footer-separator">
+  <footer class="site-footer">
+    <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
+    <div>© 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
+    <div class="footer-license">Content licensed under CC BY-NC-ND 4.0</div>
+    <div class="footer-links">
+      <a href="/impressum">Impressum</a> &nbsp;·&nbsp;
+      <a href="/demian#privacy">Privacy Policy</a>
+    </div>
+  </footer>
+
 </body>
 </html>

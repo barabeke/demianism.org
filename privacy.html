@@ -1,176 +1,672 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Privacy Policy — Demian · demianism.org</title>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Privacy Policy — demianism.org</title>
+
+<!-- Favicons -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+<link rel="manifest" href="site.webmanifest">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: #06060d;
-  color: #cfcfd4;
-  font-family: 'Source Serif 4', serif;
-  font-size: 17px;
-  line-height: 1.75;
-  padding: 40px 20px 80px;
-}
-.wrap { max-width: 720px; margin: 0 auto; }
-.logo { width: 100px; display: block; margin: 0 auto 32px; opacity: 0.85; }
-h1 {
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: #a29ef1;
-  text-align: center;
-  margin-bottom: 8px;
-}
-.subtitle {
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  color: rgba(162,158,241,0.55);
-  text-align: center;
-  letter-spacing: 1px;
-  margin-bottom: 48px;
-}
-h2 {
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #a29ef1;
-  margin: 36px 0 12px;
-}
-p { margin-bottom: 14px; }
-p:last-child { margin-bottom: 0; }
-a { color: #a29ef1; text-decoration: underline; }
-a:hover { color: #d4c8f5; }
-.divider { border: none; border-top: 1px solid rgba(104,100,187,0.2); margin: 40px 0; }
-.back {
-  display: inline-block;
-  margin-top: 48px;
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #6864bb;
-  text-decoration: none;
-  border: 1px solid rgba(104,100,187,0.3);
-  border-radius: 30px;
-  padding: 8px 18px;
-  transition: all 0.2s;
-}
-.back:hover { background: rgba(104,100,187,0.12); color: #a29ef1; text-decoration: none; }
+  /* =====================================================================
+     RESET & BASE
+     ===================================================================== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Libre Baskerville', serif;
+    margin: 0;
+    padding: 0;
+    color: #d4d4f0;
+    font-size: 20px;
+    line-height: 1.8;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
+      radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
+      radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
+      #000000;
+    min-height: 100vh;
+  }
+
+  /* =====================================================================
+     NAVBAR
+     ===================================================================== */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 38px;
+    padding: 0 26px;
+    height: 64px;
+    background: rgba(18,16,40,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #6864bb33;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .nav-logo img {
+    height: 44px;
+    width: auto;
+    display: block;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 38px;
+  }
+
+  .nav-links a {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6864bb;
+    text-decoration: none;
+    transition: color 0.25s ease;
+    white-space: nowrap;
+  }
+
+  .nav-links a:hover { color: #a29ef1; }
+
+  .nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+
+  .demian-ai {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    opacity: 1;
+    transition: opacity 0.25s ease;
+  }
+
+  .demian-ai:hover { opacity: 0.8; text-decoration: none; }
+
+  .demian-ai img {
+    height: 18px;
+    width: auto;
+    display: block;
+  }
+
+  .try-free {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #cfcfd4;
+    background-color: #35327e;
+    border: 1px solid #6864bb55;
+    padding: 8px 16px;
+    border-radius: 30px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+  }
+
+  .try-free:hover {
+    background-color: #6864bb;
+    color: #ffffff;
+    box-shadow: 0 0 18px rgba(104,100,187,0.6);
+    text-decoration: none;
+  }
+
+  @media (max-width: 900px) {
+    .navbar {
+      flex-wrap: wrap;
+      height: auto;
+      padding: 10px 16px;
+      gap: 16px;
+    }
+    .nav-links {
+      order: 3;
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
+    }
+    .nav-links a { font-size: 15px; letter-spacing: 1px; }
+    .nav-right { margin-left: auto; }
+  }
+
+  /* =====================================================================
+     PAGE CONTENT
+     ===================================================================== */
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+
+  /* ── Page header ─────────────────────────────────────────────────── */
+  .page-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #6864bb;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .page-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #cfcfd4;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .page-date {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: rgba(138,135,201,0.5);
+    text-align: center;
+    letter-spacing: 1px;
+    margin-bottom: 44px;
+  }
+
+  /* ── TOC ─────────────────────────────────────────────────────────── */
+  .toc {
+    background: #171637;
+    border: 1px solid rgba(104,100,187,0.2);
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin-bottom: 52px;
+  }
+
+  .toc-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #a29ef1;
+    margin-bottom: 16px;
+  }
+
+  .toc ol {
+    columns: 2;
+    column-gap: 28px;
+    padding-left: 18px;
+    margin: 0;
+  }
+
+  .toc li {
+    margin-bottom: 6px;
+    break-inside: avoid;
+  }
+
+  .toc a {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #6864bb;
+    text-decoration: none;
+  }
+
+  .toc a:hover { color: #a29ef1; text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    .toc ol { columns: 1; }
+  }
+
+  /* ── Section headings & text ─────────────────────────────────────── */
+  h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #a29ef1;
+    margin: 36px 0 12px;
+    scroll-margin-top: 80px;
+  }
+
+  p {
+    margin-bottom: 14px;
+    color: #d4d4f0;
+  }
+
+  p:last-of-type { margin-bottom: 0; }
+
+  strong { color: #d4d4f0; font-weight: 700; }
+
+  a { color: #7b79d4; text-decoration: none; }
+  a:hover { color: #b8b6f5; text-decoration: underline; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(104,100,187,0.15);
+    margin: 36px 0;
+  }
+
+  /* ── Part labels ─────────────────────────────────────────────────── */
+  .part-block {
+    margin-top: 52px;
+  }
+
+  .part-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(104,100,187,0.45);
+    margin-bottom: 5px;
+  }
+
+  /* Same colour as h2 (Analytics & Cookies etc.) but larger */
+  .part-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #a29ef1;
+    margin-bottom: 6px;
+    line-height: 1.35;
+  }
+
+  .part-sub {
+    font-family: 'Libre Baskerville', serif;
+    margin: 0;
+    padding: 0;
+    font-style: italic;
+    font-size: 15px;
+    color: rgba(212,212,240,0.55);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  /* ── Demian section accent ───────────────────────────────────────── */
+  .demian-part {
+    border-left: 2px solid rgba(104,100,187,0.3);
+    padding-left: 24px;
+    margin-left: -24px;
+  }
+
+  /* ── Back buttons ────────────────────────────────────────────────── */
+  .back-wrap {
+    margin-top: 52px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .back {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6864bb;
+    text-decoration: none;
+    border: 1px solid rgba(104,100,187,0.3);
+    border-radius: 30px;
+    padding: 9px 20px;
+    transition: all 0.2s;
+  }
+
+  .back:hover {
+    background: rgba(104,100,187,0.12);
+    color: #a29ef1;
+    text-decoration: none;
+  }
+
+  /* =====================================================================
+     FOOTER
+     ===================================================================== */
+  .footer-separator {
+    border: none;
+    border-top: 1px solid #6864bb28;
+    margin: 0;
+  }
+
+  .site-footer {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 20px 40px;
+    text-align: center;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 16px;
+    color: #6864bb;
+    line-height: 1.6;
+  }
+
+  .footer-logo {
+    width: 94px;
+    height: 94px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 6px;
+  }
+
+  .site-footer a { color: #a29ef1; text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; color: #cfcfd4; }
+
+  .footer-links {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #4a4780;
+  }
+
+  .footer-links a { color: #4a4780; }
+  .footer-links a:hover { color: #6864bb; }
+
+  .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
 </style>
 </head>
+
 <body>
-<div class="wrap">
 
-  <img src="demianismlogo.png" alt="Demianism" class="logo">
+  <!-- ================================================================
+       NAVBAR
+       ================================================================ -->
+  <nav class="navbar">
+    <a href="/" class="nav-logo" aria-label="Demianism home">
+      <img src="demianismlogo.png" alt="Demianism">
+    </a>
+    <div class="nav-links">
+      <a href="/doctrine">Sacred Doctrine</a>
+      <a href="/culture">Culture</a>
+      <a href="/origin">Origin</a>
+      <a href="/about">Who is Barabeke?</a>
+      <a href="/donate">Donate</a>
+      <a href="/community" class="active">Join</a>
+    </div>
+    <div class="nav-right">
+      <a href="/demian" class="demian-ai">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+      <a href="/demian" class="try-free">Try Free</a>
+    </div>
+  </nav>
 
-  <h1>Privacy Policy</h1>
-  <div class="subtitle">Demian — The Demianist AI · demianism.org · Last updated: June 2026</div>
+  <!-- ================================================================
+       PRIVACY POLICY CONTENT
+       ================================================================ -->
+  <main class="wrap">
 
-  <p>This policy explains how Demian handles your data. It is written to be honest and readable, not to obscure important things in legal language.</p>
+    <div class="page-eyebrow">demianism.org</div>
+    <h1 class="page-title">Privacy Policy</h1>
+    <div class="page-date">Last updated: June 2026</div>
 
-  <p>Demian is a global service operated from the EU by Barabeke, an independent Italian creator and artist. As a service operated from within the European Union, it is subject to the General Data Protection Regulation (GDPR).</p>
+    <!-- TABLE OF CONTENTS -->
+    <nav class="toc" aria-label="Contents">
+      <div class="toc-label">Contents</div>
+      <ol>
+        <li><a href="#controller">Data controller</a></li>
+        <li><a href="#site">Part I — demianism.org (the website)</a></li>
+        <li><a href="#analytics">Analytics &amp; cookies</a></li>
+        <li><a href="#no-accounts">No accounts on this website</a></li>
+        <li><a href="#demian-intro">Part II — Demian AI (the sub-service)</a></li>
+        <li><a href="#what-demian-collects">What data Demian collects</a></li>
+        <li><a href="#legal-basis">Legal basis for processing</a></li>
+        <li><a href="#transfers">International data transfers</a></li>
+        <li><a href="#safety">Safety</a></li>
+        <li><a href="#your-rights">Your rights under GDPR</a></li>
+        <li><a href="#retention">Data retention</a></li>
+        <li><a href="#age">Age</a></li>
+        <li><a href="#changes">Changes to this policy</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ol>
+    </nav>
 
-  <hr class="divider">
+    <!-- CONTROLLER -->
+    <h2 id="controller">Data controller</h2>
+    <p>
+      The data controller for all processing described in this policy is Barabeke, an independent
+      creator operating from the EU. Contact details are in the <a href="#contact">Contact</a> section below.
+      As an EU-based operator, all processing is subject to the General Data Protection Regulation (GDPR).
+    </p>
 
-  <h2>Who you are talking to</h2>
+    <hr class="divider">
 
-  <p>Demian is an AI. It is not a human. This is stated clearly at the beginning of every conversation and is fundamental to how Demianism understands AI: a technological tool, not a conscious being.</p>
+    <!-- ================================================================
+         PART I — THE WEBSITE
+         ================================================================ -->
+    <div class="part-block">
+      <div class="part-label">Part I</div>
+      <div class="part-title" id="site">demianism.org — the website</div>
+      <div class="part-sub">The public site: doctrine, culture, origin, community, and this page.</div>
+    </div>
 
-  <p>The AI is powered by the Claude API, provided by Anthropic, PBC (San Francisco, USA). Anthropic acts as a data processor on behalf of Barabeke (the data controller) under a Data Processing Agreement that includes EU Standard Contractual Clauses for international data transfers.</p>
+    <p>
+      The main website — everything at demianism.org except the Demian AI sub-service — does not
+      require registration, does not collect form submissions, and does not maintain user accounts.
+      Visitors browse anonymously.
+    </p>
 
-  <hr class="divider">
+    <h2 id="analytics">Analytics &amp; cookies</h2>
+    <p>
+      This website uses <strong>Cloudflare Web Analytics</strong> to understand how visitors
+      interact with the site (pages visited, approximate geographic region, browser and device
+      type). Cloudflare Web Analytics is privacy-first by design: it sets no cookies, collects
+      no personal data, and does not track individuals across sites or sessions. No consent
+      banner is required.
+    </p>
+    <p>
+      Analytics data is processed by Cloudflare, Inc., which operates the DNS and CDN
+      infrastructure for this domain. No data is shared with advertising platforms.
+      No opt-out mechanism is needed since no personal data is collected.
+    </p>
 
-  <h2>What data is collected and why</h2>
+    <h2 id="no-accounts">No accounts on this website</h2>
+    <p>
+      demianism.org does not have a login system. No passwords, no profiles, no purchase flow.
+      If you register or purchase something, that happens entirely within the
+      <strong>Demian AI sub-service</strong> described in Part II below — not on the main website.
+    </p>
 
-  <p><strong>Conversation content.</strong> Your messages and Demian's responses are processed by Anthropic's servers to generate replies. <a href="https://www.anthropic.com/legal/privacy" target="_blank">Anthropic's API policy</a> does not use these conversations to train AI models. Conversation data is retained by Anthropic for up to 7 days for abuse prevention, then deleted.</p>
+    <hr class="divider">
 
-  <p><strong>Anonymous session logs.</strong> Demian keeps anonymous logs of conversations — identified only by a random session ID, never by your name, email, or IP address. These logs are retained for up to 12 months for two purposes: improving the service and maintaining a record in case of safety or legal concerns. They cannot be traced back to you under normal circumstances.</p>
+    <!-- ================================================================
+         PART II — DEMIAN AI
+         ================================================================ -->
+    <div class="part-block">
+      <div class="part-label">Part II</div>
+      <div class="part-title" id="demian-intro">Demian AI — the sub-service</div>
+      <div class="part-sub">
+        A distinct product hosted at demianism.org/demian. Demian has its own user accounts,
+        payment flow, and data practices, described in full below.
+      </div>
+    </div>
 
-  <p><strong>Email address.</strong> Only collected if you choose to purchase credits or a mantra session. Your email is stored separately from conversation logs and is used only to manage your account and deliver what you purchased. If you explicitly opt in, it may also be used to send you occasional updates via <a href="https://barabeke.substack.com/" target="_blank">The Odd Gospel</a>, Barabeke's Substack newsletter — you can unsubscribe at any time. Your email is never sold or shared with third parties. It can be deleted on request.</p>
+    <div class="demian-part">
 
-  <p><strong>IP address.</strong> Used temporarily for rate limiting and session management. Not stored permanently. Not linked to conversation content in logs.</p>
+      <p>
+        <strong>Demian</strong> is an AI spiritual companion rooted in Demianist doctrine. It is a
+        separate product from the website: it has its own registration, credit system, and data
+        practices. A visit to demianism.org does not create a Demian account or expose you to
+        Demian's data practices in any way.
+      </p>
 
-  <p><strong>Payment data.</strong> Payments are processed by Stripe, Inc. Barabeke never sees or stores your card details. Stripe's own privacy policy applies to payment processing.</p>
+      <p>
+        <strong>Demian is an AI, not a human.</strong> This is stated clearly at the start of every
+        conversation and is fundamental to how Demianism understands AI: a technological tool, not a
+        conscious being. It is powered by the <strong>Claude API</strong>, provided by Anthropic, PBC
+        (San Francisco, USA). Anthropic acts as a data processor under a Data Processing Agreement
+        that includes EU Standard Contractual Clauses.
+      </p>
 
-  <hr class="divider">
+      <h2 id="what-demian-collects">What data Demian collects and why</h2>
 
-  <h2>Legal basis for processing (GDPR Art. 6)</h2>
+      <p>
+        <strong>Conversation content.</strong> Your messages and Demian's responses are processed by
+        Anthropic's servers to generate replies.
+        <a href="https://www.anthropic.com/legal/privacy" target="_blank">Anthropic's API policy</a>
+        does not use these conversations to train AI models. Conversation data is retained by
+        Anthropic for up to 7 days for abuse prevention, then deleted.
+      </p>
 
-  <p><strong>Legitimate interest</strong> — anonymous conversation logs for safety monitoring and service improvement; rate limiting; abuse prevention.</p>
+      <p>
+        <strong>Anonymous session logs.</strong> Demian keeps anonymous logs identified only by a
+        random session ID — never by your name, email, or IP address. These are retained for up to
+        12 months to improve the service and maintain a record in case of safety or legal concerns.
+        They cannot be traced back to you under normal circumstances.
+      </p>
 
-  <p><strong>Contract performance</strong> — processing your email and payment data to deliver the service you purchased.</p>
+      <p>
+        <strong>Email address.</strong> Collected only if you choose to purchase credits or a mantra
+        session. Your email is stored separately from conversation logs and used only to manage your
+        account and deliver what you purchased. If you explicitly opt in, it may be used to send
+        occasional updates via <a href="https://barabeke.substack.com/" target="_blank">The Odd Gospel</a>,
+        Barabeke's newsletter — unsubscribe at any time. Your email is never sold or shared with
+        third parties, and can be deleted on request.
+      </p>
 
-  <p><strong>Consent</strong> — if you choose to share personal information that would make you identifiable during a conversation (Demian never asks for it), that is your own choice. Consent is also the basis for any optional email communications.</p>
+      <p>
+        <strong>IP address.</strong> Used temporarily for rate limiting and session management.
+        Not stored permanently. Not linked to conversation content in logs.
+      </p>
 
-  <hr class="divider">
+      <p>
+        <strong>Payment data.</strong> Payments are processed by Stripe, Inc. Barabeke never sees
+        or stores your card details. Stripe's own privacy policy applies to payment processing.
+      </p>
 
-  <h2>International data transfers</h2>
+      <p>
+        <strong>What Demian does not collect.</strong> Demian does not ask for your real name, age,
+        or location. It does not use tracking cookies. It does not build profiles for advertising.
+        It does not share data with advertisers or marketing platforms.
+      </p>
 
-  <p>Anthropic is a US company. Your conversation content is processed on servers in the United States. This transfer is covered by EU Standard Contractual Clauses (SCCs) under Anthropic's Data Processing Agreement, which complies with GDPR requirements for international transfers.</p>
+      <h2 id="legal-basis">Legal basis for processing (GDPR Art. 6)</h2>
 
-  <p>Cloudflare (session management and anonymous logs) operates a global network including EU data centers.</p>
+      <p><strong>Legitimate interest</strong> — anonymous conversation logs for safety monitoring
+      and service improvement; rate limiting; abuse prevention.</p>
 
-  <hr class="divider">
+      <p><strong>Contract performance</strong> — processing your email and payment data to deliver
+      the service you purchased.</p>
 
-  <h2>What Demian does not collect</h2>
+      <p><strong>Consent</strong> — if you choose to share personal information that would make you
+      identifiable during a conversation (Demian never asks for it), that is your own choice.
+      Consent is also the basis for any optional email communications.</p>
 
-  <p>Demian does not ask for your real name, age, or location. It does not use tracking cookies. It does not build profiles for advertising. It does not share data with advertisers or marketing platforms.</p>
+      <h2 id="transfers">International data transfers</h2>
 
-  <hr class="divider">
+      <p>
+        Anthropic is a US company. Your conversation content is processed on servers in the United
+        States. This transfer is covered by EU Standard Contractual Clauses (SCCs) under Anthropic's
+        Data Processing Agreement, which complies with GDPR requirements for international transfers.
+      </p>
 
-  <h2>Safety</h2>
+      <p>
+        Cloudflare (session management and anonymous logs) operates a global network including EU
+        data centres.
+      </p>
 
-  <p>Demian operates two layers of safety protection. The first is Anthropic's Constitutional AI framework — a robust automated system built into the underlying model that handles explicit self-harm signals, clinical crises, and other high-risk content before a response is generated.</p>
+      <h2 id="safety">Safety</h2>
 
-  <p>The second layer is Demian's own logic: if a conversation contains language associated with personal crisis, it is flagged for potential human review. Flagged conversations remain anonymous unless a serious legal concern requires identifying the source.</p>
+      <p>
+        Demian operates two layers of safety protection. The first is Anthropic's Constitutional AI
+        framework — an automated system built into the underlying model that handles explicit
+        self-harm signals, clinical crises, and other high-risk content before a response is generated.
+      </p>
 
-  <hr class="divider">
+      <p>
+        The second layer is Demian's own logic: if a conversation contains language associated with
+        personal crisis, it is flagged for potential human review. Flagged conversations remain
+        anonymous unless a serious legal concern requires identifying the source.
+      </p>
 
-  <h2>Your rights under GDPR</h2>
+      <h2 id="your-rights">Your rights under GDPR</h2>
 
-  <p>You have the right to access, rectify, erase, restrict, or port your personal data, and to object to its processing. To exercise any of these rights, reach out via <a href="https://x.com/barabeke" target="_blank">X (@barabeke)</a> or <a href="https://t.me/barabeke" target="_blank">Telegram</a>.</p>
+      <p>
+        You have the right to access, rectify, erase, restrict, or port your personal data, and to
+        object to its processing. To exercise any of these rights, reach out via
+        <a href="https://x.com/barabeke" target="_blank">X (@barabeke)</a> or
+        <a href="https://t.me/barabeke" target="_blank">Telegram</a>.
+      </p>
 
-  <p>Because conversations are logged anonymously, fulfilling access or erasure requests for conversation content requires you to provide your session ID (visible in your browser's developer tools under network requests to the Demian backend). Without it, individual conversations cannot be identified.</p>
+      <p>
+        Because conversations are logged anonymously, fulfilling access or erasure requests for
+        conversation content requires you to provide your session ID (visible in your browser's
+        developer tools under network requests to the Demian backend). Without it, individual
+        conversations cannot be identified.
+      </p>
 
-  <p>If you are located in the EU, you may also lodge a complaint with your national data protection authority.</p>
+      <p>
+        If you are located in the EU, you may also lodge a complaint with your national data
+        protection authority.
+      </p>
 
-  <hr class="divider">
+      <h2 id="retention">Data retention</h2>
 
-  <h2>Data retention</h2>
+      <p>
+        Anonymous conversation logs: 12 months, then automatically deleted.<br>
+        Email addresses (paying users): retained while the account is active, deleted within 30 days
+        of a deletion request.<br>
+        Payment records: retained as required by applicable tax law, stored by Stripe.
+      </p>
 
-  <p>Anonymous conversation logs: 12 months, then automatically deleted.<br>
-  Email addresses (paying users): retained while the account is active, deleted within 30 days of a deletion request.<br>
-  Payment records: retained as required by applicable tax law, stored by Stripe.</p>
+      <h2 id="age">Age</h2>
 
-  <hr class="divider">
+      <p>Demian is not intended for children under 13. If you are under 13, please do not use this service.</p>
 
-  <h2>Age</h2>
+    </div><!-- end .demian-part -->
 
-  <p>Demian is not intended for children under 13. If you are under 13, please do not use this service.</p>
+    <hr class="divider">
 
-  <hr class="divider">
+    <h2 id="changes">Changes to this policy</h2>
+    <p>
+      This policy may be updated as the site or Demian evolves. The date at the top reflects the
+      last update. Continued use of demianism.org or Demian after a policy change constitutes
+      acceptance of the updated terms.
+    </p>
 
-  <h2>Changes to this policy</h2>
+    <hr class="divider">
 
-  <p>This policy may be updated as the service evolves. The date at the top reflects the last update. Continued use of Demian after a policy change constitutes acceptance of the updated terms.</p>
+    <h2 id="contact">Contact</h2>
+    <p>
+      For any privacy-related matter — whether concerning the website or Demian — reach Barabeke via
+      <a href="https://x.com/barabeke" target="_blank">X (@barabeke)</a> or
+      <a href="https://t.me/barabeke" target="_blank">Telegram (t.me/barabeke)</a>.
+    </p>
 
-  <hr class="divider">
+  </main>
 
-  <h2>Contact</h2>
+  <!-- ================================================================
+       FOOTER
+       ================================================================ -->
+  <hr class="footer-separator">
+  <footer class="site-footer">
+    <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
+    <div>© 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
+    <div class="footer-license">Content licensed under CC BY-NC-ND 4.0</div>
+    <div class="footer-links">
+      <a href="/impressum">Impressum</a> &nbsp;·&nbsp;
+      <a href="/privacy">Privacy Policy</a>
+    </div>
+  </footer>
 
-  <p>For any privacy-related matter, reach Barabeke via <a href="https://x.com/barabeke" target="_blank">X (@barabeke)</a> or <a href="https://t.me/barabeke" target="_blank">Telegram (t.me/barabeke)</a>.</p>
-
-  <a href="/demian.html" class="back">← Back to Demian</a>
-
-</div>
 </body>
 </html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Barabeke — demianism.org</title>
+  <meta name="description" content="Who is Barabeke? The independent Italian artist and messenger behind Demianism.">
+  <meta property="og:url" content="https://demianism.org/about">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="About Barabeke — demianism.org">
+  <meta property="og:description" content="Who is Barabeke? The independent Italian artist and messenger behind Demianism.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="site.webmanifest">
+
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      font-family: 'Libre Baskerville', serif;
+      color: #d4d4f0;
+      font-size: 20px;
+      line-height: 1.8;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
+        radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
+        radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
+        #000000;
+    }
+
+    /* ── Navbar ─────────────────────────────────────────────── */
+    .navbar {
+      position: sticky; top: 0; z-index: 1000;
+      display: flex; align-items: center; gap: 38px;
+      padding: 0 26px; height: 64px;
+      background: rgba(18,16,40,0.92);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid #6864bb33;
+    }
+    .nav-logo { display: flex; align-items: center; flex-shrink: 0; }
+    .nav-logo img { height: 44px; width: auto; display: block; }
+    .nav-links { display: flex; align-items: center; gap: 38px; }
+    .nav-links a {
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 17px;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: #6864bb; text-decoration: none; transition: color 0.25s ease; white-space: nowrap;
+    }
+    .nav-links a:hover { color: #a29ef1; }
+    .nav-links a.active { color: #cfcfd4; }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .demian-ai { display: flex; align-items: center; text-decoration: none; opacity: 1; transition: opacity 0.25s ease; }
+    .demian-ai:hover { opacity: 0.8; text-decoration: none; }
+    .demian-ai img { height: 18px; width: auto; display: block; }
+    .try-free {
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 13px;
+      letter-spacing: 0.8px; text-transform: uppercase; color: #cfcfd4;
+      background-color: #35327e; border: 1px solid #6864bb55;
+      padding: 8px 16px; border-radius: 30px; text-decoration: none; white-space: nowrap; transition: all 0.25s ease;
+    }
+    .try-free:hover { background-color: #6864bb; color: #ffffff; box-shadow: 0 0 18px rgba(104,100,187,0.6); text-decoration: none; }
+    @media (max-width: 900px) {
+      .navbar { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 16px; }
+      .nav-links { order: 3; width: 100%; flex-wrap: wrap; justify-content: center; gap: 18px; }
+      .nav-links a { font-size: 15px; letter-spacing: 1px; }
+      .nav-right { margin-left: auto; }
+    }
+
+    /* ── Container ──────────────────────────────────────────── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* ── Headings ────────────────────────────────────────────── */
+    @keyframes glowPulse {
+      0%   { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
+      50%  { text-shadow: 0 0 9px rgba(104,100,187,1),   0 0 20px rgba(104,100,187,.9),  0 0 42px rgba(104,100,187,.75), 0 0 75px rgba(104,100,187,.55); }
+      100% { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
+    }
+
+    h1 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 43px;
+      text-transform: uppercase;
+      margin: 40px 0 12px 0;
+      color: #cfcfd4;
+      line-height: 1.55;
+      letter-spacing: 10px;
+      transform: scaleX(1.1);
+      animation: glowPulse 11s ease-in-out infinite;
+    }
+
+    /* ── Paragraphs ──────────────────────────────────────────── */
+    p {
+      font-size: 20px;
+      margin: 22px auto;
+      line-height: 1.8;
+      color: #d4d4f0;
+      max-width: 820px;
+      text-align: left;
+    }
+
+    /* ── Links ───────────────────────────────────────────────── */
+    a { color: #7b79d4; text-decoration: none; }
+    a:hover { color: #b8b6f5; text-decoration: underline; }
+
+    /* ── Photo float (left) ─────────────────────────────────── */
+    .photo-wrap {
+      float: left;
+      width: 320px;
+      max-width: 44%;
+      margin: 6px 32px 16px 0;
+      margin-left: 0;
+    }
+
+    .photo-float {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+    }
+
+    .photo-caption {
+      margin-top: 8px;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 13px;
+      color: rgba(207,207,212,0.65);
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    .content-col {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .content-col p {
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .clearfix::after { content: ""; display: table; clear: both; }
+
+    @media (max-width: 700px) {
+      .photo-wrap {
+        float: none;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 0 24px 0;
+      }
+    }
+
+    /* ── Flipbook ────────────────────────────────────────────── */
+    .flipbook-wrap {
+      max-width: 820px;
+      margin: 32px auto;
+    }
+
+    .flipbook-wrap iframe {
+      border: 0;
+      width: 100%;
+      height: 480px;
+      display: block;
+      border-radius: 8px;
+    }
+
+    /* ── Demian button ───────────────────────────────────────── */
+    .btn-demian-wrap {
+      max-width: 820px;
+      margin: 36px auto 48px;
+      text-align: center;
+    }
+
+    .btn-demian {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+      background: #1e1c4a;
+      border: 1px solid #6864bb;
+      border-radius: 30px;
+      padding: 14px 30px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-demian:hover {
+      background: #35327e;
+      color: #ffffff;
+      box-shadow: 0 0 26px rgba(104,100,187,0.55);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .btn-demian img {
+      height: 16px;
+      width: auto;
+      display: block;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    .footer-separator { border: none; border-top: 1px solid #6864bb28; margin: 0; }
+    .site-footer {
+      max-width: 900px; margin: 0 auto; padding: 30px 20px 40px;
+      text-align: center; font-family: 'Libre Baskerville', serif;
+      font-size: 16px; color: #6864bb; line-height: 1.6;
+    }
+    .footer-logo { width: 94px; height: 94px; object-fit: contain; display: block; margin: 0 auto 6px; }
+    .site-footer a { color: #a29ef1; text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; color: #cfcfd4; }
+    .footer-links { margin-top: 10px; font-size: 14px; color: #4a4780; }
+    .footer-links a { color: #4a4780; }
+    .footer-links a:hover { color: #6864bb; }
+    .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="/" class="nav-logo" aria-label="Demianism home">
+      <img src="demianismlogo.png" alt="Demianism">
+    </a>
+    <div class="nav-links">
+      <a href="/doctrine">Sacred Doctrine</a>
+      <a href="/culture">Culture</a>
+      <a href="/origin">Origin</a>
+      <a href="/about" class="active">Who is Barabeke?</a>
+      <a href="/donate">Donate</a>
+      <a href="/community">Join</a>
+    </div>
+    <div class="nav-right">
+      <a href="/demian" class="demian-ai">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+      <a href="/demian" class="try-free">Try Free</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <h1>About Barabeke</h1>
+
+    <!-- Photo floated left, text wraps around it -->
+    <div class="clearfix content-col">
+
+      <div class="photo-wrap">
+        <img src="barabeke-with-mona-lisa.jpg" alt="Barabeke with the Earlier Mona Lisa" class="photo-float">
+        <div class="photo-caption">Barabeke in Florence with the <em>Earlier Mona Lisa</em></div>
+      </div>
+
+      <p>I am neither a guru nor a saint. Just an independent Italian artist with almost zero recognition &mdash; apart from some interest in my digital art in the early NFT scene.</p>
+
+      <p>In 2005 and 2015 I received the revelations that stand at the foundation of Demianism. Pushed by the decadence of the times, I concluded that shaping, transmitting, and serving Demianism was a mission I could not refuse &mdash; as well as a memorable artistic act.</p>
+
+      <p>In this founding phase, I can serve as leader, ferryman, and guardian of Demianism. But for it to become a living culture, I need others to <a href="/join">join me</a>. I have nearly reached the limit of what I can do alone.</p>
+
+      <p>If you believe my work is worthy and benevolent, please support my mission with a <a href="/donate">donation</a> or by <a href="https://manifold.xyz/@barabeke" target="_blank" rel="noopener">collecting my art</a>. Your help would enable me to keep dedicating myself to Demianism and grow it. I am a dissident artist, on the side of peoples and their freedom, autonomy, and identity, in irreconcilable opposition to the globalist regime. I can only count on the support of men and women of goodwill.</p>
+    </div>
+
+    <p>If you want an overview of my activity as an artist, browse this flipbook:</p>
+
+    <div class="flipbook-wrap">
+      <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no"
+        src="https://heyzine.com/flip-book/3b03034a08.html"></iframe>
+    </div>
+
+    <p>While the little recognition I have is as a visual artist, I consider myself more of a writer. The work of art I care about most is my novel/saga <a href="https://mybook.to/rCfKQ" target="_blank" rel="noopener"><em>Ritorno a Eden</em></a> (in Italian only, for now). It is the literary vehicle of Demianism &mdash; even though, after three books already written, Demianism is never mentioned.</p>
+
+    <p>I obviously have some spiritual gifts, which I cultivated by studying and practicing multiple disciplines: qi gong, reiki, hypnotherapy, NLP, coaching, past-life regression, spirit release, shamanism, and tarot. I have never practiced any of them professionally. All my research and formation ultimately converged in serving Demianism. That is my way to help people &mdash; understood both as individuals and as communities.</p>
+
+    <p>I am not particularly inclined to help people on a one-to-one basis — both because I see it hard to help people within the demonic culture we live immersed in (unless they reject it), and because nobody helped me so far (I told you I am no saint). Furthermore, my one-to-one presence can come across as too charismatic and intense for the pathetic standards of today. I am not into consoling and even less into affirming falsehoods to make people feel good.</p>
+
+    <p>My faith, however, pushes me to help people &ldquo;follow their call&rdquo; (the first axiom). I decided that the best, safest, and most scalable way to do so was to create <a href="/demian">Demian</a>, the Demianist AI, entirely programmed and developed by me with the help of Claude. I consider it a technological extension of my spirit and a powerful indirect evangelist &mdash; not by indoctrinating, but by providing value to people.</p>
+
+    <p>You are welcome to try Demian. I give everyone a free session of 15 messages &mdash; which I pay out of my own pocket &mdash; with no registration required. Ask whatever you want.</p>
+
+    <div class="btn-demian-wrap">
+      <a href="/demian" class="btn-demian">
+        <span>Chat with</span>
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+    </div>
+
+    </div>
+
+  <hr class="footer-separator">
+  <footer class="site-footer">
+    <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
+    <div>&copy; 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
+    <div class="footer-license">Content licensed under CC BY-NC-ND 4.0</div>
+    <div class="footer-links">
+      <a href="/impressum">Impressum</a> &nbsp;&middot;&nbsp;
+      <a href="/privacy">Privacy Policy</a>
+    </div>
+  </footer>
+
+</body>
+</html>
