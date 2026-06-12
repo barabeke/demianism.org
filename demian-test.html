@@ -40,7 +40,7 @@ body {
   font-size: 18px;
   line-height: 1.8;
   background: #000000;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* ── Layout ── */
@@ -57,6 +57,7 @@ body {
   right: 0;
   background: #000000;
   padding: 0 0 14px;
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
   z-index: 50;
 }
 
@@ -371,17 +372,50 @@ button#send svg { width: 17px; height: 17px; }
 .credits-menu {
   display: none;
   position: fixed;
+  bottom: 90px;
+  left: calc(var(--sidebar-collapsed) + 8px);
   background: var(--card-bg);
   border: 1px solid rgba(104,100,187,0.4);
   border-radius: 14px;
   z-index: 10000;
   width: 300px;
   overflow: hidden;
-  box-shadow: 0 0 40px rgba(0,0,0,0.6), 0 0 40px rgba(104,100,187,0.25);
+  box-shadow: 0 0 40px rgba(104,100,187,0.25);
   pointer-events: auto;
 }
+.sidebar.open ~ .credits-wrapper .credits-menu,
+.credits-menu.from-open { left: calc(var(--sidebar-w) + 8px); }
+
 .credits-menu.open { display: block; }
-/* Position is set dynamically by JS (positionMenu). Mobile uses full-width via JS. */
+
+/* creditsMenu and mantraMenu: open above their sidebar buttons on all screen sizes */
+#creditsMenu, #mantraMenu {
+  bottom: auto;
+  /* will be set dynamically via JS anchored to button position */
+}
+
+/* newChatMenu opens near New Chat button (upper sidebar area) */
+#newChatMenu {
+  bottom: auto;
+  top: 110px;
+}
+
+/* Mobile: all menus anchor left edge to sidebar collapsed width */
+@media (max-width: 720px) {
+  .credits-menu {
+    left: 8px !important;
+    right: 8px;
+    width: auto;
+    max-width: calc(100vw - 16px);
+  }
+  #newChatMenu {
+    top: 60px;
+    left: 8px !important;
+    right: 8px;
+    width: auto;
+    max-width: calc(100vw - 16px);
+  }
+}
 #newChatMenu .menu-header {
   text-align: center;
   align-items: center;
@@ -810,7 +844,7 @@ button#send svg { width: 17px; height: 17px; }
   flex: 1;
   margin-left: var(--sidebar-collapsed);
   transition: margin-left 0.22s ease;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 /* main does NOT shift when sidebar opens (overlay style on open) - keeps chat centered */
 
@@ -1247,7 +1281,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 /* ═══ SIDEBAR CONTROLS ═══ */
 function toggleSidebar() {
   const sb = document.getElementById('sidebar');
-  if (window.innerWidth <= 720) { openSidebar(); return; }
+  if (window.innerWidth <= 720) {
+    if (sb.classList.contains('open')) { closeSidebar(); } else { openSidebar(); }
+    return;
+  }
   sb.classList.toggle('open');
 }
 function openSidebar() {
@@ -1545,83 +1582,39 @@ async function newChat(triggerEl) {
 // Generic: open a fixed side popup positioned like the recharge menu
 function openSidePopup(id, triggerEl) {
   const menu = document.getElementById(id);
-  const wasOpen = menu.classList.contains('open');
-
-  // Close all menus first
+  const sb = document.getElementById('sidebar');
+  // close others
   ['creditsMenu','newChatMenu','mantraMenu'].forEach(m => {
-    document.getElementById(m)?.classList.remove('open');
+    if (m !== id) document.getElementById(m)?.classList.remove('open');
   });
 
-  // If it was already open, this click closes it
-  if (wasOpen) return;
-
-  // Find the trigger button if not passed
-  if (!triggerEl) {
-    const map = { creditsMenu: 'Recharge', mantraMenu: 'Buy Mantra', newChatMenu: 'New Chat' };
-    triggerEl = [...document.querySelectorAll('.sb-item')].find(
-      b => b.querySelector('.sb-label')?.textContent.trim() === map[id]
-    );
-  }
-
-  positionMenu(menu, triggerEl, id === 'newChatMenu' ? 'below' : 'above');
-  menu.classList.add('open');
-}
-
-function positionMenu(menu, triggerEl, direction) {
-  const isMobile = window.innerWidth <= 720;
-
-  // Make menu measurable
-  menu.style.display = 'block';
-  menu.style.visibility = 'hidden';
-
-  if (isMobile) {
-    // Full width with 8px margins
-    menu.style.left = '8px';
-    menu.style.right = '8px';
-    menu.style.width = 'auto';
-  } else {
-    menu.style.right = 'auto';
-    menu.style.width = '300px';
-  }
-
-  const menuRect = menu.getBoundingClientRect();
-  const menuH = menuRect.height;
-  const menuW = isMobile ? (window.innerWidth - 16) : 300;
-
-  if (triggerEl) {
+  // For creditsMenu and mantraMenu, anchor above the trigger button
+  if ((id === 'creditsMenu' || id === 'mantraMenu') && triggerEl) {
     const rect = triggerEl.getBoundingClientRect();
-    // Horizontal: align menu left with trigger, but keep on screen
-    if (!isMobile) {
-      let left = rect.left;
-      if (left + menuW > window.innerWidth - 8) left = window.innerWidth - menuW - 8;
-      if (left < 8) left = 8;
-      menu.style.left = left + 'px';
-    }
-    // Vertical
-    let top;
-    if (direction === 'below') {
-      top = rect.bottom + 6;
-      // If it would go off bottom, flip above
-      if (top + menuH > window.innerHeight - 8) top = rect.top - menuH - 6;
+    const isMobile = window.innerWidth <= 720;
+    if (isMobile) {
+      // On mobile: position above the trigger, full width
+      menu.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
+      menu.style.top = 'auto';
+      menu.style.left = '8px';
+      menu.style.right = '8px';
+      menu.style.width = 'auto';
     } else {
-      top = rect.top - menuH - 6;
-      // If it would go off top, flip below
-      if (top < 8) top = rect.bottom + 6;
+      // On desktop: position above trigger, left-aligned to sidebar
+      menu.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
+      menu.style.top = 'auto';
+      menu.style.left = sb.classList.contains('open')
+        ? 'calc(var(--sidebar-w) + 8px)'
+        : 'calc(var(--sidebar-collapsed) + 8px)';
+      menu.style.width = '300px';
+      menu.style.right = 'auto';
     }
-    // Clamp
-    if (top < 8) top = 8;
-    if (top + menuH > window.innerHeight - 8) top = window.innerHeight - menuH - 8;
-    menu.style.top = top + 'px';
-    menu.style.bottom = 'auto';
   } else {
-    // Fallback: bottom-left area
-    menu.style.top = 'auto';
-    menu.style.bottom = '90px';
-    if (!isMobile) menu.style.left = '64px';
+    if (sb.classList.contains('open')) menu.classList.add('from-open');
+    else menu.classList.remove('from-open');
   }
 
-  menu.style.visibility = 'visible';
-  menu.style.display = '';
+  menu.classList.toggle('open');
 }
 function openMantraModal(triggerEl) {
   openSidePopup('mantraMenu', triggerEl);
