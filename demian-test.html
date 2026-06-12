@@ -27,7 +27,7 @@
   --placeholder: #4a4780;
   --glow: rgba(104,100,187,0.55);
   --bottom-h: 90px;
-  --sidebar-w: 280px;
+  --sidebar-w: 320px;
   --sidebar-collapsed: 56px;
   --sidebar-bg: #12103a;
   --topbar-h: 52px;
@@ -366,6 +366,8 @@ button#send svg { width: 17px; height: 17px; }
   transform: translateY(-1px);
 }
 
+.credits-wrapper { position: fixed; bottom: 0; left: 0; width: 0; height: 0; }
+
 /* ── Credits/Mantra/NewChat menus: absolute, anchored to trigger ── */
 .credits-wrapper { position: relative; }
 
@@ -379,7 +381,6 @@ button#send svg { width: 17px; height: 17px; }
   border-radius: 14px;
   z-index: 500;
   width: 300px;
-  min-width: 260px;
   overflow: hidden;
   box-shadow: 0 -4px 40px rgba(0,0,0,0.6), 0 0 40px rgba(104,100,187,0.25);
   pointer-events: auto;
@@ -387,7 +388,7 @@ button#send svg { width: 17px; height: 17px; }
 
 .credits-menu.open { display: block; }
 
-/* newChatMenu opens BELOW its trigger (New Chat is at the top) */
+/* newChatMenu opens BELOW its trigger */
 #newChatMenu {
   bottom: auto;
   top: calc(100% + 4px);
@@ -551,7 +552,7 @@ button#send svg { width: 17px; height: 17px; }
   transition: width 0.22s ease;
   overflow: visible;
 }
-.sidebar.open { width: var(--sidebar-w); overflow: hidden; }
+.sidebar.open { width: var(--sidebar-w); overflow: visible; }
 
 /* ── ZONE 1: fixed header ── */
 .sb-head {
@@ -765,17 +766,16 @@ button#send svg { width: 17px; height: 17px; }
 }
 .sb-about-menu a:hover { background: rgba(104,100,187,0.15); }
 
-/* Mobile: suppress tooltips entirely, ensure menus overflow sidebar */
+/* Mobile: suppress tooltips, allow menus to overflow sidebar */
 @media (max-width: 720px) {
   .sb-tooltip { display: none !important; }
-  .sidebar.open { overflow: visible !important; }
+  .sidebar { overflow: visible !important; }
   .sb-fixed-bottom { overflow: visible; }
   .sb-zone-middle { overflow: visible; }
-  .credits-menu {
-    width: 260px;
-    min-width: 240px;
-  }
+  .credits-menu { width: calc(var(--sidebar-w) - 16px); }
 }
+
+/* ── Account block ── */
 .sb-account {
   display: flex;
   align-items: center;
@@ -1010,19 +1010,11 @@ button#send svg { width: 17px; height: 17px; }
       <div class="sb-section">Chat history</div>
       <div class="sb-sessions" id="sbSessions"></div>
     </div>
-    <div class="credits-wrapper">
-      <div class="credits-menu" id="newChatMenu">
-        <div class="menu-header">
-          <div class="menu-title">Paid feature</div>
-          <div class="menu-sub" style="padding:0 6px 6px;">Only users who have recharged&nbsp;<svg viewBox="0 0 24 24" fill="#f5c542" style="width:14px;height:14px;vertical-align:-2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>&nbsp;or bought a mantra&nbsp;<img src="spiral-indigo.svg" style="width:14px;height:14px;vertical-align:-2px;">&nbsp;can open new chats.</div>
-        </div>
-      </div>
-      <button class="sb-item" onclick="newChat(this)">
-        <span class="sb-icon icon-newchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
-        <span class="sb-label">New Chat</span>
-        <span class="sb-tooltip">New Chat</span>
-      </button>
-    </div>
+    <button class="sb-item" onclick="newChat(this)">
+      <span class="sb-icon icon-newchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
+      <span class="sb-label">New Chat</span>
+      <span class="sb-tooltip">New Chat</span>
+    </button>
   </div>
 
   <!-- ZONE 3: fixed bottom -->
@@ -1051,55 +1043,17 @@ button#send svg { width: 17px; height: 17px; }
       <span class="sb-tooltip">Messages remaining</span>
     </div>
 
-    <div class="credits-wrapper">
-      <div class="credits-menu" id="creditsMenu">
-        <div class="menu-header">
-          <div class="menu-title">Pay only for what you use</div>
-          <div class="menu-sub">No recurring fees. No expiration date.<br>Use whenever you need.</div>
-          <div class="menu-choose">Choose your package</div>
-        </div>
-        <div class="pkg-list">
-          <a class="pkg-btn" href="#" onclick="purchaseCredits('basic');return false;">
-            <div class="pkg-left"><div class="pkg-name">Consult 50</div><div class="pkg-desc">50 messages with Demian</div></div>
-            <div class="pkg-price">€5</div>
-          </a>
-          <a class="pkg-btn" href="#" onclick="purchaseCredits('regular');return false;">
-            <div class="pkg-left"><div class="pkg-name">Consult 150</div><div class="pkg-desc">150 messages with Demian</div></div>
-            <div class="pkg-price">€10</div>
-          </a>
-          <a class="pkg-btn" href="#" onclick="purchaseCredits('premium');return false;">
-            <div class="pkg-left"><div class="pkg-name">Consult 400</div><div class="pkg-desc">400 messages with Demian</div></div>
-            <div class="pkg-price">€20</div>
-          </a>
-        </div>
-      </div>
-      <button class="sb-item" onclick="openSidePopup('creditsMenu', this)">
-        <span class="sb-icon icon-recharge"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-        <span class="sb-label">Recharge</span>
-        <span class="sb-tooltip">Recharge</span>
-      </button>
-    </div>
+    <button class="sb-item" onclick="openSidePopup('creditsMenu', this)">
+      <span class="sb-icon icon-recharge"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+      <span class="sb-label">Recharge</span>
+      <span class="sb-tooltip">Recharge</span>
+    </button>
 
-    <div class="credits-wrapper">
-      <div class="credits-menu" id="mantraMenu">
-        <div class="menu-header">
-          <div class="menu-title" style="display:flex;align-items:center;gap:8px;font-size:21px;"><img src="spiral-indigo.svg" style="width:23px;height:23px;"> Your Mantra</div>
-          <div class="menu-sub" style="color:#fff;font-size:14px;">100% unique and tailored to you</div>
-          <div class="menu-sub" style="margin-top:8px;">Move toward your true call in life with this small but powerful aid (if used daily and with intention).</div>
-        </div>
-        <div class="pkg-list">
-          <a class="pkg-btn" href="#" onclick="purchaseMantra();return false;">
-            <div class="pkg-left"><div class="pkg-name">Personal Mantra</div><div class="pkg-desc">Chat until your mantra is ready</div></div>
-            <div class="pkg-price">€2</div>
-          </a>
-        </div>
-      </div>
-      <button class="sb-item" id="buyMantraItem" onclick="openSidePopup('mantraMenu', this)">
-        <span class="sb-icon"><img src="spiral-indigo.svg" style="width:20px;height:20px;"></span>
-        <span class="sb-label">Buy Mantra</span>
-        <span class="sb-tooltip">Buy Mantra</span>
-      </button>
-    </div>
+    <button class="sb-item" id="buyMantraItem" onclick="openSidePopup('mantraMenu', this)">
+      <span class="sb-icon"><img src="spiral-indigo.svg" style="width:20px;height:20px;"></span>
+      <span class="sb-label">Buy Mantra</span>
+      <span class="sb-tooltip">Buy Mantra</span>
+    </button>
 
     <button class="sb-item sb-item-gift" onclick="openCodeModal()">
       <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
@@ -1161,7 +1115,30 @@ button#send svg { width: 17px; height: 17px; }
   </div>
 </div>
 
-
+<!-- Hidden credits menu (reused) -->
+<div class="credits-wrapper">
+  <div class="credits-menu" id="creditsMenu">
+    <div class="menu-header">
+      <div class="menu-title">Pay only for what you use</div>
+      <div class="menu-sub">No recurring fees. No expiration date.<br>Use whenever you need.</div>
+      <div class="menu-choose">Choose your package</div>
+    </div>
+    <div class="pkg-list">
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('basic');return false;">
+        <div class="pkg-left"><div class="pkg-name">Consult 50</div><div class="pkg-desc">50 messages with Demian</div></div>
+        <div class="pkg-price">€5</div>
+      </a>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('regular');return false;">
+        <div class="pkg-left"><div class="pkg-name">Consult 150</div><div class="pkg-desc">150 messages with Demian</div></div>
+        <div class="pkg-price">€10</div>
+      </a>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('premium');return false;">
+        <div class="pkg-left"><div class="pkg-name">Consult 400</div><div class="pkg-desc">400 messages with Demian</div></div>
+        <div class="pkg-price">€20</div>
+      </a>
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay" id="codeModal">
   <div class="modal">
@@ -1190,9 +1167,30 @@ button#send svg { width: 17px; height: 17px; }
   </div>
 </div>
 
+<div class="credits-wrapper">
+  <div class="credits-menu" id="newChatMenu">
+    <div class="menu-header">
+      <div class="menu-title">Paid feature</div>
+      <div class="menu-sub" style="padding:0 6px 6px;">Only users who have recharged&nbsp;<svg viewBox="0 0 24 24" fill="#f5c542" style="width:14px;height:14px;vertical-align:-2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>&nbsp;or bought a mantra&nbsp;<img src="spiral-indigo.svg" style="width:14px;height:14px;vertical-align:-2px;">&nbsp;can open new chats.</div>
+    </div>
+  </div>
+</div>
 
-
-
+<div class="credits-wrapper">
+  <div class="credits-menu" id="mantraMenu">
+    <div class="menu-header">
+      <div class="menu-title" style="display:flex;align-items:center;gap:8px;font-size:21px;"><img src="spiral-indigo.svg" style="width:23px;height:23px;"> Your Mantra</div>
+      <div class="menu-sub" style="color:#fff;font-size:14px;">100% unique and tailored to you</div>
+      <div class="menu-sub" style="margin-top:8px;">Move toward your true call in life with this small but powerful aid (if used daily and with intention).</div>
+    </div>
+    <div class="pkg-list">
+      <a class="pkg-btn" href="#" onclick="purchaseMantra();return false;">
+        <div class="pkg-left"><div class="pkg-name">Personal Mantra</div><div class="pkg-desc">Chat until your mantra is ready</div></div>
+        <div class="pkg-price">€2</div>
+      </a>
+    </div>
+  </div>
+</div>
 
 <script>
 const WORKER_URL = 'https://demian-backend.barabeke.workers.dev';
@@ -1566,19 +1564,39 @@ async function newChat(triggerEl) {
 // Generic: open a fixed side popup positioned like the recharge menu
 function openSidePopup(id, triggerEl) {
   const menu = document.getElementById(id);
-  // Close others
+  const sb = document.getElementById('sidebar');
+  // close others
   ['creditsMenu','newChatMenu','mantraMenu'].forEach(m => {
     if (m !== id) document.getElementById(m)?.classList.remove('open');
   });
-  // Toggle — positioning handled by CSS (absolute relative to credits-wrapper)
-  menu.classList.toggle('open');
-  // On mobile, hide any lingering tooltips
-  if (window.innerWidth <= 720) {
-    document.querySelectorAll('.sb-tooltip').forEach(t => {
-      t.style.opacity = '0';
-      t.style.visibility = 'hidden';
-    });
+
+  // For creditsMenu and mantraMenu, anchor above the trigger button
+  if ((id === 'creditsMenu' || id === 'mantraMenu') && triggerEl) {
+    const rect = triggerEl.getBoundingClientRect();
+    const isMobile = window.innerWidth <= 720;
+    if (isMobile) {
+      // On mobile: position above the trigger, full width
+      menu.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
+      menu.style.top = 'auto';
+      menu.style.left = '8px';
+      menu.style.right = '8px';
+      menu.style.width = 'auto';
+    } else {
+      // On desktop: position above trigger, left-aligned to sidebar
+      menu.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
+      menu.style.top = 'auto';
+      menu.style.left = sb.classList.contains('open')
+        ? 'calc(var(--sidebar-w) + 8px)'
+        : 'calc(var(--sidebar-collapsed) + 8px)';
+      menu.style.width = '300px';
+      menu.style.right = 'auto';
+    }
+  } else {
+    if (sb.classList.contains('open')) menu.classList.add('from-open');
+    else menu.classList.remove('from-open');
   }
+
+  menu.classList.toggle('open');
 }
 function openMantraModal(triggerEl) {
   openSidePopup('mantraMenu', triggerEl);
