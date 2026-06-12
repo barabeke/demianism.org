@@ -6,6 +6,7 @@
 <title>Demian — The Demianist AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -386,10 +387,33 @@ button#send svg { width: 17px; height: 17px; }
 
 .credits-menu.open { display: block; }
 
+/* creditsMenu and mantraMenu: open above their sidebar buttons on all screen sizes */
+#creditsMenu, #mantraMenu {
+  bottom: auto;
+  /* will be set dynamically via JS anchored to button position */
+}
+
 /* newChatMenu opens near New Chat button (upper sidebar area) */
 #newChatMenu {
   bottom: auto;
   top: 110px;
+}
+
+/* Mobile: all menus anchor left edge to sidebar collapsed width */
+@media (max-width: 720px) {
+  .credits-menu {
+    left: 8px !important;
+    right: 8px;
+    width: auto;
+    max-width: calc(100vw - 16px);
+  }
+  #newChatMenu {
+    top: 60px;
+    left: 8px !important;
+    right: 8px;
+    width: auto;
+    max-width: calc(100vw - 16px);
+  }
 }
 #newChatMenu .menu-header {
   text-align: center;
@@ -886,9 +910,97 @@ button#send svg { width: 17px; height: 17px; }
     height: 20px; width: auto;
   }
 }
+
+/* ── MANTRA CARD (hidden, used for html2canvas rendering) ── */
+#mantra-render-card {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  width: 400px;
+  height: 500px;
+  overflow: hidden;
+  background: #0b0a19;
+  color: #cfcfd4;
+  font-family: 'Inter', 'Noto Sans', sans-serif;
+}
+#mantra-render-card .rc-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(53,50,126,0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 90% 95%, rgba(53,50,126,0.2) 0%, transparent 60%);
+}
+#mantra-render-card .rc-contour {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0.07;
+}
+#mantra-render-card .rc-contour svg { width: 300px; height: 300px; }
+#mantra-render-card .rc-contour ellipse { fill: none; stroke: #6864bb; stroke-width: 1; }
+#mantra-render-card .rc-top {
+  position: absolute; top: 22px; left: 0; right: 0; text-align: center;
+  font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(162,158,241,0.7);
+}
+#mantra-render-card .rc-body {
+  position: absolute; inset: 60px 28px 70px;
+  display: flex; align-items: center; justify-content: center;
+}
+#mantra-render-card .rc-text {
+  text-align: center; line-height: 1.5;
+  font-family: 'Inter', 'Noto Sans', sans-serif; font-weight: 800;
+  font-size: 1.3rem; text-transform: uppercase; color: #cfcfd4;
+  word-break: break-word;
+}
+#mantra-render-card .rc-text .actionable { color: #6864bb; }
+#mantra-render-card .rc-foot {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 58px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  border-top: 0.5px solid rgba(104,100,187,0.18);
+}
+#mantra-render-card .rc-credit {
+  font-family: 'Inter', sans-serif; font-size: 9px;
+  letter-spacing: 0.1em; color: rgba(207,207,212,0.45); text-transform: uppercase;
+}
+#mantra-render-card .rc-foot-logo { height: 22px; width: auto; opacity: 0.7; }
+
+/* ── INLINE MANTRA CARD (shown in chat after SESSION_COMPLETE) ── */
+.mantra-card-inline {
+  margin: 12px 0 4px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+}
+.mantra-card-inline img {
+  width: 100%; max-width: 320px; border-radius: 10px;
+  border: 1px solid rgba(104,100,187,0.3);
+  display: block;
+}
+.mantra-card-inline .dl-btn {
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  letter-spacing: 0.5px; padding: 9px 20px;
+  background: #35327e; color: #fff; border: none;
+  border-radius: 8px; cursor: pointer; transition: background 0.15s;
+}
+.mantra-card-inline .dl-btn:hover { background: #6864bb; }
 </style>
 </head>
 <body>
+
+<!-- Hidden card used by html2canvas to generate the mantra PNG -->
+<div id="mantra-render-card">
+  <div class="rc-bg"></div>
+  <div class="rc-contour">
+    <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" id="rc-contour-svg"></svg>
+  </div>
+  <div class="rc-top">My Personal Mantra</div>
+  <div class="rc-body">
+    <div class="rc-text" id="rc-mantra-text"></div>
+  </div>
+  <div class="rc-foot">
+    <div class="rc-credit" id="rc-credit">Created by Demian IA</div>
+    <img class="rc-foot-logo" src="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/Logo%20Demianism%20with%20url.png" alt="demianism.org" crossorigin="anonymous">
+  </div>
+</div>
 
 <!-- ═══ SIDEBAR ═══ -->
 <aside class="sidebar" id="sidebar">
@@ -911,7 +1023,7 @@ button#send svg { width: 17px; height: 17px; }
       <div class="sb-section">Chat history</div>
       <div class="sb-sessions" id="sbSessions"></div>
     </div>
-    <button class="sb-item" onclick="newChat()">
+    <button class="sb-item" onclick="newChat(this)">
       <span class="sb-icon icon-newchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
       <span class="sb-label">New Chat</span>
       <span class="sb-tooltip">New Chat</span>
@@ -944,13 +1056,13 @@ button#send svg { width: 17px; height: 17px; }
       <span class="sb-tooltip">Messages remaining</span>
     </div>
 
-    <button class="sb-item" onclick="toggleCreditsMenu()">
+    <button class="sb-item" onclick="openSidePopup('creditsMenu', this)">
       <span class="sb-icon icon-recharge"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
       <span class="sb-label">Recharge</span>
       <span class="sb-tooltip">Recharge</span>
     </button>
 
-    <button class="sb-item" id="buyMantraItem" onclick="openMantraModal()">
+    <button class="sb-item" id="buyMantraItem" onclick="openSidePopup('mantraMenu', this)">
       <span class="sb-icon"><img src="spiral-indigo.svg" style="width:20px;height:20px;"></span>
       <span class="sb-label">Buy Mantra</span>
       <span class="sb-tooltip">Buy Mantra</span>
@@ -1020,7 +1132,6 @@ button#send svg { width: 17px; height: 17px; }
 <div class="credits-wrapper">
   <div class="credits-menu" id="creditsMenu">
     <div class="menu-header">
-      <img src="demianismlogo.png" alt="Demianism" class="menu-logo">
       <div class="menu-title">Pay only for what you use</div>
       <div class="menu-sub">No recurring fees. No expiration date.<br>Use whenever you need.</div>
       <div class="menu-choose">Choose your package</div>
@@ -1081,7 +1192,6 @@ button#send svg { width: 17px; height: 17px; }
 <div class="credits-wrapper">
   <div class="credits-menu" id="mantraMenu">
     <div class="menu-header">
-      <img src="demianismlogo.png" alt="Demianism" class="menu-logo">
       <div class="menu-title" style="display:flex;align-items:center;gap:8px;font-size:21px;"><img src="spiral-indigo.svg" style="width:23px;height:23px;"> Your Mantra</div>
       <div class="menu-sub" style="color:#fff;font-size:14px;">100% unique and tailored to you</div>
       <div class="menu-sub" style="margin-top:8px;">Move toward your true call in life with this small but powerful aid (if used daily and with intention).</div>
@@ -1131,7 +1241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.credits-wrapper') && !e.target.closest('[onclick*="toggleCreditsMenu"]') && !e.target.closest('[onclick*="openMantraModal"]') && !e.target.closest('[onclick*="newChat"]') && !e.target.closest('[onclick*="one-time"]') && !e.target.closest('.mantra-trigger')) {
+    if (!e.target.closest('.credits-wrapper') && !e.target.closest('[onclick*="openSidePopup"]') && !e.target.closest('[onclick*="openMantraModal"]') && !e.target.closest('[onclick*="newChat"]') && !e.target.closest('[onclick*="one-time"]') && !e.target.closest('.mantra-trigger')) {
       document.getElementById('creditsMenu').classList.remove('open');
       document.getElementById('newChatMenu')?.classList.remove('open');
       document.getElementById('mantraMenu')?.classList.remove('open');
@@ -1437,11 +1547,11 @@ function closeLoginModal() {
   document.getElementById('loginError').textContent = '';
 }
 
-async function newChat() {
+async function newChat(triggerEl) {
   const isRegistered = !!userEmail;
   const canOpen = isRegistered && canNewChat && messagesBalance > 0;
   if (!canOpen) {
-    openSidePopup('newChatMenu');
+    openSidePopup('newChatMenu', triggerEl);
     return;
   }
   try {
@@ -1465,19 +1575,44 @@ async function newChat() {
 }
 
 // Generic: open a fixed side popup positioned like the recharge menu
-function openSidePopup(id) {
+function openSidePopup(id, triggerEl) {
   const menu = document.getElementById(id);
   const sb = document.getElementById('sidebar');
   // close others
   ['creditsMenu','newChatMenu','mantraMenu'].forEach(m => {
     if (m !== id) document.getElementById(m)?.classList.remove('open');
   });
-  if (sb.classList.contains('open')) menu.classList.add('from-open');
-  else menu.classList.remove('from-open');
+
+  // For creditsMenu and mantraMenu, anchor above the trigger button
+  if ((id === 'creditsMenu' || id === 'mantraMenu') && triggerEl) {
+    const rect = triggerEl.getBoundingClientRect();
+    const isMobile = window.innerWidth <= 720;
+    if (isMobile) {
+      // On mobile: position above the trigger, full width
+      menu.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
+      menu.style.top = 'auto';
+      menu.style.left = '8px';
+      menu.style.right = '8px';
+      menu.style.width = 'auto';
+    } else {
+      // On desktop: position above trigger, left-aligned to sidebar
+      menu.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
+      menu.style.top = 'auto';
+      menu.style.left = sb.classList.contains('open')
+        ? 'calc(var(--sidebar-w) + 8px)'
+        : 'calc(var(--sidebar-collapsed) + 8px)';
+      menu.style.width = '300px';
+      menu.style.right = 'auto';
+    }
+  } else {
+    if (sb.classList.contains('open')) menu.classList.add('from-open');
+    else menu.classList.remove('from-open');
+  }
+
   menu.classList.toggle('open');
 }
-function openMantraModal() {
-  openSidePopup('mantraMenu');
+function openMantraModal(triggerEl) {
+  openSidePopup('mantraMenu', triggerEl);
 }
 
 function toggleAboutMenu(e) {
@@ -1497,7 +1632,7 @@ function sendOpeningMessage() {
 <p><img src="demianismlogo.png" style="float:left;width:72px;height:auto;margin:0 14px 4px 0;display:block;">Greetings, seeker.<br>I am Demian, the AI spiritual companion with a Demianist heart.</p>
 <div style="clear:both;"></div>
 <p>I am here to help you find and <span class="semibold">FOLLOW YOUR CALL</span> — your true life purpose according to <a href="https://demianism.org" target="_blank">Demianism</a> — and to support anyone feeling lost or confused in these troubled times with personal, positive inspiration meant just for them.</p>
-<p>Behind me there is no team, no company, no investment. Just one man: Barabeke, an independent Italian artist and the founder of Demianism. He pays for each of my messages out of his own pockets (which are remarkably empty).</p>
+<p>Behind me there is no team, no company, no investment. Just one man: Barabeke, an independent Italian artist and the founder of Demianism.</p>
 <p>I speak <span class="semibold">ALL LANGUAGES</span> 🌐 To switch, just message me in your language.</p>
 <p>My services:</p>
 
@@ -1636,19 +1771,114 @@ async function callAPI(msgs) {
   isLoading = false;
 }
 
-function handleSessionComplete(reply) {
-  const mantraMatch = reply.match(/\[MANTRA_TEXT\]([\s\S]*?)\[\/MANTRA_TEXT\]/);
-  if (mantraMatch) {
-    setTimeout(() => {
-      appendSystemMessage('✦ Create your mantra card → demianism.org/mantra.html');
-    }, 1000);
+function buildContoursSVG() {
+  const svg = document.getElementById('rc-contour-svg');
+  if (!svg || svg.childElementCount > 0) return;
+  const cx = 150, cy = 150;
+  let out = '';
+  for (let i = 0; i < 15; i++) {
+    const rx = 30 + i * 7.3 + (i % 2) * 3;
+    const ry = 33 + i * 7.6;
+    const rot = (i * 7) % 18 - 9;
+    out += `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" transform="rotate(${rot} ${cx} ${cy})" opacity="${(1 - i/22).toFixed(2)}"/>`;
   }
-  // Backend has set messagesBalance to 20 — counter will update from _session
+  svg.innerHTML = out;
+}
+
+function colorBracketsRC(raw) {
+  let out = '', last = 0, m;
+  const re = /\[([^\]]*)\]/g;
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  while ((m = re.exec(raw)) !== null) {
+    if (m.index > last) out += esc(raw.slice(last, m.index));
+    out += '<span class="actionable">' + esc(m[1]) + '</span>';
+    last = m.index + m[0].length;
+  }
+  if (last < raw.length) out += esc(raw.slice(last));
+  return out;
+}
+
+async function handleSessionComplete(reply) {
+  const mantraMatch = reply.match(/\[MANTRA_TEXT\]([\s\S]*?)\[\/MANTRA_TEXT\]/);
+
   mantraUnlocked = false;
   isPaid = true;
-  // Refresh session list to show updated title
   if (authToken) loadSessionList();
   updateCounter();
+
+  if (!mantraMatch) return;
+  const mantraText = mantraMatch[1].trim();
+
+  // Build the hidden card
+  buildContoursSVG();
+  const textEl = document.getElementById('rc-mantra-text');
+  const creditEl = document.getElementById('rc-credit');
+
+  // Format text: each line = a block
+  const paras = mantraText.split(/\n+/).map(l => l.trim()).filter(Boolean);
+  textEl.innerHTML = paras.map(p => `<div style="margin-bottom:0.4em">${colorBracketsRC(p)}</div>`).join('');
+  creditEl.textContent = 'Created by Demian IA · ' + new Date().toLocaleDateString('en-US', { day:'numeric', month:'long', year:'numeric' });
+
+  // Auto-scale font
+  const displayLen = mantraText.replace(/[\[\]]/g,'').replace(/\s+/g,' ').trim().length;
+  let size = 1.3;
+  if (displayLen > 120) size = 1.15;
+  if (displayLen > 180) size = 1.0;
+  if (displayLen > 240) size = 0.88;
+  if (displayLen > 290) size = 0.78;
+  textEl.style.fontSize = size + 'rem';
+
+  // Small delay for fonts to settle, then render
+  await new Promise(r => setTimeout(r, 600));
+
+  let dataUrl = null;
+  try {
+    const card = document.getElementById('mantra-render-card');
+    const canvas = await html2canvas(card, {
+      backgroundColor: null,
+      scale: 1080 / card.offsetWidth,
+      useCORS: true,
+      logging: false
+    });
+    dataUrl = canvas.toDataURL('image/png');
+  } catch (err) {
+    console.error('Mantra card render error:', err);
+  }
+
+  // Inject card into the last Demian message bubble
+  const chat = document.getElementById('chat');
+  const demianMsgs = chat.querySelectorAll('.msg.demian');
+  const lastBubble = demianMsgs.length ? demianMsgs[demianMsgs.length - 1].querySelector('.msg-bubble') : null;
+
+  if (lastBubble && dataUrl) {
+    const cardWrap = document.createElement('div');
+    cardWrap.className = 'mantra-card-inline';
+
+    const img = document.createElement('img');
+    img.src = dataUrl;
+    img.alt = 'Your personal mantra card';
+    cardWrap.appendChild(img);
+
+    const dlBtn = document.createElement('button');
+    dlBtn.className = 'dl-btn';
+    dlBtn.textContent = 'Download card';
+    dlBtn.addEventListener('click', () => {
+      const a = document.createElement('a');
+      a.download = 'demian-mantra.png';
+      a.href = dataUrl;
+      a.click();
+    });
+    cardWrap.appendChild(dlBtn);
+
+    lastBubble.appendChild(cardWrap);
+    chat.scrollTop = chat.scrollHeight;
+  } else if (lastBubble) {
+    // Fallback if canvas failed
+    const fallback = document.createElement('p');
+    fallback.style.cssText = 'margin-top:12px; font-size:14px; color:var(--purple-light);';
+    fallback.innerHTML = '✦ <a href="https://demianism.org/mantra" target="_blank" style="color:var(--text-link)">Create your mantra card at demianism.org/mantra</a>';
+    lastBubble.appendChild(fallback);
+  }
 }
 
 function setStatus(online) {
@@ -1662,9 +1892,7 @@ function purchaseMantra() {
   window.open('https://buy.stripe.com/aFa5kEdjlg3Tgl5gEV6oo00', '_blank');
 }
 
-function toggleCreditsMenu() {
-  openSidePopup('creditsMenu');
-}
+
 
 function purchaseCredits(tier) {
   const links = {
@@ -1724,7 +1952,7 @@ async function submitCode() {
 function handlePurchaseReturn(tier, msgs, mantra) {
   if (msgs === undefined) {
     const tiers = {
-      'mantra':          { messages: 999, mantra: true  },
+      'mantra':          { messages: 130, mantra: true  },
       'consult-basic':   { messages: 50,  mantra: false },
       'consult-regular': { messages: 150, mantra: false },
       'consult-premium': { messages: 400, mantra: false },
