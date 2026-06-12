@@ -541,7 +541,7 @@ button#send svg { width: 17px; height: 17px; }
   transition: width 0.22s ease;
   overflow: visible;
 }
-.sidebar.open { width: var(--sidebar-w); overflow: hidden; }
+.sidebar.open { width: var(--sidebar-w); overflow: visible; }
 
 /* ── ZONE 1: fixed header ── */
 .sb-head {
@@ -831,10 +831,10 @@ button#send svg { width: 17px; height: 17px; }
   .sb-tooltip { display: none !important; }
   .sidebar {
     width: var(--sidebar-w);
-    transform: translateX(-100%);
-    transition: transform 0.24s ease;
+    left: calc(-1 * var(--sidebar-w));
+    transition: left 0.24s ease;
   }
-  .sidebar.open { transform: translateX(0); width: var(--sidebar-w); }
+  .sidebar.open { left: 0; width: var(--sidebar-w); }
   .sidebar .sb-label, .sidebar .sb-section, .sidebar .sb-wordmark,
   .sidebar .rem-txt, .sidebar .sb-account-info { opacity: 1; }
   .sidebar .sb-sessions { display: flex; }
