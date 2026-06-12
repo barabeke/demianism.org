@@ -1219,12 +1219,6 @@ let canNewChat = false;
 let mantraUnlocked = false;
 let messagesBalance = 0;
 
-// Auth + session state
-let authToken = localStorage.getItem('demian_auth') || null;
-let userEmail = null;
-let currentSessionId = localStorage.getItem('demian_session') || null;
-let userTier = null;
-
 function updateCounter() {
   const remNum = document.getElementById('remNum');
   const sbRemaining = document.getElementById('sbRemaining');
@@ -1241,6 +1235,12 @@ function updateCounter() {
     if (sbRemaining) sbRemaining.style.display = '';
   }
 }
+
+// Auth + session state
+let authToken = localStorage.getItem('demian_auth') || null;
+let userEmail = null;
+let currentSessionId = localStorage.getItem('demian_session') || null;
+let userTier = null;
 
 marked.setOptions({ breaks: true, gfm: true });
 
@@ -1600,35 +1600,25 @@ async function newChat(triggerEl) {
 function openSidePopup(id, triggerEl) {
   const menu = document.getElementById(id);
   const wasOpen = menu.classList.contains('open');
-
-  // Close all menus first
   ['creditsMenu','newChatMenu','mantraMenu'].forEach(m => {
     document.getElementById(m)?.classList.remove('open');
   });
-
-  // If it was already open, this click closes it
   if (wasOpen) return;
-
-  // Find the trigger button if not passed
   if (!triggerEl) {
     const map = { creditsMenu: 'Recharge', mantraMenu: 'Buy Mantra', newChatMenu: 'New Chat' };
     triggerEl = [...document.querySelectorAll('.sb-item')].find(
       b => b.querySelector('.sb-label')?.textContent.trim() === map[id]
     );
   }
-
   positionMenu(menu, triggerEl, id === 'newChatMenu' ? 'below' : 'above');
   menu.classList.add('open');
 }
 
 function positionMenu(menu, triggerEl, direction) {
   const isMobile = window.innerWidth <= 720;
-
-  // Make menu measurable off-screen
   menu.style.display = 'block';
   menu.style.visibility = 'hidden';
   menu.style.top = '-9999px';
-
   if (isMobile) {
     menu.style.left = '8px';
     menu.style.right = '8px';
@@ -1637,20 +1627,16 @@ function positionMenu(menu, triggerEl, direction) {
     menu.style.right = 'auto';
     menu.style.width = '300px';
   }
-
   const menuH = menu.offsetHeight;
   const menuW = isMobile ? (window.innerWidth - 16) : 300;
-
   if (triggerEl) {
     const rect = triggerEl.getBoundingClientRect();
-
     if (!isMobile) {
       let left = rect.left;
       if (left + menuW > window.innerWidth - 8) left = window.innerWidth - menuW - 8;
       if (left < 8) left = 8;
       menu.style.left = left + 'px';
     }
-
     let top;
     if (direction === 'below') {
       top = rect.bottom + 6;
@@ -1667,7 +1653,6 @@ function positionMenu(menu, triggerEl, direction) {
     menu.style.bottom = '90px';
     if (!isMobile) menu.style.left = '64px';
   }
-
   menu.style.visibility = 'visible';
   menu.style.display = '';
 }
