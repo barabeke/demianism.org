@@ -366,7 +366,7 @@ button#send svg { width: 17px; height: 17px; }
   transform: translateY(-1px);
 }
 
-.credits-wrapper { position: fixed; bottom: 0; left: 0; width: 0; height: 0; }
+.credits-wrapper { position: fixed; bottom: 0; left: 0; width: 0; height: 0; z-index: 9999; }
 
 .credits-menu {
   display: none;
@@ -374,7 +374,7 @@ button#send svg { width: 17px; height: 17px; }
   background: var(--card-bg);
   border: 1px solid rgba(104,100,187,0.4);
   border-radius: 14px;
-  z-index: 500;
+  z-index: 10000;
   width: 300px;
   overflow: hidden;
   box-shadow: 0 0 40px rgba(0,0,0,0.6), 0 0 40px rgba(104,100,187,0.25);
