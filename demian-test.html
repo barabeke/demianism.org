@@ -236,7 +236,9 @@ body {
   color: var(--purple-light);
 }
 
-.msg.user .msg-bubble { background: #242347;
+.msg.user .msg-bubble {
+  background: #242347;
+  background: #171637;
   border: 1px solid rgba(104,100,187,0.25);
   color: var(--text-body);
   font-family: 'Libre Baskerville', serif;
@@ -1299,21 +1301,29 @@ document.addEventListener('DOMContentLoaded', async () => {
       try {
         const d = JSON.parse(e.newValue);
         if (!d.authToken) return;
+        // Apply auth — preserve existing free message count
+        const savedMessageCount = messageCount;
+        const savedMessages = [...messages];
         authToken = d.authToken;
         userEmail = d.email;
         if (d.messagesBalance > 0 || d.mantraUnlocked) {
           messagesBalance = d.messagesBalance;
           isPaid = true;
+        } else {
+          // Free account — keep existing free count
+          messageCount = savedMessageCount;
+          messages = savedMessages;
         }
         mantraUnlocked = d.mantraUnlocked || false;
         canNewChat = d.canNewChat || false;
-        localStorage.setItem('demian_auth', authToken);
         localStorage.removeItem('demian_auth_signal');
+        // Close the modal if open
+        document.getElementById('loginModal')?.classList.remove('open');
         updateAccountUI();
         updateCounter();
         await loadSessionList();
-        appendSystemMessage('✓ Signed in as ' + d.email);
-      } catch(err) { console.error('storage event error', err); }
+        appendSystemMessage('✓ Signed in as ' + d.email + '. Your chat continues.');
+      } catch(err) { console.error('storage login error', err); }
     }
   });
 });
@@ -1354,9 +1364,11 @@ async function submitLogin() {
     const data = await res.json();
     if (data.ok) {
       document.getElementById('loginTitle').textContent = 'Check your inbox';
-      document.getElementById('loginDesc').textContent = 'We sent a secure access link to ' + email + '. It expires in 15 minutes.';
-      document.querySelector('#loginModal .modal-btns').style.display = 'none';
+      document.getElementById('loginDesc').textContent = 'We sent a secure access link to ' + email + '. Click it and you will be signed in here automatically. It expires in 15 minutes.';
       document.getElementById('loginEmail').style.display = 'none';
+      const btns = document.querySelector('#loginModal .modal-btns');
+      btns.innerHTML = '<button class="modal-cancel" style="width:100%;" onclick="closeLoginModal()">Close</button>';
+      btns.style.display = 'flex';
     } else {
       errEl.textContent = 'Something went wrong. Please try again.';
       btn.textContent = 'Send link'; btn.disabled = false;
@@ -1372,18 +1384,8 @@ async function verifyMagicLink(token) {
     const res = await fetch(WORKER_URL + '/auth/verify?token=' + encodeURIComponent(token));
     const data = await res.json();
     if (data.ok) {
-      authToken = data.authToken;
-      userEmail = data.email;
-      // Preserve free message count — don't overwrite with server balance for new free accounts
-      if (data.messagesBalance > 0 || data.mantraUnlocked) {
-        messagesBalance = data.messagesBalance || 0;
-        isPaid = true;
-      }
-      mantraUnlocked = data.mantraUnlocked || false;
-      canNewChat = data.canNewChat || false;
-      localStorage.setItem('demian_auth', authToken);
-
-      // Signal the original tab to pick up the login
+      // Write signal for original tab to pick up
+      localStorage.setItem('demian_auth', data.authToken);
       localStorage.setItem('demian_auth_signal', JSON.stringify({
         authToken: data.authToken,
         email: data.email,
@@ -1393,17 +1395,9 @@ async function verifyMagicLink(token) {
         ts: Date.now()
       }));
 
-      // If this is the magic-link tab (opened from email), show success and close
-      if (window.opener || window.history.length <= 2) {
-        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#cfcfd4;font-family:Inter,sans-serif;font-size:18px;text-align:center;padding:20px;"><div><div style="font-size:32px;margin-bottom:16px;">✓</div>Signed in successfully.<br><span style="font-size:14px;opacity:0.6;">You can close this tab and return to Demian.</span></div></div>';
-        setTimeout(() => { try { window.close(); } catch(e) {} }, 2000);
-        return;
-      }
-
-      // Otherwise we are in the same tab — continue normally
-      updateAccountUI();
-      updateCounter();
-      await loadSessionList();
+      // If opened from email (new tab), show success message and close
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#cfcfd4;font-family:Inter,sans-serif;font-size:18px;text-align:center;padding:20px;"><div><div style="font-size:40px;margin-bottom:16px;">✓</div><strong>Signed in successfully.</strong><br><br><span style="font-size:15px;opacity:0.7;">Return to the tab where you were chatting with Demian.<br>You are now logged in there.</span></div></div>';
+      setTimeout(() => { try { window.close(); } catch(e) {} }, 3000);
     }
   } catch (err) { console.error('verify failed', err); }
 }
