@@ -236,8 +236,7 @@ body {
   color: var(--purple-light);
 }
 
-.msg.user .msg-bubble {
-  background: #171637;
+.msg.user .msg-bubble { background: #242347;
   border: 1px solid rgba(104,100,187,0.25);
   color: var(--text-body);
   font-family: 'Libre Baskerville', serif;
@@ -1293,6 +1292,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   updateCounter();
   updateAccountUI();
+
+  // Listen for magic link login completing in another tab
+  window.addEventListener('storage', async (e) => {
+    if (e.key === 'demian_auth_signal' && e.newValue) {
+      try {
+        const d = JSON.parse(e.newValue);
+        if (!d.authToken) return;
+        authToken = d.authToken;
+        userEmail = d.email;
+        if (d.messagesBalance > 0 || d.mantraUnlocked) {
+          messagesBalance = d.messagesBalance;
+          isPaid = true;
+        }
+        mantraUnlocked = d.mantraUnlocked || false;
+        canNewChat = d.canNewChat || false;
+        localStorage.setItem('demian_auth', authToken);
+        localStorage.removeItem('demian_auth_signal');
+        updateAccountUI();
+        updateCounter();
+        await loadSessionList();
+        appendSystemMessage('✓ Signed in as ' + d.email);
+      } catch(err) { console.error('storage event error', err); }
+    }
+  });
 });
 
 /* ═══ SIDEBAR CONTROLS ═══ */
@@ -1351,11 +1374,33 @@ async function verifyMagicLink(token) {
     if (data.ok) {
       authToken = data.authToken;
       userEmail = data.email;
-      messagesBalance = data.messagesBalance || 0;
+      // Preserve free message count — don't overwrite with server balance for new free accounts
+      if (data.messagesBalance > 0 || data.mantraUnlocked) {
+        messagesBalance = data.messagesBalance || 0;
+        isPaid = true;
+      }
       mantraUnlocked = data.mantraUnlocked || false;
       canNewChat = data.canNewChat || false;
-      isPaid = messagesBalance > 0 || mantraUnlocked;
       localStorage.setItem('demian_auth', authToken);
+
+      // Signal the original tab to pick up the login
+      localStorage.setItem('demian_auth_signal', JSON.stringify({
+        authToken: data.authToken,
+        email: data.email,
+        messagesBalance: data.messagesBalance || 0,
+        mantraUnlocked: data.mantraUnlocked || false,
+        canNewChat: data.canNewChat || false,
+        ts: Date.now()
+      }));
+
+      // If this is the magic-link tab (opened from email), show success and close
+      if (window.opener || window.history.length <= 2) {
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#cfcfd4;font-family:Inter,sans-serif;font-size:18px;text-align:center;padding:20px;"><div><div style="font-size:32px;margin-bottom:16px;">✓</div>Signed in successfully.<br><span style="font-size:14px;opacity:0.6;">You can close this tab and return to Demian.</span></div></div>';
+        setTimeout(() => { try { window.close(); } catch(e) {} }, 2000);
+        return;
+      }
+
+      // Otherwise we are in the same tab — continue normally
       updateAccountUI();
       updateCounter();
       await loadSessionList();
