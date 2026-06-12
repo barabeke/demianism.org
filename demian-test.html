@@ -1578,24 +1578,27 @@ async function newChat(triggerEl) {
 function openSidePopup(id, triggerEl) {
   const menu = document.getElementById(id);
   const sb = document.getElementById('sidebar');
-  // close others
+  const isMobile = window.innerWidth <= 720;
+
+  // Close others
   ['creditsMenu','newChatMenu','mantraMenu'].forEach(m => {
     if (m !== id) document.getElementById(m)?.classList.remove('open');
   });
 
-  // For creditsMenu and mantraMenu, anchor above the trigger button
-  if ((id === 'creditsMenu' || id === 'mantraMenu') && triggerEl) {
-    const rect = triggerEl.getBoundingClientRect();
-    const isMobile = window.innerWidth <= 720;
-    if (isMobile) {
-      // On mobile: position above the trigger, full width
-      menu.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
-      menu.style.top = 'auto';
-      menu.style.left = '8px';
-      menu.style.right = '8px';
-      menu.style.width = 'auto';
-    } else {
-      // On desktop: position above trigger, left-aligned to sidebar
+  // On mobile: close sidebar first, then show menu centered over chat
+  if (isMobile) {
+    sb.classList.remove('open');
+    document.getElementById('sbOverlay')?.classList.remove('show');
+    // Center menu vertically in lower half of screen
+    menu.style.top = 'auto';
+    menu.style.left = '8px';
+    menu.style.right = '8px';
+    menu.style.width = 'auto';
+    menu.style.bottom = '80px';
+  } else {
+    // Desktop: anchor above trigger button
+    if ((id === 'creditsMenu' || id === 'mantraMenu') && triggerEl) {
+      const rect = triggerEl.getBoundingClientRect();
       menu.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
       menu.style.top = 'auto';
       menu.style.left = sb.classList.contains('open')
@@ -1603,10 +1606,10 @@ function openSidePopup(id, triggerEl) {
         : 'calc(var(--sidebar-collapsed) + 8px)';
       menu.style.width = '300px';
       menu.style.right = 'auto';
+    } else {
+      if (sb.classList.contains('open')) menu.classList.add('from-open');
+      else menu.classList.remove('from-open');
     }
-  } else {
-    if (sb.classList.contains('open')) menu.classList.add('from-open');
-    else menu.classList.remove('from-open');
   }
 
   menu.classList.toggle('open');
