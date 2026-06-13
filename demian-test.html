@@ -1254,14 +1254,56 @@ renderer.link = function(token) {
 };
 marked.setOptions({ breaks: true, gfm: true, renderer });
 
-function autolinkText(html) {
-  // Process text nodes only, leaving HTML tags untouched
-  return html.replace(/(<[^>]+>)|([^<]+)/g, (match, tag, text) => {
-    if (tag) return tag;
+// Name-to-URL map: when Demian writes these names (linked or not), ensure they link correctly
+const NAME_LINKS = [
+  { pattern: /\[([^\]]*Ritorno a Eden 1[^\]]*)\]\((?:undefined|)\)/gi, url: 'https://mybook.to/rCfKQ' },
+  { pattern: /\[([^\]]*Ritorno a Eden 2[^\]]*)\]\((?:undefined|)\)/gi, url: 'https://amazon.com' },
+  { pattern: /\[([^\]]*Book of Demianism[^\]]*)\]\((?:undefined|)\)/gi, url: 'https://mybook.to/2VGW' },
+  { pattern: /\[([^\]]*Libro del Demianesimo[^\]]*)\]\((?:undefined|)\)/gi, url: 'https://mybook.to/qdVLiF' },
+  { pattern: /\[([^\]]*Art of Barabeke[^\]]*)\]\((?:undefined|)\)/gi, url: 'https://heyzine.com/flip-book/3b03034a08.html' },
+  { pattern: /\[([^\]]*Giant Kahuna[^\]]*)\]\((?:undefined|)\)/gi, url: 'https://manifold.xyz/@barabeke/contract/141113584/3' },
+  { pattern: /\[([^\]]*Mona Lisa Reloaded[^\]]*)\]\((?:undefined|)\)/gi, url: 'https://manifold.xyz/@barabeke/contract/146290928/1' },
+  { pattern: /\[([^\]]*Revealed Doctrine[^\]]*)\]\((?:undefined|)\)/gi, url: 'https://manifold.xyz/@barabeke/id/4083525872' },
+  { pattern: /\[([^\]]*Demianism[^\]]*)\]\((?:undefined|)\)/gi, url: 'https://demianism.org' },
+  { pattern: /\[([^\]]*Odd Gospel[^\]]*)\]\((?:undefined|)\)/gi, url: 'https://barabeke.substack.com' },
+  { pattern: /\[([^\]]*Canti Liberi[^\]]*)\]\((?:undefined|)\)/gi, url: 'https://archive.org/details/canti-liberi-barabeke' },
+  { pattern: /\[([^\]]*Nuova Alleanza[^\]]*)\]\((?:undefined|)\)/gi, url: 'https://archive.org/details/una-nuova-alleanza-tra-uomini-e-donne' },
+];
+
+// Also linkify italic phrases that should be links (*The Giant Kahuna* etc.)
+const ITALIC_LINKS = [
+  { pattern: /<em>Ritorno a Eden 1([^<]*)<\/em>/gi, url: 'https://mybook.to/rCfKQ' },
+  { pattern: /<em>Ritorno a Eden([^<]*)<\/em>/gi, url: 'https://mybook.to/rCfKQ' },
+  { pattern: /<em>Mona Lisa Reloaded([^<]*)<\/em>/gi, url: 'https://manifold.xyz/@barabeke/contract/146290928/1' },
+  { pattern: /<em>The Giant Kahuna([^<]*)<\/em>/gi, url: 'https://manifold.xyz/@barabeke/contract/141113584/3' },
+  { pattern: /<em>The Art of Barabeke([^<]*)<\/em>/gi, url: 'https://heyzine.com/flip-book/3b03034a08.html' },
+  { pattern: /<em>Transfiguration([^<]*)<\/em>/gi, url: 'https://heyzine.com/flip-book/3b03034a08.html' },
+  { pattern: /<em>Canti Liberi([^<]*)<\/em>/gi, url: 'https://archive.org/details/canti-liberi-barabeke' },
+];
+
+function autolinkText(rawMarkdown) {
+  // Step 1: Fix [name](undefined) or [name]() before marked parses
+  let md = rawMarkdown;
+  for (const {pattern, url} of NAME_LINKS) {
+    md = md.replace(pattern, (_, name) => '[' + name + '](' + url + ')');
+  }
+
+  // Step 2: Parse markdown
+  let html = marked.parse(md);
+
+  // Step 3: Make italic phrases into links
+  for (const {pattern, url} of ITALIC_LINKS) {
+    html = html.replace(pattern, (_, rest) =>
+      '<a href="' + url + '" target="_blank" rel="noopener" style="color:var(--text-link)"><em>' + rest.replace(/^:?\s*/, '') + '<\/em><\/a>'
+    );
+  }
+
+  // Step 4: Autolink bare URLs and known domains not yet linked
+  html = html.replace(/(<a[^>]*>[\s\S]*?<\/a>)|(<[^>]+>)|([^<]+)/g, (match, anchor, tag, text) => {
+    if (anchor || tag) return match; // leave existing links and tags alone
     return text.replace(
-      /(\bhttps?:\/\/[^\s<"')\]]+)|(\b(?:www\.|t\.me\/|demianism\.org|mybook\.to|manifold\.xyz|heyzine\.com|archive\.org|substack\.com)[^\s<"')\]]+)|(\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b)/g,
+      /(\bhttps?:\/\/[^\s<"')\]]+)|(\b(?:t\.me\/|demianism\.org|mybook\.to|manifold\.xyz|heyzine\.com|archive\.org|substack\.com)[^\s<"')\]]+)|(\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b)/g,
       (url) => {
-        // Strip trailing punctuation
         const stripped = url.replace(/[.,!?:;)]+$/, '');
         const trail = url.slice(stripped.length);
         if (stripped.includes('@') && !stripped.startsWith('http')) {
@@ -1272,6 +1314,8 @@ function autolinkText(html) {
       }
     );
   });
+
+  return html;
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -2167,7 +2211,7 @@ function appendMessage(role, text) {
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   if (role === 'demian') {
-    bubble.innerHTML = autolinkText(marked.parse(cleanText)) + (imageHTML || '');
+    bubble.innerHTML = autolinkText(cleanText) + (imageHTML || '');
   } else {
     bubble.textContent = cleanText;
   }
