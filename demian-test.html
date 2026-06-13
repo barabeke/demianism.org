@@ -1254,6 +1254,15 @@ renderer.link = function(token) {
 };
 marked.setOptions({ breaks: true, gfm: true, renderer });
 
+function autolinkText(html) {
+  // Make bare URLs clickable (e.g. demianism.org/doctrine without https://)
+  return html.replace(/(?<![="'>\/])(\b(?:https?:\/\/)?(?:www\.|demianism\.org)[^\s<"')\]]+)/g, (url) => {
+    // Skip if already inside an anchor
+    const href = url.startsWith('http') ? url : 'https://' + url;
+    return '<a href="' + href + '" target="_blank" rel="noopener" style="color:var(--text-link)">' + url + '</a>';
+  });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
 
   const ta = document.getElementById('userInput');
@@ -2099,18 +2108,43 @@ function appendMessage(role, text) {
   wrap.className = `msg ${role}`;
 
   const imageFiles = {
-    'doctrine': 'revealed-doctrine.jpg', 'doctrine-italian': 'revealed-doctrine-ita.jpg',
-    'book': 'book-demianism.jpg', 'book-italian': 'book-demianesimo.jpg',
-    'manifesto': 'manifesto-demianism.jpg', 'manifesto-italian': 'manifesto-demianesimo.jpg',
-    'art-book': 'art-book.jpg', 'ritorno-a-eden1': 'ritorno-a-eden-1.jpg',
-    'ritorno-a-eden2': 'ritorno-a-eden-2.jpg', 'ritorno-a-eden3': 'ritorno-a-eden-3.jpg',
-    'poetry': 'canti-liberi.jpg', 'nuova-alleanza': 'nuova-alleanza.jpg',
-    'giant-kahuna': 'giant-kahuna.jpg', 'mona-lisa': 'mona-lisa-reloaded.jpg',
+    'doctrine': 'demianistdoctrine.png',
+    'doctrine-italian': 'demianistdoctrine.png',
+    'book': 'book-demianism.png',
+    'book-italian': 'book-demianesimo.png',
+    'manifesto': 'manifesto-demianism.png',
+    'manifesto-italian': 'manifesto-demianesimo.png',
+    'art-book': 'art-book.png',
+    'ritorno-a-eden1': 'ritorno-a-eden-1.png',
+    'ritorno-a-eden2': 'ritorno-a-eden-2.png',
+    'ritorno-a-eden3': 'ritorno-a-eden-3.png',
+    'poetry': 'canti-liberi.png',
+    'nuova-alleanza': 'nuova-alleanza.png',
+    'giant-kahuna': 'giant-kahuna.png',
+    'mona-lisa': 'mona-lisa-reloaded.png',
+  };
+  const imageLinks = {
+    'doctrine': 'https://demianism.org/doctrine',
+    'doctrine-italian': 'https://demianism.org/doctrine',
+    'book': 'https://demianism.org/culture',
+    'book-italian': 'https://demianism.org/culture',
+    'manifesto': 'https://demianism.org/culture',
+    'manifesto-italian': 'https://demianism.org/culture',
+    'art-book': 'https://heyzine.com/flip-book/3b03034a08.html',
+    'ritorno-a-eden1': 'https://mybook.to/rCfKQ',
+    'giant-kahuna': 'https://manifold.xyz/@barabeke/contract/141113584/3',
+    'mona-lisa': 'https://manifold.xyz/@barabeke/contract/146290928/1',
   };
   let imageHTML = '';
   text = text.replace(/\[IMAGE:([a-z0-9_-]+)\]/gi, (_, tag) => {
     const file = imageFiles[tag.toLowerCase()];
-    if (file) imageHTML += '<img src="' + file + '" alt="' + tag + '" style="max-width:100%;border-radius:10px;margin:10px 0;display:block;">';
+    const link = imageLinks[tag.toLowerCase()] || 'https://demianism.org';
+    if (file) {
+      imageHTML += '<a href="' + link + '" target="_blank" rel="noopener" style="display:block;margin:12px 0;">' +
+        '<img src="' + file + '" alt="' + tag + '" style="max-width:100%;border-radius:10px;display:block;" ' +
+        'onerror="this.parentElement.style.display=\'none\'">' +
+        '</a>';
+    }
     return '';
   });
   const cleanText = text
@@ -2122,7 +2156,7 @@ function appendMessage(role, text) {
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   if (role === 'demian') {
-    bubble.innerHTML = marked.parse(cleanText) + (imageHTML || '');
+    bubble.innerHTML = autolinkText(marked.parse(cleanText)) + (imageHTML || '');
   } else {
     bubble.textContent = cleanText;
   }
