@@ -564,7 +564,6 @@ button#send svg { width: 17px; height: 17px; }
 .sidebar {
   position: fixed;
   top: 0; left: 0; bottom: 0;
-  height: 100dvh;
   width: var(--sidebar-collapsed);
   background:
     radial-gradient(circle at 30% 20%, rgba(53,50,126,0.30), transparent 70%),
@@ -577,7 +576,7 @@ button#send svg { width: 17px; height: 17px; }
   transition: width 0.22s ease;
   overflow: visible;
 }
-.sidebar.open { width: var(--sidebar-w); overflow: visible; }
+.sidebar.open { width: var(--sidebar-w); overflow: hidden; }
 
 /* ── ZONE 1: fixed header ── */
 .sb-head {
@@ -623,7 +622,7 @@ button#send svg { width: 17px; height: 17px; }
 
 /* ── ZONE 2: scrollable middle ── */
 .sb-scroll {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -634,12 +633,12 @@ button#send svg { width: 17px; height: 17px; }
 
 /* ── ZONE 3: fixed bottom ── */
 .sb-fixed-bottom {
-  flex: 0 1 auto;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   border-top: 1px solid rgba(104,100,187,0.18);
   position: relative;
-  overflow-x: hidden;
+  overflow: visible;
 }
 
 /* ── Generic nav item ── */
@@ -647,7 +646,7 @@ button#send svg { width: 17px; height: 17px; }
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 10px 16px;
+  padding: 9px 16px;
   cursor: pointer;
   color: var(--text-light);
   font-family: 'Inter', sans-serif;
@@ -763,9 +762,9 @@ button#send svg { width: 17px; height: 17px; }
 /* ── About Demianism expandable popover ── */
 .sb-about-wrap { position: relative; }
 .sb-about-menu {
+  display: none;
   position: fixed;
   z-index: 10000;
-  display: none;
   min-width: 240px;
   width: 300px;
   background:
@@ -1681,12 +1680,9 @@ function positionMenu(menu, triggerEl, direction) {
   menu.style.visibility = 'hidden';
   menu.style.top = '-9999px';
   if (isMobile) {
-    menu.style.left = '8px';
-    menu.style.right = '8px';
-    menu.style.width = 'auto';
+    menu.style.left = '8px'; menu.style.right = '8px'; menu.style.width = 'auto';
   } else {
-    menu.style.right = 'auto';
-    menu.style.width = '300px';
+    menu.style.right = 'auto'; menu.style.width = '300px';
   }
   const menuH = menu.offsetHeight;
   const menuW = isMobile ? (window.innerWidth - 16) : 300;
@@ -1710,8 +1706,7 @@ function positionMenu(menu, triggerEl, direction) {
     menu.style.top = top + 'px';
     menu.style.bottom = 'auto';
   } else {
-    menu.style.top = 'auto';
-    menu.style.bottom = '90px';
+    menu.style.top = 'auto'; menu.style.bottom = '90px';
     if (!isMobile) menu.style.left = '64px';
   }
   menu.style.visibility = 'visible';
@@ -1727,8 +1722,7 @@ function toggleAboutMenu(e) {
   const wasOpen = menu.classList.contains('open');
   ['creditsMenu','newChatMenu','mantraMenu','accountMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
   if (wasOpen) { menu.classList.remove('open'); return; }
-  const trigger = e.currentTarget;
-  positionMenu(menu, trigger, 'above');
+  positionMenu(menu, e.currentTarget, 'above');
   menu.classList.add('open');
 }
 
@@ -1785,15 +1779,13 @@ async function sendMessage() {
   // Limit check
   const used = messages.filter(m => m.role === 'user').length;
   if (mantraUnlocked) {
-    // no limit during mantra session
+    // unlimited during mantra session
   } else if (isPaid || messagesBalance > 0) {
-    // Paid user — gated by balance
     if (messagesBalance <= 0) {
       appendSystemMessage('No messages remaining. Please recharge to continue.');
       return;
     }
   } else {
-    // Free user (logged in or not) — gated by free message count
     if (used >= FREE_MESSAGES) {
       appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Use one of the options below to continue.');
       return;
@@ -1814,7 +1806,6 @@ async function sendMessage() {
     });
   }
 
-  // Save messages to localStorage for free users (persists their count)
   if (!isPaid && !mantraUnlocked) {
     localStorage.setItem('demian_messages', JSON.stringify(messages));
   }
