@@ -564,6 +564,7 @@ button#send svg { width: 17px; height: 17px; }
 .sidebar {
   position: fixed;
   top: 0; left: 0; bottom: 0;
+  height: 100dvh;
   width: var(--sidebar-collapsed);
   background:
     radial-gradient(circle at 30% 20%, rgba(53,50,126,0.30), transparent 70%),
@@ -633,13 +634,12 @@ button#send svg { width: 17px; height: 17px; }
 
 /* ── ZONE 3: fixed bottom ── */
 .sb-fixed-bottom {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
   display: flex;
   flex-direction: column;
   border-top: 1px solid rgba(104,100,187,0.18);
   position: relative;
-  overflow-y: auto;
-  max-height: 60vh;
+  overflow-x: hidden;
 }
 
 /* ── Generic nav item ── */
@@ -763,20 +763,18 @@ button#send svg { width: 17px; height: 17px; }
 /* ── About Demianism expandable popover ── */
 .sb-about-wrap { position: relative; }
 .sb-about-menu {
+  position: fixed;
+  z-index: 10000;
   display: none;
-  position: absolute;
-  bottom: calc(100% + 2px);
-  left: 0;
   min-width: 240px;
+  width: 300px;
   background:
     radial-gradient(circle at 50% 0%, rgba(53,50,126,0.4), transparent 70%),
     #0d0b24;
   border: 1px solid rgba(104,100,187,0.3);
   border-radius: 12px;
-  margin: 0 8px;
   padding: 6px 0 8px;
   box-shadow: 0 -4px 30px rgba(0,0,0,0.5);
-  z-index: 150;
 }
 .sb-about-menu.open { display: block; }
 .sb-about-menu a {
@@ -1225,10 +1223,6 @@ let canNewChat = false;
 let mantraUnlocked = false;
 let messagesBalance = 0;
 
-function getFreeMessagesUsed() {
-  return messages.filter(m => m.role === 'user').length;
-}
-
 function updateCounter() {
   const remNum = document.getElementById('remNum');
   const sbRemaining = document.getElementById('sbRemaining');
@@ -1236,13 +1230,12 @@ function updateCounter() {
   if (mantraUnlocked) {
     remNum.textContent = '∞';
     if (sbRemaining) sbRemaining.style.display = 'none';
-  } else if (authToken && (isPaid || messagesBalance > 0)) {
+  } else if (isPaid || messagesBalance > 0) {
     remNum.textContent = messagesBalance;
     if (sbRemaining) sbRemaining.style.display = '';
   } else {
-    const used = getFreeMessagesUsed();
-    const remaining = Math.max(0, FREE_MESSAGES - used);
-    remNum.textContent = remaining;
+    const used = messages.filter(m => m.role === 'user').length;
+    remNum.textContent = Math.max(0, FREE_MESSAGES - used);
     if (sbRemaining) sbRemaining.style.display = '';
   }
 }
@@ -1403,6 +1396,7 @@ async function verifyMagicLink(token) {
       }));
       document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#cfcfd4;font-family:Inter,sans-serif;font-size:18px;text-align:center;padding:20px;"><div><div style="font-size:40px;margin-bottom:16px;">✓</div><strong>Signed in successfully.</strong><br><br><span style="font-size:15px;opacity:0.7;">Return to the tab where you were chatting with Demian.</span></div></div>';
       setTimeout(() => { try { window.close(); } catch(e) {} }, 3000);
+      return;
     }
   } catch (err) { console.error('verify failed', err); }
 }
@@ -1437,26 +1431,26 @@ function handleAccountClick(triggerEl) {
 function openAccountMenu(triggerEl) {
   const menu = document.getElementById('accountMenu');
   const wasOpen = menu.classList.contains('open');
-  ['creditsMenu','newChatMenu','mantraMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
+  ['creditsMenu','newChatMenu','mantraMenu','sbAboutMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
   if (wasOpen) { menu.classList.remove('open'); return; }
   const tierLabel = userTier
     ? ({'mantra':'Mantra','consult-basic':'Consult 50','consult-regular':'Consult 150','consult-premium':'Consult 400'}[userTier] || userTier)
     : 'Free account';
+  const used = messages.filter(m => m.role === 'user').length;
   const countLine = mantraUnlocked ? '∞ messages (mantra session)'
     : ((isPaid || messagesBalance > 0) ? messagesBalance + ' messages remaining'
-    : Math.max(0, FREE_MESSAGES - getFreeMessagesUsed()) + ' free messages remaining');
-  document.getElementById('accountMenuBody').innerHTML = `
-    <div style="padding:18px 18px 12px;">
-      <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${userEmail}</div>
-      <div style="font-family:'Inter',sans-serif;font-size:12px;color:var(--purple-light);margin-bottom:10px;">${tierLabel}</div>
-      <div style="font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,0.5);padding:8px 10px;background:rgba(104,100,187,0.1);border-radius:8px;border:1px solid rgba(104,100,187,0.2);">💬 ${countLine}</div>
-    </div>
-    <div style="border-top:1px solid rgba(104,100,187,0.18);">
-      <button onclick="openCodeModal();document.getElementById('accountMenu').classList.remove('open');" style="width:100%;text-align:left;padding:11px 18px;font-family:'Inter',sans-serif;font-size:14px;color:var(--text-light);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:10px;">🎁 Redeem a gift code</button>
-      <a href="/privacy.html" target="_blank" style="display:flex;align-items:center;gap:10px;padding:11px 18px;font-family:'Inter',sans-serif;font-size:14px;color:var(--text-light);text-decoration:none;">🔒 Privacy Policy</a>
-      <button onclick="signOut();document.getElementById('accountMenu').classList.remove('open');" style="width:100%;text-align:left;padding:11px 18px 14px;font-family:'Inter',sans-serif;font-size:14px;color:#e08a8a;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:10px;">↩ Sign out</button>
-    </div>
-  `;
+    : Math.max(0, FREE_MESSAGES - used) + ' free messages remaining');
+  document.getElementById('accountMenuBody').innerHTML =
+    '<div style="padding:18px 18px 12px;">' +
+      '<div style="font-family:\'Inter\',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + userEmail + '</div>' +
+      '<div style="font-family:\'Inter\',sans-serif;font-size:12px;color:var(--purple-light);margin-bottom:10px;">' + tierLabel + '</div>' +
+      '<div style="font-family:\'Inter\',sans-serif;font-size:12px;color:rgba(255,255,255,0.5);padding:8px 10px;background:rgba(104,100,187,0.1);border-radius:8px;border:1px solid rgba(104,100,187,0.2);">💬 ' + countLine + '</div>' +
+    '</div>' +
+    '<div style="border-top:1px solid rgba(104,100,187,0.18);">' +
+      '<button onclick="openCodeModal();document.getElementById(\'accountMenu\').classList.remove(\'open\');" style="width:100%;text-align:left;padding:11px 18px;font-family:\'Inter\',sans-serif;font-size:14px;color:var(--text-light);background:none;border:none;cursor:pointer;">🎁 Redeem a gift code</button>' +
+      '<a href="/privacy" target="_blank" style="display:block;padding:11px 18px;font-family:\'Inter\',sans-serif;font-size:14px;color:var(--text-light);text-decoration:none;">🔒 Privacy Policy</a>' +
+      '<button onclick="signOut();document.getElementById(\'accountMenu\').classList.remove(\'open\');" style="width:100%;text-align:left;padding:11px 18px 14px;font-family:\'Inter\',sans-serif;font-size:14px;color:#e08a8a;background:none;border:none;cursor:pointer;">↩ Sign out</button>' +
+    '</div>';
   positionMenu(menu, triggerEl, 'above');
   menu.classList.add('open');
 }
@@ -1667,7 +1661,7 @@ async function newChat(triggerEl) {
 function openSidePopup(id, triggerEl) {
   const menu = document.getElementById(id);
   const wasOpen = menu.classList.contains('open');
-  ['creditsMenu','newChatMenu','mantraMenu','accountMenu'].forEach(m => {
+  ['creditsMenu','newChatMenu','mantraMenu','accountMenu','sbAboutMenu'].forEach(m => {
     document.getElementById(m)?.classList.remove('open');
   });
   if (wasOpen) return;
@@ -1729,7 +1723,13 @@ function openMantraModal(triggerEl) {
 
 function toggleAboutMenu(e) {
   e.stopPropagation();
-  document.getElementById('sbAboutMenu').classList.toggle('open');
+  const menu = document.getElementById('sbAboutMenu');
+  const wasOpen = menu.classList.contains('open');
+  ['creditsMenu','newChatMenu','mantraMenu','accountMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
+  if (wasOpen) { menu.classList.remove('open'); return; }
+  const trigger = e.currentTarget;
+  positionMenu(menu, trigger, 'above');
+  menu.classList.add('open');
 }
 
 function sendOpeningMessage() {
@@ -1782,15 +1782,22 @@ async function sendMessage() {
   const text = input.value.trim();
   if (!text || isLoading) return;
 
-  // Free limit check (logged-out users)
-  if (!isPaid && !mantraUnlocked && getFreeMessagesUsed() >= FREE_MESSAGES) {
-    appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Use one of the options below to continue.');
-    return;
-  }
-  // Paid logged-in limit check
-  if (authToken && !mantraUnlocked && messagesBalance <= 0) {
-    appendSystemMessage('No messages remaining. Please recharge to continue.');
-    return;
+  // Limit check
+  const used = messages.filter(m => m.role === 'user').length;
+  if (mantraUnlocked) {
+    // no limit during mantra session
+  } else if (isPaid || messagesBalance > 0) {
+    // Paid user — gated by balance
+    if (messagesBalance <= 0) {
+      appendSystemMessage('No messages remaining. Please recharge to continue.');
+      return;
+    }
+  } else {
+    // Free user (logged in or not) — gated by free message count
+    if (used >= FREE_MESSAGES) {
+      appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Use one of the options below to continue.');
+      return;
+    }
   }
 
   input.value = '';
@@ -1807,8 +1814,8 @@ async function sendMessage() {
     });
   }
 
-  // Save free user messages to localStorage
-  if (!authToken) {
+  // Save messages to localStorage for free users (persists their count)
+  if (!isPaid && !mantraUnlocked) {
     localStorage.setItem('demian_messages', JSON.stringify(messages));
   }
 
@@ -1869,8 +1876,9 @@ async function callAPI(msgs) {
     // Low balance warnings
     if (authToken && !mantraUnlocked && messagesBalance <= 5 && messagesBalance > 0) {
       appendSystemMessage(messagesBalance + ' messages remaining.');
-    } else if (!isPaid && !mantraUnlocked && getFreeMessagesUsed() >= FREE_MESSAGES - 3 && getFreeMessagesUsed() < FREE_MESSAGES) {
-      appendSystemMessage((FREE_MESSAGES - getFreeMessagesUsed()) + ' messages remaining.');
+    } else if (!isPaid && !mantraUnlocked) {
+      const u = messages.filter(m => m.role === 'user').length;
+      if (u >= FREE_MESSAGES - 3 && u < FREE_MESSAGES) appendSystemMessage((FREE_MESSAGES - u) + ' messages remaining.');
     }
 
     // Save free user messages to localStorage
