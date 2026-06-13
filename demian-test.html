@@ -1247,29 +1247,28 @@ let currentSessionId = localStorage.getItem('demian_session') || null;
 let userTier = null;
 
 const renderer = new marked.Renderer();
+const origLink = renderer.link.bind(renderer);
 renderer.link = function(token) {
-  // marked v11+ passes a token object {href, title, text}
-  const href = (typeof token === 'object' ? token.href : token) || '';
-  const text = (typeof token === 'object' ? token.text : arguments[2]) || href;
-  const title = (typeof token === 'object' ? token.title : arguments[1]) || '';
-  const titleAttr = title ? ' title="' + title + '"' : '';
-  return '<a href="' + href + '"' + titleAttr + ' target="_blank" rel="noopener" style="color:var(--text-link)">' + text + '</a>';
+  const html = origLink(token);
+  return html.replace('<a ', '<a target="_blank" rel="noopener" ');
 };
 marked.setOptions({ breaks: true, gfm: true, renderer });
 
 function autolinkText(html) {
-  // Skip content already inside HTML tags
+  // Process text nodes only, leaving HTML tags untouched
   return html.replace(/(<[^>]+>)|([^<]+)/g, (match, tag, text) => {
-    if (tag) return tag; // leave HTML tags untouched
-    // Match URLs (with or without https://) and emails
+    if (tag) return tag;
     return text.replace(
-      /(\b(?:https?:\/\/|www\.|t\.me\/|barabeke\.substack\.com|demianism\.org)[^\s<"')\],.:!?]+)|(\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b)/g,
+      /(\bhttps?:\/\/[^\s<"')\]]+)|(\b(?:www\.|t\.me\/|demianism\.org|mybook\.to|manifold\.xyz|heyzine\.com|archive\.org|substack\.com)[^\s<"')\]]+)|(\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b)/g,
       (url) => {
-        if (url.includes('@') && !url.startsWith('http')) {
-          return '<a href="mailto:' + url + '" style="color:var(--text-link)">' + url + '</a>';
+        // Strip trailing punctuation
+        const stripped = url.replace(/[.,!?:;)]+$/, '');
+        const trail = url.slice(stripped.length);
+        if (stripped.includes('@') && !stripped.startsWith('http')) {
+          return '<a href="mailto:' + stripped + '" style="color:var(--text-link)">' + stripped + '</a>' + trail;
         }
-        const href = url.startsWith('http') ? url : 'https://' + url;
-        return '<a href="' + href + '" target="_blank" rel="noopener" style="color:var(--text-link)">' + url + '</a>';
+        const href = stripped.startsWith('http') ? stripped : 'https://' + stripped;
+        return '<a href="' + href + '" target="_blank" rel="noopener" style="color:var(--text-link)">' + stripped + '</a>' + trail;
       }
     );
   });
