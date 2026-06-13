@@ -638,6 +638,8 @@ button#send svg { width: 17px; height: 17px; }
   flex-direction: column;
   border-top: 1px solid rgba(104,100,187,0.18);
   position: relative;
+  overflow-y: auto;
+  max-height: 60vh;
 }
 
 /* ── Generic nav item ── */
@@ -1224,7 +1226,6 @@ let mantraUnlocked = false;
 let messagesBalance = 0;
 
 function getFreeMessagesUsed() {
-  // Count user messages in the conversation (free messages consumed)
   return messages.filter(m => m.role === 'user').length;
 }
 
@@ -1239,7 +1240,6 @@ function updateCounter() {
     remNum.textContent = messagesBalance;
     if (sbRemaining) sbRemaining.style.display = '';
   } else {
-    // Free user (logged in or not): remaining = 15 - user messages sent
     const used = getFreeMessagesUsed();
     const remaining = Math.max(0, FREE_MESSAGES - used);
     remNum.textContent = remaining;
@@ -1253,7 +1253,13 @@ let userEmail = null;
 let currentSessionId = localStorage.getItem('demian_session') || null;
 let userTier = null;
 
-marked.setOptions({ breaks: true, gfm: true });
+const renderer = new marked.Renderer();
+const origLink = renderer.link.bind(renderer);
+renderer.link = function(token) {
+  const html = origLink(token);
+  return html.replace('<a ', '<a target="_blank" rel="noopener" ');
+};
+marked.setOptions({ breaks: true, gfm: true, renderer });
 
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -1311,14 +1317,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       try {
         const d = JSON.parse(e.newValue);
         if (!d.authToken) return;
-        // messages array already holds the free conversation — count derives from it
         authToken = d.authToken;
         userEmail = d.email;
         if (d.messagesBalance > 0 || d.mantraUnlocked) {
           messagesBalance = d.messagesBalance;
           isPaid = true;
         }
-        // For free accounts, isPaid stays false and counter derives from messages
         mantraUnlocked = d.mantraUnlocked || false;
         canNewChat = d.canNewChat || false;
         userTier = d.tier || null;
@@ -1436,7 +1440,7 @@ function openAccountMenu(triggerEl) {
   ['creditsMenu','newChatMenu','mantraMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
   if (wasOpen) { menu.classList.remove('open'); return; }
   const tierLabel = userTier
-    ? ({ 'mantra':'Mantra','consult-basic':'Consult 50','consult-regular':'Consult 150','consult-premium':'Consult 400' }[userTier] || userTier)
+    ? ({'mantra':'Mantra','consult-basic':'Consult 50','consult-regular':'Consult 150','consult-premium':'Consult 400'}[userTier] || userTier)
     : 'Free account';
   const countLine = mantraUnlocked ? '∞ messages (mantra session)'
     : ((isPaid || messagesBalance > 0) ? messagesBalance + ' messages remaining'
@@ -1796,7 +1800,6 @@ async function sendMessage() {
 
   messages.push({ role: 'user', content: text });
   const userMsgEl = appendMessage('user', text);
-  // Scroll so the user's message sits near the top, leaving room for the reply
   if (userMsgEl) {
     requestAnimationFrame(() => {
       const top = userMsgEl.getBoundingClientRect().top + window.scrollY - 80;
@@ -2095,6 +2098,21 @@ function appendMessage(role, text) {
   const wrap = document.createElement('div');
   wrap.className = `msg ${role}`;
 
+  const imageFiles = {
+    'doctrine': 'revealed-doctrine.jpg', 'doctrine-italian': 'revealed-doctrine-ita.jpg',
+    'book': 'book-demianism.jpg', 'book-italian': 'book-demianesimo.jpg',
+    'manifesto': 'manifesto-demianism.jpg', 'manifesto-italian': 'manifesto-demianesimo.jpg',
+    'art-book': 'art-book.jpg', 'ritorno-a-eden1': 'ritorno-a-eden-1.jpg',
+    'ritorno-a-eden2': 'ritorno-a-eden-2.jpg', 'ritorno-a-eden3': 'ritorno-a-eden-3.jpg',
+    'poetry': 'canti-liberi.jpg', 'nuova-alleanza': 'nuova-alleanza.jpg',
+    'giant-kahuna': 'giant-kahuna.jpg', 'mona-lisa': 'mona-lisa-reloaded.jpg',
+  };
+  let imageHTML = '';
+  text = text.replace(/\[IMAGE:([a-z0-9_-]+)\]/gi, (_, tag) => {
+    const file = imageFiles[tag.toLowerCase()];
+    if (file) imageHTML += '<img src="' + file + '" alt="' + tag + '" style="max-width:100%;border-radius:10px;margin:10px 0;display:block;">';
+    return '';
+  });
   const cleanText = text
     .replace(/\[SESSION_COMPLETE\]/g, '')
     .replace(/\[MANTRA_TEXT\][\s\S]*?\[\/MANTRA_TEXT\]/g, '')
@@ -2104,15 +2122,13 @@ function appendMessage(role, text) {
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   if (role === 'demian') {
-    bubble.innerHTML = marked.parse(cleanText);
+    bubble.innerHTML = marked.parse(cleanText) + (imageHTML || '');
   } else {
     bubble.textContent = cleanText;
   }
   wrap.appendChild(bubble);
   chat.appendChild(wrap);
-  // Only auto-scroll to bottom for Demian replies, not user messages
   if (role === 'demian') {
-    // gentle: keep reply visible but don't yank if user scrolled up
     const nearBottom = (window.innerHeight + window.scrollY) >= (document.body.scrollHeight - 300);
     if (nearBottom) window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   }
