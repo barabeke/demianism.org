@@ -1076,12 +1076,6 @@ button#send svg { width: 17px; height: 17px; }
       <span class="sb-label">Gift code</span>
       <span class="sb-tooltip">Gift code</span>
     </button>
-    <a class="sb-item sb-item-privacy" href="/privacy" target="_blank">
-      <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-      <span class="sb-label">Privacy Policy</span>
-      <span class="sb-tooltip">Privacy Policy</span>
-    </a>
-
     <div class="account-wrapper" id="accountWrapper">
       <div class="credits-menu" id="accountMenu"><div id="accountMenuBody"></div></div>
       <div class="sb-account" id="sbAccount" onclick="handleAccountClick(this)">
@@ -1143,13 +1137,17 @@ button#send svg { width: 17px; height: 17px; }
       <div class="menu-choose">Choose your package</div>
     </div>
     <div class="pkg-list">
-      <a class="pkg-btn" href="#" onclick="purchaseCredits('sanctuary');return false;">
-        <div class="pkg-left"><div class="pkg-name">Sanctuary</div><div class="pkg-desc">100 messages · full power · mantra included</div></div>
-        <div class="pkg-price">€9</div>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('basic');return false;">
+        <div class="pkg-left"><div class="pkg-name">Consult 50</div><div class="pkg-desc">50 messages with Demian</div></div>
+        <div class="pkg-price">€5</div>
       </a>
-      <a class="pkg-btn" href="#" onclick="purchaseCredits('retreat');return false;">
-        <div class="pkg-left"><div class="pkg-name">Retreat</div><div class="pkg-desc">500 messages · for deep, sustained work</div></div>
-        <div class="pkg-price">€29</div>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('regular');return false;">
+        <div class="pkg-left"><div class="pkg-name">Consult 150</div><div class="pkg-desc">150 messages with Demian</div></div>
+        <div class="pkg-price">€10</div>
+      </a>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('premium');return false;">
+        <div class="pkg-left"><div class="pkg-name">Consult 400</div><div class="pkg-desc">400 messages with Demian</div></div>
+        <div class="pkg-price">€20</div>
       </a>
     </div>
   </div>
@@ -1200,8 +1198,8 @@ button#send svg { width: 17px; height: 17px; }
     </div>
     <div class="pkg-list">
       <a class="pkg-btn" href="#" onclick="purchaseMantra();return false;">
-        <div class="pkg-left"><div class="pkg-name">Personal Mantra</div><div class="pkg-desc">Your call, your words — crafted with you</div></div>
-        <div class="pkg-price">€5</div>
+        <div class="pkg-left"><div class="pkg-name">Personal Mantra</div><div class="pkg-desc">Chat until your mantra is ready</div></div>
+        <div class="pkg-price">€2</div>
       </a>
     </div>
   </div>
@@ -1250,82 +1248,13 @@ renderer.link = function(token) {
 };
 marked.setOptions({ breaks: true, gfm: true, renderer });
 
-const LINK_LOOKUP = [
-  { keys: ['ritorno a eden 1', 'novelli adamo'], url: 'https://mybook.to/rCfKQ' },
-  { keys: ['book of demianism'], url: 'https://mybook.to/2VGW' },
-  { keys: ['libro del demianesimo'], url: 'https://mybook.to/qdVLiF' },
-  { keys: ['art of barabeke', 'art book'], url: 'https://heyzine.com/flip-book/3b03034a08.html' },
-  { keys: ['giant kahuna'], url: 'https://manifold.xyz/@barabeke/contract/141113584/3' },
-  { keys: ['mona lisa reloaded'], url: 'https://manifold.xyz/@barabeke/contract/146290928/1' },
-  { keys: ['revealed doctrine'], url: 'https://manifold.xyz/@barabeke/id/4083525872' },
-  { keys: ['canti liberi'], url: 'https://archive.org/details/canti-liberi-barabeke' },
-  { keys: ['nuova alleanza', 'new covenant'], url: 'https://archive.org/details/una-nuova-alleanza-tra-uomini-e-donne' },
-  { keys: ['odd gospel', 'substack'], url: 'https://barabeke.substack.com' },
-  { keys: ['sacred doctrine', 'doctrine page'], url: 'https://demianism.org/doctrine' },
-  { keys: ['culture'], url: 'https://demianism.org/culture' },
-  { keys: ['donate'], url: 'https://demianism.org/donate' },
-  { keys: ['community'], url: 'https://demianism.org/community' },
-  { keys: ['telegram'], url: 'https://t.me/barabeke' },
-  { keys: ['demianism'], url: 'https://demianism.org' },
-];
-
-function findUrlForContext(contextText) {
-  const lower = contextText.toLowerCase();
-  let best = null, bestPos = -1;
-  for (const {keys, url} of LINK_LOOKUP) {
-    for (const k of keys) {
-      const pos = lower.lastIndexOf(k);
-      if (pos > bestPos) { bestPos = pos; best = url; }
-    }
-  }
-  return best;
-}
-
 function autolinkText(html) {
-  // STEP 1: Fix <a href="undefined"> by inferring URL from preceding text
-  html = html.replace(/<a\b[^>]*href=["']?(?:undefined|)["']?[^>]*>(.*?)<\/a>/gi, (full, linkText, offset, str) => {
-    const before = str.slice(Math.max(0, offset - 200), offset).replace(/<[^>]+>/g, ' ');
-    const url = findUrlForContext(before + ' ' + linkText);
-    let displayText = linkText;
-    if (/^(undefined|here|link|this)$/i.test(linkText.trim())) {
-      displayText = url ? url.replace(/^https?:\/\//, '') : linkText;
-    }
-    if (url) return '<a href="' + url + '" target="_blank" rel="noopener" style="color:var(--text-link)">' + displayText + '</a>';
-    return /^(undefined|here|link|this)$/i.test(linkText.trim()) ? '' : linkText;
+  // Make bare URLs clickable (e.g. demianism.org/doctrine without https://)
+  return html.replace(/(?<![="'>\/])(\b(?:https?:\/\/)?(?:www\.|demianism\.org)[^\s<"')\]]+)/g, (url) => {
+    // Skip if already inside an anchor
+    const href = url.startsWith('http') ? url : 'https://' + url;
+    return '<a href="' + href + '" target="_blank" rel="noopener" style="color:var(--text-link)">' + url + '</a>';
   });
-
-  // STEP 2: Make known italic phrases into links
-  const ITALIC_LINKS = [
-    { pattern: /<em>(Ritorno a Eden[^<]*)<\/em>/gi, url: 'https://mybook.to/rCfKQ' },
-    { pattern: /<em>(Mona Lisa Reloaded[^<]*)<\/em>/gi, url: 'https://manifold.xyz/@barabeke/contract/146290928/1' },
-    { pattern: /<em>(The Giant Kahuna[^<]*)<\/em>/gi, url: 'https://manifold.xyz/@barabeke/contract/141113584/3' },
-    { pattern: /<em>(The Art of Barabeke[^<]*)<\/em>/gi, url: 'https://heyzine.com/flip-book/3b03034a08.html' },
-    { pattern: /<em>(Canti Liberi[^<]*)<\/em>/gi, url: 'https://archive.org/details/canti-liberi-barabeke' },
-  ];
-  for (const {pattern, url} of ITALIC_LINKS) {
-    html = html.replace(pattern, (_, txt) =>
-      '<a href="' + url + '" target="_blank" rel="noopener" style="color:var(--text-link)"><em>' + txt + '</em></a>'
-    );
-  }
-
-  // STEP 3: Autolink bare URLs and emails not already inside an anchor
-  html = html.replace(/(<a[^>]*>[\s\S]*?<\/a>)|(<[^>]+>)|([^<]+)/g, (match, anchor, tag, text) => {
-    if (anchor || tag) return match;
-    return text.replace(
-      /(\bhttps?:\/\/[^\s<"')\]]+)|(\b(?:t\.me\/|demianism\.org|mybook\.to|manifold\.xyz|heyzine\.com|archive\.org|barabeke\.substack\.com)[^\s<"')\]]+)|(\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b)/g,
-      (url) => {
-        const stripped = url.replace(/[.,!?:;)]+$/, '');
-        const trail = url.slice(stripped.length);
-        if (stripped.includes('@') && !stripped.startsWith('http')) {
-          return '<a href="mailto:' + stripped + '" style="color:var(--text-link)">' + stripped + '</a>' + trail;
-        }
-        const href = stripped.startsWith('http') ? stripped : 'https://' + stripped;
-        return '<a href="' + href + '" target="_blank" rel="noopener" style="color:var(--text-link)">' + stripped + '</a>' + trail;
-      }
-    );
-  });
-
-  return html;
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -1398,7 +1327,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateAccountUI();
         updateCounter();
         await loadSessionList();
-        appendSystemMessage('✓ Signed in as ' + d.email + '. Your chat continues.');
+        appendSystemMessage('✓ Signed in as ' + d.email + '.');
       } catch(err) { console.error('storage login error', err); }
     }
   });
@@ -1508,7 +1437,7 @@ function openAccountMenu(triggerEl) {
   ['creditsMenu','newChatMenu','mantraMenu','sbAboutMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
   if (wasOpen) { menu.classList.remove('open'); return; }
   const tierLabel = userTier
-    ? ({'mantra':'Mantra','sanctuary':'Sanctuary','retreat':'Retreat'}[userTier] || userTier)
+    ? ({'mantra':'Mantra','consult-basic':'Consult 50','consult-regular':'Consult 150','consult-premium':'Consult 400'}[userTier] || userTier)
     : 'Free account';
   const used = messages.filter(m => m.role === 'user').length;
   const countLine = mantraUnlocked ? '∞ messages (mantra session)'
@@ -1862,7 +1791,7 @@ async function sendMessage() {
     }
   } else {
     if (used >= FREE_MESSAGES) {
-      appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Use one of the options below to continue.');
+      appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Recharge or buy a mantra to continue.');
       return;
     }
   }
@@ -1909,7 +1838,13 @@ async function callAPI(msgs) {
     if (data.error) {
       if (data.error.message === 'free_limit_reached') {
         removeTyping(typingEl);
-        appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Use one of the options below to continue.');
+        appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Recharge or buy a mantra to continue.');
+        isLoading = false;
+        return;
+      }
+      if (data.error.message === 'no_credits') {
+        removeTyping(typingEl);
+        appendSystemMessage('No messages remaining. Recharge to continue.');
         isLoading = false;
         return;
       }
@@ -2087,9 +2022,9 @@ function purchaseMantra() {
 
 function purchaseCredits(tier) {
   const links = {
-    // ⚠️ Replace with NEW Stripe Payment Links for the new prices
-    'sanctuary': 'https://buy.stripe.com/eVq4gAenp3h73yjagx6oo02',  // €9 · 100 msgs
-    'retreat':   'https://buy.stripe.com/cNi14o2EHeZPgl5agx6oo03',  // €29 · 500 msgs
+    'basic':   'https://buy.stripe.com/3cI14ocfh04V6Kv88p6oo01',
+    'regular': 'https://buy.stripe.com/eVq4gAenp3h73yjagx6oo02',
+    'premium': 'https://buy.stripe.com/cNi14o2EHeZPgl5agx6oo03',
   };
   window.open(links[tier], '_blank');
 }
@@ -2143,9 +2078,10 @@ async function submitCode() {
 function handlePurchaseReturn(tier, msgs, mantra) {
   if (msgs === undefined) {
     const tiers = {
-      'mantra':    { messages: 70,  mantra: true },
-      'sanctuary': { messages: 100, mantra: true },
-      'retreat':   { messages: 500, mantra: true },
+      'mantra':          { messages: 130, mantra: true  },
+      'consult-basic':   { messages: 50,  mantra: false },
+      'consult-regular': { messages: 150, mantra: false },
+      'consult-premium': { messages: 400, mantra: false },
     };
     const t = tiers[tier];
     if (!t) return;
@@ -2155,7 +2091,7 @@ function handlePurchaseReturn(tier, msgs, mantra) {
   isPaid = true;
   if (mantra) {
     mantraUnlocked = true;
-    appendSystemMessage('✦ Unlocked — your Personal Mantra session is ready. Demian is listening.');
+    appendSystemMessage('✦ Unlocked — your Personal Mantra session with Demian has been activated.');
   } else {
     messagesBalance = msgs;
     canNewChat = true;
