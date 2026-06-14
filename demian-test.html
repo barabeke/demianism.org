@@ -1143,17 +1143,13 @@ button#send svg { width: 17px; height: 17px; }
       <div class="menu-choose">Choose your package</div>
     </div>
     <div class="pkg-list">
-      <a class="pkg-btn" href="#" onclick="purchaseCredits('basic');return false;">
-        <div class="pkg-left"><div class="pkg-name">Consult 50</div><div class="pkg-desc">50 messages with Demian</div></div>
-        <div class="pkg-price">€5</div>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('sanctuary');return false;">
+        <div class="pkg-left"><div class="pkg-name">Sanctuary</div><div class="pkg-desc">100 messages · full power · mantra included</div></div>
+        <div class="pkg-price">€9</div>
       </a>
-      <a class="pkg-btn" href="#" onclick="purchaseCredits('regular');return false;">
-        <div class="pkg-left"><div class="pkg-name">Consult 150</div><div class="pkg-desc">150 messages with Demian</div></div>
-        <div class="pkg-price">€10</div>
-      </a>
-      <a class="pkg-btn" href="#" onclick="purchaseCredits('premium');return false;">
-        <div class="pkg-left"><div class="pkg-name">Consult 400</div><div class="pkg-desc">400 messages with Demian</div></div>
-        <div class="pkg-price">€20</div>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('retreat');return false;">
+        <div class="pkg-left"><div class="pkg-name">Retreat</div><div class="pkg-desc">500 messages · for deep, sustained work</div></div>
+        <div class="pkg-price">€29</div>
       </a>
     </div>
   </div>
@@ -1204,8 +1200,8 @@ button#send svg { width: 17px; height: 17px; }
     </div>
     <div class="pkg-list">
       <a class="pkg-btn" href="#" onclick="purchaseMantra();return false;">
-        <div class="pkg-left"><div class="pkg-name">Personal Mantra</div><div class="pkg-desc">Chat until your mantra is ready</div></div>
-        <div class="pkg-price">€2</div>
+        <div class="pkg-left"><div class="pkg-name">Personal Mantra</div><div class="pkg-desc">Your call, your words — crafted with you</div></div>
+        <div class="pkg-price">€5</div>
       </a>
     </div>
   </div>
@@ -1254,7 +1250,6 @@ renderer.link = function(token) {
 };
 marked.setOptions({ breaks: true, gfm: true, renderer });
 
-// Map of name keywords -> correct URL
 const LINK_LOOKUP = [
   { keys: ['ritorno a eden 1', 'novelli adamo'], url: 'https://mybook.to/rCfKQ' },
   { keys: ['book of demianism'], url: 'https://mybook.to/2VGW' },
@@ -1266,7 +1261,7 @@ const LINK_LOOKUP = [
   { keys: ['canti liberi'], url: 'https://archive.org/details/canti-liberi-barabeke' },
   { keys: ['nuova alleanza', 'new covenant'], url: 'https://archive.org/details/una-nuova-alleanza-tra-uomini-e-donne' },
   { keys: ['odd gospel', 'substack'], url: 'https://barabeke.substack.com' },
-  { keys: ['sacred doctrine', 'the doctrine', 'doctrine page'], url: 'https://demianism.org/doctrine' },
+  { keys: ['sacred doctrine', 'doctrine page'], url: 'https://demianism.org/doctrine' },
   { keys: ['culture'], url: 'https://demianism.org/culture' },
   { keys: ['donate'], url: 'https://demianism.org/donate' },
   { keys: ['community'], url: 'https://demianism.org/community' },
@@ -1276,7 +1271,6 @@ const LINK_LOOKUP = [
 
 function findUrlForContext(contextText) {
   const lower = contextText.toLowerCase();
-  // Find the LAST matching keyword in the context (closest to the link)
   let best = null, bestPos = -1;
   for (const {keys, url} of LINK_LOOKUP) {
     for (const k of keys) {
@@ -1288,20 +1282,15 @@ function findUrlForContext(contextText) {
 }
 
 function autolinkText(html) {
-  // STEP 1: Fix <a href="undefined"> (or empty) by inferring URL from preceding text
+  // STEP 1: Fix <a href="undefined"> by inferring URL from preceding text
   html = html.replace(/<a\b[^>]*href=["']?(?:undefined|)["']?[^>]*>(.*?)<\/a>/gi, (full, linkText, offset, str) => {
-    // Look at the ~200 chars of text before this link for a name keyword
     const before = str.slice(Math.max(0, offset - 200), offset).replace(/<[^>]+>/g, ' ');
     const url = findUrlForContext(before + ' ' + linkText);
-    // Replace ugly "undefined"/"here" link text with the domain
     let displayText = linkText;
     if (/^(undefined|here|link|this)$/i.test(linkText.trim())) {
       displayText = url ? url.replace(/^https?:\/\//, '') : linkText;
     }
-    if (url) {
-      return '<a href="' + url + '" target="_blank" rel="noopener" style="color:var(--text-link)">' + displayText + '</a>';
-    }
-    // No match — render as plain text (drop the broken link)
+    if (url) return '<a href="' + url + '" target="_blank" rel="noopener" style="color:var(--text-link)">' + displayText + '</a>';
     return /^(undefined|here|link|this)$/i.test(linkText.trim()) ? '' : linkText;
   });
 
@@ -1519,7 +1508,7 @@ function openAccountMenu(triggerEl) {
   ['creditsMenu','newChatMenu','mantraMenu','sbAboutMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
   if (wasOpen) { menu.classList.remove('open'); return; }
   const tierLabel = userTier
-    ? ({'mantra':'Mantra','consult-basic':'Consult 50','consult-regular':'Consult 150','consult-premium':'Consult 400'}[userTier] || userTier)
+    ? ({'mantra':'Mantra','sanctuary':'Sanctuary','retreat':'Retreat'}[userTier] || userTier)
     : 'Free account';
   const used = messages.filter(m => m.role === 'user').length;
   const countLine = mantraUnlocked ? '∞ messages (mantra session)'
@@ -2098,9 +2087,9 @@ function purchaseMantra() {
 
 function purchaseCredits(tier) {
   const links = {
-    'basic':   'https://buy.stripe.com/3cI14ocfh04V6Kv88p6oo01',
-    'regular': 'https://buy.stripe.com/eVq4gAenp3h73yjagx6oo02',
-    'premium': 'https://buy.stripe.com/cNi14o2EHeZPgl5agx6oo03',
+    // ⚠️ Replace with NEW Stripe Payment Links for the new prices
+    'sanctuary': 'https://buy.stripe.com/eVq4gAenp3h73yjagx6oo02',  // €9 · 100 msgs
+    'retreat':   'https://buy.stripe.com/cNi14o2EHeZPgl5agx6oo03',  // €29 · 500 msgs
   };
   window.open(links[tier], '_blank');
 }
@@ -2154,10 +2143,9 @@ async function submitCode() {
 function handlePurchaseReturn(tier, msgs, mantra) {
   if (msgs === undefined) {
     const tiers = {
-      'mantra':          { messages: 130, mantra: true  },
-      'consult-basic':   { messages: 50,  mantra: false },
-      'consult-regular': { messages: 150, mantra: false },
-      'consult-premium': { messages: 400, mantra: false },
+      'mantra':    { messages: 70,  mantra: true },
+      'sanctuary': { messages: 100, mantra: true },
+      'retreat':   { messages: 500, mantra: true },
     };
     const t = tiers[tier];
     if (!t) return;
