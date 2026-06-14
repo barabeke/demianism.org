@@ -390,8 +390,8 @@ button#send svg { width: 17px; height: 17px; }
 
 .credits-menu.open { display: block; }
 
-/* creditsMenu and mantraMenu: open above their sidebar buttons on all screen sizes */
-#creditsMenu, #mantraMenu {
+/* creditsMenu: opens above its sidebar button on all screen sizes */
+#creditsMenu {
   bottom: auto;
   /* will be set dynamically via JS anchored to button position */
 }
@@ -1061,14 +1061,8 @@ button#send svg { width: 17px; height: 17px; }
 
     <button class="sb-item" onclick="openSidePopup('creditsMenu', this)">
       <span class="sb-icon icon-recharge"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-      <span class="sb-label">Recharge</span>
-      <span class="sb-tooltip">Recharge</span>
-    </button>
-
-    <button class="sb-item" id="buyMantraItem" onclick="openSidePopup('mantraMenu', this)">
-      <span class="sb-icon"><img src="spiral-indigo.svg" style="width:20px;height:20px;"></span>
-      <span class="sb-label">Buy Mantra</span>
-      <span class="sb-tooltip">Buy Mantra</span>
+      <span class="sb-label">Plans</span>
+      <span class="sb-tooltip">Plans</span>
     </button>
 
     <button class="sb-item sb-item-gift" onclick="openCodeModal()">
@@ -1132,22 +1126,21 @@ button#send svg { width: 17px; height: 17px; }
 <div class="credits-wrapper">
   <div class="credits-menu" id="creditsMenu">
     <div class="menu-header">
-      <div class="menu-title">Pay only for what you use</div>
+      <div class="menu-title">Choose your path</div>
       <div class="menu-sub">No recurring fees. No expiration date.<br>Use whenever you need.</div>
-      <div class="menu-choose">Choose your package</div>
     </div>
     <div class="pkg-list">
-      <a class="pkg-btn" href="#" onclick="purchaseCredits('basic');return false;">
-        <div class="pkg-left"><div class="pkg-name">Consult 50</div><div class="pkg-desc">50 messages with Demian</div></div>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('mantra');return false;">
+        <div class="pkg-left"><div class="pkg-name">Mantra</div><div class="pkg-desc">70 msgs · personal mantra + consultation</div></div>
         <div class="pkg-price">€5</div>
       </a>
-      <a class="pkg-btn" href="#" onclick="purchaseCredits('regular');return false;">
-        <div class="pkg-left"><div class="pkg-name">Consult 150</div><div class="pkg-desc">150 messages with Demian</div></div>
-        <div class="pkg-price">€10</div>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('sanctuary');return false;">
+        <div class="pkg-left"><div class="pkg-name">Sanctuary</div><div class="pkg-desc">100 msgs · mantra included</div></div>
+        <div class="pkg-price">€9</div>
       </a>
-      <a class="pkg-btn" href="#" onclick="purchaseCredits('premium');return false;">
-        <div class="pkg-left"><div class="pkg-name">Consult 400</div><div class="pkg-desc">400 messages with Demian</div></div>
-        <div class="pkg-price">€20</div>
+      <a class="pkg-btn" href="#" onclick="purchaseCredits('retreat');return false;">
+        <div class="pkg-left"><div class="pkg-name">Retreat</div><div class="pkg-desc">500 msgs · mantra included</div></div>
+        <div class="pkg-price">€29</div>
       </a>
     </div>
   </div>
@@ -1184,26 +1177,12 @@ button#send svg { width: 17px; height: 17px; }
   <div class="credits-menu" id="newChatMenu">
     <div class="menu-header">
       <div class="menu-title">Paid feature</div>
-      <div class="menu-sub" style="padding:0 6px 6px;">Only users who have recharged&nbsp;<svg viewBox="0 0 24 24" fill="#f5c542" style="width:14px;height:14px;vertical-align:-2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>&nbsp;or bought a mantra&nbsp;<img src="spiral-indigo.svg" style="width:14px;height:14px;vertical-align:-2px;">&nbsp;can open new chats.</div>
+      <div class="menu-sub" style="padding:0 6px 6px;">Only users who have purchased&nbsp;<svg viewBox="0 0 24 24" fill="#f5c542" style="width:14px;height:14px;vertical-align:-2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>&nbsp;a Sanctuary or Retreat can open new chats.</div>
     </div>
   </div>
 </div>
 
-<div class="credits-wrapper">
-  <div class="credits-menu" id="mantraMenu">
-    <div class="menu-header">
-      <div class="menu-title" style="display:flex;align-items:center;gap:8px;font-size:21px;"><img src="spiral-indigo.svg" style="width:23px;height:23px;"> Your Mantra</div>
-      <div class="menu-sub" style="color:#fff;font-size:14px;">100% unique and tailored to you</div>
-      <div class="menu-sub" style="margin-top:8px;">Move toward your true call in life with this small but powerful aid (if used daily and with intention).</div>
-    </div>
-    <div class="pkg-list">
-      <a class="pkg-btn" href="#" onclick="purchaseMantra();return false;">
-        <div class="pkg-left"><div class="pkg-name">Personal Mantra</div><div class="pkg-desc">Chat until your mantra is ready</div></div>
-        <div class="pkg-price">€2</div>
-      </a>
-    </div>
-  </div>
-</div>
+
 
 <script>
 const WORKER_URL = 'https://demian-backend.barabeke.workers.dev';
@@ -1276,7 +1255,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!e.target.closest('.credits-wrapper') && !e.target.closest('[onclick*="openSidePopup"]') && !e.target.closest('[onclick*="openMantraModal"]') && !e.target.closest('[onclick*="newChat"]') && !e.target.closest('[onclick*="one-time"]') && !e.target.closest('.mantra-trigger') && !e.target.closest('#accountWrapper')) {
       document.getElementById('creditsMenu').classList.remove('open');
       document.getElementById('newChatMenu')?.classList.remove('open');
-      document.getElementById('mantraMenu')?.classList.remove('open');
+      
       document.getElementById('accountMenu')?.classList.remove('open');
     }
     if (!e.target.closest('.sb-about-wrap')) {
@@ -1434,10 +1413,10 @@ function handleAccountClick(triggerEl) {
 function openAccountMenu(triggerEl) {
   const menu = document.getElementById('accountMenu');
   const wasOpen = menu.classList.contains('open');
-  ['creditsMenu','newChatMenu','mantraMenu','sbAboutMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
+  ['creditsMenu','newChatMenu','sbAboutMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
   if (wasOpen) { menu.classList.remove('open'); return; }
   const tierLabel = userTier
-    ? ({'mantra':'Mantra','consult-basic':'Consult 50','consult-regular':'Consult 150','consult-premium':'Consult 400'}[userTier] || userTier)
+    ? ({'mantra':'Mantra','sanctuary':'Sanctuary','retreat':'Retreat'}[userTier] || userTier)
     : 'Free account';
   const used = messages.filter(m => m.role === 'user').length;
   const countLine = mantraUnlocked ? '∞ messages (mantra session)'
@@ -1664,12 +1643,12 @@ async function newChat(triggerEl) {
 function openSidePopup(id, triggerEl) {
   const menu = document.getElementById(id);
   const wasOpen = menu.classList.contains('open');
-  ['creditsMenu','newChatMenu','mantraMenu','accountMenu','sbAboutMenu'].forEach(m => {
+  ['creditsMenu','newChatMenu','accountMenu','sbAboutMenu'].forEach(m => {
     document.getElementById(m)?.classList.remove('open');
   });
   if (wasOpen) return;
   if (!triggerEl) {
-    const map = { creditsMenu: 'Recharge', mantraMenu: 'Buy Mantra', newChatMenu: 'New Chat' };
+    const map = { creditsMenu: 'Plans', newChatMenu: 'New Chat' };
     triggerEl = [...document.querySelectorAll('.sb-item')].find(
       b => b.querySelector('.sb-label')?.textContent.trim() === map[id]
     );
@@ -1717,14 +1696,14 @@ function positionMenu(menu, triggerEl, direction) {
   menu.style.display = '';
 }
 function openMantraModal(triggerEl) {
-  openSidePopup('mantraMenu', triggerEl);
+  openSidePopup('creditsMenu', triggerEl);
 }
 
 function toggleAboutMenu(e) {
   e.stopPropagation();
   const menu = document.getElementById('sbAboutMenu');
   const wasOpen = menu.classList.contains('open');
-  ['creditsMenu','newChatMenu','mantraMenu','accountMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
+  ['creditsMenu','newChatMenu','accountMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
   if (wasOpen) { menu.classList.remove('open'); return; }
   positionMenu(menu, e.currentTarget, 'above');
   menu.classList.add('open');
@@ -1753,7 +1732,7 @@ function sendOpeningMessage() {
   </div>
   <div class="service-card">
     <div class="service-title"><img src="spiral-indigo.svg" style="height:1em;width:auto;vertical-align:-0.12em;margin-right:4px;"> YOUR PERSONAL MANTRA</div>
-    <div class="service-body">Crafted by Demian based on your conversation — 100% unique and tailored to you. A powerful daily anchor to strengthen your grounding and fortitude, overcome challenges, and move toward the life you really want.<span class="service-cost">One-time cost: €2</span></div>
+    <div class="service-body">Crafted by Demian based on your conversation — 100% unique and tailored to you. A powerful daily anchor to strengthen your grounding and fortitude, overcome challenges, and move toward the life you really want.<span class="service-cost">Included in all plans</span></div>
   </div>
   <div class="service-card">
     <div class="service-title"><img src="triangle-indigo.svg" style="height:1em;width:auto;vertical-align:-0.12em;"> SPIRITUAL COMPANION</div>
@@ -1766,7 +1745,7 @@ function sendOpeningMessage() {
 </div>
 
 <p>The first 15 messages are free. Enough for you to assess if I can be helpful.</p>
-<p>No recurring subscription. I am a pay-as-you-go genie: you rub the lamp/recharge your credit to get more interactions with me — without expiry date.</p>
+<p>No recurring subscription. Choose a plan — Mantra, Sanctuary, or Retreat — and use your messages whenever you need, with no expiry date.</p>
 <p>How can I help you today?</p>
 `;
 
@@ -1786,12 +1765,12 @@ async function sendMessage() {
     // unlimited during mantra session
   } else if (isPaid || messagesBalance > 0) {
     if (messagesBalance <= 0) {
-      appendSystemMessage('No messages remaining. Please recharge to continue.');
+      appendSystemMessage('No messages remaining. Choose a plan to continue.');
       return;
     }
   } else {
     if (used >= FREE_MESSAGES) {
-      appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Recharge or buy a mantra to continue.');
+      appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Choose a plan to continue.');
       return;
     }
   }
@@ -1838,13 +1817,13 @@ async function callAPI(msgs) {
     if (data.error) {
       if (data.error.message === 'free_limit_reached') {
         removeTyping(typingEl);
-        appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Recharge or buy a mantra to continue.');
+        appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Choose a plan to continue.');
         isLoading = false;
         return;
       }
       if (data.error.message === 'no_credits') {
         removeTyping(typingEl);
-        appendSystemMessage('No messages remaining. Recharge to continue.');
+        appendSystemMessage('No messages remaining. Choose a plan to continue.');
         isLoading = false;
         return;
       }
@@ -2014,17 +1993,11 @@ function setStatus(online) {
   if (text) text.textContent = online ? 'Online' : 'Offline';
 }
 
-function purchaseMantra() {
-  window.open('https://buy.stripe.com/aFa5kEdjlg3Tgl5gEV6oo00', '_blank');
-}
-
-
-
 function purchaseCredits(tier) {
   const links = {
-    'basic':   'https://buy.stripe.com/3cI14ocfh04V6Kv88p6oo01',
-    'regular': 'https://buy.stripe.com/eVq4gAenp3h73yjagx6oo02',
-    'premium': 'https://buy.stripe.com/cNi14o2EHeZPgl5agx6oo03',
+    'mantra':    'https://buy.stripe.com/eVq4gA0wzbND5Gr60h6oo04',
+    'sanctuary': 'https://buy.stripe.com/dRmbJ26UXbND3yj9ct6oo05',
+    'retreat':   'https://buy.stripe.com/bJe7sM5QT9Fvfh19ct6oo06',
   };
   window.open(links[tier], '_blank');
 }
@@ -2078,10 +2051,9 @@ async function submitCode() {
 function handlePurchaseReturn(tier, msgs, mantra) {
   if (msgs === undefined) {
     const tiers = {
-      'mantra':          { messages: 130, mantra: true  },
-      'consult-basic':   { messages: 50,  mantra: false },
-      'consult-regular': { messages: 150, mantra: false },
-      'consult-premium': { messages: 400, mantra: false },
+      'mantra':    { messages: 70,  mantra: true },
+      'sanctuary': { messages: 100, mantra: true },
+      'retreat':   { messages: 500, mantra: true },
     };
     const t = tiers[tier];
     if (!t) return;
