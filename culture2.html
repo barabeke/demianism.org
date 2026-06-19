@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demianist Culture — demianism.org</title>
+  <meta name="description" content="How the 13 axioms of Demianism translate into a culture that addresses the problems of today and the challenges the future holds.">
+
+  <meta property="og:url" content="https://demianism.org/culture">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Demianist Culture — demianism.org">
+  <meta property="og:description" content="How the 13 axioms of Demianism translate into a culture that addresses the problems of today and the challenges the future holds.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="demianism.org">
+
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="site.webmanifest">
+
+  <!-- Fonts: site fonts + IM Fell English for etymology -->
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Libre Baskerville', serif;
+      color: #d4d4f0;
+      font-size: 20px;
+      line-height: 1.8;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
+        radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
+        radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
+        #000000;
+    }
+
+    /* ── Navbar ────────────────────────────────────────────────── */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 38px;
+      padding: 0 26px;
+      height: 64px;
+      background: rgba(18,16,40,0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid #6864bb33;
+    }
+
+    .nav-logo { display: flex; align-items: center; flex-shrink: 0; }
+    .nav-logo img { height: 44px; width: auto; display: block; }
+    .nav-links { display: flex; align-items: center; gap: 38px; }
+
+    .nav-links a {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #6864bb;
+      text-decoration: none;
+      transition: color 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover { color: #a29ef1; }
+    .nav-links a.active { color: #cfcfd4; }
+    .nav-demian-mobile { display: none; }
+
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+
+    .demian-ai {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      opacity: 1;
+      transition: opacity 0.25s ease;
+    }
+
+    .demian-ai:hover { opacity: 0.8; text-decoration: none; }
+    .demian-ai img { height: 18px; width: auto; display: block; }
+
+    .try-free {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+      background-color: #35327e;
+      border: 1px solid #6864bb55;
+      padding: 8px 16px;
+      border-radius: 30px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.25s ease;
+    }
+
+    .try-free:hover {
+      background-color: #6864bb;
+      color: #ffffff;
+      box-shadow: 0 0 18px rgba(104,100,187,0.6);
+      text-decoration: none;
+    }
+
+    /* ── Hamburger ──────────────────────────────────────────── */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      margin-left: auto;
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #cfcfd4;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── Mobile ─────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .navbar { gap: 0; }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        position: fixed;
+        top: 64px;
+        left: 0; right: 0;
+        background: rgba(18,16,40,0.98);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid #6864bb44;
+        padding: 20px 0 28px;
+        z-index: 999;
+      }
+
+      .nav-links.open { display: flex; }
+
+      .nav-links a {
+        font-size: 16px;
+        padding: 12px 0;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #6864bb18;
+        white-space: normal;
+      }
+
+      .nav-links a:last-child { border-bottom: none; }
+
+      .nav-links .nav-demian-mobile {
+        display: flex;
+        justify-content: center;
+        padding: 18px 0 4px;
+        border-bottom: none;
+        opacity: 1;
+        transition: opacity 0.25s;
+      }
+
+      .nav-links .nav-demian-mobile:hover { opacity: 0.8; }
+      .nav-links .nav-demian-mobile img { height: 20px; width: auto; }
+
+      .nav-right { display: none; }
+      .nav-hamburger { display: flex; }
+    }
+
+    /* ── Global links ───────────────────────────────────────── */
+    a { color: #7b79d4; text-decoration: none; }
+    a:hover { color: #b8b6f5; text-decoration: underline; }
+
+    /* ── Glow animation ─────────────────────────────────────── */
+    @keyframes glowPulse {
+      0%   { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
+      50%  { text-shadow: 0 0 9px rgba(104,100,187,1),   0 0 20px rgba(104,100,187,.9),  0 0 42px rgba(104,100,187,.75), 0 0 75px rgba(104,100,187,.55); }
+      100% { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
+    }
+
+    /* ── Hero ───────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 60px 24px 48px;
+    }
+
+    .hero-logo {
+      width: 210px;
+      max-width: 55%;
+      height: auto;
+      display: block;
+      margin: 0 auto 36px;
+    }
+
+    .hero h1 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: clamp(26px, 3.8vw, 44px);
+      text-transform: uppercase;
+      letter-spacing: 10px;
+      color: #cfcfd4;
+      line-height: 1.4;
+      margin: 0 0 20px;
+      transform: scaleX(1.1);
+      animation: glowPulse 11s ease-in-out infinite;
+    }
+
+    .hero-subtitle {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(19px, 2.3vw, 25px);
+      color: #a29ef1;
+      max-width: 640px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
+
+    /* ── Etymology band ─────────────────────────────────────── */
+    .etymology-band {
+      width: 100%;
+      background: #171637;
+      border-top: 1px solid #6864bb28;
+      border-bottom: 1px solid #6864bb28;
+      padding: 44px 24px;
+    }
+
+    .etymology-inner {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .etymology-entry {
+      font-family: 'IM Fell English', serif;
+      font-size: clamp(19px, 2.2vw, 24px);
+      color: #d4d4f0;
+      line-height: 1.75;
+    }
+
+    .etymology-headword {
+      font-family: 'IM Fell English', serif;
+      font-size: clamp(19px, 2.2vw, 24px);
+      font-weight: 400;
+      color: #d4d4f0;
+      letter-spacing: 2px;
+      display: inline;
+      margin-right: 4px;
+    }
+
+
+
+    /* ── Section wrapper ────────────────────────────────────── */
+    .section {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+
+    /* ── Section titles (READ THE MANIFESTO / GET DEEPER / CULTURE WAR) */
+    .section-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: clamp(22px, 3vw, 36px);
+      text-transform: uppercase;
+      letter-spacing: 8px;
+      color: #cfcfd4;
+      text-align: center;
+      margin: 0 0 10px;
+      animation: glowPulse 11s ease-in-out infinite;
+    }
+
+    .section-subtitle {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 17px;
+      color: #a29ef1;
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 4px;
+      line-height: 1.75;
+    }
+
+    /* ── Book layout: image left, buttons right on laptop ────── */
+    .book-layout {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .book-image {
+      flex: 0 0 auto;
+    }
+
+    .book-section-title {
+      text-align: left !important;
+      font-size: clamp(18px, 2.5vw, 28px) !important;
+      letter-spacing: 6px !important;
+      margin: 0 0 6px 0 !important;
+    }
+
+    .book-section-subtitle {
+      text-align: left !important;
+      margin: 0 0 28px 0 !important;
+      font-size: 16px !important;
+    }
+
+    .book-image img {
+      width: 340px;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 6px;
+    }
+
+    .book-buttons {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+
+
+    .btn-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .btn-col-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .btn-col-header .flag {
+      height: 20px;
+    }
+
+    .btn-col-label {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+    }
+
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .book-cols {
+      display: grid;
+      grid-template-columns: 1fr 32px 1fr;
+      gap: 0;
+      align-items: start;
+    }
+
+    .book-cols-separator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding-top: 44px;
+    }
+
+    .book-cols-separator .flag {
+      height: 20px;
+    }
+
+    .flag {
+      height: 38px;
+      width: auto;
+      display: block;
+      flex-shrink: 0;
+      border-radius: 3px;
+    }
+
+    .btn {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+      background: #35327e;
+      border: 1px solid #6864bb44;
+      border-radius: 30px;
+      padding: 10px 20px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      text-align: center;
+      width: 100%;
+      display: block;
+    }
+
+    .btn:hover {
+      background: #6864bb;
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(104,100,187,0.5);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .amazon-button img {
+      height: 38px;
+      width: auto;
+      display: block;
+      border-radius: 6px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(104,100,187,0.15);
+      margin: 0;
+    }
+
+    @media (max-width: 700px) {
+      .book-layout { flex-direction: column; }
+      .book-section-title {
+      text-align: left !important;
+      font-size: clamp(18px, 2.5vw, 28px) !important;
+      letter-spacing: 6px !important;
+      margin: 0 0 6px 0 !important;
+    }
+
+    .book-section-subtitle {
+      text-align: left !important;
+      margin: 0 0 28px 0 !important;
+      font-size: 16px !important;
+    }
+
+    .book-image img { width: 100%; max-width: 320px; margin: 0 auto; }
+      .book-buttons { align-items: flex-start; }
+    }
+
+    /* ── 2-col book layout (no separator) ──────────────────── */
+    .book-cols-2 {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .book-cols-2 .btn-col {
+      flex: 1;
+    }
+
+    .btn-col-header-flag {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .flag-small {
+      height: 18px;
+      width: auto;
+      display: block;
+      border-radius: 2px;
+    }
+
+    .btn-col-label-center {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .btn-flag {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .flag-inline {
+      height: 18px;
+      width: auto;
+      display: block;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── Culture War prose ───────────────────────────────────── */
+    .prose {
+      max-width: 820px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .prose p {
+      font-size: 20px;
+      color: #d4d4f0;
+      line-height: 1.95;
+      margin-bottom: 24px;
+    }
+
+    .prose p:last-of-type { margin-bottom: 0; }
+
+    /* bullet list */
+    .prose ul {
+      margin: 0 0 24px 0;
+      padding-left: 28px;
+    }
+
+    .prose ul li {
+      font-size: 20px;
+      color: #d4d4f0;
+      line-height: 1.85;
+      margin-bottom: 12px;
+    }
+
+    .prose ul li::marker {
+      color: #6864bb;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    .footer-separator {
+      border: none;
+      border-top: 1px solid #6864bb28;
+      margin: 0;
+    }
+
+    .site-footer {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px 20px 40px;
+      text-align: center;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 16px;
+      color: #6864bb;
+      line-height: 1.6;
+    }
+
+    .footer-logo {
+      width: 94px;
+      height: 94px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 6px;
+    }
+
+    .site-footer a { color: #a29ef1; text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; color: #cfcfd4; }
+    .footer-links { margin-top: 10px; font-size: 14px; color: #4a4780; }
+    .footer-links a { color: #4a4780; }
+    .footer-links a:hover { color: #6864bb; }
+    .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="nav-logo" aria-label="Demianism home">
+      <img src="demianismlogo.png" alt="Demianism">
+    </a>
+    <div class="nav-links" id="nav-links">
+      <a href="/doctrine">Sacred Doctrine</a>
+      <a href="/culture" class="active">Culture</a>
+      <a href="/origin">Origin</a>
+      <a href="/about">Who is Barabeke?</a>
+      <a href="/donate">Donate</a>
+      <a href="/community">Join</a>
+      <a href="/demian" class="nav-demian-mobile">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="/demian" class="demian-ai">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+      <a href="/demian" class="try-free">Try Free</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Demianist Culture</h1>
+    <p class="hero-subtitle">How the 13 axioms translate into a culture that addresses the problems of today and the challenges the future holds.</p>
+  </section>
+
+  <!-- Etymology band -->
+  <div class="etymology-band">
+    <div class="etymology-inner">
+      <div class="etymology-entry">
+        <span class="etymology-headword">ETYMOLOGY</span> — Demianism derives its name from the root <em>"dem"</em>, which stands for <em>"deus ex machina"</em> but also evokes <em>demos</em> / people and hence democracy. The name is influenced by <em>Demian</em>, a character in Hesse's novel of the same name, used also by Barabeke for a Christ-like humanoid robot in his tale <em>A New Deal Between Men and Women</em>.
+      </div>
+    </div>
+  </div>
+
+  <!-- READ THE MANIFESTO -->
+  <section class="section">
+    <div class="book-layout">
+      <div class="book-image">
+        <img src="manifestocover.png" alt="Manifesto for a Demianist Civilization">
+      </div>
+      <div class="book-buttons">
+        <h2 class="section-title book-section-title">Read the Manifesto</h2>
+        <p class="section-subtitle book-section-subtitle">Written by Barabeke. Intellectual and spiritual challenges welcome. All is up for debate and subject to modification — except the 13 sacred axioms.</p>
+        <div class="book-cols-2">
+          <div class="btn-col">
+            <div class="btn-col-header-flag">
+              <img src="gb.png" class="flag-small" alt="English">
+              <span class="btn-col-label">English</span>
+            </div>
+            <a href="https://heyzine.com/flip-book/680d129cb3.html" class="btn" target="_blank" rel="noopener">Flip-book</a>
+            <a href="https://demianism.org/" class="btn" target="_blank" rel="noopener">Web</a>
+            <a href="https://archive.org/details/manifesto-demianism" class="btn" target="_blank" rel="noopener">PDF / eBook</a>
+          </div>
+          <div class="btn-col">
+            <div class="btn-col-header-flag">
+              <img src="it.png" class="flag-small" alt="Italiano">
+              <span class="btn-col-label">Italiano</span>
+            </div>
+            <a href="https://heyzine.com/flip-book/bd5a1560d9.html" class="btn" target="_blank" rel="noopener">Flip-book</a>
+            <a href="https://demianism.org/manifesto-ita" class="btn" target="_blank" rel="noopener">Web</a>
+            <a href="https://archive.org/details/manifesto-demianista" class="btn" target="_blank" rel="noopener">PDF / eBook</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- GET DEEPER -->
+  <section class="section">
+    <div class="book-layout">
+      <div class="book-image">
+        <img src="demianismcover.png" alt="The Book of Demianism">
+      </div>
+      <div class="book-buttons">
+        <h2 class="section-title book-section-title">Get Deeper</h2>
+        <p class="section-subtitle book-section-subtitle">In the Book of Demianism you’ll find Barabeke’s commentary on each axiom, the story behind Demianism, and bold ideas for the future inspired by the 13 axioms.</p>
+        <div class="book-cols-2">
+          <div class="btn-col">
+            <div class="btn-col-label-center">Free PDF / eBook</div>
+            <a href="https://archive.org/details/demianism/" class="btn btn-flag" target="_blank" rel="noopener"><img src="gb.png" class="flag-inline" alt="">English</a>
+            <a href="https://archive.org/details/demianesimo" class="btn btn-flag" target="_blank" rel="noopener"><img src="it.png" class="flag-inline" alt="">Italiano</a>
+          </div>
+          <div class="btn-col">
+            <div class="btn-col-label-center">Paperback / Hardcover</div>
+            <a href="https://mybook.to/2VGW" class="btn btn-flag" target="_blank" rel="noopener"><img src="gb.png" class="flag-inline" alt="">Buy on Amazon</a>
+            <a href="https://mybook.to/qdVLiF" class="btn btn-flag" target="_blank" rel="noopener"><img src="it.png" class="flag-inline" alt="">Compra su Amazon</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CULTURE WAR -->
+  <section class="section">
+    <h2 class="section-title">Culture War</h2>
+    <div class="prose" style="margin-top: 20px;">
+
+      <p>Demianism was born in a context of profound cultural war. I could have created it as early as 2015, but I saw neither the necessity nor the urgency then. It was the decadence of the times — and the absence of any light of hope on the horizon — that drove me to bring Demianism to you.</p>
+
+      <p>More than a cultural war, what we are living through is a spiritual war. Demianism, unlike other far more established spiritual traditions that seem to have forgotten their own doctrines, knows how to distinguish good from evil. It is not afraid to call evil by its name, and opposes it with resolve.</p>
+
+      <p>Examples of <u>evil</u> that may sound familiar to you:</p>
+
+      <ul>
+        <li>Seizing every center of power against the will of the people, and establishing a manipulative totalitarian regime.</li>
+        <li>Corrupting the innocence of children by confusing and sexualizing them through indoctrination into a depraved and delusional ideology.</li>
+        <li>Manipulating women to turn them against men and persuading them to neglect or renounce their biological destiny as mothers; pushing them to become joyless Byzantine bureaucrats or prostitutes; making them “more equal” before the law while granting them extreme license and impunity.</li>
+        <li>Replacing objective facts with feelings or subjective perceptions.</li>
+        <li>Celebrating pride, narcissism, victimhood, promiscuity, lust, and every other kind of vice.</li>
+        <li>Defiling everything that is sacred, beautiful, virtuous, and worthy — systematically and with relentless zeal.</li>
+        <li>Declaring war on truth to the point of denying or inverting self-evident truths that no one had ever questioned before, and attempting to replace them with insane and depraved ideas.</li>
+        <li>Orchestrating the mass invasion of our lands in order to destroy the identity and sovereignty of peoples, and to generate tensions and violence that would justify tightening the regime's grip.</li>
+        <li>Conducting KGB-style psychological warfare operations — such as those listed here — on a global scale, in order to demoralize, subvert, and destroy peoples economically, culturally, and ethnically, thereby making them easy to subjugate.</li>
+      </ul>
+
+      <p>In other times, any of these diabolical acts would have been considered enough to justify lynching, being thrown from a cliff, or being hanged from the nearest tree. Our ancestors were rougher than we are, but at bottom we are still the same sapiens. I believe the anger of the people is mounting, and that we are headed toward times of great conflict and violence.</p>
+
+      <p>The Demianist is called to resist oppressors and never to bow their head to them. The Demianist is also called not to use violence, except in legitimate self-defense.</p>
+
+      <p>The Demianist is called to always be honest, to use harsh words when necessary, but to direct their indignation and anger at the sin rather than the sinner — at lobbies and organized groups rather than individuals, at the powerful rather than the weak. We do not go after individuals with hatred and cruelty. We abide by the standards of the free world, which are reflected in our ethics, and we use the weapon of irony to shatter the illusions of propaganda and exorcize evil.</p>
+
+      <p>Demianists cannot knowingly affirm lies and, when wrong about something, are called to correct themselves, and where appropriate, to apologize. This honesty of ours, which has a sacred foundation, will pay off in the long run: it will earn us people’s trust.</p>
+
+      <p>In the event of a totalitarian regime, we will continue to practice our values and uphold our standards. The more truth is distorted or inverted, the more loudly we will proclaim it. Whatever persecutions we suffer, we will endure them with our heads held high. The early Christians conquered the mighty Roman Empire by behaving this way — through public witness, refusal to recant under persecution, moral example, and community solidarity.</p>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <hr class="footer-separator">
+  <footer class="site-footer">
+    <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
+    <div>© 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
+    <div class="footer-license">Content licensed under CC BY-NC-ND 4.0</div>
+    <div class="footer-links">
+      <a href="/impressum">Impressum</a> &nbsp;·&nbsp;
+      <a href="/privacy">Privacy Policy</a>
+    </div>
+  </footer>
+
+  <script>
+    const hamburger = document.getElementById('nav-hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', function() {
+      const open = navLinks.classList.toggle('open');
+      hamburger.classList.toggle('open', open);
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    navLinks.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        navLinks.classList.remove('open');
+        hamburger.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', false);
+      });
+    });
+  </script>
+</body>
+</html>

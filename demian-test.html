@@ -47,7 +47,7 @@ body {
 .page-wrap {
   max-width: 760px;
   margin: 0 auto;
-  padding: 20px 16px 110px;
+  padding: 20px 16px 88px;
 }
 
 .input-zone {
@@ -236,6 +236,90 @@ body {
   color: var(--purple-light);
 }
 
+/* ── Intro message service rows ── */
+.intro-service-row {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+  padding: 14px 18px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  margin: 20px 0;
+}
+.intro-service-icons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  align-self: stretch;
+  align-items: center;
+}
+.intro-service-icons-stack {
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0;
+}
+.intro-service-icons svg { width: 43px; height: 43px; display: block; }
+.intro-service-icons-stack svg { width: 43px; height: 43px; }
+.intro-service-text { flex: 1; min-width: 0; }
+.intro-service-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.8px;
+  color: #fff;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.intro-service-title-lg { font-size: 16px; letter-spacing: 1px; margin-bottom: 4px; }
+.intro-service-title a {
+  color: var(--text-link);
+  text-decoration: underline;
+}
+.intro-service-title a:hover { color: var(--text-link-hover); }
+.msg.demian .msg-bubble .intro-service-title a {
+  color: var(--text-link);
+  text-decoration: underline;
+}
+.msg.demian .msg-bubble .intro-service-title a:hover { color: var(--text-link-hover); }
+.intro-service-body {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 15px;
+  color: var(--text-body);
+  line-height: 1.65;
+}
+.intro-service-body-lg { font-size: 17px; line-height: 1.7; }
+
+/* ── Situation prompt buttons ── */
+.intro-prompts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 18px;
+}
+.intro-prompt-btn {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 16px;
+  color: #e3e2f5;
+  background: var(--card-bg);
+  border: 1px solid rgba(104,100,187,0.45);
+  border-radius: 10px;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+  line-height: 1.4;
+  width: 100%;
+}
+.intro-prompt-btn:hover {
+  background: rgba(104,100,187,0.22);
+  border-color: rgba(104,100,187,0.85);
+  color: #fff;
+}
+
 .msg.user .msg-bubble {
   background: #242347;
   background: #171637;
@@ -390,8 +474,8 @@ button#send svg { width: 17px; height: 17px; }
 
 .credits-menu.open { display: block; }
 
-/* creditsMenu: opens above its sidebar button on all screen sizes */
-#creditsMenu {
+/* newChatMenu opens above its sidebar button on all screen sizes */
+#newChatMenu {
   bottom: auto;
   /* will be set dynamically via JS anchored to button position */
 }
@@ -524,6 +608,37 @@ button#send svg { width: 17px; height: 17px; }
   flex-shrink: 0;
   line-height: 1;
 }
+
+/* ── Service window (Mantra / Sanctuary / Retreat) ── */
+.service-overlay { display:none; position:fixed; inset:0; background:rgba(4,3,12,0.82); z-index:300; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(3px); }
+.service-overlay.open { display:flex; }
+.service-window { position:relative; background:#12103a; width:100%; max-width:480px; border-radius:20px; overflow:hidden; border:1px solid #2a2560; box-shadow:0 0 60px rgba(0,0,0,0.6); max-height:92vh; display:flex; flex-direction:column; }
+.sw-close { position:absolute; top:14px; right:14px; z-index:5; width:34px; height:34px; border-radius:50%; background:rgba(8,6,26,0.55); border:none; color:#cfcfd4; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s; }
+.sw-close svg { width:18px; height:18px; }
+.sw-close:hover { background:rgba(8,6,26,0.85); }
+.sw-hero { position:relative; width:100%; aspect-ratio:960/392; flex-shrink:0; overflow:hidden; }
+.sw-hero-img { position:absolute; inset:0; background-size:cover; background-position:center; }
+.sw-body { flex:1 1 auto; overflow-y:auto; padding:22px 28px 8px; border-top:5px solid #35327e; }
+.sw-desc { font-family:'Libre Baskerville',serif; font-size:15px; line-height:1.7; color:var(--text-body); margin:0 0 16px; }
+.sw-features { list-style:none; padding:0; margin:0 0 16px; display:flex; flex-direction:column; gap:9px; }
+.sw-features li { display:flex; align-items:flex-start; gap:10px; font-family:'Libre Baskerville',serif; font-size:14px; color:var(--text-body); line-height:1.55; }
+.sw-features li::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--sw-accent,#6864bb); margin-top:7px; flex-shrink:0; }
+.sw-badge { display:inline-block; font-family:'Inter',sans-serif; font-weight:700; font-size:14px; letter-spacing:0.03em; color:#cfcfd4; background:#35327e; border-radius:7px; padding:6px 13px; margin-bottom:14px; }
+.sw-closing { font-family:'Libre Baskerville',serif; font-size:14px; color:var(--text-body); line-height:1.6; margin:0 0 14px; }
+.sw-shout { font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#fff; margin:0 0 5px; }
+.sw-shout-sub { font-family:'Libre Baskerville',serif; font-size:14px; color:var(--text-body); line-height:1.6; margin:0; }
+.sw-footer { flex-shrink:0; padding:16px 28px 22px; background:#12103a; }
+.sw-btns { display:flex; gap:12px; }
+.sw-btn-primary { flex:0 0 72%; padding:14px; background:#35327e; border:none; border-radius:10px; font-family:'Inter',sans-serif; font-weight:700; font-size:15px; color:#cfcfd4; cursor:pointer; transition:background 0.15s; }
+.sw-btn-primary:hover { background:#3f3c90; }
+.sw-btn-gift { flex:1; padding:14px 8px; background:#36354c; border:none; border-radius:10px; font-family:'Inter',sans-serif; font-weight:500; font-size:14px; color:rgba(255,255,255,0.55); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; transition:all 0.15s; }
+.sw-btn-gift svg { width:14px; height:14px; }
+.sw-btn-gift:hover { color:rgba(255,255,255,0.8); }
+@media (max-width:520px) {
+  .service-window { max-width:100%; border-radius:20px 20px 0 0; position:fixed; bottom:0; left:0; right:0; max-height:94vh; }
+  .service-overlay.open { align-items:flex-end; padding:0; }
+}
+
 
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:200; align-items:center; justify-content:center; padding:20px; }
 .modal-overlay.open { display:flex; }
@@ -665,12 +780,15 @@ button#send svg { width: 17px; height: 17px; }
 .sb-item:hover { background: rgba(104,100,187,0.12); }
 
 .sb-icon {
-  width: 24px; height: 24px;
+  width: 29px; height: 29px;
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   color: #ffffff;
 }
-.sb-icon svg { width: 21px; height: 21px; }
+.sb-icon svg { width: 25px; height: 25px; }
+/* Service icons (mantra/sanctuary/retreat) render full-color, slightly larger */
+.sb-icon.sb-icon-service svg { width: 27px; height: 27px; }
+.sb-icon-service { width: 29px; height: 29px; }
 
 .sb-label { display: none; }
 .sidebar.open .sb-label { display: inline; }
@@ -697,7 +815,8 @@ button#send svg { width: 17px; height: 17px; }
 }
 .sidebar:not(.open) .sb-head:hover .sb-tooltip,
 .sidebar:not(.open) .sb-item:hover .sb-tooltip,
-.sidebar:not(.open) .sb-remaining:hover .sb-tooltip { opacity: 1; }
+.sidebar:not(.open) .sb-remaining:hover .sb-tooltip,
+.sidebar:not(.open) .sb-account:hover .sb-tooltip { opacity: 1; }
 
 /* ── Section headers (triangle purple) ── */
 .sb-section {
@@ -816,7 +935,7 @@ button#send svg { width: 17px; height: 17px; }
 .sb-item-privacy:hover { color: var(--text-light); }
 .sb-item-privacy:hover .sb-icon { color: var(--text-light); }
 /* Gift code: triangle purple */
-.sb-item-gift .sb-icon { color: #6864bb; }
+.sb-item-gift .sb-icon { color: #35327e; }
 .sb-item-gift:hover .sb-icon { color: var(--text-light); }
 /* Login user icon: filled, slightly transparent */
 #sbAvatarIcon { fill: rgba(255,255,255,0.75); stroke: none; }
@@ -985,6 +1104,17 @@ button#send svg { width: 17px; height: 17px; }
   border-radius: 8px; cursor: pointer; transition: background 0.15s;
 }
 .mantra-card-inline .dl-btn:hover { background: #6864bb; }
+
+
+/* ── Starry sky background ── */
+body {
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23000000%22/%3E%3Ccircle%20cx%3D%2263.94%25%22%20cy%3D%222.5%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.17%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.17%3B0.03%3B0.17%3B0.6%3B0.17%22%20dur%3D%224.1s%22%20begin%3D%222.6s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2210.25%25%22%20cy%3D%2274.07%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.11%22/%3E%3Ccircle%20cx%3D%222.98%25%22%20cy%3D%2221.86%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.3%22/%3E%3Ccircle%20cx%3D%2271.6%25%22%20cy%3D%2270.13%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.16%22/%3E%3Ccircle%20cx%3D%2280.94%25%22%20cy%3D%220.65%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.14%22/%3E%3Ccircle%20cx%3D%2227.79%25%22%20cy%3D%2221.53%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.2%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.2%3B0.03%3B0.2%3B0.7%3B0.2%22%20dur%3D%223.8s%22%20begin%3D%221.9s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%229.67%25%22%20cy%3D%2284.75%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.18%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.18%3B0.03%3B0.18%3B0.63%3B0.18%22%20dur%3D%222.8s%22%20begin%3D%221.1s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2245.94%25%22%20cy%3D%2212.48%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.11%22/%3E%3Ccircle%20cx%3D%2262.86%25%22%20cy%3D%2288.55%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.29%22/%3E%3Ccircle%20cx%3D%224.58%25%22%20cy%3D%2222.79%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.44%22/%3E%3Ccircle%20cx%3D%2286.65%25%22%20cy%3D%2238.01%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.32%22/%3E%3Ccircle%20cx%3D%2237.02%25%22%20cy%3D%2220.95%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.34%22/%3E%3Ccircle%20cx%3D%227.14%25%22%20cy%3D%2263.5%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.35%22/%3E%3Ccircle%20cx%3D%2237.95%25%22%20cy%3D%2298.95%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.33%22/%3E%3Ccircle%20cx%3D%2232.43%25%22%20cy%3D%2276.83%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.16%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.16%3B0.02%3B0.16%3B0.56%3B0.16%22%20dur%3D%223.3s%22%20begin%3D%220.7s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2231.55%25%22%20cy%3D%2226.77%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.42%22/%3E%3Ccircle%20cx%3D%2271.79%25%22%20cy%3D%2221.26%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.23%22/%3E%3Ccircle%20cx%3D%2245.89%25%22%20cy%3D%2226.49%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.36%22/%3E%3Ccircle%20cx%3D%2274.7%25%22%20cy%3D%2242.84%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.23%22/%3E%3Ccircle%20cx%3D%2299.75%25%22%20cy%3D%2250.95%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.36%22/%3E%3Ccircle%20cx%3D%2215.28%25%22%20cy%3D%2216.0%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.24%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.24%3B0.04%3B0.24%3B0.84%3B0.24%22%20dur%3D%225.4s%22%20begin%3D%222.5s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2238.16%25%22%20cy%3D%2299.61%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.17%22/%3E%3Ccircle%20cx%3D%2294.24%25%22%20cy%3D%2268.03%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.33%22/%3E%3Ccircle%20cx%3D%2226.68%25%22%20cy%3D%2264.1%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.19%22/%3E%3Ccircle%20cx%3D%220.32%25%22%20cy%3D%2272.21%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.18%22/%3E%3Ccircle%20cx%3D%2217.87%25%22%20cy%3D%2291.26%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.31%22/%3E%3Ccircle%20cx%3D%2250.77%25%22%20cy%3D%2219.89%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.36%22/%3E%3Ccircle%20cx%3D%2277.86%25%22%20cy%3D%2253.04%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.3%22/%3E%3Ccircle%20cx%3D%2211.19%25%22%20cy%3D%2236.3%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.38%22/%3E%3Ccircle%20cx%3D%2224.09%25%22%20cy%3D%2256.74%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.11%22/%3E%3Ccircle%20cx%3D%226.92%25%22%20cy%3D%2276.06%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.13%22/%3E%3Ccircle%20cx%3D%2294.68%25%22%20cy%3D%2216.51%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.4%22/%3E%3Ccircle%20cx%3D%2221.18%25%22%20cy%3D%2253.93%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.34%22/%3E%3Ccircle%20cx%3D%2239.9%25%22%20cy%3D%2267.17%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.24%22/%3E%3Ccircle%20cx%3D%2212.1%25%22%20cy%3D%2222.47%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.09%22/%3E%3Ccircle%20cx%3D%2258.84%25%22%20cy%3D%220.72%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.31%22/%3E%3Ccircle%20cx%3D%2290.54%25%22%20cy%3D%2285.96%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.27%22/%3E%3Ccircle%20cx%3D%2248.54%25%22%20cy%3D%2253.92%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.43%22/%3E%3Ccircle%20cx%3D%2247.27%25%22%20cy%3D%2278.46%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.23%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.23%3B0.03%3B0.23%3B0.81%3B0.23%22%20dur%3D%224.9s%22%20begin%3D%224.9s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2265.9%25%22%20cy%3D%2235.43%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.25%22/%3E%3Ccircle%20cx%3D%2267.34%25%22%20cy%3D%2298.42%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.1%22/%3E%3Ccircle%20cx%3D%2280.06%25%22%20cy%3D%2210.93%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.15%22/%3E%3Ccircle%20cx%3D%2242.19%25%22%20cy%3D%2227.85%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.4%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.4%3B0.06%3B0.4%3B0.95%3B0.4%22%20dur%3D%223.2s%22%20begin%3D%224.0s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2280.8%25%22%20cy%3D%2285.6%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.1%22/%3E%3Ccircle%20cx%3D%2283.6%25%22%20cy%3D%2296.9%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.39%22/%3E%3Ccircle%20cx%3D%2248.56%25%22%20cy%3D%2221.37%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.41%22/%3E%3Ccircle%20cx%3D%220.22%25%22%20cy%3D%2239.04%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.37%22/%3E%3Ccircle%20cx%3D%2269.66%25%22%20cy%3D%2273.05%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.29%22/%3E%3Ccircle%20cx%3D%2215.48%25%22%20cy%3D%2229.67%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.29%22/%3E%3Ccircle%20cx%3D%2274.8%25%22%20cy%3D%225.72%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.26%22/%3E%3Ccircle%20cx%3D%2253.11%25%22%20cy%3D%225.69%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.11%22/%3E%3Ccircle%20cx%3D%2259.5%25%22%20cy%3D%2267.52%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.23%22/%3E%3Ccircle%20cx%3D%2256.97%25%22%20cy%3D%2257.89%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.31%22/%3E%3Ccircle%20cx%3D%2258.37%25%22%20cy%3D%2252.28%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.16%22/%3E%3Ccircle%20cx%3D%2223.87%25%22%20cy%3D%2239.58%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.32%22/%3E%3Ccircle%20cx%3D%2292.9%25%22%20cy%3D%2293.57%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.25%22/%3E%3Ccircle%20cx%3D%2299.61%25%22%20cy%3D%227.33%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.27%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.27%3B0.04%3B0.27%3B0.95%3B0.27%22%20dur%3D%224.0s%22%20begin%3D%225.0s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2234.9%25%22%20cy%3D%226.88%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.22%22/%3E%3Ccircle%20cx%3D%2283.37%25%22%20cy%3D%2270.35%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.44%22/%3E%3Ccircle%20cx%3D%2252.89%25%22%20cy%3D%2266.79%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.19%22/%3E%3Ccircle%20cx%3D%2293.89%25%22%20cy%3D%2213.43%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.41%22/%3E%3Ccircle%20cx%3D%2215.54%25%22%20cy%3D%2228.18%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.35%22/%3E%3Ccircle%20cx%3D%2263.42%25%22%20cy%3D%2226.4%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.17%22/%3E%3Ccircle%20cx%3D%225.08%25%22%20cy%3D%2263.43%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.18%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.18%3B0.03%3B0.18%3B0.63%3B0.18%22%20dur%3D%224.7s%22%20begin%3D%222.2s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2277.11%25%22%20cy%3D%2263.71%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.14%22/%3E%3Ccircle%20cx%3D%2270.57%25%22%20cy%3D%2256.09%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.11%22/%3E%3Ccircle%20cx%3D%2290.39%25%22%20cy%3D%2254.56%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.22%22/%3E%3Ccircle%20cx%3D%2242.98%25%22%20cy%3D%224.18%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.41%22/%3E%3Ccircle%20cx%3D%2286.07%25%22%20cy%3D%2289.89%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.33%22/%3E%3Ccircle%20cx%3D%2235.37%25%22%20cy%3D%2255.99%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.23%22/%3E%3Ccircle%20cx%3D%2215.46%25%22%20cy%3D%2292.99%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.14%22/%3E%3Ccircle%20cx%3D%2217.71%25%22%20cy%3D%2241.23%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.35%22/%3E%3Ccircle%20cx%3D%2293.08%25%22%20cy%3D%2280.22%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.35%22/%3E%3Ccircle%20cx%3D%2215.92%25%22%20cy%3D%2270.13%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.4%22/%3E%3Ccircle%20cx%3D%2222.24%25%22%20cy%3D%2281.66%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.21%22/%3E%3Ccircle%20cx%3D%2287.13%25%22%20cy%3D%2222.29%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.15%22/%3E%3Ccircle%20cx%3D%2286.44%25%22%20cy%3D%2296.69%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.21%22/%3E%3Ccircle%20cx%3D%2267.95%25%22%20cy%3D%2284.37%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.43%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.43%3B0.06%3B0.43%3B0.95%3B0.43%22%20dur%3D%223.5s%22%20begin%3D%224.8s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2297.04%25%22%20cy%3D%2217.86%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.09%22/%3E%3Ccircle%20cx%3D%2234.57%25%22%20cy%3D%2278.64%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.3%22/%3E%3Ccircle%20cx%3D%2238.52%25%22%20cy%3D%2257.66%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.1%22/%3E%3Ccircle%20cx%3D%2251.99%25%22%20cy%3D%2280.65%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.35%22/%3E%3Ccircle%20cx%3D%2267.06%25%22%20cy%3D%2236.42%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.43%22/%3E%3Ccircle%20cx%3D%2262.32%25%22%20cy%3D%2266.34%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.35%22/%3E%3Ccircle%20cx%3D%2230.93%25%22%20cy%3D%2240.84%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.34%22/%3E%3Ccircle%20cx%3D%2219.18%25%22%20cy%3D%2266.49%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.33%22/%3E%3Ccircle%20cx%3D%2261.55%25%22%20cy%3D%2230.09%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.39%22/%3E%3Ccircle%20cx%3D%2221.02%25%22%20cy%3D%2278.58%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.32%22/%3E%3Ccircle%20cx%3D%2244.22%25%22%20cy%3D%2221.37%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.37%22/%3E%3Ccircle%20cx%3D%2273.6%25%22%20cy%3D%2265.89%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.27%22/%3E%3Ccircle%20cx%3D%2233.52%25%22%20cy%3D%2281.84%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.17%22/%3E%3Ccircle%20cx%3D%2280.66%25%22%20cy%3D%2214.74%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.17%22/%3E%3Ccircle%20cx%3D%2284.97%25%22%20cy%3D%227.28%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.41%22/%3E%3Ccircle%20cx%3D%2271.83%25%22%20cy%3D%2238.4%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.17%22/%3E%3Ccircle%20cx%3D%220.55%25%22%20cy%3D%2275.1%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.41%22/%3E%3Ccircle%20cx%3D%2221.88%25%22%20cy%3D%2280.41%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.27%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.27%3B0.04%3B0.27%3B0.95%3B0.27%22%20dur%3D%224.2s%22%20begin%3D%221.8s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2224.92%25%22%20cy%3D%2284.83%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.13%22/%3E%3Ccircle%20cx%3D%2253.11%25%22%20cy%3D%2255.89%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.43%22/%3E%3Ccircle%20cx%3D%2261.27%25%22%20cy%3D%2271.93%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.24%22/%3E%3Ccircle%20cx%3D%2244.59%25%22%20cy%3D%2215.92%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.26%22/%3E%3Ccircle%20cx%3D%2224.72%25%22%20cy%3D%2263.77%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.37%22/%3E%3Ccircle%20cx%3D%2223.92%25%22%20cy%3D%2243.99%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.19%22/%3E%3Ccircle%20cx%3D%2231.97%25%22%20cy%3D%2254.02%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.14%22/%3E%3Ccircle%20cx%3D%2215.28%25%22%20cy%3D%2221.4%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.23%22/%3E%3Ccircle%20cx%3D%2241.58%25%22%20cy%3D%2220.68%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.22%22/%3E%3Ccircle%20cx%3D%2294.61%25%22%20cy%3D%221.95%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.29%22/%3E%3Ccircle%20cx%3D%2294.27%25%22%20cy%3D%2229.86%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.4%22/%3E%3Ccircle%20cx%3D%2241.9%25%22%20cy%3D%2274.75%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.38%22/%3E%3Ccircle%20cx%3D%2248.82%25%22%20cy%3D%2227.29%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.09%22/%3E%3Ccircle%20cx%3D%2267.91%25%22%20cy%3D%2240.43%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.39%22/%3E%3Ccircle%20cx%3D%2298.07%25%22%20cy%3D%2253.41%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.3%22/%3E%3Ccircle%20cx%3D%228.39%25%22%20cy%3D%2242.86%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.25%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.25%3B0.04%3B0.25%3B0.88%3B0.25%22%20dur%3D%223.3s%22%20begin%3D%224.7s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2237.91%25%22%20cy%3D%2221.17%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.2%22/%3E%3Ccircle%20cx%3D%2227.83%25%22%20cy%3D%2295.12%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.17%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.17%3B0.03%3B0.17%3B0.6%3B0.17%22%20dur%3D%222.8s%22%20begin%3D%221.0s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%221.94%25%22%20cy%3D%2253.94%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.16%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.16%3B0.02%3B0.16%3B0.56%3B0.16%22%20dur%3D%225.8s%22%20begin%3D%221.4s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2295.73%25%22%20cy%3D%224.03%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.43%22/%3E%3Ccircle%20cx%3D%222.04%25%22%20cy%3D%2215.24%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.26%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.26%3B0.04%3B0.26%3B0.91%3B0.26%22%20dur%3D%222.8s%22%20begin%3D%223.2s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2294.78%25%22%20cy%3D%2246.5%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.36%22/%3E%3Ccircle%20cx%3D%2260.72%25%22%20cy%3D%2274.79%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.37%22/%3E%3Ccircle%20cx%3D%2231.1%25%22%20cy%3D%2257.87%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.29%22/%3E%3Ccircle%20cx%3D%2237.53%25%22%20cy%3D%2294.15%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.11%22/%3E%3Ccircle%20cx%3D%2262.72%25%22%20cy%3D%2210.19%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.19%22/%3E%3Ccircle%20cx%3D%2280.55%25%22%20cy%3D%2279.62%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.37%22/%3E%3Ccircle%20cx%3D%2242.84%25%22%20cy%3D%2237.06%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.32%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.32%3B0.05%3B0.32%3B0.95%3B0.32%22%20dur%3D%223.4s%22%20begin%3D%221.1s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2242.01%25%22%20cy%3D%2249.02%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.44%22/%3E%3Ccircle%20cx%3D%2282.87%25%22%20cy%3D%2270.73%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.15%22/%3E%3Ccircle%20cx%3D%2265.05%25%22%20cy%3D%2261.59%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.37%22/%3E%3Ccircle%20cx%3D%2282.57%25%22%20cy%3D%2259.25%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.4%22/%3E%3Ccircle%20cx%3D%228.67%25%22%20cy%3D%2288.16%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.36%22/%3E%3Ccircle%20cx%3D%2266.82%25%22%20cy%3D%2233.64%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.39%22/%3E%3Ccircle%20cx%3D%2221.21%25%22%20cy%3D%2279.78%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.18%22/%3E%3Ccircle%20cx%3D%2288.01%25%22%20cy%3D%2255.58%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.43%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.43%3B0.06%3B0.43%3B0.95%3B0.43%22%20dur%3D%224.1s%22%20begin%3D%221.7s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2272.01%25%22%20cy%3D%2248.86%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.17%22/%3E%3Ccircle%20cx%3D%2271.18%25%22%20cy%3D%2244.82%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.11%22/%3E%3Ccircle%20cx%3D%2269.18%25%22%20cy%3D%2230.62%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.22%22/%3E%3Ccircle%20cx%3D%2234.38%25%22%20cy%3D%2299.66%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.2%22/%3E%3Ccircle%20cx%3D%2227.09%25%22%20cy%3D%2225.14%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.35%22/%3E%3Ccircle%20cx%3D%2274.29%25%22%20cy%3D%2295.09%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.15%22/%3E%3Ccircle%20cx%3D%2248.42%25%22%20cy%3D%2272.46%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.27%22/%3E%3Ccircle%20cx%3D%2210.05%25%22%20cy%3D%2219.41%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.21%22/%3E%3Ccircle%20cx%3D%2270.8%25%22%20cy%3D%2212.66%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.44%22/%3E%3Ccircle%20cx%3D%2269.74%25%22%20cy%3D%2212.63%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.36%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.36%3B0.05%3B0.36%3B0.95%3B0.36%22%20dur%3D%225.7s%22%20begin%3D%224.1s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%221.23%25%22%20cy%3D%2228.43%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.24%22/%3E%3Ccircle%20cx%3D%225.14%25%22%20cy%3D%2294.11%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.12%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.12%3B0.02%3B0.12%3B0.42%3B0.12%22%20dur%3D%223.2s%22%20begin%3D%220.8s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2249.17%25%22%20cy%3D%2257.7%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.1%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.1%3B0.01%3B0.1%3B0.35%3B0.1%22%20dur%3D%226.0s%22%20begin%3D%222.3s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2256.28%25%22%20cy%3D%2230.38%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%2260.63%25%22%20cy%3D%2279.07%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.37%22/%3E%3Ccircle%20cx%3D%2290.85%25%22%20cy%3D%2229.74%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.45%22/%3E%3Ccircle%20cx%3D%2262.1%25%22%20cy%3D%2260.96%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%2262.55%25%22%20cy%3D%2226.46%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.14%22/%3E%3Ccircle%20cx%3D%227.51%25%22%20cy%3D%220.27%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.34%22/%3E%3Ccircle%20cx%3D%223.26%25%22%20cy%3D%2228.81%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.34%22/%3E%3Ccircle%20cx%3D%2268.74%25%22%20cy%3D%2292.39%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.37%22/%3E%3Ccircle%20cx%3D%2280.39%25%22%20cy%3D%2219.78%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.28%22/%3E%3Ccircle%20cx%3D%2290.84%25%22%20cy%3D%2282.66%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.1%22/%3E%3Ccircle%20cx%3D%2259.5%25%22%20cy%3D%2282.42%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.24%22/%3E%3Ccircle%20cx%3D%2230.41%25%22%20cy%3D%2240.25%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.27%22/%3E%3Ccircle%20cx%3D%228.04%25%22%20cy%3D%223.99%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.35%22/%3E%3Ccircle%20cx%3D%222.59%25%22%20cy%3D%2222.89%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.39%22/%3E%3Ccircle%20cx%3D%2295.08%25%22%20cy%3D%2299.96%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.38%22/%3E%3Ccircle%20cx%3D%2276.31%25%22%20cy%3D%2217.52%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.32%22/%3E%3Ccircle%20cx%3D%2218.15%25%22%20cy%3D%2258.53%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.38%22/%3E%3Ccircle%20cx%3D%2247.0%25%22%20cy%3D%2240.83%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.33%22/%3E%3Ccircle%20cx%3D%2232.98%25%22%20cy%3D%2269.37%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.33%22/%3E%3Ccircle%20cx%3D%2276.05%25%22%20cy%3D%223.67%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.2%22/%3E%3Ccircle%20cx%3D%2297.02%25%22%20cy%3D%2240.42%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.39%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.39%3B0.06%3B0.39%3B0.95%3B0.39%22%20dur%3D%222.6s%22%20begin%3D%223.6s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2286.94%25%22%20cy%3D%2246.2%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.15%22/%3E%3Ccircle%20cx%3D%2275.64%25%22%20cy%3D%2262.54%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.1%22/%3E%3Ccircle%20cx%3D%2213.1%25%22%20cy%3D%2228.8%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.26%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.26%3B0.04%3B0.26%3B0.91%3B0.26%22%20dur%3D%223.0s%22%20begin%3D%224.7s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2263.0%25%22%20cy%3D%2279.93%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.14%22/%3E%3Ccircle%20cx%3D%2255.23%25%22%20cy%3D%229.32%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.42%22/%3E%3Ccircle%20cx%3D%2211.75%25%22%20cy%3D%2283.21%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.43%22/%3E%3Ccircle%20cx%3D%2270.54%25%22%20cy%3D%2241.55%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.44%22/%3E%3Ccircle%20cx%3D%2255.13%25%22%20cy%3D%2238.36%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.27%22/%3E%3Ccircle%20cx%3D%2286.4%25%22%20cy%3D%2227.62%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.4%22/%3E%3Ccircle%20cx%3D%2278.77%25%22%20cy%3D%2226.72%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.18%22/%3E%3Ccircle%20cx%3D%2258.69%25%22%20cy%3D%2299.89%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.4%22/%3E%3Ccircle%20cx%3D%2248.43%25%22%20cy%3D%2233.24%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.28%22/%3E%3Ccircle%20cx%3D%2232.18%25%22%20cy%3D%2218.87%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.17%22/%3E%3Ccircle%20cx%3D%2285.6%25%22%20cy%3D%2241.08%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.36%22/%3E%3Ccircle%20cx%3D%2281.14%25%22%20cy%3D%2238.61%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.37%22/%3E%3Ccircle%20cx%3D%2215.21%25%22%20cy%3D%2296.48%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.27%22/%3E%3Ccircle%20cx%3D%2286.97%25%22%20cy%3D%2287.42%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%221.53%25%22%20cy%3D%2214.42%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.32%22/%3E%3Ccircle%20cx%3D%2246.95%25%22%20cy%3D%2296.92%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.31%22/%3E%3Ccircle%20cx%3D%228.03%25%22%20cy%3D%2232.86%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.4%22/%3E%3Ccircle%20cx%3D%2231.67%25%22%20cy%3D%2271.87%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.26%22/%3E%3Ccircle%20cx%3D%2261.75%25%22%20cy%3D%2223.48%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.42%22/%3E%3Ccircle%20cx%3D%2274.68%25%22%20cy%3D%2243.4%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.36%22/%3E%3Ccircle%20cx%3D%2210.05%25%22%20cy%3D%2216.64%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.41%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.41%3B0.06%3B0.41%3B0.95%3B0.41%22%20dur%3D%224.6s%22%20begin%3D%222.4s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2279.61%25%22%20cy%3D%2229.34%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.24%22/%3E%3Ccircle%20cx%3D%2241.21%25%22%20cy%3D%2268.18%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.14%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.14%3B0.02%3B0.14%3B0.49%3B0.14%22%20dur%3D%225.0s%22%20begin%3D%222.6s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2287.08%25%22%20cy%3D%2261.97%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.26%22/%3E%3Ccircle%20cx%3D%2223.22%25%22%20cy%3D%2263.79%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.17%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.17%3B0.03%3B0.17%3B0.6%3B0.17%22%20dur%3D%224.2s%22%20begin%3D%221.9s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2280.46%25%22%20cy%3D%2290.12%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.28%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.28%3B0.04%3B0.28%3B0.95%3B0.28%22%20dur%3D%225.8s%22%20begin%3D%222.3s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2294.52%25%22%20cy%3D%2298.77%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.32%22/%3E%3Ccircle%20cx%3D%2225.01%25%22%20cy%3D%2284.53%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.45%22/%3E%3Ccircle%20cx%3D%2210.67%25%22%20cy%3D%2238.14%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.29%22/%3E%3Ccircle%20cx%3D%2229.52%25%22%20cy%3D%2297.79%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.23%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.23%3B0.03%3B0.23%3B0.81%3B0.23%22%20dur%3D%223.4s%22%20begin%3D%222.4s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2286.51%25%22%20cy%3D%2277.83%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.42%22/%3E%3Ccircle%20cx%3D%2283.28%25%22%20cy%3D%2290.29%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.38%22/%3E%3Ccircle%20cx%3D%2235.23%25%22%20cy%3D%2263.66%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.17%22/%3E%3Ccircle%20cx%3D%2276.75%25%22%20cy%3D%2268.09%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.31%22/%3E%3Ccircle%20cx%3D%2264.63%25%22%20cy%3D%2230.89%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.09%22/%3E%3Ccircle%20cx%3D%2213.14%25%22%20cy%3D%2290.96%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.36%22/%3E%3Ccircle%20cx%3D%2213.22%25%22%20cy%3D%2253.94%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.28%22/%3E%3Ccircle%20cx%3D%2283.05%25%22%20cy%3D%2225.7%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.43%22/%3E%3Ccircle%20cx%3D%2229.51%25%22%20cy%3D%2287.04%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%2214.08%25%22%20cy%3D%2296.65%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.33%22/%3E%3Ccircle%20cx%3D%2239.74%25%22%20cy%3D%2284.57%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.22%22/%3E%3Ccircle%20cx%3D%221.39%25%22%20cy%3D%2253.66%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.22%22/%3E%3Ccircle%20cx%3D%2226.22%25%22%20cy%3D%2238.1%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.43%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.43%3B0.06%3B0.43%3B0.95%3B0.43%22%20dur%3D%225.7s%22%20begin%3D%223.3s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2223.38%25%22%20cy%3D%222.5%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.2%22/%3E%3Ccircle%20cx%3D%2264.77%25%22%20cy%3D%2263.54%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.42%22/%3E%3Ccircle%20cx%3D%2240.83%25%22%20cy%3D%2213.98%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.19%22/%3E%3Ccircle%20cx%3D%229.72%25%22%20cy%3D%2288.73%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.22%22/%3E%3Ccircle%20cx%3D%2294.94%25%22%20cy%3D%2269.65%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.24%22/%3E%3Ccircle%20cx%3D%2215.45%25%22%20cy%3D%2241.49%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.39%22/%3E%3Ccircle%20cx%3D%2293.91%25%22%20cy%3D%2227.97%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.22%22/%3E%3Ccircle%20cx%3D%2295.06%25%22%20cy%3D%2285.55%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.44%22/%3E%3Ccircle%20cx%3D%2290.17%25%22%20cy%3D%2264.48%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.23%22/%3E%3Ccircle%20cx%3D%2212.22%25%22%20cy%3D%2284.8%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.11%22/%3E%3Ccircle%20cx%3D%2263.95%25%22%20cy%3D%2297.11%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.37%22/%3E%3Ccircle%20cx%3D%2212.59%25%22%20cy%3D%2256.46%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.39%22/%3E%3Ccircle%20cx%3D%2258.64%25%22%20cy%3D%2281.31%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.2%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.2%3B0.03%3B0.2%3B0.7%3B0.2%22%20dur%3D%224.8s%22%20begin%3D%223.8s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2290.05%25%22%20cy%3D%220.28%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.44%22/%3E%3Ccircle%20cx%3D%2254.02%25%22%20cy%3D%2279.85%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.32%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.32%3B0.05%3B0.32%3B0.95%3B0.32%22%20dur%3D%222.7s%22%20begin%3D%223.8s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%221.49%25%22%20cy%3D%2279.0%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.3%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.3%3B0.04%3B0.3%3B0.95%3B0.3%22%20dur%3D%224.8s%22%20begin%3D%221.2s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2226.54%25%22%20cy%3D%2212.68%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.27%22/%3E%3Ccircle%20cx%3D%2247.62%25%22%20cy%3D%2277.8%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.3%22/%3E%3Ccircle%20cx%3D%2222.15%25%22%20cy%3D%2261.51%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.37%22/%3E%3Ccircle%20cx%3D%2252.15%25%22%20cy%3D%2245.8%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.1%22/%3E%3Ccircle%20cx%3D%2240.16%25%22%20cy%3D%2268.61%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.34%22/%3E%3Ccircle%20cx%3D%2289.93%25%22%20cy%3D%2232.21%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.1%22/%3E%3Ccircle%20cx%3D%2263.31%25%22%20cy%3D%2254.84%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.22%22/%3E%3Ccircle%20cx%3D%2229.49%25%22%20cy%3D%2250.56%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%2285.28%25%22%20cy%3D%2265.09%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.28%22/%3E%3Ccircle%20cx%3D%2243.01%25%22%20cy%3D%2288.81%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.21%22/%3E%3Ccircle%20cx%3D%2241.6%25%22%20cy%3D%229.51%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.2%22/%3E%3Ccircle%20cx%3D%2295.36%25%22%20cy%3D%2268.68%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.1%22/%3E%3Ccircle%20cx%3D%229.32%25%22%20cy%3D%229.66%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.22%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.22%3B0.03%3B0.22%3B0.77%3B0.22%22%20dur%3D%224.3s%22%20begin%3D%221.4s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%226.0%25%22%20cy%3D%2295.66%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.2%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.2%3B0.03%3B0.2%3B0.7%3B0.2%22%20dur%3D%225.3s%22%20begin%3D%221.7s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2235.36%25%22%20cy%3D%2266.53%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.24%22/%3E%3Ccircle%20cx%3D%225.14%25%22%20cy%3D%2228.76%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.21%22/%3E%3Ccircle%20cx%3D%2221.27%25%22%20cy%3D%2265.67%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.39%22/%3E%3Ccircle%20cx%3D%2255.63%25%22%20cy%3D%2211.49%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.29%22/%3E%3Ccircle%20cx%3D%2284.52%25%22%20cy%3D%2297.45%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.31%22/%3E%3Ccircle%20cx%3D%2255.67%25%22%20cy%3D%2260.9%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.39%22/%3E%3Ccircle%20cx%3D%2218.04%25%22%20cy%3D%2270.27%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.42%22/%3E%3Ccircle%20cx%3D%2218.14%25%22%20cy%3D%2214.33%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.23%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.23%3B0.03%3B0.23%3B0.81%3B0.23%22%20dur%3D%222.8s%22%20begin%3D%224.9s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2263.32%25%22%20cy%3D%223.07%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.28%22/%3E%3Ccircle%20cx%3D%2245.36%25%22%20cy%3D%2215.74%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.35%22/%3E%3Ccircle%20cx%3D%2256.76%25%22%20cy%3D%228.5%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.14%22/%3E%3Ccircle%20cx%3D%224.98%25%22%20cy%3D%228.16%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.32%22/%3E%3Ccircle%20cx%3D%2244.2%25%22%20cy%3D%2227.32%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.27%22/%3E%3Ccircle%20cx%3D%2211.09%25%22%20cy%3D%2267.82%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.26%22/%3E%3Ccircle%20cx%3D%224.54%25%22%20cy%3D%2239.53%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.1%22/%3E%3Ccircle%20cx%3D%2294.53%25%22%20cy%3D%2276.73%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.17%22/%3E%3Ccircle%20cx%3D%220.77%25%22%20cy%3D%2274.7%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.13%22/%3E%3Ccircle%20cx%3D%2223.01%25%22%20cy%3D%2255.87%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.38%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.38%3B0.06%3B0.38%3B0.95%3B0.38%22%20dur%3D%225.2s%22%20begin%3D%223.5s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2286.18%25%22%20cy%3D%224.23%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.25%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.25%3B0.04%3B0.25%3B0.88%3B0.25%22%20dur%3D%224.7s%22%20begin%3D%224.7s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2231.31%25%22%20cy%3D%2242.93%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.34%22/%3E%3Ccircle%20cx%3D%2211.52%25%22%20cy%3D%222.09%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.14%22/%3E%3Ccircle%20cx%3D%2246.01%25%22%20cy%3D%2268.96%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.11%22/%3E%3Ccircle%20cx%3D%2224.33%25%22%20cy%3D%2258.89%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.11%22/%3E%3Ccircle%20cx%3D%2274.58%25%22%20cy%3D%2222.16%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.14%22/%3E%3Ccircle%20cx%3D%2211.4%25%22%20cy%3D%2251.0%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.21%22/%3E%3Ccircle%20cx%3D%2281.89%25%22%20cy%3D%2281.5%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%2217.35%25%22%20cy%3D%2215.29%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.32%22/%3E%3Ccircle%20cx%3D%2277.28%25%22%20cy%3D%2249.41%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.29%22/%3E%3Ccircle%20cx%3D%2268.11%25%22%20cy%3D%2288.2%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.32%22/%3E%3Ccircle%20cx%3D%2286.42%25%22%20cy%3D%2262.72%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.24%22/%3E%3Ccircle%20cx%3D%2263.14%25%22%20cy%3D%2279.63%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.1%22/%3E%3Ccircle%20cx%3D%2231.04%25%22%20cy%3D%2245.19%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.22%22/%3E%3Ccircle%20cx%3D%2264.47%25%22%20cy%3D%2297.74%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.31%22/%3E%3Ccircle%20cx%3D%2246.27%25%22%20cy%3D%2255.43%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.35%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.35%3B0.05%3B0.35%3B0.95%3B0.35%22%20dur%3D%224.9s%22%20begin%3D%223.6s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2290.9%25%22%20cy%3D%2257.17%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.2%22/%3E%3Ccircle%20cx%3D%2215.09%25%22%20cy%3D%226.19%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.38%22/%3E%3Ccircle%20cx%3D%2298.24%25%22%20cy%3D%228.43%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.14%22/%3E%3Ccircle%20cx%3D%2243.78%25%22%20cy%3D%2243.94%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.31%22/%3E%3Ccircle%20cx%3D%2291.79%25%22%20cy%3D%2238.74%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.21%22/%3E%3Ccircle%20cx%3D%2278.92%25%22%20cy%3D%2264.73%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.2%22/%3E%3Ccircle%20cx%3D%2238.66%25%22%20cy%3D%2225.2%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.32%22/%3E%3Ccircle%20cx%3D%2287.33%25%22%20cy%3D%2233.34%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.33%22/%3E%3Ccircle%20cx%3D%2231.02%25%22%20cy%3D%2265.61%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.23%22/%3E%3Ccircle%20cx%3D%2293.8%25%22%20cy%3D%2230.96%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.32%22/%3E%3Ccircle%20cx%3D%2212.78%25%22%20cy%3D%2270.28%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.45%22/%3E%3Ccircle%20cx%3D%229.35%25%22%20cy%3D%2267.05%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.21%22/%3E%3Ccircle%20cx%3D%2218.03%25%22%20cy%3D%2221.42%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.26%22/%3E%3Ccircle%20cx%3D%2213.76%25%22%20cy%3D%227.72%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.37%22/%3E%3Ccircle%20cx%3D%2253.98%25%22%20cy%3D%2273.86%25%22%20r%3D%221.5%22%20fill%3D%22white%22%20opacity%3D%220.09%22/%3E%3Ccircle%20cx%3D%2276.63%25%22%20cy%3D%2213.1%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.14%22/%3E%3Ccircle%20cx%3D%2269.28%25%22%20cy%3D%2262.47%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.35%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.35%3B0.05%3B0.35%3B0.95%3B0.35%22%20dur%3D%223.8s%22%20begin%3D%220.4s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2236.43%25%22%20cy%3D%2271.96%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.31%22/%3E%3Ccircle%20cx%3D%2278.38%25%22%20cy%3D%2223.4%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.19%22/%3E%3Ccircle%20cx%3D%2246.9%25%22%20cy%3D%2283.51%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.33%22/%3E%3Ccircle%20cx%3D%2244.06%25%22%20cy%3D%2276.94%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.22%22/%3E%3Ccircle%20cx%3D%2296.63%25%22%20cy%3D%2281.69%25%22%20r%3D%222%22%20fill%3D%22white%22%20opacity%3D%220.3%22/%3E%3Ccircle%20cx%3D%225.22%25%22%20cy%3D%2248.06%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.29%22%3E%3Canimate%20attributeName%3D%22opacity%22%20values%3D%220.29%3B0.04%3B0.29%3B0.95%3B0.29%22%20dur%3D%225.1s%22%20begin%3D%224.9s%22%20repeatCount%3D%22indefinite%22%20calcMode%3D%22spline%22%20keySplines%3D%220.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%3B0.4%200%200.6%201%22%20keyTimes%3D%220%3B0.25%3B0.5%3B0.75%3B1%22/%3E%3C/circle%3E%3Ccircle%20cx%3D%2284.59%25%22%20cy%3D%2285.12%25%22%20r%3D%221%22%20fill%3D%22white%22%20opacity%3D%220.11%22/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+.page-wrap, aside, .topbar { position: relative; z-index: 1; }
+
 </style>
 </head>
 <body>
@@ -1036,6 +1166,30 @@ button#send svg { width: 17px; height: 17px; }
   <!-- ZONE 3: fixed bottom -->
   <div class="sb-fixed-bottom">
 
+    <div class="sb-remaining" id="sbRemaining">
+      <span class="rem-num" id="remNum">15</span>
+      <span class="rem-txt">free exchanges left</span>
+      <span class="sb-tooltip">Messages remaining</span>
+    </div>
+
+    <button class="sb-item" onclick="openServiceWindow('mantra', this)">
+      <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="cmantra"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#cmantra)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z" fill="#18400e" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#31a117"/></g></svg></span>
+      <span class="sb-label">Mantra</span>
+      <span class="sb-tooltip">Mantra</span>
+    </button>
+
+    <button class="sb-item" onclick="openServiceWindow('sanctuary', this)">
+      <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="csanctuary"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#csanctuary)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg></span>
+      <span class="sb-label">Sanctuary</span>
+      <span class="sb-tooltip">Sanctuary</span>
+    </button>
+
+    <button class="sb-item" onclick="openServiceWindow('retreat', this)">
+      <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="cretreat"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#cretreat)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg></span>
+      <span class="sb-label">Retreat</span>
+      <span class="sb-tooltip">Retreat</span>
+    </button>
+
     <div class="sb-about-wrap">
       <div class="sb-about-menu" id="sbAboutMenu">
         <img src="demianismlogo.png" alt="Demianism" style="width:130px;max-width:100%;height:auto;display:block;padding:10px 18px 6px;">
@@ -1047,28 +1201,16 @@ button#send svg { width: 17px; height: 17px; }
         <a href="/donate" target="_blank">Support Demianism</a>
       </div>
       <button class="sb-item" onclick="toggleAboutMenu(event)">
-        <span class="sb-icon"><svg viewBox="0 0 28 25" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 26,23 2,23" fill="#6864bb"/></svg></span>
+        <span class="sb-icon"><img src="demianismlogo-icon.png" alt="" style="height:25px;width:auto;object-fit:contain;"></span>
         <span class="sb-label">About Demianism</span>
         <span class="sb-tooltip">About Demianism</span>
       </button>
     </div>
 
-    <div class="sb-remaining" id="sbRemaining">
-      <span class="rem-num" id="remNum">15</span>
-      <span class="rem-txt">Msg remaining</span>
-      <span class="sb-tooltip">Messages remaining</span>
-    </div>
-
-    <button class="sb-item" onclick="openSidePopup('creditsMenu', this)">
-      <span class="sb-icon icon-recharge"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-      <span class="sb-label">Plans</span>
-      <span class="sb-tooltip">Plans</span>
-    </button>
-
     <button class="sb-item sb-item-gift" onclick="openCodeModal()">
       <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
-      <span class="sb-label">Gift code</span>
-      <span class="sb-tooltip">Gift code</span>
+      <span class="sb-label">Redeem a code</span>
+      <span class="sb-tooltip">Redeem a code</span>
     </button>
     <div class="account-wrapper" id="accountWrapper">
       <div class="credits-menu" id="accountMenu"><div id="accountMenuBody"></div></div>
@@ -1077,9 +1219,10 @@ button#send svg { width: 17px; height: 17px; }
         <svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)" id="sbAvatarIcon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
       </div>
       <div class="sb-account-info">
-        <div class="sb-account-title" id="sbAccountTitle">Sign in</div>
-        <div class="sb-account-sub" id="sbAccountSub">to save your chats</div>
+        <div class="sb-account-title" id="sbAccountTitle">Save your chat</div>
+        <div class="sb-account-sub" id="sbAccountSub">sign in — it's free</div>
       </div>
+      <span class="sb-tooltip" id="sbAccountTooltip">Save your chat</span>
       </div>
     </div>
 
@@ -1123,25 +1266,30 @@ button#send svg { width: 17px; height: 17px; }
 </div>
 
 <!-- Hidden credits menu (reused) -->
-<div class="credits-wrapper">
-  <div class="credits-menu" id="creditsMenu">
-    <div class="menu-header">
-      <div class="menu-title">Choose your path</div>
-      <div class="menu-sub">No recurring fees. No expiration date.<br>Use whenever you need.</div>
+<div class="service-overlay" id="serviceOverlay" onclick="if(event.target===this)closeServiceWindow()">
+  <div class="service-window" id="serviceWindow">
+    <button class="sw-close" onclick="closeServiceWindow()" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="sw-hero" id="swHero">
+      <div class="sw-hero-img" id="swHeroImg"></div>
     </div>
-    <div class="pkg-list">
-      <a class="pkg-btn" href="#" onclick="purchaseCredits('mantra');return false;">
-        <div class="pkg-left"><div class="pkg-name">Mantra</div><div class="pkg-desc">70 msgs · personal mantra + consultation</div></div>
-        <div class="pkg-price">€5</div>
-      </a>
-      <a class="pkg-btn" href="#" onclick="purchaseCredits('sanctuary');return false;">
-        <div class="pkg-left"><div class="pkg-name">Sanctuary</div><div class="pkg-desc">100 msgs · mantra included</div></div>
-        <div class="pkg-price">€9</div>
-      </a>
-      <a class="pkg-btn" href="#" onclick="purchaseCredits('retreat');return false;">
-        <div class="pkg-left"><div class="pkg-name">Retreat</div><div class="pkg-desc">500 msgs · mantra included</div></div>
-        <div class="pkg-price">€29</div>
-      </a>
+    <div class="sw-body">
+      <div id="swBadge" class="sw-badge" style="display:none"></div>
+      <p class="sw-desc" id="swDesc"></p>
+      <ul class="sw-features" id="swFeatures"></ul>
+      <p class="sw-closing" id="swClosing"></p>
+      <p class="sw-shout" id="swShout">No subscription. No expiry.</p>
+      <p class="sw-shout-sub" id="swShoutSub"></p>
+    </div>
+    <div class="sw-footer">
+      <div class="sw-btns">
+        <button class="sw-btn-primary" id="swBtnGet" onclick="purchaseService()"></button>
+        <button class="sw-btn-gift" onclick="giftService()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+          Gift
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -1177,12 +1325,10 @@ button#send svg { width: 17px; height: 17px; }
   <div class="credits-menu" id="newChatMenu">
     <div class="menu-header">
       <div class="menu-title">Paid feature</div>
-      <div class="menu-sub" style="padding:0 6px 6px;">Only users who have purchased&nbsp;<svg viewBox="0 0 24 24" fill="#f5c542" style="width:14px;height:14px;vertical-align:-2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>&nbsp;a Sanctuary or Retreat can open new chats.</div>
+      <div class="menu-sub" style="padding:0 6px 6px;">Only users who have purchased a Sanctuary or Retreat can open new chats.</div>
     </div>
   </div>
 </div>
-
-
 
 <script>
 const WORKER_URL = 'https://demian-backend.barabeke.workers.dev';
@@ -1252,10 +1398,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.credits-wrapper') && !e.target.closest('[onclick*="openSidePopup"]') && !e.target.closest('[onclick*="openMantraModal"]') && !e.target.closest('[onclick*="newChat"]') && !e.target.closest('[onclick*="one-time"]') && !e.target.closest('.mantra-trigger') && !e.target.closest('#accountWrapper')) {
-      document.getElementById('creditsMenu').classList.remove('open');
+    if (!e.target.closest('.credits-wrapper') && !e.target.closest('[onclick*="openSidePopup"]') && !e.target.closest('[onclick*="newChat"]') && !e.target.closest('#accountWrapper')) {
       document.getElementById('newChatMenu')?.classList.remove('open');
-      
       document.getElementById('accountMenu')?.classList.remove('open');
     }
     if (!e.target.closest('.sb-about-wrap')) {
@@ -1413,7 +1557,7 @@ function handleAccountClick(triggerEl) {
 function openAccountMenu(triggerEl) {
   const menu = document.getElementById('accountMenu');
   const wasOpen = menu.classList.contains('open');
-  ['creditsMenu','newChatMenu','sbAboutMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
+  ['newChatMenu','sbAboutMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
   if (wasOpen) { menu.classList.remove('open'); return; }
   const tierLabel = userTier
     ? ({'mantra':'Mantra','sanctuary':'Sanctuary','retreat':'Retreat'}[userTier] || userTier)
@@ -1469,11 +1613,15 @@ function updateAccountUI() {
     avatar.style.fontSize = '14px';
     title.textContent = 'Your Account';
     sub.textContent = userEmail;
+    const tip = document.getElementById('sbAccountTooltip');
+    if (tip) tip.style.display = 'none';
   } else {
     accountEl.classList.add('signed-out');
     avatar.innerHTML = '<svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
-    title.textContent = 'Sign in';
-    sub.textContent = 'to save your chats';
+    title.textContent = 'Save your chat';
+    sub.textContent = 'sign in — it\'s free';
+    const tip = document.getElementById('sbAccountTooltip');
+    if (tip) tip.style.display = '';
   }
   updateHistoryVisibility();
 }
@@ -1639,22 +1787,26 @@ async function newChat(triggerEl) {
   } catch (err) { console.error('newChat failed', err); }
 }
 
-// Generic: open a fixed side popup positioned like the recharge menu
+// Generic: open a fixed side popup positioned like the side menus
 function openSidePopup(id, triggerEl) {
   const menu = document.getElementById(id);
   const wasOpen = menu.classList.contains('open');
-  ['creditsMenu','newChatMenu','accountMenu','sbAboutMenu'].forEach(m => {
+  ['newChatMenu','accountMenu','sbAboutMenu'].forEach(m => {
     document.getElementById(m)?.classList.remove('open');
   });
   if (wasOpen) return;
   if (!triggerEl) {
-    const map = { creditsMenu: 'Plans', newChatMenu: 'New Chat' };
+    const map = { newChatMenu: 'New Chat' };
     triggerEl = [...document.querySelectorAll('.sb-item')].find(
       b => b.querySelector('.sb-label')?.textContent.trim() === map[id]
     );
   }
   positionMenu(menu, triggerEl, id === 'newChatMenu' ? 'below' : 'above');
   menu.classList.add('open');
+}
+
+function closeAllMenus() {
+  ['newChatMenu','accountMenu','sbAboutMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
 }
 
 function positionMenu(menu, triggerEl, direction) {
@@ -1695,15 +1847,11 @@ function positionMenu(menu, triggerEl, direction) {
   menu.style.visibility = 'visible';
   menu.style.display = '';
 }
-function openMantraModal(triggerEl) {
-  openSidePopup('creditsMenu', triggerEl);
-}
-
 function toggleAboutMenu(e) {
   e.stopPropagation();
   const menu = document.getElementById('sbAboutMenu');
   const wasOpen = menu.classList.contains('open');
-  ['creditsMenu','newChatMenu','accountMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
+  ['newChatMenu','accountMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
   if (wasOpen) { menu.classList.remove('open'); return; }
   positionMenu(menu, e.currentTarget, 'above');
   menu.classList.add('open');
@@ -1717,41 +1865,62 @@ function sendOpeningMessage() {
 
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
-  bubble.innerHTML = `
-<p><img src="demianismlogo.png" style="float:left;width:72px;height:auto;margin:0 14px 4px 0;display:block;">Greetings, seeker.<br>I am Demian, the AI spiritual companion with a Demianist heart.</p>
-<div style="clear:both;"></div>
-<p>I speak <span class="semibold">ALL LANGUAGES</span> 🌐 To switch, just message me in your language.</p>
-<p>I am here to help you find and <span class="semibold">FOLLOW YOUR CALL</span> — your true life purpose according to <a href="https://demianism.org" target="_blank">Demianism</a> — and to support anyone feeling lost or confused with positive inspiration that is meant just for them.</p>
-<p>Behind me there is no team, no company, no investment. Just one man: Barabeke, an independent Italian artist and the founder of Demianism.</p>
-<p>My services:</p>
+  const MANTRA_SVG_SM = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="wm"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#wm)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z" fill="#18400e" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#31a117"/></g></svg>`;
+  const SANC_SVG_SM = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="ws"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#ws)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>`;
+  const RETR_SVG_SM = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="wr"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#wr)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>`;
 
-<div class="services-block">
-  <div class="service-card">
-    <div class="service-title">🔆 FIND YOUR CALL IN LIFE</div>
-    <div class="service-body">For those who haven't found it yet.</div>
-  </div>
-  <div class="service-card">
-    <div class="service-title"><img src="spiral-indigo.svg" style="height:1em;width:auto;vertical-align:-0.12em;margin-right:4px;"> YOUR PERSONAL MANTRA</div>
-    <div class="service-body">Crafted by Demian based on your conversation — 100% unique and tailored to you. A powerful daily anchor to strengthen your grounding and fortitude, overcome challenges, and move toward the life you really want.<span class="service-cost">Included in all plans</span></div>
-  </div>
-  <div class="service-card">
-    <div class="service-title"><img src="triangle-indigo.svg" style="height:1em;width:auto;vertical-align:-0.12em;"> SPIRITUAL COMPANION</div>
-    <div class="service-body">Grounded on Demianist philosophy and ethics. No therapy or medical advice — just inspiring conversations that serve as a mirror to bring clarity to your path and support your inner growth.</div>
-  </div>
-  <div class="service-card">
-    <div class="service-title">🏛️ LEARN ABOUT DEMIANISM</div>
-    <div class="service-body">Discover its 13 axioms, revolutionary metaphysics, ethics, and vision for society. Openly discuss anything that matters to you.</div>
+  bubble.innerHTML = `
+<p><img src="demianismlogo.png" style="float:left;width:72px;height:auto;margin:-6px 14px 6px 0;">Greetings, seeker. I am Demian, the AI spiritual companion with a Demianist heart.</p>
+<div style="clear:both;"></div>
+<p>I am here to help you follow your true calling, find more meaning, clarity, and balance in life, and to support you through the struggles that the human condition entails.</p>
+<p><strong>The first 15 exchanges are free.</strong> Enough to assess if I can be useful, and to recive some valuable help if you seek for it.</p>
+<p>I speak <strong>ALL LANGUAGES</strong> 🌐 To switch, just message me in your language.</p>
+<p>Behind me there is no team, no company, no investment. Just one man: Barabeke, an independent Italian artist and the founder of <a href="https://demianism.org" target="_blank" rel="noopener">Demianism</a>.</p>
+<p>I am humanity first, not business first. Demianist at heart but interfaith: I respect your beliefs and work from within your framework.</p>
+<p>If you haven&rsquo;t found your call in life yet, haven&rsquo;t clearly defined it, or are struggling to follow it, you should definitely try this session:</p>
+
+<div class="intro-service-row">
+  <div class="intro-service-icons">${MANTRA_SVG_SM}</div>
+  <div class="intro-service-text">
+    <div class="intro-service-title intro-service-title-lg"><a href="#" onclick="openServiceWindow('mantra');return false;">PERSONAL MANTRA</a></div>
+    <div class="intro-service-body intro-service-body-lg">100% unique and tailored to you. A powerful daily anchor to help you overcome challenges and move toward the life you really want.</div>
   </div>
 </div>
 
-<p>The first 15 messages are free. Enough for you to assess if I can be helpful.</p>
-<p>No recurring subscription. Choose a plan — Mantra, Sanctuary, or Retreat — and use your messages whenever you need, with no expiry date.</p>
+<p>I am a pay-as-you-go genie. Rub the lamp when you want more interactions. No subscription. No expiry.</p>
+
+<div class="intro-service-row">
+  <div class="intro-service-icons intro-service-icons-stack">${SANC_SVG_SM}${RETR_SVG_SM}</div>
+  <div class="intro-service-text">
+    <div class="intro-service-title intro-service-title-lg">
+      <a href="#" onclick="openServiceWindow('sanctuary');return false;">SANCTUARY</a>
+      <span style="color:rgba(255,255,255,0.3);">/</span>
+      <a href="#" onclick="openServiceWindow('retreat');return false;">RETREAT</a>
+    </div>
+    <div class="intro-service-body intro-service-body-lg">Access my full companion experience with 100 or 500 exchanges respectively. One-off purchase, use your credit whenever you wish.</div>
+  </div>
+</div>
+
 <p>How can I help you today?</p>
+
+<div class="intro-prompts">
+  <button class="intro-prompt-btn" onclick="setPrompt(this.textContent)">I haven&rsquo;t found my purpose in life</button>
+  <button class="intro-prompt-btn" onclick="setPrompt(this.textContent)">I know my vocation but I&rsquo;m not living it</button>
+  <button class="intro-prompt-btn" onclick="setPrompt(this.textContent)">I&rsquo;m going through a hard time</button>
+</div>
 `;
 
   wrap.appendChild(bubble);
   chat.appendChild(wrap);
   chat.scrollTop = 0;
+}
+
+function setPrompt(text) {
+  const input = document.getElementById('userInput');
+  if (!input) return;
+  input.value = text;
+  input.focus();
+  input.dispatchEvent(new Event('input'));
 }
 
 async function sendMessage() {
@@ -1765,12 +1934,12 @@ async function sendMessage() {
     // unlimited during mantra session
   } else if (isPaid || messagesBalance > 0) {
     if (messagesBalance <= 0) {
-      appendSystemMessage('No messages remaining. Choose a plan to continue.');
+      appendSystemMessage('No messages remaining. Please recharge to continue.');
       return;
     }
   } else {
     if (used >= FREE_MESSAGES) {
-      appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Choose a plan to continue.');
+      appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Recharge or buy a mantra to continue.');
       return;
     }
   }
@@ -1817,13 +1986,13 @@ async function callAPI(msgs) {
     if (data.error) {
       if (data.error.message === 'free_limit_reached') {
         removeTyping(typingEl);
-        appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Choose a plan to continue.');
+        appendSystemMessage('You have used your ' + FREE_MESSAGES + ' free messages. Recharge or buy a mantra to continue.');
         isLoading = false;
         return;
       }
       if (data.error.message === 'no_credits') {
         removeTyping(typingEl);
-        appendSystemMessage('No messages remaining. Choose a plan to continue.');
+        appendSystemMessage('No messages remaining. Recharge to continue.');
         isLoading = false;
         return;
       }
@@ -1993,13 +2162,162 @@ function setStatus(online) {
   if (text) text.textContent = online ? 'Online' : 'Offline';
 }
 
-function purchaseCredits(tier) {
-  const links = {
-    'mantra':    'https://buy.stripe.com/eVq4gA0wzbND5Gr60h6oo04',
-    'sanctuary': 'https://buy.stripe.com/dRmbJ26UXbND3yj9ct6oo05',
-    'retreat':   'https://buy.stripe.com/bJe7sM5QT9Fvfh19ct6oo06',
-  };
-  window.open(links[tier], '_blank');
+/* ── Service window system (Mantra / Sanctuary / Retreat) ── */
+const SERVICE_ICONS = {
+  mantra: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swMantra"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swMantra)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z" fill="#18400e" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#31a117"/></g></svg>',
+  sanctuary: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swSanct"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swSanct)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
+  retreat: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swRetreat"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swRetreat)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>'
+};
+
+const SERVICES = {
+  mantra: {
+    name: 'Mantra',
+    count: null,
+    price: 5,
+    accent: '#31a117',
+    heroImg: 'mantra-hero.png',
+    heroGrad: 'radial-gradient(120% 130% at 0% 100%, #1a0c0a 0%, #1a0c0a 30%, rgba(26,12,10,0.7) 55%, rgba(26,12,10,0.15) 80%, rgba(26,12,10,0) 100%)',
+    heroFallback: 'linear-gradient(125deg, #4a1c10 0%, #331410 45%, #1f0d0a 100%)',
+    badge: null,
+    desc: 'A mantra crafted by Demian to help you follow your call in life and overcome the challenges you are facing.',
+    features: [
+      '100% unique and tailored to you.',
+      'Satisfaction guaranteed, if you collaborate (the mantra is yours to approve).',
+      'Delivered also as a card image to save on your phone.',
+      'After your mantra, you get 15 premium exchanges with Demian — a taste of what Sanctuary and Retreat offer.'
+    ],
+    closing: "Don't know what your call in life is?\nDemian will help you find it.",
+    shoutSub: 'Chat with Demian whenever you wish.',
+    btnLabel: 'Get yours for'
+  },
+  sanctuary: {
+    name: 'Sanctuary',
+    count: 100,
+    price: 12,
+    accent: '#dfa51a',
+    heroImg: 'sanctuary-hero.png',
+    heroGrad: 'radial-gradient(120% 130% at 0% 100%, #0c0a28 0%, #0c0a28 30%, rgba(12,10,40,0.7) 55%, rgba(12,10,40,0.15) 80%, rgba(12,10,40,0) 100%)',
+    heroFallback: 'linear-gradient(125deg, #2a1855 0%, #1f1545 45%, #160f33 100%)',
+    badge: null,
+    desc: 'Unlock the full power of Demian.',
+    features: [
+      'Designed to help you follow your true calling in life and find more meaning, clarity, and balance.',
+      'Trained to support you through all sorts of struggles that the human condition entails.',
+      'Not made to please, but to act as an honest mirror. For those who seek growth, not just comfort.',
+      'Acting within strict ethical limits. No medical advice, no replacement for professional care where needed.',
+      
+      'Personal Mantra included. Open new chats with optional memory preservation.'
+    ],
+    closing: null,
+    shoutSub: 'Chat with Demian whenever you wish.',
+    btnLabel: 'Get for'
+  },
+  retreat: {
+    name: 'Retreat',
+    count: 500,
+    price: 39,
+    accent: '#dfa51a',
+    heroImg: 'retreat-hero.png',
+    heroGrad: 'radial-gradient(120% 130% at 0% 100%, #0a0f1a 0%, #0a0f1a 30%, rgba(10,15,26,0.7) 55%, rgba(10,15,26,0.15) 80%, rgba(10,15,26,0) 100%)',
+    heroFallback: 'linear-gradient(125deg, #1a2540 0%, #141d33 45%, #0a0f1f 100%)',
+    desc: '',
+    features: [
+      'Designed to help you follow your true calling in life and find more meaning, clarity, and balance.',
+      'Trained to support you through all sorts of struggles that the human condition entails.',
+      'Not made to please, but to act as an honest mirror. For those who seek growth, not just comfort.',
+      'Acting within strict ethical limits. No medical advice, no replacement for professional care where needed.',
+      
+      'Personal Mantra included. Open new chats with optional memory preservation.'
+    ],
+    closing: null,
+    shoutSub: 'Chat with Demian whenever you wish.',
+    btnLabel: 'Get for'
+  }
+};
+
+const SERVICE_LINKS = {
+  mantra:    'https://buy.stripe.com/eVq4gA0wzbND5Gr60h6oo04',
+  sanctuary: 'https://buy.stripe.com/dRmbJ26UXbND3yj9ct6oo05',
+  retreat:   'https://buy.stripe.com/bJe7sM5QT9Fvfh19ct6oo06'
+};
+
+let currentService = null;
+
+function openServiceWindow(key) {
+  const s = SERVICES[key];
+  if (!s) return;
+  currentService = key;
+
+  // Hero image (the image carries title, count, icon)
+  const heroImg = document.getElementById('swHeroImg');
+  heroImg.style.background = s.heroFallback;
+  if (s.heroImg) {
+    const test = new Image();
+    test.onload = () => { heroImg.style.backgroundImage = 'url(' + s.heroImg + ')'; heroImg.style.backgroundSize = 'cover'; heroImg.style.backgroundPosition = 'center'; };
+    test.src = s.heroImg;
+  }
+
+  // Bullet accent colour per service
+  document.getElementById('serviceWindow').style.setProperty('--sw-accent', s.accent);
+
+  // Badge (Retreat "Best value")
+  const badgeEl = document.getElementById('swBadge');
+  if (s.badge) {
+    badgeEl.textContent = s.badge;
+    badgeEl.style.display = 'inline-block';
+  } else {
+    badgeEl.style.display = 'none';
+  }
+
+  // Body
+  const descEl = document.getElementById('swDesc');
+  if (s.desc) {
+    descEl.textContent = s.desc;
+    descEl.style.display = '';
+  } else {
+    descEl.style.display = 'none';
+  }
+  document.getElementById('swFeatures').innerHTML = s.features.map(f => '<li>' + f + '</li>').join('');
+
+  // Closing line (Mantra only)
+  const closingEl = document.getElementById('swClosing');
+  if (s.closing) {
+    closingEl.innerHTML = s.closing.replace('\n', '<br>');
+    closingEl.style.display = '';
+  } else {
+    closingEl.style.display = 'none';
+  }
+
+  const shoutEl = document.getElementById('swShout');
+  const shoutSubEl = document.getElementById('swShoutSub');
+  if (s.shoutSub) {
+    shoutEl.style.display = '';
+    shoutSubEl.style.display = '';
+    shoutSubEl.textContent = s.shoutSub;
+  } else {
+    shoutEl.style.display = 'none';
+    shoutSubEl.style.display = 'none';
+  }
+  document.getElementById('swBtnGet').textContent = s.btnLabel + ' €' + s.price;
+  document.getElementById('serviceWindow').scrollTop = 0;
+  document.querySelector('.sw-body').scrollTop = 0;
+  document.getElementById('serviceOverlay').classList.add('open');
+  closeAllMenus();
+}
+
+function closeServiceWindow() {
+  document.getElementById('serviceOverlay').classList.remove('open');
+  currentService = null;
+}
+
+function purchaseService() {
+  if (!currentService) return;
+  window.open(SERVICE_LINKS[currentService], '_blank');
+}
+
+function giftService() {
+  if (!currentService) return;
+  window.open(SERVICE_LINKS[currentService] + '?gift=1', '_blank');
 }
 
 function openCodeModal() {
@@ -2061,14 +2379,10 @@ function handlePurchaseReturn(tier, msgs, mantra) {
     mantra = t.mantra;
   }
   isPaid = true;
-  if (mantra) {
-    mantraUnlocked = true;
-    appendSystemMessage('✦ Unlocked — your Personal Mantra session with Demian has been activated.');
-  } else {
-    messagesBalance = msgs;
-    canNewChat = true;
-    appendSystemMessage('✦ Unlocked — ' + msgs + ' messages are yours. The lamp is lit.');
-  }
+  messagesBalance = msgs;
+  canNewChat = (tier === 'sanctuary' || tier === 'retreat');
+  if (mantra) mantraUnlocked = true;
+  appendSystemMessage('✦ Unlocked — ' + msgs + ' exchanges are yours. The lamp is lit.');
   // If logged in, reload user to get fresh balance from KV
   if (authToken) loadUser();
   else updateCounter();

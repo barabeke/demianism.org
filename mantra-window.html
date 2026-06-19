@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #06050f; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 40px 20px; }
+
+.dc { background: #12103a; width: 480px; border-radius: 20px; overflow: hidden; border: 1px solid #2a2560; box-shadow: 0 0 60px rgba(0,0,0,0.5); }
+
+.sw-hero { width: 100%; aspect-ratio: 960 / 440; overflow: hidden; }
+.sw-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.sw-body {
+  border-top: 5px solid #35327e;
+  padding: 22px 28px 26px;
+}
+
+.sw-desc { font-family: 'Libre Baskerville', serif; font-size: 15px; line-height: 1.75; color: #c8c6dc; margin: 0 0 18px; }
+.sw-desc .call { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.02em; color: #c8c6dc; text-transform: uppercase; }
+
+.sw-features { list-style: none; padding: 0; margin: 0 0 16px; display: flex; flex-direction: column; gap: 9px; }
+.sw-features li { display: flex; align-items: flex-start; gap: 11px; font-family: 'Libre Baskerville', serif; font-size: 14px; color: #c8c6dc; line-height: 1.55; }
+.sw-features li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #f05627; margin-top: 7px; flex-shrink: 0; }
+
+.sw-closing { font-family: 'Libre Baskerville', serif; font-size: 14px; line-height: 1.65; color: #c8c6dc; margin: 0 0 16px; }
+
+.sw-shout { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 18px; color: #fff; margin: 0 0 5px; }
+.sw-shout-sub { font-family: 'Libre Baskerville', serif; font-size: 14px; color: #c8c6dc; line-height: 1.65; margin: 0 0 22px; }
+
+.sw-btns { display: flex; gap: 12px; }
+.sw-btn-primary { flex: 0 0 72%; padding: 14px; background: #35327e; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 15px; color: #cfcfd4; cursor: pointer; }
+.sw-btn-gift { flex: 1; padding: 14px 8px; background: #36354c; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 14px; color: rgba(255,255,255,0.55); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; }
+.sw-btn-gift svg { width: 14px; height: 14px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="dc">
+  <div class="sw-hero"><img src="mantra-hero.png" alt="Mantra"></div>
+  <div class="sw-body">
+    <p class="sw-desc">Create your own personal mantra. Designed to help you <span class="call">follow your call</span> in life and overcome the challenges you are facing.</p>
+    <ul class="sw-features">
+      <li>100% unique and tailored to you.</li>
+      <li>Satisfaction guaranteed, if you collaborate (mantra approved by you).</li>
+      <li>Up to 70 msg to develop your mantra. Keep the remaining exchanges for general consultation.</li>
+      <li>Get your mantra card as an image to keep handy.</li>
+    </ul>
+    <p class="sw-closing">Don't know what your call in life is?<br>Demian will help you find it.</p>
+    <p class="sw-shout">No expiry. No subscription.</p>
+    <p class="sw-shout-sub">Chat with Demian whenever you need some wisdom.</p>
+    <div class="sw-btns">
+      <button class="sw-btn-primary">Get for €5</button>
+      <button class="sw-btn-gift">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+        Gift
+      </button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
