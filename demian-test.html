@@ -788,10 +788,27 @@ button#send svg { width: 17px; height: 17px; }
 .sb-icon svg { width: 25px; height: 25px; }
 /* Service icons (mantra/sanctuary/retreat) render full-color, slightly larger */
 .sb-icon.sb-icon-service svg { width: 27px; height: 27px; }
-.sb-icon-service { width: 29px; height: 29px; }
+.sb-icon-service { width: 29px; height: 29px; position: relative; }
+
+/* ── Active plan ring ── */
+/* Ring sits just outside the icon's own box; ring thickness matches the
+   gap between the icon container (29px) and the svg itself (27px), i.e. 1px,
+   doubled for visibility against the small icon size. */
+.sb-item-active .sb-icon-service::after {
+  content: '';
+  position: absolute;
+  top: -4px; left: -4px; right: -4px; bottom: -4px;
+  border: 2px solid var(--icon-active-color, #fff);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.sb-item-active[data-service="mantra"] .sb-icon-service::after { border-color: #31a117; }
+.sb-item-active[data-service="sanctuary"] .sb-icon-service::after,
+.sb-item-active[data-service="retreat"] .sb-icon-service::after { border-color: #dfa51a; }
 
 .sb-label { display: none; }
 .sidebar.open .sb-label { display: inline; }
+.sb-active-tag { color: var(--purple-light); font-weight: 500; }
 
 /* ── Tooltip (collapsed, on hover) → white box ── */
 .sb-tooltip {
@@ -1172,23 +1189,24 @@ body {
       <span class="sb-tooltip">Messages remaining</span>
     </div>
 
-    <button class="sb-item" onclick="openServiceWindow('mantra', this)">
+    <button class="sb-item" data-service="mantra" id="sbItemMantra" onclick="openServiceWindow('mantra', this)">
       <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="cmantra"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#cmantra)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z" fill="#18400e" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#31a117"/></g></svg></span>
-      <span class="sb-label">Mantra</span>
-      <span class="sb-tooltip">Mantra</span>
+      <span class="sb-label">Mantra<span class="sb-active-tag" id="sbActiveTagMantra"></span></span>
+      <span class="sb-tooltip" id="sbTooltipMantra">Mantra</span>
     </button>
 
-    <button class="sb-item" onclick="openServiceWindow('sanctuary', this)">
+    <button class="sb-item" data-service="sanctuary" id="sbItemSanctuary" onclick="openServiceWindow('sanctuary', this)">
       <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="csanctuary"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#csanctuary)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg></span>
-      <span class="sb-label">Sanctuary</span>
-      <span class="sb-tooltip">Sanctuary</span>
+      <span class="sb-label">Sanctuary<span class="sb-active-tag" id="sbActiveTagSanctuary"></span></span>
+      <span class="sb-tooltip" id="sbTooltipSanctuary">Sanctuary</span>
     </button>
 
-    <button class="sb-item" onclick="openServiceWindow('retreat', this)">
+    <button class="sb-item" data-service="retreat" id="sbItemRetreat" onclick="openServiceWindow('retreat', this)">
       <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="cretreat"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#cretreat)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg></span>
-      <span class="sb-label">Retreat</span>
-      <span class="sb-tooltip">Retreat</span>
+      <span class="sb-label">Retreat<span class="sb-active-tag" id="sbActiveTagRetreat"></span></span>
+      <span class="sb-tooltip" id="sbTooltipRetreat">Retreat</span>
     </button>
+
 
     <div class="sb-about-wrap">
       <div class="sb-about-menu" id="sbAboutMenu">
@@ -1357,6 +1375,33 @@ function updateCounter() {
     remNum.textContent = Math.max(0, FREE_MESSAGES - used);
     if (sbRemaining) sbRemaining.style.display = '';
   }
+  updateActivePlanUI();
+}
+
+const SERVICE_LABELS = { mantra: 'Mantra', sanctuary: 'Sanctuary', retreat: 'Retreat' };
+
+function updateActivePlanUI() {
+  // Active means: currently in a mantra session, OR holds a paid tier with
+  // remaining balance/access. A depleted balance with no mantra session
+  // active means nothing is "active" right now, even if userTier is set
+  // from a past purchase.
+  let activeKey = null;
+  if (mantraUnlocked) {
+    activeKey = 'mantra';
+  } else if (userTier && (messagesBalance > 0 || canNewChat)) {
+    activeKey = userTier;
+  }
+
+  ['mantra', 'sanctuary', 'retreat'].forEach(key => {
+    const itemEl = document.getElementById('sbItem' + key.charAt(0).toUpperCase() + key.slice(1));
+    const tagEl = document.getElementById('sbActiveTag' + key.charAt(0).toUpperCase() + key.slice(1));
+    const tooltipEl = document.getElementById('sbTooltip' + key.charAt(0).toUpperCase() + key.slice(1));
+    if (!itemEl) return;
+    const isActive = key === activeKey;
+    itemEl.classList.toggle('sb-item-active', isActive);
+    if (tagEl) tagEl.textContent = isActive ? ' (active)' : '';
+    if (tooltipEl) tooltipEl.textContent = SERVICE_LABELS[key] + (isActive ? ' (active)' : '');
+  });
 }
 
 // Auth + session state
@@ -2237,8 +2282,8 @@ const SERVICES = {
 
 const SERVICE_LINKS = {
   mantra:    'https://buy.stripe.com/eVq4gA0wzbND5Gr60h6oo04',
-  sanctuary: 'https://buy.stripe.com/dRm5kE5QT7xn5GrgEV6oo07',
-  retreat:   'https://buy.stripe.com/9B68wQ0wzcRH5Gr0FX6oo08'
+  sanctuary: 'https://buy.stripe.com/dRmbJ26UXbND3yj9ct6oo05',
+  retreat:   'https://buy.stripe.com/bJe7sM5QT9Fvfh19ct6oo06'
 };
 
 let currentService = null;
