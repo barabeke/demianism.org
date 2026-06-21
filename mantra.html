@@ -412,8 +412,13 @@
     line-height: 1;
   }
   /* "created with [logo] demianism.org/demian" reads as one centered group,
-     each piece sitting close to its neighbor with normal gap spacing —
-     not spread out to the card's edges. */
+     each piece sitting close to its neighbor — except the url, which gets a
+     touch of extra breathing room (half a letter) after the logo. The row's
+     horizontal shift (so the LOGO, not the group's overall midpoint, lands
+     on the card's true center) is applied at runtime in render(), since the
+     correct offset depends on the actual measured widths of "created with"
+     vs. the logo+url and can't be guessed as a fixed em value. */
+  .card-credit-row .cc-text:last-of-type { margin-left: 0.5em; }
   .card-credit-row .cc-text {
     color: var(--c-accent);
     position: relative;
@@ -913,6 +918,23 @@
       const ghostGap = imgBottom - textBottom; // real measured gap, whatever it actually is
       const totalLift = ghostGap + (EXTRA_LIFT_PX_AT_FULL_SCALE * cardScale);
       brandImgEl.style.top = -totalLift + 'px';
+    }
+
+    // Re-center the row so the LOGO sits on the card's true horizontal
+    // center, not the midpoint of the whole "created with [logo] url"
+    // group. Since the url is allowed to run long on the right, centering
+    // the group as a whole would pull the logo left of center; this measures
+    // the actual gap and shifts the row right by exactly that much so the
+    // logo itself lands where it always used to.
+    if (creditRowEl) creditRowEl.style.transform = 'translateX(0px)'; // reset before measuring
+    void creditRowEl?.offsetHeight;
+    if (creditRowEl && brandImgEl) {
+      const cardRect = cardEl.getBoundingClientRect();
+      const logoRect = brandImgEl.getBoundingClientRect();
+      const cardCenter = cardRect.left + cardRect.width / 2;
+      const logoCenter = logoRect.left + logoRect.width / 2;
+      const shift = cardCenter - logoCenter;
+      creditRowEl.style.transform = 'translateX(' + shift + 'px)';
     }
 
     const maxSize = BASE_SIZE[currentFont] * sizeMult * cardScale;
