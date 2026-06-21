@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Demian — The Demianist AI</title>
+<link rel="icon" href="demianismlogo-icon.png">
+<link rel="apple-touch-icon" href="demianismlogo-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Demian">
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -1055,54 +1060,60 @@ button#send svg { width: 17px; height: 17px; }
   position: fixed;
   left: -9999px;
   top: 0;
-  width: 400px;
-  height: 500px;
+  width: 1080px;
+  height: 1350px;
   overflow: hidden;
-  background: #0b0a19;
+  background:
+    radial-gradient(ellipse 60% 48% at 50% 47%, rgba(53,50,126,0.25) 0%, rgba(53,50,126,0.12) 45%, rgba(53,50,126,0) 75%),
+    #0b0a19;
   color: #cfcfd4;
   font-family: 'Inter', 'Noto Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 43px 86px 32px; /* 4% / 8% / 3% of 1080×1350, matching mantra.html's card padding */
+  box-sizing: border-box;
 }
 #mantra-render-card .rc-bg {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(53,50,126,0.35) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 40% at 90% 95%, rgba(53,50,126,0.2) 0%, transparent 60%);
-}
-#mantra-render-card .rc-contour {
-  position: absolute; inset: 0;
+  position: absolute; top: 175px; left: 50%; transform: translateX(-50%);
+  width: 83%; height: 70%;
+  z-index: 0; pointer-events: none;
   display: flex; align-items: center; justify-content: center;
-  opacity: 0.07;
 }
-#mantra-render-card .rc-contour svg { width: 300px; height: 300px; }
-#mantra-render-card .rc-contour ellipse { fill: none; stroke: #6864bb; stroke-width: 1; }
+#mantra-render-card .rc-contour { position: absolute; inset: 0; opacity: 0.9; }
+#mantra-render-card .rc-contour svg { width: 100%; height: 100%; }
+#mantra-render-card .rc-contour ellipse { fill: none; stroke: rgba(104,100,187,0.55); stroke-width: 1; }
 #mantra-render-card .rc-top {
-  position: absolute; top: 22px; left: 0; right: 0; text-align: center;
-  font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600;
-  letter-spacing: 0.22em; text-transform: uppercase;
-  color: rgba(162,158,241,0.7);
+  position: relative; z-index: 2; width: 100%; text-align: center; padding-top: 81px; /* 6% */
+  font-family: 'Inter','Noto Sans',sans-serif; font-size: 21px; font-weight: 700;
+  letter-spacing: 0.3em; text-transform: uppercase; color: #6864bb;
 }
 #mantra-render-card .rc-body {
-  position: absolute; inset: 60px 28px 70px;
+  position: relative; z-index: 2; flex: 1; width: 100%;
   display: flex; align-items: center; justify-content: center;
+  padding: 32px 0 243px; /* 3% / 18% of 1350 */
+  overflow: hidden;
 }
 #mantra-render-card .rc-text {
-  text-align: center; line-height: 1.5;
-  font-family: 'Inter', 'Noto Sans', sans-serif; font-weight: 800;
-  font-size: 1.3rem; text-transform: uppercase; color: #cfcfd4;
-  word-break: break-word;
+  text-align: center; width: 100%; color: #cfcfd4;
+  font-family: 'Noto Serif','Noto Serif HK','Noto Serif JP','Noto Serif KR','Noto Serif TC','Noto Serif SC','Noto Naskh Arabic','Noto Serif Devanagari','Noto Serif Hebrew','Noto Serif Thai',serif;
+  font-weight: 500; line-height: 1.5;
 }
+#mantra-render-card .rc-text .para { text-wrap: balance; }
+#mantra-render-card .rc-text .para + .para { margin-top: 0.85em; }
 #mantra-render-card .rc-text .actionable { color: #6864bb; }
 #mantra-render-card .rc-foot {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 58px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 20px;
-  border-top: 0.5px solid rgba(104,100,187,0.18);
+  position: relative; z-index: 2; bottom: auto; width: 100%;
+  text-align: center; display: flex; flex-direction: column; align-items: center;
+  margin-top: auto;
 }
-#mantra-render-card .rc-credit {
-  font-family: 'Inter', sans-serif; font-size: 9px;
-  letter-spacing: 0.1em; color: rgba(207,207,212,0.45); text-transform: uppercase;
+#mantra-render-card .rc-credit-row {
+  display: flex; align-items: center; justify-content: center; gap: 0.6em;
+  font-family: 'Inter','Noto Sans',sans-serif; font-size: 21px;
+  letter-spacing: 0.05em; font-weight: 500; line-height: 1;
 }
-#mantra-render-card .rc-foot-logo { height: 22px; width: auto; opacity: 0.7; }
+#mantra-render-card .rc-credit-row .cc-text { color: #6864bb; opacity: 0.6; }
+#mantra-render-card .rc-foot-brand { height: 21px; width: auto; display: block; filter: brightness(1.15); }
 
 /* ── INLINE MANTRA CARD (shown in chat after SESSION_COMPLETE) ── */
 .mantra-card-inline {
@@ -1121,6 +1132,29 @@ button#send svg { width: 17px; height: 17px; }
   border-radius: 8px; cursor: pointer; transition: background 0.15s;
 }
 .mantra-card-inline .dl-btn:hover { background: #6864bb; }
+
+/* Clickable mantra copy-block shown in chat — code-like, click to copy */
+.mantra-copyblock {
+  position: relative;
+  margin: 14px 0 6px;
+  padding: 18px 18px 16px;
+  background: rgba(18,16,58,0.55);
+  border: 1px solid rgba(104,100,187,0.35);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  font-family: 'Libre Baskerville', Georgia, serif;
+}
+.mantra-copyblock:hover { border-color: rgba(104,100,187,0.7); background: rgba(18,16,58,0.75); }
+.mantra-copyblock .mc-para { color: #d4d4f0; line-height: 1.6; margin-bottom: 0.7em; }
+.mantra-copyblock .mc-para:last-of-type { margin-bottom: 0; }
+.mantra-copyblock .mc-cta { color: #8b88e0; }
+.mantra-copyblock .mc-hint {
+  margin-top: 12px; font-family: 'Inter', sans-serif; font-size: 11px;
+  letter-spacing: 0.4px; color: #6864bb; text-transform: uppercase;
+  display: flex; align-items: center; gap: 6px;
+}
+.mantra-copyblock.copied .mc-hint { color: #31a117; }
 
 
 /* ── Starry sky background ── */
@@ -1147,8 +1181,11 @@ body {
     <div class="rc-text" id="rc-mantra-text"></div>
   </div>
   <div class="rc-foot">
-    <div class="rc-credit" id="rc-credit">Created by Demian IA</div>
-    <img class="rc-foot-logo" src="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/Logo%20Demianism%20with%20url.png" alt="demianism.org" crossorigin="anonymous">
+    <div class="rc-credit-row">
+      <span class="cc-text">created with</span>
+      <img class="rc-foot-brand" src="demian-ai-brand.png" alt="Demian AI" crossorigin="anonymous">
+      <span class="cc-text">demianism.org/demian</span>
+    </div>
   </div>
 </div>
 
@@ -2104,6 +2141,48 @@ function buildContoursSVG() {
   svg.innerHTML = out;
 }
 
+// Dynamic non-Latin script font loading for the mantra render card — mirrors
+// the same logic in mantra.html, so a mantra in Japanese, Arabic, etc. gets
+// the matching Noto Serif variant loaded on demand instead of falling back
+// to a font that doesn't have the right glyphs.
+const RC_SCRIPT_FONTS = {
+  cjk_tc: 'Noto+Serif+TC:wght@400;500;600', cjk_sc: 'Noto+Serif+SC:wght@400;500;600',
+  japanese: 'Noto+Serif+JP:wght@400;500;600', korean: 'Noto+Serif+KR:wght@400;500;600',
+  arabic: 'Noto+Naskh+Arabic:wght@400;500;600', devanagari: 'Noto+Serif+Devanagari:wght@400;500;600',
+  hebrew: 'Noto+Serif+Hebrew:wght@400;500;600', thai: 'Noto+Serif+Thai:wght@400;500;600',
+};
+const rcLoadedScripts = new Set();
+function rcDetectScripts(text) {
+  const found = new Set();
+  if (/[\u4e00-\u9fff]/.test(text)) { found.add('cjk_sc'); found.add('cjk_tc'); }
+  if (/[\u3040-\u30ff]/.test(text)) found.add('japanese');
+  if (/[\uac00-\ud7af]/.test(text)) found.add('korean');
+  if (/[\u0600-\u06ff\u0750-\u077f]/.test(text)) found.add('arabic');
+  if (/[\u0900-\u097f]/.test(text)) found.add('devanagari');
+  if (/[\u0590-\u05ff]/.test(text)) found.add('hebrew');
+  if (/[\u0e00-\u0e7f]/.test(text)) found.add('thai');
+  return found;
+}
+async function rcLoadScriptFonts(text) {
+  const scripts = rcDetectScripts(text);
+  let changed = false;
+  scripts.forEach(s => { if (!rcLoadedScripts.has(s)) { rcLoadedScripts.add(s); changed = true; } });
+  if (!changed) return;
+  const families = [...rcLoadedScripts].map(s => RC_SCRIPT_FONTS[s]).filter(Boolean);
+  if (!families.length) return;
+  const href = 'https://fonts.googleapis.com/css2?' + families.map(f => 'family=' + f).join('&') + '&display=swap';
+  let link = document.getElementById('rc-dynamic-script-font');
+  if (!link) {
+    link = document.createElement('link');
+    link.id = 'rc-dynamic-script-font';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+  }
+  link.href = href;
+  // give the font a moment to actually load before we measure/capture
+  await new Promise(r => setTimeout(r, 300));
+}
+
 function colorBracketsRC(raw) {
   let out = '', last = 0, m;
   const re = /\[([^\]]*)\]/g;
@@ -2128,24 +2207,75 @@ async function handleSessionComplete(reply) {
   if (!mantraMatch) return;
   const mantraText = mantraMatch[1].trim();
 
+  // Build the clickable copy-block shown in chat. Paragraphs come from line
+  // breaks; the final [bracketed] line is the CTA, shown in indigo but with
+  // the brackets stripped — the user never sees raw brackets, and copying
+  // yields clean plain text (paragraphs as blank-line-separated, no brackets).
+  const mantraParas = mantraText.split(/\n+/).map(l => l.trim()).filter(Boolean);
+  const plainForCopy = mantraParas
+    .map(p => p.replace(/\[([^\]]*)\]/g, '$1'))
+    .join('\n\n');
+  const chatNow = document.getElementById('chat');
+  const demianMsgsNow = chatNow.querySelectorAll('.msg.demian');
+  const bubbleForBlock = demianMsgsNow.length ? demianMsgsNow[demianMsgsNow.length - 1].querySelector('.msg-bubble') : null;
+  if (bubbleForBlock) {
+    const block = document.createElement('div');
+    block.className = 'mantra-copyblock';
+    block.innerHTML = mantraParas
+      .map((p, i) => {
+        const isCTA = /\[[^\]]*\]/.test(p);
+        const inner = colorBracketsRC(p); // strips brackets, wraps in .actionable
+        return `<div class="mc-para${isCTA ? ' mc-cta' : ''}">${inner}</div>`;
+      })
+      .join('') + '<div class="mc-hint">⧉ tap to copy</div>';
+    block.addEventListener('click', () => {
+      navigator.clipboard.writeText(plainForCopy).then(() => {
+        block.classList.add('copied');
+        const hint = block.querySelector('.mc-hint');
+        const prev = hint.textContent;
+        hint.textContent = '✓ copied';
+        setTimeout(() => { block.classList.remove('copied'); hint.textContent = prev; }, 1600);
+      });
+    });
+    bubbleForBlock.appendChild(block);
+    chatNow.scrollTop = chatNow.scrollHeight;
+  }
+
   // Build the hidden card
   buildContoursSVG();
   const textEl = document.getElementById('rc-mantra-text');
-  const creditEl = document.getElementById('rc-credit');
 
-  // Format text: each line = a block
+  // Format text: each line break = a paragraph, matching mantra.html
   const paras = mantraText.split(/\n+/).map(l => l.trim()).filter(Boolean);
-  textEl.innerHTML = paras.map(p => `<div style="margin-bottom:0.4em">${colorBracketsRC(p)}</div>`).join('');
-  creditEl.textContent = 'Created by Demian IA · ' + new Date().toLocaleDateString('en-US', { day:'numeric', month:'long', year:'numeric' });
+  textEl.innerHTML = paras.map(p => `<div class="para">${colorBracketsRC(p)}</div>`).join('');
 
-  // Auto-scale font
-  const displayLen = mantraText.replace(/[\[\]]/g,'').replace(/\s+/g,' ').trim().length;
-  let size = 1.3;
-  if (displayLen > 120) size = 1.15;
-  if (displayLen > 180) size = 1.0;
-  if (displayLen > 240) size = 0.88;
-  if (displayLen > 290) size = 0.78;
-  textEl.style.fontSize = size + 'rem';
+  // Load any non-Latin script fonts this mantra needs, and wait for them
+  // before measuring — measuring against the wrong font gives the wrong size.
+  await rcLoadScriptFonts(mantraText);
+
+  // Shrink-to-fit: same algorithm as mantra.html — start at the largest size,
+  // measure the real rendered height against the real available space
+  // (between the eyebrow and the footer), and step down until it fits.
+  const cardEl = document.getElementById('mantra-render-card');
+  const topMarkEl = document.querySelector('#mantra-render-card .rc-top');
+  const footEl = document.querySelector('#mantra-render-card .rc-foot');
+  const bodyEl = document.querySelector('#mantra-render-card .rc-body');
+  const MAX_SIZE_PX = 36; // 1.32rem at the 1080px export width's base 16px... using px directly here
+  const MIN_SIZE_PX = MAX_SIZE_PX * 0.4;
+  let rcSize = MAX_SIZE_PX;
+  textEl.style.fontSize = rcSize + 'px';
+  await new Promise(r => setTimeout(r, 50)); // let layout settle before measuring
+  const cardTop = cardEl.getBoundingClientRect().top;
+  const safeTop = topMarkEl.getBoundingClientRect().bottom - cardTop;
+  const safeBottom = footEl.getBoundingClientRect().top - cardTop;
+  const bufferPx = footEl.getBoundingClientRect().top * 0.025;
+  const availableHeight = (safeBottom - safeTop) - bufferPx;
+  let guard = 0;
+  while (textEl.scrollHeight > availableHeight && rcSize > MIN_SIZE_PX && guard < 200) {
+    rcSize -= 0.6;
+    textEl.style.fontSize = rcSize + 'px';
+    guard++;
+  }
 
   // Small delay for fonts to settle, then render
   await new Promise(r => setTimeout(r, 600));
@@ -2155,7 +2285,9 @@ async function handleSessionComplete(reply) {
     const card = document.getElementById('mantra-render-card');
     const canvas = await html2canvas(card, {
       backgroundColor: null,
-      scale: 1080 / card.offsetWidth,
+      scale: 1, // card is already fixed at the exact 1080×1350 export size
+      width: 1080,
+      height: 1350,
       useCORS: true,
       logging: false
     });

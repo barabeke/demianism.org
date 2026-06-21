@@ -6,7 +6,11 @@
 <title>Your Personal Mantra — Demian</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Noto+Sans:wght@400;500;700&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<!-- Inter for UI chrome; Noto Serif (Latin) as the single mantra font, loaded upfront.
+     Non-Latin scripts (CJK, Arabic, Devanagari, etc.) are loaded on demand by
+     loadScriptFont() based on the actual mantra text — see script below. -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link id="dynamic-script-font" rel="stylesheet" href="">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -30,10 +34,10 @@
     font-family: 'Inter', 'Noto Sans', sans-serif;
     font-weight: 400;
     min-height: 100vh;
+    margin: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2.5rem 1rem 5rem;
   }
 
   body::before {
@@ -47,6 +51,88 @@
     z-index: 0;
   }
 
+  /* ── Navbar (ported from doctrine.html) ─────────────────────── */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 38px;
+    padding: 0 26px;
+    height: 64px;
+    background: rgba(18,16,40,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #6864bb33;
+    box-sizing: border-box;
+  }
+  .nav-logo { display: flex; align-items: center; flex-shrink: 0; }
+  .nav-logo img { height: 44px; width: auto; display: block; }
+  .nav-links { display: flex; align-items: center; gap: 38px; }
+  .nav-links a {
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 17px;
+    letter-spacing: 1.5px; text-transform: uppercase; color: #6864bb;
+    text-decoration: none; transition: color 0.25s ease; white-space: nowrap;
+  }
+  .nav-links a:hover { color: #a29ef1; }
+  .nav-links a.active { color: #cfcfd4; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .demian-ai { display: flex; align-items: center; text-decoration: none; opacity: 1; transition: opacity 0.25s ease; }
+  .demian-ai:hover { opacity: 0.8; text-decoration: none; }
+  .demian-ai img { height: 18px; width: auto; display: block; }
+  .try-free {
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 13px;
+    letter-spacing: 0.8px; text-transform: uppercase; color: #cfcfd4;
+    background-color: #35327e; border: 1px solid #6864bb55;
+    padding: 8px 16px; border-radius: 30px; text-decoration: none;
+    white-space: nowrap; transition: all 0.25s ease;
+  }
+  .try-free:hover { background-color: #6864bb; color: #fff; box-shadow: 0 0 18px rgba(104,100,187,0.6); text-decoration: none; }
+  .nav-demian-mobile { display: none; }
+  .nav-hamburger {
+    display: none; flex-direction: column; justify-content: center; gap: 5px;
+    background: none; border: none; cursor: pointer; padding: 6px; margin-left: auto;
+  }
+  .nav-hamburger span { display: block; width: 24px; height: 2px; background: #cfcfd4; border-radius: 2px; transition: all 0.3s ease; }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  @media (max-width: 900px) {
+    .navbar { gap: 0; }
+    .nav-links {
+      display: none; flex-direction: column; align-items: center; gap: 0;
+      position: fixed; top: 64px; left: 0; right: 0;
+      background: rgba(18,16,40,0.98); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid #6864bb44; padding: 20px 0 28px; z-index: 999;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { font-size: 16px; padding: 12px 0; width: 100%; text-align: center; border-bottom: 1px solid #6864bb18; white-space: normal; }
+    .nav-links a:last-child { border-bottom: none; }
+    .nav-links .nav-demian-mobile { display: flex; justify-content: center; padding: 18px 0 4px; border-bottom: none; opacity: 1; transition: opacity 0.25s; }
+    .nav-links .nav-demian-mobile:hover { opacity: 0.8; }
+    .nav-links .nav-demian-mobile img { height: 20px; width: auto; }
+    .nav-right { display: none; }
+    .nav-hamburger { display: flex; }
+  }
+
+  /* ── Footer (ported from doctrine.html) ─────────────────────── */
+  .footer-separator { border: none; border-top: 1px solid #6864bb28; margin: 0; width: 100%; }
+  .site-footer {
+    max-width: 900px; margin: 0 auto; padding: 30px 20px 40px; text-align: center;
+    font-family: 'Libre Baskerville', serif; font-size: 16px; color: #6864bb; line-height: 1.6;
+  }
+  .footer-logo { width: 94px; height: 94px; object-fit: contain; display: block; margin: 0 auto 6px; }
+  .site-footer a { color: #a29ef1; text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; color: #cfcfd4; }
+  .footer-links { margin-top: 10px; font-size: 14px; color: #4a4780; }
+  .footer-links a { color: #4a4780; }
+  .footer-links a:hover { color: #6864bb; }
+  .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
+  .main-content { display: flex; flex-direction: column; align-items: center; padding: 2.5rem 1rem 5rem; width: 100%; }
+
   .page {
     position: relative;
     z-index: 1;
@@ -59,39 +145,49 @@
 
   /* ---------- HEADER ---------- */
   header { text-align: center; }
-  header img.brand-logo { width: 58px; height: auto; opacity: 0.95; margin-bottom: 0.9rem; }
-  .logo-word {
-    font-family: 'Inter', 'Noto Sans', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 800;
-    letter-spacing: 0.16em;
-    color: var(--text);
-    text-transform: uppercase;
+  @keyframes glowPulse {
+    0%   { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
+    50%  { text-shadow: 0 0 9px rgba(104,100,187,1),   0 0 20px rgba(104,100,187,.9),  0 0 42px rgba(104,100,187,.75), 0 0 75px rgba(104,100,187,.55); }
+    100% { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
   }
-  .tagline {
-    font-size: 0.7rem;
-    letter-spacing: 0.16em;
-    color: var(--subtitle);
+  .page-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: clamp(26px, 3.8vw, 44px);
     text-transform: uppercase;
-    margin-top: 0.6rem;
-    font-weight: 500;
+    letter-spacing: 10px;
+    color: #cfcfd4;
+    line-height: 1.4;
+    transform: scaleX(1.1);
+    animation: glowPulse 11s ease-in-out infinite;
   }
 
   /* ---------- TWO-COLUMN LAYOUT (desktop/tablet) ---------- */
   .workspace {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     gap: 2.5rem;
-    align-items: start;
+    align-items: flex-start;
   }
-  /* instructions span full width, below both columns */
-  .instructions { grid-column: 1 / 2; }
-  .comic-section { grid-column: 2 / 3; display: flex; align-items: flex-start; }
+  .col-left, .col-right { flex: 1 1 0; min-width: 0; }
+  /* Each column stacks its own content independently — controls directly
+     above how-to-use, preview directly above save-your-mantra — so neither
+     column waits on the other's height. (Previously .controls/.preview-section
+     were one implicit grid row and .instructions/.invocation-section were a
+     second implicit row; since .controls is shorter than .preview-section,
+     row 2 couldn't start until the TALLER column of row 1 finished, leaving
+     a large dead gap above the shorter column's row-2 content. Two
+     independent column stacks removes that dependency entirely.) */
+  .col-left, .col-right { display: flex; flex-direction: column; gap: 1.4rem; }
 
   @media (max-width: 760px) {
-    .workspace { grid-template-columns: 1fr; gap: 2rem; }
-    .instructions { grid-column: 1 / -1; }
-    .comic-section { grid-column: 1 / -1; }
+    .workspace { flex-direction: column; gap: 2rem; }
+    /* Mobile: single column. How-to-use must be the very last thing on the
+       page, so re-stack both columns' children in the right overall order. */
+    .col-left, .col-right { display: contents; }
+    .controls            { order: 1; }
+    .preview-section      { order: 2; }
+    .invocation-section  { order: 3; }
+    .instructions         { order: 4; }
   }
 
   /* ---------- CONTROLS ---------- */
@@ -218,32 +314,42 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 4% 8% 3%;
-    border-radius: 4px;
+    /* Symmetric top/bottom padding — this is the single source of truth for
+       "distance from eyebrow to top border" and "distance from footer to
+       bottom border": both equal this same value, by construction. */
+    padding: 5% 8%;
     box-shadow: 0 0 0 1px rgba(53,50,126,0.5), 0 0 38px 4px rgba(53,50,126,0.55);
   }
 
   #mantra-card.theme-dark {
-    background:
-      radial-gradient(ellipse 60% 48% at 50% 47%, rgba(53,50,126,0.25) 0%, rgba(53,50,126,0.12) 45%, rgba(53,50,126,0) 75%),
-      #0b0a19;
+    background: #0b0a19; /* flat fallback only — gradient is painted onto #card-bg-canvas by JS */
     --c-text: #cfcfd4;
     --c-muted: #6864bb;
     --c-accent: #6864bb;
     --c-line: rgba(104,100,187,0.55);
     --c-rule: rgba(104,100,187,0.25);
     --c-url: #35327e;
+    --c-gradient-rgb: 53,50,126;
+    --c-base: #0b0a19;
   }
   #mantra-card.theme-light {
-    background:
-      radial-gradient(ellipse 60% 48% at 50% 47%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.12) 45%, rgba(255, 255, 255, 0) 75%),
-      #b0aecd;
+    background: #b0aecd; /* flat fallback only — gradient is painted onto #card-bg-canvas by JS */
     --c-text: #2a2937;
     --c-muted: #4a4790;
     --c-accent: #4a4790;
     --c-line: rgba(74,71,144,0.4);
     --c-rule: rgba(74,71,144,0.22);
     --c-url: #6a6885;
+    --c-gradient-rgb: 255,255,255;
+    --c-base: #b0aecd;
+  }
+
+  .card-bg-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+    display: block;
   }
 
   /* contour + centered logo backdrop */
@@ -267,7 +373,7 @@
   .card-contour ellipse { fill: none; stroke: var(--c-line); stroke-width: 1; }
 
 
-  .card-top-mark { position: relative; z-index: 2; text-align: center; padding-top: 6%; }
+  .card-top-mark { position: relative; z-index: 2; text-align: center; padding-top: 1.8%; flex-shrink: 0; }
   .card-eyebrow {
     font-size: 0.66rem;
     letter-spacing: 0.3em;
@@ -284,7 +390,6 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 3% 0 18%;
     overflow: hidden;
   }
   .card-mantra { text-align: center; color: var(--c-text); width: 100%; }
@@ -293,39 +398,46 @@
   .card-mantra .actionable { color: var(--c-accent); }
   .card-mantra.empty { color: var(--c-muted); font-style: italic; }
 
-  /* bottom% resolves against card HEIGHT; export is 1350px tall, so 20px = 1.48% */
-  .card-foot { position: absolute; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; width: 100%; bottom: 1.48%; left: 0; }
-  .card-credit {
+  .card-foot { position: relative; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%; flex-shrink: 0; }
+  .card-credit-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.6em;
     font-family: 'Inter','Noto Sans',sans-serif;
-    font-size: 0.6rem;
+    font-size: 0.66rem;
     letter-spacing: 0.05em;
-    color: var(--c-muted);
-    font-weight: 400;
-    line-height: 1.5;
+    font-weight: 500;
+    line-height: 1;
   }
-  .card-foot-logo {
-    width: 20%;
-    height: auto;
-    margin-top: 0.1rem;
-    opacity: 0.95;
+  .card-credit-row .cc-text {
+    color: var(--c-accent);
+    position: relative;
+    top: 0.22em; /* compensates for font-metric "ghost space" below the glyphs — without descenders like g/j, this text's visible ink ends well above its box's true bottom edge, even though the box itself is already flex-end aligned with the logo */
+    opacity: 0.6;
   }
-  #mantra-card.theme-dark .card-foot-logo { filter: brightness(1.25); }
+  .card-foot-brand {
+    height: 0.66rem;  /* matches the .card-eyebrow font-size, i.e. the "My Personal Mantra" line */
+    width: auto;
+    display: block;
+  }
+  #mantra-card.theme-dark .card-foot-brand { filter: brightness(1.15); }
 
   /* ---------- DOWNLOAD ---------- */
   .download-wrap { display: flex; justify-content: center; margin-top: 0.25rem; }
   .btn-download {
     font-family: 'Inter','Noto Sans',sans-serif;
-    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
-    border-radius: 2px; padding: 0.95rem 2.4rem; cursor: pointer; transition: all 0.2s;
-    border: 0.5px solid var(--active); background: var(--active); color: #fff;
+    font-size: 14px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+    border-radius: 30px; padding: 14px 30px; cursor: pointer; transition: all 0.3s ease;
+    border: 1px solid #6864bb44; background: #35327e; color: #cfcfd4;
   }
-  .btn-download:hover { background: #423fa0; }
+  .btn-download:hover:not(:disabled) { background: #6864bb; color: #fff; box-shadow: 0 0 26px rgba(104,100,187,0.55); transform: translateY(-2px); }
   .btn-download:disabled { opacity: 0.3; cursor: not-allowed; }
 
   /* ---------- INSTRUCTIONS ---------- */
   .instructions {
     font-family: 'Source Serif 4','Noto Serif',serif;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: var(--text-soft);
     line-height: 1.7;
     padding: 1.4rem 1.5rem;
@@ -335,10 +447,52 @@
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
-    margin-top: 0.5rem;
+    box-sizing: border-box;
   }
   .instructions .how-title { color: var(--accent); font-weight: 700; letter-spacing: 0.12em; font-family:'Inter','Noto Sans',sans-serif; font-size: 0.72rem; }
   .instructions p { margin: 0; }
+  .instructions .bracket-example { color: var(--accent); }
+
+  /* ---------- INVOCATION (ported from doctrine.html's closing invocation) ---------- */
+  .invocation-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1.1rem 1.5rem;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  /* Icon defines the box's natural height; text is vertically centered to
+     match it, so the icon's center and the text block's center align. */
+  .invocation-icon {
+    height: 72px;
+    width: auto;
+    flex-shrink: 0;
+    object-fit: contain;
+    display: block;
+  }
+  .invocation {
+    font-family: 'Inter','Noto Sans',sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.28;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    text-align: left;
+    flex: 1 1 auto;
+  }
+  .invocation p { margin: 0 0 0.35em 0; }
+  .invocation p:last-child { margin-bottom: 0; }
+
+  @media (max-width: 760px) {
+    .invocation-box { flex-direction: column; align-items: center; text-align: center; }
+    .invocation { text-align: center; }
+    .invocation-icon { height: 56px; }
+  }
 
   @media (max-width: 480px) {
     .logo-word { font-size: 1.35rem; }
@@ -347,132 +501,227 @@
 </style>
 </head>
 <body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="/" class="nav-logo" aria-label="Demianism home">
+    <img src="demianismlogo.png" alt="Demianism">
+  </a>
+  <div class="nav-links" id="nav-links">
+    <a href="/doctrine">Sacred Doctrine</a>
+    <a href="/culture">Culture</a>
+    <a href="/origin">Origin</a>
+    <a href="/about">Who is Barabeke?</a>
+    <a href="/donate">Donate</a>
+    <a href="/community">Join</a>
+    <a href="/demian" class="nav-demian-mobile">
+      <img src="demian-ai-brand.png" alt="Demian AI">
+    </a>
+  </div>
+  <div class="nav-right">
+    <a href="/demian" class="demian-ai">
+      <img src="demian-ai-brand.png" alt="Demian AI">
+    </a>
+    <a href="/demian" class="try-free">Try Free</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="main-content">
 <div class="page">
 
   <header>
-    <img class="brand-logo" src="https://demianism.org/demianismlogo.png" alt="Demianism" crossorigin="anonymous">
-    <div class="logo-word">Your Mantra</div>
-    <div class="tagline">Design it quick &amp; easy with this free tool</div>
+    <div class="page-title">Mantra Tool</div>
   </header>
 
   <div class="workspace">
 
-    <!-- ===================== CONTROLS ===================== -->
-    <div class="controls">
+    <!-- ===================== LEFT COLUMN: controls + how-to-use ===================== -->
+    <div class="col-left">
+      <div class="controls">
 
-      <div class="field">
-        <label class="lbl lbl-paste">Paste here the mantra Demian gave you</label>
-        <textarea id="mantra-input" placeholder="My call is to be a guiding light.&#10;The demands of daily life are real, but they cannot extinguish what was placed in me.&#10;I carry a faith that has survived everything. It will survive this too.&#10;[And today, as a step toward manifesting the future I want, I will...]" oninput="render()"></textarea>
-        <div class="char-count" id="char-count">0 / 320 characters</div>
-      </div>
-
-      <div class="field">
-        <label class="lbl">Theme</label>
-        <div class="chip-row" id="theme-chips">
-          <button class="chip active" data-theme="dark">Dark</button>
-          <button class="chip" data-theme="light">Light</button>
+        <div class="field">
+          <label class="lbl lbl-paste">Paste here the mantra Demian gave you</label>
+          <textarea id="mantra-input" placeholder="My call is to be a guiding light.&#10;The demands of daily life are real, but they cannot extinguish what was placed in me.&#10;I carry a faith that has survived everything. It will survive this too.&#10;[And today, as a step toward manifesting the future I want, I will...]" oninput="render()"></textarea>
+          <div class="char-count" id="char-count">0 / 320 characters</div>
         </div>
-      </div>
 
-      <div class="field">
-        <div class="font-size-row">
-          <div class="font-col">
-            <label class="lbl">Font</label>
-            <div class="chip-row" id="font-chips">
-              <button class="chip active" data-font="bold">BOLD</button>
-              <button class="chip" data-font="regular">Regular</button>
-              <button class="chip" data-font="elegant">Elegant</button>
-            </div>
-          </div>
-          <div class="size-col">
-            <label class="lbl">Text size</label>
-            <div class="size-controls">
-              <button class="size-btn" id="size-minus" onclick="adjustSize(-1)">−</button>
-              <button class="size-btn" id="size-plus" onclick="adjustSize(1)">+</button>
-            </div>
+        <div class="field">
+          <label class="lbl">Theme</label>
+          <div class="chip-row" id="theme-chips">
+            <button class="chip active" data-theme="dark">Dark</button>
+            <button class="chip" data-theme="light">Light</button>
           </div>
         </div>
-      </div>
 
-      <div class="field">
-        <label class="lbl">Your name (optional)</label>
-        <input type="text" id="name-input" placeholder="Seeker" oninput="render()" />
-      </div>
-
-      <div class="toggle-row">
-        <span class="t-label">Add date (today)</span>
-        <label class="switch"><input type="checkbox" id="toggle-date" onchange="render()"><span class="slider"></span></label>
-      </div>
-
-    </div>
-
-    <!-- ===================== PREVIEW ===================== -->
-    <div class="preview-section">
-      <div class="preview-label">Preview</div>
-      <div class="card-frame">
-        <div id="mantra-card" class="theme-dark" data-font="bold">
-
-          <div class="card-bg">
-            <div class="card-contour">
-              <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-                <g id="contour-lines"></g>
-              </svg>
+        <div class="field">
+          <div class="font-size-row">
+            <div class="font-col">
+              <label class="lbl">Font</label>
+              <div class="chip-row" id="font-chips">
+                <button class="chip active" data-font="noto">Regular</button>
+                <button class="chip" data-font="bold">Bold</button>
+                <button class="chip" data-font="elegant">Elegant</button>
+              </div>
+            </div>
+            <div class="size-col">
+              <label class="lbl">Text size</label>
+              <div class="size-controls">
+                <button class="size-btn" id="size-minus" onclick="adjustSize(-1)">−</button>
+                <button class="size-btn" id="size-plus" onclick="adjustSize(1)">+</button>
+              </div>
             </div>
           </div>
-
-          <div class="card-top-mark">
-            <div class="card-eyebrow">My Personal Mantra</div>
-          </div>
-
-          <div class="card-mantra-wrap">
-            <div class="card-mantra empty" id="card-mantra-text">Your mantra will appear here…</div>
-          </div>
-
-          <div class="card-foot">
-            <div class="card-credit" id="card-credit">Created by Demian IA</div>
-            <img class="card-foot-logo" src="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/Logo%20Demianism%20with%20url.png" alt="demianism.org" crossorigin="anonymous">
-          </div>
-
         </div>
+
       </div>
 
-      <div class="download-wrap">
-        <button class="btn-download" id="download-btn" onclick="downloadCard()" disabled>Download Image</button>
+      <!-- ===================== INSTRUCTIONS ===================== -->
+      <div class="instructions">
+        <span class="how-title">HOW TO USE</span>
+        <p>Paste the text of your mantra in the first box.</p>
+        <p>Customize the design and see how it looks in real time. Whatever is between <span class="bracket-example">[these brackets]</span> will be displayed in indigo.</p>
+        <p>Once you are happy with your mantra card, download it. Keep it precious and at hand. It is valuable only if you set a moment every day to repeat it with concentration and intention.</p>
       </div>
     </div>
 
-    <!-- ===================== INSTRUCTIONS (left col, below) ===================== -->
-    <div class="instructions">
-      <span class="how-title">HOW TO USE</span>
-      <p>Paste the personal mantra you got from Demian IA in the first box.</p>
-      <p>Customize the design and see how it looks in real time. Whatever is between [these brackets] will be displayed in indigo.</p>
-      <p>Once you are happy with your mantra card, download it. Keep it precious and at hand. It is valuable only if you set a moment every day to repeat it with concentration and intention.</p>
-    </div>
+    <!-- ===================== RIGHT COLUMN: preview + save-your-mantra ===================== -->
+    <div class="col-right">
+      <div class="preview-section">
+        <div class="preview-label">Preview</div>
+        <div class="card-frame">
+          <div id="mantra-card" class="theme-dark" data-font="bold">
 
-    <!-- ===================== COMIC (right col, below preview) ===================== -->
-    <div class="comic-section">
-      <img src="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demian%20comic.png"
-           alt="Demian says: save your mantra and keep it at hand!"
-           style="width:100%; height:auto; border-radius:4px; display:block;">
+            <!-- Background gradient is painted onto this canvas via JS (paintCardBackground),
+                 not via a CSS radial-gradient. html2canvas has a documented, reproducible bug
+                 with percentage-positioned radial gradients (e.g. "at 50% 47%") that splits the
+                 rendered output into a hard two-tone seam. A canvas with real pixels is just
+                 copied by html2canvas, sidestepping its CSS gradient parser entirely. -->
+            <canvas id="card-bg-canvas" class="card-bg-canvas"></canvas>
+
+            <div class="card-bg">
+              <div class="card-contour">
+                <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                  <g id="contour-lines"></g>
+                </svg>
+              </div>
+            </div>
+
+            <div class="card-top-mark">
+              <div class="card-eyebrow">My Personal Mantra</div>
+            </div>
+
+            <div class="card-mantra-wrap">
+              <div class="card-mantra empty" id="card-mantra-text">Your mantra will appear here…</div>
+            </div>
+
+            <div class="card-foot">
+              <div class="card-credit-row">
+                <span class="cc-text">created with</span>
+                <img class="card-foot-brand" id="card-foot-brand-img" src="demian-ai-brand.png" alt="Demian AI" crossorigin="anonymous" onerror="if(this.crossOrigin){this.crossOrigin=null; this.src=this.src;}">
+                <span class="cc-text">demianism.org/demian</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="download-wrap">
+          <button class="btn-download" id="download-btn" onclick="downloadCard()" disabled>Download Mantra</button>
+        </div>
+      </div>
+
+      <!-- ===================== INVOCATION (bottom-aligned with instructions) ===================== -->
+      <div class="invocation-section">
+        <div class="invocation-box">
+          <img src="mantra.svg" alt="" class="invocation-icon">
+          <div class="invocation">
+            <p>SAVE YOUR MANTRA AND KEEP IT AT HAND.</p>
+            <p>REPEAT IT DAILY, WITH FULL CONCENTRATION AND INTENTION.</p>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
 </div>
+</div><!-- /.main-content -->
+
+<hr class="footer-separator">
+<footer class="site-footer">
+  <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
+  <div>© 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
+  <div class="footer-license">Content licensed under CC BY-NC-ND 4.0</div>
+  <div class="footer-links">
+    <a href="/impressum">Impressum</a> &nbsp;·&nbsp;
+    <a href="/privacy">Privacy Policy</a>
+  </div>
+</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
   const MAX_CHARS = 320;
 
-  // Sizes tuned so a full 320-char mantra fits without overflow.
+  // Three selectable mantra fonts. Noto Serif is the default and the only one
+  // that guarantees real cross-language coverage (it has matching serif
+  // companions for CJK, Arabic, Devanagari, etc., loaded on demand below).
+  // "Bold" and "Elegant" are optional aesthetic choices layered on top — both
+  // still fall back to the same Noto Serif script companions so a non-Latin
+  // mantra never breaks even if the user picked one of the optional fonts;
+  // it just won't be bold/italic in scripts that don't have those forms.
+  const NOTO_SERIF_FALLBACK = "'Noto Serif HK','Noto Serif JP','Noto Serif KR','Noto Serif TC','Noto Serif SC','Noto Naskh Arabic','Noto Serif Devanagari','Noto Serif Hebrew','Noto Serif Thai',serif";
   const FONTS = {
-    bold:    { family: "'Inter','Noto Sans',sans-serif",      weight: 800, style: 'normal', lh: 1.4,  upper: true  },
-    regular: { family: "'Source Serif 4','Noto Serif',serif", weight: 600, style: 'normal', lh: 1.5,  upper: false },
-    elegant: { family: "'Cormorant Garamond',serif",          weight: 600, style: 'italic', lh: 1.4,  upper: false }
+    noto:    { family: "'Noto Serif'," + NOTO_SERIF_FALLBACK,              weight: 500, style: 'normal',  lh: 1.5 },
+    bold:    { family: "'Inter','Noto Sans'," + NOTO_SERIF_FALLBACK,       weight: 800, style: 'normal',  lh: 1.4, upper: true },
+    elegant: { family: "'Noto Serif'," + NOTO_SERIF_FALLBACK,              weight: 500, style: 'italic',  lh: 1.5 },
   };
-  // base font size in rem at the 400px preview width, by font (reduced defaults)
-  const BASE_SIZE = { bold: 1.3, regular: 1.32, elegant: 1.68 };
+  const BASE_SIZE = { noto: 3.2, bold: 3.1, elegant: 3.2 };
+  let currentFont = 'noto';
 
-  let currentFont = 'bold';
+  // Maps a detected script to the Google Fonts family name to load on demand.
+  // Only loaded when the mantra actually contains that script, so Latin-only
+  // mantras (the common case) never pay for the extra font downloads.
+  const SCRIPT_FONTS = {
+    cjk_tc:    'Noto+Serif+TC:wght@400;500;600',
+    cjk_sc:    'Noto+Serif+SC:wght@400;500;600',
+    japanese:  'Noto+Serif+JP:wght@400;500;600',
+    korean:    'Noto+Serif+KR:wght@400;500;600',
+    arabic:    'Noto+Naskh+Arabic:wght@400;500;600',
+    devanagari:'Noto+Serif+Devanagari:wght@400;500;600',
+    hebrew:    'Noto+Serif+Hebrew:wght@400;500;600',
+    thai:      'Noto+Serif+Thai:wght@400;500;600',
+  };
+  const loadedScripts = new Set();
+
+  function detectScripts(text) {
+    const found = new Set();
+    if (/[\u4e00-\u9fff]/.test(text)) { found.add('cjk_sc'); found.add('cjk_tc'); }
+    if (/[\u3040-\u30ff]/.test(text)) found.add('japanese');   // hiragana/katakana
+    if (/[\uac00-\ud7af]/.test(text)) found.add('korean');
+    if (/[\u0600-\u06ff\u0750-\u077f]/.test(text)) found.add('arabic');
+    if (/[\u0900-\u097f]/.test(text)) found.add('devanagari');
+    if (/[\u0590-\u05ff]/.test(text)) found.add('hebrew');
+    if (/[\u0e00-\u0e7f]/.test(text)) found.add('thai');
+    return found;
+  }
+
+  // Builds a single combined stylesheet href for all not-yet-loaded scripts and
+  // assigns it to the dynamic <link>. Returns true if a new load was triggered.
+  function loadScriptFonts(text) {
+    const scripts = detectScripts(text);
+    let changed = false;
+    scripts.forEach(s => { if (!loadedScripts.has(s)) { loadedScripts.add(s); changed = true; } });
+    if (!changed) return false;
+    const families = [...loadedScripts].map(s => SCRIPT_FONTS[s]).filter(Boolean);
+    if (families.length) {
+      const href = 'https://fonts.googleapis.com/css2?' + families.map(f => 'family=' + f).join('&') + '&display=swap';
+      document.getElementById('dynamic-script-font').href = href;
+    }
+    return true;
+  }
+
   let currentTheme = 'dark';
   let sizeMult = 1;                 // user-controlled multiplier via +/-
   const SIZE_MIN = 0.7, SIZE_MAX = 1.4, SIZE_STEP = 0.08;
@@ -519,16 +768,68 @@
       .join('');
   }
 
+  // Paints the card's background gradient onto a real <canvas>, in actual
+  // device pixels, using the Canvas 2D API directly — not a CSS radial-gradient.
+  // html2canvas has a documented, reproducible bug with percentage-positioned
+  // radial gradients (e.g. "at 50% 47%") that splits the captured output into
+  // a hard two-tone seam down the middle. html2canvas copies a <canvas>
+  // element's actual pixel buffer instead of re-parsing CSS for it, so this
+  // sidesteps the bug entirely rather than working around its symptoms.
+  function paintCardBackground() {
+    const card = document.getElementById('mantra-card');
+    const canvas = document.getElementById('card-bg-canvas');
+    const cs = getComputedStyle(card);
+    const baseColor = cs.getPropertyValue('--c-base').trim() || '#0b0a19';
+    const gradRGB = (cs.getPropertyValue('--c-gradient-rgb').trim() || '53,50,126');
+
+    // Use the card's actual current CSS pixel size, at devicePixelRatio for
+    // crispness, so this looks correct both in the live preview and at the
+    // forced 1080×1350 export size — paintCardBackground() is called again
+    // after that resize, same as the rest of render().
+    const rect = card.getBoundingClientRect();
+    const w = Math.max(1, Math.round(rect.width));
+    const h = Math.max(1, Math.round(rect.height));
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Flat base color first
+    ctx.fillStyle = baseColor;
+    ctx.fillRect(0, 0, w, h);
+
+    // Radial gradient, matching the original CSS: ellipse 60% 48% at 50% 47%,
+    // i.e. centered at 50% width / 47% height, radii 30% width / 24% height
+    // (CSS ellipse size keywords are full axis lengths, so halve for radius).
+    const cx = w * 0.50, cy = h * 0.47;
+    const rx = w * 0.30, ry = h * 0.24;
+    // Canvas radial gradients are circular, so approximate the CSS ellipse by
+    // scaling the canvas Y axis to match the aspect ratio of rx:ry, painting
+    // a circular gradient of radius rx, then restoring the transform.
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(1, ry / rx);
+    const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
+    grad.addColorStop(0,    `rgba(${gradRGB},0.25)`);
+    grad.addColorStop(0.45, `rgba(${gradRGB},0.12)`);
+    grad.addColorStop(0.75, `rgba(${gradRGB},0)`);
+    ctx.fillStyle = grad;
+    ctx.fillRect(-rx, -rx, rx * 2, rx * 2);
+    ctx.restore();
+  }
+
   function render() {
     const raw     = document.getElementById('mantra-input').value.trim();
-    const name    = document.getElementById('name-input').value.trim();
-    const useDate = document.getElementById('toggle-date').checked;
 
     const mantraEl = document.getElementById('card-mantra-text');
-    const creditEl = document.getElementById('card-credit');
     const dlBtn    = document.getElementById('download-btn');
     const countEl  = document.getElementById('char-count');
 
+    paintCardBackground();
     // count excludes any [bracketed] text and collapses whitespace
     const countLen = raw.replace(/\[[^\]]*\]/g, '').replace(/\s+/g, ' ').trim().length;
     countEl.textContent = countLen + ' / ' + MAX_CHARS + ' characters';
@@ -538,6 +839,8 @@
       mantraEl.innerHTML = buildMantraHtml(raw);
       mantraEl.classList.remove('empty');
       dlBtn.disabled = false;
+      // Load any non-Latin script fonts the mantra needs, on demand.
+      loadScriptFonts(raw);
     } else {
       mantraEl.textContent = 'Your mantra will appear here…';
       mantraEl.classList.add('empty');
@@ -545,25 +848,72 @@
     }
 
     const f = FONTS[currentFont];
-    // scale so the full displayed text (incl. bracketed line) fits
-    const displayLen = raw.replace(/[\[\]]/g, '').replace(/\s+/g, ' ').trim().length;
-    let scale = 1;
-    if (displayLen > 120) scale = 0.9;
-    if (displayLen > 180) scale = 0.8;
-    if (displayLen > 240) scale = 0.72;
-    if (displayLen > 290) scale = 0.66;
-    const size = (BASE_SIZE[currentFont] * scale * sizeMult);
     mantraEl.style.fontFamily = f.family;
     mantraEl.style.fontWeight = f.weight;
     mantraEl.style.fontStyle  = f.style;
     mantraEl.style.lineHeight = f.lh;
-    mantraEl.style.fontSize   = size + 'rem';
     mantraEl.style.textTransform = f.upper ? 'uppercase' : 'none';
 
-    let credit = 'Created by Demian IA';
-    if (name) credit += ' for ' + name;
-    if (useDate) credit += ' on ' + fmtDate();
-    creditEl.textContent = credit;
+    // Shrink-to-fit: start at the largest size allowed (base × user multiplier),
+    // measure the actual rendered height against the space really available,
+    // and step down until it fits. Replaces the old fixed character-count
+    // thresholds, which had no way to know the true rendered size of a given
+    // piece of text (word length, line breaks, and accents all affect it).
+    //
+    // CARD-SIZE SCALING: BASE_SIZE is defined in rem against a 1080px-wide
+    // reference card (the export size). Without scaling, the same rem value
+    // looks dramatically different on the ~400px live preview vs. the 1080px
+    // export — text that correctly fills the preview reads as tiny once
+    // exported, because rem/px font sizes don't know about the card's actual
+    // physical size. Scaling by (current card width / 1080) makes the text
+    // occupy the same proportion of the card at any size, so the downloaded
+    // image always matches what was seen in the preview.
+    const wrap = mantraEl.closest('.card-mantra-wrap') || mantraEl.parentElement;
+    const cardEl = document.getElementById('mantra-card');
+    const footEl = document.querySelector('.card-foot');
+    const topMarkEl = document.querySelector('.card-top-mark');
+    const REFERENCE_CARD_WIDTH = 1080;
+    const cardScale = cardEl.getBoundingClientRect().width / REFERENCE_CARD_WIDTH;
+
+    // The eyebrow ("My Personal Mantra") and footer credit row use fixed rem
+    // sizes in the CSS, same issue as the mantra text before this fix: at a
+    // small preview width that reads fine, but on export (1080px) the same
+    // fixed rem is proportionally tiny. Apply cardScale to them here too, so
+    // every piece of text in the card grows/shrinks together with it.
+    const EYEBROW_BASE_REM = 1.584; // 0.66 × 2.4
+    const CREDIT_BASE_REM = 1.584;
+    const eyebrowEl = document.querySelector('.card-eyebrow');
+    const creditRowEl = document.querySelector('.card-credit-row');
+    const brandImgEl = document.getElementById('card-foot-brand-img');
+    if (eyebrowEl) eyebrowEl.style.fontSize = (EYEBROW_BASE_REM * cardScale) + 'rem';
+    if (creditRowEl) creditRowEl.style.fontSize = (CREDIT_BASE_REM * cardScale) + 'rem';
+    if (brandImgEl) brandImgEl.style.height = (CREDIT_BASE_REM * cardScale) + 'rem';
+
+    const maxSize = BASE_SIZE[currentFont] * sizeMult * cardScale;
+    const minSize = maxSize * 0.4; // hard floor so text never shrinks to unreadable
+    let size = maxSize;
+    mantraEl.style.fontSize = size + 'rem';
+
+    if (raw) {
+      // True safe height is the gap between where the top mark ends and the
+      // footer begins — NOT wrap.clientHeight, which (because the wrap is
+      // vertically centered and padded) extends further than what's actually
+      // safe, and would let long text bleed into the header or footer instead
+      // of just shrinking to fit.
+      const cardTop = cardEl.getBoundingClientRect().top;
+      const safeTop = topMarkEl ? topMarkEl.getBoundingClientRect().bottom - cardTop : 0;
+      const safeBottom = footEl ? footEl.getBoundingClientRect().top - cardTop : wrap.clientHeight;
+      const bufferPx = (footEl ? footEl.getBoundingClientRect().top : cardEl.clientHeight) * 0.025; // ~2.5% breathing room above the footer
+      const availableHeight = (safeBottom - safeTop) - bufferPx;
+      const step = 0.02 * cardScale; // scale the step too, so reduction granularity matches the card size
+      let guard = 0; // safety cap on iterations — a layout bug should never hang the tab
+      while (mantraEl.scrollHeight > availableHeight && size > minSize && guard < 200) {
+        size -= step;
+        mantraEl.style.fontSize = size + 'rem';
+        guard++;
+      }
+    }
+    if (typeof alignBottomBoxes === 'function') alignBottomBoxes();
   }
 
   function adjustSize(dir) {
@@ -573,15 +923,7 @@
     render();
   }
 
-  document.querySelectorAll('#font-chips .chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('#font-chips .chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      currentFont = chip.dataset.font;
-      document.getElementById('mantra-card').dataset.font = currentFont;
-      render();
-    });
-  });
+  const BRAND_LOGO = { dark: 'demian-ai-brand.png', light: 'demian-ai-brand-dark.png' };
 
   document.querySelectorAll('#theme-chips .chip').forEach(chip => {
     chip.addEventListener('click', () => {
@@ -591,35 +933,159 @@
       const card = document.getElementById('mantra-card');
       card.classList.remove('theme-dark','theme-light');
       card.classList.add('theme-' + currentTheme);
+      document.getElementById('card-foot-brand-img').src = BRAND_LOGO[currentTheme];
+    });
+  });
+
+  document.querySelectorAll('#font-chips .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#font-chips .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentFont = chip.dataset.font;
+      render();
     });
   });
 
   async function downloadCard() {
     const card = document.getElementById('mantra-card');
-    const name = document.getElementById('name-input').value.trim() || 'mantra';
     const btn  = document.getElementById('download-btn');
     btn.textContent = 'Generating…';
     btn.disabled = true;
     try {
+      // Border-gap fix: instead of capturing the live (fractional-width) card and
+      // scaling — which leaves a 1–2px unpainted seam on the right/bottom edges
+      // because html2canvas rasterizes at a fractional factor — we temporarily
+      // force the card to EXACT integer pixel dimensions, capture at scale 1
+      // (so every edge lands on a whole pixel), then restore the original styles.
+      const TARGET_W = 1080;
+      const TARGET_H = 1350; // 4:5
+      const prev = { width: card.style.width, height: card.style.height, aspectRatio: card.style.aspectRatio, maxWidth: card.style.maxWidth };
+      card.style.maxWidth = 'none';
+      card.style.width  = TARGET_W + 'px';
+      card.style.height = TARGET_H + 'px';
+      card.style.aspectRatio = 'auto';
+      render(); // re-run shrink-to-fit at the real export size so text scaling matches the output exactly
+
+      // Defensive guard: if the brand logo image failed to load for any reason
+      // (missing file, a CORS restriction under file:// during local testing,
+      // etc.), html2canvas can throw on that single broken <img> and abort the
+      // ENTIRE export — losing the whole card over one missing logo. Hide it
+      // just for the duration of capture if it isn't genuinely loaded, and
+      // always restore it afterward regardless of outcome.
+      const brandImg = document.getElementById('card-foot-brand-img');
+      // Safe for canvas export only if BOTH loaded successfully AND still has
+      // crossorigin set. The onerror fallback on this <img> (see markup) may
+      // have reloaded it WITHOUT crossorigin to make it visible during local
+      // file:// testing — that makes it visible, but an image loaded without
+      // crossorigin still taints the canvas on export, throwing the same
+      // error this guard exists to prevent. Hide it in that case too.
+      const brandImgOk = brandImg && brandImg.complete && brandImg.naturalWidth > 0 && brandImg.hasAttribute('crossorigin');
+      if (brandImg && !brandImgOk) brandImg.style.visibility = 'hidden';
+
+      // Force a full reflow/repaint at the new size before capturing. Without
+      // this, html2canvas can grab the canvas mid-reflow — the gradient and
+      // contour SVG only partially recompute at the new width, producing a
+      // hard seam down the middle of the exported image (old layout on one
+      // side, new layout on the other). Two animation frames is the reliable
+      // minimum to guarantee the browser has actually painted the new layout.
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      await new Promise(r => setTimeout(r, 50)); // small extra margin for font/gradient paint
+
       const canvas = await html2canvas(card, {
         backgroundColor: null,
-        scale: 1080 / card.offsetWidth,
+        scale: 1,
+        width: TARGET_W,
+        height: TARGET_H,
+        windowWidth: TARGET_W,
+        windowHeight: TARGET_H,
         useCORS: true,
         logging: false
       });
+
+      if (brandImg && !brandImgOk) brandImg.style.visibility = '';
+
+      // Restore the live card to its responsive size
+      card.style.width = prev.width;
+      card.style.height = prev.height;
+      card.style.aspectRatio = prev.aspectRatio;
+      card.style.maxWidth = prev.maxWidth;
+      render();
+
       const link = document.createElement('a');
-      link.download = 'demian-mantra-' + name.toLowerCase().replace(/\s+/g,'-') + '.png';
+      link.download = 'demian-mantra-' + Date.now() + '.png';
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch (err) {
+      const brandImg = document.getElementById('card-foot-brand-img');
+      if (brandImg) brandImg.style.visibility = '';
       alert('Could not generate image. Try taking a screenshot instead.');
       console.error(err);
     }
-    btn.textContent = 'Download Image';
+    btn.textContent = 'Download Mantra';
     btn.disabled = false;
   }
 
+  // .col-left and .col-right are independent vertical stacks (this is what
+  // fixed the dead-space gap above .instructions/.invocation-section — see
+  // the comment on .col-left, .col-right above). But that independence means
+  // CSS alone can no longer bottom-align .instructions with .invocation-box,
+  // since they no longer share a flex/grid row. This measures both boxes'
+  // real bottom positions after layout and nudges the higher one down with
+  // margin-top, so their bottoms land on the same pixel.
+  //
+  // IMPORTANT: this uses margin-top, not padding-top. .instructions already
+  // has its own CSS padding (1.4rem on all sides, for internal spacing around
+  // the text) — setting style.paddingTop to an absolute value REPLACES that
+  // existing padding rather than adding to it, silently shrinking the box
+  // and producing a residual misalignment. margin-top is a separate box-model
+  // property with no existing value to clobber, so it only ever adds space.
+  function alignBottomBoxes() {
+    const instr = document.querySelector('.instructions');
+    const invocBox = document.querySelector('.invocation-box');
+    if (!instr || !invocBox) return;
+    if (window.matchMedia('(max-width: 760px)').matches) {
+      instr.style.marginTop = '';
+      invocBox.style.marginTop = '';
+      return; // single-column mobile layout; nothing to align side-by-side
+    }
+    instr.style.marginTop = '';
+    invocBox.style.marginTop = '';
+    void instr.offsetHeight; // force reflow so the reset above is reflected before measuring
+    void invocBox.offsetHeight;
+    // Compare actual BOTTOM positions, not heights — .instructions and
+    // .invocation-box live in independent columns that can start at
+    // different vertical offsets (.col-left's controls field is a different
+    // height than .col-right's preview+download), so matching heights alone
+    // doesn't make their bottoms align. Push whichever one's bottom is
+    // higher (smaller value) down until both bottoms match exactly.
+    const instrBottom = instr.getBoundingClientRect().bottom;
+    const invocBottom = invocBox.getBoundingClientRect().bottom;
+    const diff = instrBottom - invocBottom;
+    if (Math.abs(diff) < 1) return;
+    if (diff > 0) invocBox.style.marginTop = diff + 'px';
+    else instr.style.marginTop = (-diff) + 'px';
+  }
+
+  window.addEventListener('resize', alignBottomBoxes);
+
   render();
+</script>
+
+<script>
+  const hamburger = document.getElementById('nav-hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', function() {
+    const open = navLinks.classList.toggle('open');
+    hamburger.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  navLinks.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      navLinks.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', false);
+    });
+  });
 </script>
 </body>
 </html>
