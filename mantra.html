@@ -428,6 +428,7 @@
     height: 0.66rem;  /* matches the .card-eyebrow font-size, i.e. the "My Personal Mantra" line */
     width: auto;
     display: block;
+    position: relative;
   }
   #mantra-card.theme-dark .card-foot-brand { filter: brightness(1.15); }
 
@@ -897,22 +898,26 @@
     if (creditRowEl) creditRowEl.style.fontSize = (CREDIT_BASE_REM * cardScale) + 'rem';
     if (brandImgEl) brandImgEl.style.height = (CREDIT_BASE_REM * cardScale) + 'rem';
 
-    // Move the "created with" / url text up — NOT the logo image — so its
-    // visual baseline aligns with the logo's true bottom edge, then nudge it
-    // up 3px further (at full export scale) per request. Measured at runtime
-    // against the actual logo and font in use, rather than a hardcoded
-    // constant — a fixed px value calibrated against one placeholder asset
-    // doesn't reliably hold for the real logo file's actual proportions.
+    // Move the logo image up — NOT the "created with" / url text — so the
+    // logo's visual bottom edge aligns with the text's true baseline, then
+    // nudge it up 3px further (at full export scale) per request. The text
+    // stays put in its natural position; the logo PNG carries some empty
+    // bottom padding baked into the asset, which is what reads as "floating
+    // above the line" relative to the mantra text and the credit-row text
+    // beside it. Measured at runtime against the actual logo file and font
+    // in use, rather than a hardcoded constant — a fixed px value calibrated
+    // against one placeholder asset doesn't reliably hold for the real
+    // logo's actual proportions.
     const EXTRA_LIFT_PX_AT_FULL_SCALE = 3;
-    const ccTextEls = document.querySelectorAll('.card-credit-row .cc-text');
-    ccTextEls.forEach(el => { el.style.top = '0px'; }); // reset before measuring
+    if (brandImgEl) brandImgEl.style.top = '0px'; // reset before measuring
     void brandImgEl?.offsetHeight; // force reflow so the reset above is reflected
+    const ccTextEls = document.querySelectorAll('.card-credit-row .cc-text');
     if (brandImgEl && ccTextEls.length) {
       const imgBottom = brandImgEl.getBoundingClientRect().bottom;
       const textBottom = ccTextEls[0].getBoundingClientRect().bottom;
       const ghostGap = imgBottom - textBottom; // real measured gap, whatever it actually is
       const totalLift = ghostGap + (EXTRA_LIFT_PX_AT_FULL_SCALE * cardScale);
-      ccTextEls.forEach(el => { el.style.top = -totalLift + 'px'; });
+      brandImgEl.style.top = -totalLift + 'px';
     }
 
     const maxSize = BASE_SIZE[currentFont] * sizeMult * cardScale;
