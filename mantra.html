@@ -400,10 +400,10 @@
 
   .card-foot { position: relative; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%; flex-shrink: 0; }
   .card-credit-row {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
+    justify-content: center;
     align-items: flex-end;
-    column-gap: 0.6em;
+    gap: 0.6em;
     width: 100%;
     font-family: 'Inter','Noto Sans',sans-serif;
     font-size: 0.66rem;
@@ -411,14 +411,9 @@
     font-weight: 500;
     line-height: 1;
   }
-  /* Logo is the grid's center column, so it's always perfectly centered on
-     the card regardless of how wide "created with" vs. the url text are.
-     "created with" sits in the left 1fr track; the url is pushed to the
-     far right of the right 1fr track, flush with the card's right content
-     edge (same edge the mantra text above aligns to), rather than floating
-     centered next to the logo. */
-  .card-credit-row .cc-text:first-of-type { justify-self: end; }
-  .card-credit-row .cc-text:last-of-type { justify-self: end; }
+  /* "created with [logo] demianism.org/demian" reads as one centered group,
+     each piece sitting close to its neighbor with normal gap spacing —
+     not spread out to the card's edges. */
   .card-credit-row .cc-text {
     color: var(--c-accent);
     position: relative;
