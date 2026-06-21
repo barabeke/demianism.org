@@ -413,9 +413,12 @@
   }
   /* Logo is the grid's center column, so it's always perfectly centered on
      the card regardless of how wide "created with" vs. the url text are.
-     The two text columns sit in the 1fr tracks on either side. */
+     "created with" sits in the left 1fr track; the url is pushed to the
+     far right of the right 1fr track, flush with the card's right content
+     edge (same edge the mantra text above aligns to), rather than floating
+     centered next to the logo. */
   .card-credit-row .cc-text:first-of-type { justify-self: end; }
-  .card-credit-row .cc-text:last-of-type { justify-self: start; }
+  .card-credit-row .cc-text:last-of-type { justify-self: end; }
   .card-credit-row .cc-text {
     color: var(--c-accent);
     position: relative;
@@ -894,17 +897,23 @@
     if (creditRowEl) creditRowEl.style.fontSize = (CREDIT_BASE_REM * cardScale) + 'rem';
     if (brandImgEl) brandImgEl.style.height = (CREDIT_BASE_REM * cardScale) + 'rem';
 
-    // Move the "created with" / url text up — NOT the logo image — by a fixed
-    // amount at full export scale (1080px reference). This combines two
-    // corrections: ~5.58px to compensate for font-metric "ghost space" below
-    // the glyphs (no descenders like g/j, so the visible ink sits above the
-    // text's true box edge even though the box is flex-end aligned with the
-    // logo), plus 3px more on top of that per the latest request. Scaled by
-    // cardScale so it's exactly 8.58px at the 1080px export and proportionally
-    // smaller in the live preview.
-    const CC_TEXT_LIFT_PX = 8.58;
+    // Move the "created with" / url text up — NOT the logo image — so its
+    // visual baseline aligns with the logo's true bottom edge, then nudge it
+    // up 3px further (at full export scale) per request. Measured at runtime
+    // against the actual logo and font in use, rather than a hardcoded
+    // constant — a fixed px value calibrated against one placeholder asset
+    // doesn't reliably hold for the real logo file's actual proportions.
+    const EXTRA_LIFT_PX_AT_FULL_SCALE = 3;
     const ccTextEls = document.querySelectorAll('.card-credit-row .cc-text');
-    ccTextEls.forEach(el => { el.style.top = -(CC_TEXT_LIFT_PX * cardScale) + 'px'; });
+    ccTextEls.forEach(el => { el.style.top = '0px'; }); // reset before measuring
+    void brandImgEl?.offsetHeight; // force reflow so the reset above is reflected
+    if (brandImgEl && ccTextEls.length) {
+      const imgBottom = brandImgEl.getBoundingClientRect().bottom;
+      const textBottom = ccTextEls[0].getBoundingClientRect().bottom;
+      const ghostGap = imgBottom - textBottom; // real measured gap, whatever it actually is
+      const totalLift = ghostGap + (EXTRA_LIFT_PX_AT_FULL_SCALE * cardScale);
+      ccTextEls.forEach(el => { el.style.top = -totalLift + 'px'; });
+    }
 
     const maxSize = BASE_SIZE[currentFont] * sizeMult * cardScale;
     const minSize = maxSize * 0.4; // hard floor so text never shrinks to unreadable
