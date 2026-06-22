@@ -1063,9 +1063,7 @@ button#send svg { width: 17px; height: 17px; }
   width: 1080px;
   height: 1350px;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse 60% 48% at 50% 47%, rgba(53,50,126,0.25) 0%, rgba(53,50,126,0.12) 45%, rgba(53,50,126,0) 75%),
-    #0b0a19;
+  background: #0b0a19; /* flat fallback only — gradient is painted onto #rc-bg-canvas by JS, ported from mantra.html's html2canvas-seam fix */
   color: #cfcfd4;
   font-family: 'Inter', 'Noto Sans', sans-serif;
   display: flex;
@@ -1073,6 +1071,13 @@ button#send svg { width: 17px; height: 17px; }
   align-items: center;
   padding: 43px 86px 32px; /* 4% / 8% / 3% of 1080×1350, matching mantra.html's card padding */
   box-sizing: border-box;
+}
+#mantra-render-card .rc-bg-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  display: block;
 }
 #mantra-render-card .rc-bg {
   position: absolute; top: 175px; left: 50%; transform: translateX(-50%);
@@ -1108,12 +1113,15 @@ button#send svg { width: 17px; height: 17px; }
   margin-top: auto;
 }
 #mantra-render-card .rc-credit-row {
-  display: flex; align-items: center; justify-content: center; gap: 0.6em;
+  display: flex; justify-content: center; align-items: flex-end; gap: 0.6em;
   font-family: 'Inter','Noto Sans',sans-serif; font-size: 21px;
   letter-spacing: 0.05em; font-weight: 500; line-height: 1;
 }
-#mantra-render-card .rc-credit-row .cc-text { color: #6864bb; opacity: 0.6; }
-#mantra-render-card .rc-foot-brand { height: 21px; width: auto; display: block; filter: brightness(1.15); }
+/* "created with [logo] demianism.org/demian" as one centered group, with a
+   touch of extra breathing room before the url — ported from mantra.html. */
+#mantra-render-card .rc-credit-row .cc-text:last-of-type { margin-left: 0.5em; }
+#mantra-render-card .rc-credit-row .cc-text { color: #6864bb; opacity: 0.6; position: relative; }
+#mantra-render-card .rc-foot-brand { height: 21px; width: auto; display: block; filter: brightness(1.15); position: relative; }
 
 /* ── INLINE MANTRA CARD (shown in chat after SESSION_COMPLETE) ── */
 .mantra-card-inline {
@@ -1172,6 +1180,7 @@ body {
 
 <!-- Hidden card used by html2canvas to generate the mantra PNG -->
 <div id="mantra-render-card">
+  <canvas id="rc-bg-canvas" class="rc-bg-canvas"></canvas>
   <div class="rc-bg"></div>
   <div class="rc-contour">
     <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" id="rc-contour-svg"></svg>
@@ -1183,7 +1192,7 @@ body {
   <div class="rc-foot">
     <div class="rc-credit-row">
       <span class="cc-text">created with</span>
-      <img class="rc-foot-brand" src="demian-ai-brand.png" alt="Demian AI" crossorigin="anonymous">
+      <img class="rc-foot-brand" id="rc-foot-brand-img" src="demian-ai-brand.png" alt="Demian AI" crossorigin="anonymous" onerror="if(this.crossOrigin){this.crossOrigin=null; this.src=this.src;}">
       <span class="cc-text">demianism.org/demian</span>
     </div>
   </div>
@@ -2127,6 +2136,53 @@ async function callAPI(msgs) {
   isLoading = false;
 }
 
+// Paints the card's background gradient onto a real <canvas>, in actual
+// device pixels, using the Canvas 2D API directly — not a CSS radial-gradient.
+// html2canvas has a documented, reproducible bug with percentage-positioned
+// radial gradients (e.g. "at 50% 47%") that splits the captured output into
+// a hard two-tone seam down the middle. html2canvas copies a <canvas>
+// element's actual pixel buffer instead of re-parsing CSS for it, so this
+// sidesteps the bug entirely rather than working around its symptoms.
+// Ported from mantra.html's fix — this card is always fixed at 1080×1350
+// (no live-resizable preview like the standalone tool), so width/height are
+// the literal export dimensions rather than measured at runtime.
+function paintRCBackground() {
+  const canvas = document.getElementById('rc-bg-canvas');
+  if (!canvas) return;
+  const w = 1080, h = 1350;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  // Flat base color first
+  ctx.fillStyle = '#0b0a19';
+  ctx.fillRect(0, 0, w, h);
+
+  // Radial gradient, matching the original CSS: ellipse 60% 48% at 50% 47%,
+  // i.e. centered at 50% width / 47% height, radii 30% width / 24% height
+  // (CSS ellipse size keywords are full axis lengths, so halve for radius).
+  const cx = w * 0.50, cy = h * 0.47;
+  const rx = w * 0.30, ry = h * 0.24;
+  // Canvas radial gradients are circular, so approximate the CSS ellipse by
+  // scaling the canvas Y axis to match the aspect ratio of rx:ry, painting
+  // a circular gradient of radius rx, then restoring the transform.
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(1, ry / rx);
+  const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
+  grad.addColorStop(0,    'rgba(53,50,126,0.25)');
+  grad.addColorStop(0.45, 'rgba(53,50,126,0.12)');
+  grad.addColorStop(0.75, 'rgba(53,50,126,0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(-rx, -rx, rx * 2, rx * 2);
+  ctx.restore();
+}
+
 function buildContoursSVG() {
   const svg = document.getElementById('rc-contour-svg');
   if (!svg || svg.childElementCount > 0) return;
@@ -2242,6 +2298,7 @@ async function handleSessionComplete(reply) {
   }
 
   // Build the hidden card
+  paintRCBackground();
   buildContoursSVG();
   const textEl = document.getElementById('rc-mantra-text');
 
@@ -2277,12 +2334,55 @@ async function handleSessionComplete(reply) {
     guard++;
   }
 
+  // Footer alignment — ported from mantra.html's fix. This card is always
+  // fixed at the literal 1080×1350 export size (no live-resizable preview),
+  // so this is the cardScale=1 case: lift the logo image (not the text) up
+  // to meet the credit-row text's true baseline, then nudge it up 3px
+  // further; then re-center the row so the LOGO's actual center — not the
+  // midpoint of the whole "created with [logo] url" group — lands on the
+  // card's true horizontal center, since the url is allowed to run long on
+  // the right.
+  const rcCreditRowEl = document.querySelector('#mantra-render-card .rc-credit-row');
+  const rcBrandImgEl = document.getElementById('rc-foot-brand-img');
+  const EXTRA_LIFT_PX = 3;
+  if (rcBrandImgEl) rcBrandImgEl.style.top = '0px'; // reset before measuring
+  void rcBrandImgEl?.offsetHeight; // force reflow
+  const rcCcTextEls = document.querySelectorAll('#mantra-render-card .rc-credit-row .cc-text');
+  if (rcBrandImgEl && rcCcTextEls.length) {
+    const imgBottom = rcBrandImgEl.getBoundingClientRect().bottom;
+    const textBottom = rcCcTextEls[0].getBoundingClientRect().bottom;
+    const ghostGap = imgBottom - textBottom;
+    rcBrandImgEl.style.top = -(ghostGap + EXTRA_LIFT_PX) + 'px';
+  }
+  if (rcCreditRowEl) rcCreditRowEl.style.transform = 'translateX(0px)'; // reset before measuring
+  void rcCreditRowEl?.offsetHeight;
+  if (rcCreditRowEl && rcBrandImgEl) {
+    const cardRect = cardEl.getBoundingClientRect();
+    const logoRect = rcBrandImgEl.getBoundingClientRect();
+    const shift = (cardRect.left + cardRect.width / 2) - (logoRect.left + logoRect.width / 2);
+    rcCreditRowEl.style.transform = 'translateX(' + shift + 'px)';
+  }
+
   // Small delay for fonts to settle, then render
   await new Promise(r => setTimeout(r, 600));
 
   let dataUrl = null;
   try {
     const card = document.getElementById('mantra-render-card');
+
+    // Defensive guard, ported from mantra.html: if the brand logo failed to
+    // load for any reason (missing file, a CORS restriction, etc.),
+    // html2canvas can throw on that single broken <img> and abort the ENTIRE
+    // export — losing the whole card over one missing logo. Hide it just for
+    // the duration of capture if it isn't genuinely safe to draw, and always
+    // restore it afterward regardless of outcome. Safe only if BOTH loaded
+    // successfully AND still has crossorigin set — the onerror fallback on
+    // this <img> may have reloaded it WITHOUT crossorigin, which would make
+    // it visible but still taint the canvas on export.
+    const brandImg = document.getElementById('rc-foot-brand-img');
+    const brandImgOk = brandImg && brandImg.complete && brandImg.naturalWidth > 0 && brandImg.hasAttribute('crossorigin');
+    if (brandImg && !brandImgOk) brandImg.style.visibility = 'hidden';
+
     const canvas = await html2canvas(card, {
       backgroundColor: null,
       scale: 1, // card is already fixed at the exact 1080×1350 export size
@@ -2291,6 +2391,8 @@ async function handleSessionComplete(reply) {
       useCORS: true,
       logging: false
     });
+
+    if (brandImg && !brandImgOk) brandImg.style.visibility = '';
     dataUrl = canvas.toDataURL('image/png');
   } catch (err) {
     console.error('Mantra card render error:', err);
