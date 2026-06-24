@@ -357,6 +357,38 @@ body {
 .typing span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes tp { 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.25)} }
 
+/* Plan activation banner — neutral system event, not a Demian reply.
+   Fires the instant a webhook-credited purchase is detected (via polling
+   /auth/me) or immediately on a Stripe redirect-back / code redemption. */
+.msg.system .plan-activation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+  padding: 4px 2px;
+}
+.msg.system .plan-activation-icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 6px;
+}
+.msg.system .plan-activation-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--purple-light);
+  letter-spacing: 0.01em;
+}
+.msg.system .plan-activation-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  color: var(--purple-light);
+  opacity: 0.75;
+  line-height: 1.4;
+  max-width: 320px;
+}
+
 /* input-zone → see Layout section above */
 
 .input-bar {
@@ -639,6 +671,15 @@ button#send svg { width: 17px; height: 17px; }
 .sw-btn-gift { flex:1; padding:14px 8px; background:#36354c; border:none; border-radius:10px; font-family:'Inter',sans-serif; font-weight:500; font-size:14px; color:rgba(255,255,255,0.55); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; transition:all 0.15s; }
 .sw-btn-gift svg { width:14px; height:14px; }
 .sw-btn-gift:hover { color:rgba(255,255,255,0.8); }
+
+/* When buying is blocked (e.g. Mantra already used once), the Gift button
+   becomes the dominant action and Buy becomes the muted one — same two
+   buttons, same layout, colors/prominence swapped rather than introducing
+   new markup. Applied via .sw-btns.gift-priority on the container. */
+.sw-btns.gift-priority .sw-btn-primary { flex:1; background:#36354c; color:rgba(255,255,255,0.55); font-weight:500; cursor:not-allowed; }
+.sw-btns.gift-priority .sw-btn-primary:hover { background:#3a3950; }
+.sw-btns.gift-priority .sw-btn-gift { flex:0 0 72%; background:#35327e; color:#cfcfd4; font-weight:700; font-size:15px; }
+.sw-btns.gift-priority .sw-btn-gift:hover { background:#3f3c90; }
 @media (max-width:520px) {
   .service-window { max-width:100%; border-radius:20px 20px 0 0; position:fixed; bottom:0; left:0; right:0; max-height:94vh; }
   .service-overlay.open { align-items:flex-end; padding:0; }
@@ -1347,9 +1388,9 @@ body {
       <p class="sw-shout-sub" id="swShoutSub"></p>
     </div>
     <div class="sw-footer">
-      <div class="sw-btns">
+      <div class="sw-btns" id="swBtns">
         <button class="sw-btn-primary" id="swBtnGet" onclick="purchaseService()"></button>
-        <button class="sw-btn-gift" onclick="giftService()">
+        <button class="sw-btn-gift" id="swBtnGift" onclick="giftService()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
           Gift
         </button>
@@ -1376,12 +1417,19 @@ body {
     <h3 id="loginTitle">Sign in to Demian</h3>
     <p id="loginDesc">Enter your email and we'll send you a secure access link. No password needed.</p>
     <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email" style="letter-spacing:0.5px;" />
+    <label style="display:flex;align-items:flex-start;gap:8px;margin:14px 2px;cursor:pointer;font-size:12.5px;line-height:1.45;color:rgba(255,255,255,0.75);">
+      <input type="checkbox" id="loginConsent" onchange="updateLoginConsentState()" style="margin-top:2px;width:15px;height:15px;flex-shrink:0;accent-color:var(--purple-mid);" />
+      <span>
+        I understand that my email is stored separately from my conversations, that conversation
+        content is anonymized and never linked back to my identity, and I agree to the
+        <a href="/privacy.html" target="_blank" style="color:var(--purple-light);text-decoration:underline;">Privacy Policy</a>.
+      </span>
+    </label>
     <div class="modal-error" id="loginError"></div>
     <div class="modal-btns">
-      <button class="modal-confirm" onclick="submitLogin()">Send link</button>
+      <button class="modal-confirm" id="loginConfirmBtn" onclick="submitLogin()" disabled style="opacity:0.45;cursor:not-allowed;">Send link</button>
       <button class="modal-cancel" onclick="closeLoginModal()">Cancel</button>
     </div>
-    <p style="font-size:11px;color:rgba(255,255,255,0.4);">By continuing you accept our <a href="/privacy.html" target="_blank" style="color:var(--purple-light);">Privacy Policy</a>.</p>
   </div>
 </div>
 
@@ -1405,6 +1453,8 @@ let isPaid = false;
 let canNewChat = false;
 let mantraUnlocked = false;
 let messagesBalance = 0;
+let canBuyMantra = true; // updated from /auth/me; defaults true for logged-out/new visitors
+let giftCredits = { mantra: 0, sanctuary: 0, retreat: 0 };
 
 function updateCounter() {
   const remNum = document.getElementById('remNum');
@@ -1509,6 +1559,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   } else if (authToken) {
     await loadUser();
   }
+  if (authToken) startUserPolling();
+
+  // Pick up a gift code the user typed before they were logged in (see
+  // submitCode's login_required branch) — now that login has resolved one
+  // way or another, try redeeming it automatically so they don't have to
+  // dig the code back out and retype it.
+  const pendingGiftCode = localStorage.getItem('demian_pending_gift_code');
+  if (pendingGiftCode && authToken) {
+    localStorage.removeItem('demian_pending_gift_code'); // one attempt only, regardless of outcome
+    redeemPendingGiftCode(pendingGiftCode);
+  }
 
   const purchased = urlParams.get('purchased');
   if (purchased) {
@@ -1568,9 +1629,15 @@ function closeSidebar() {
 /* ═══ AUTH ═══ */
 async function submitLogin() {
   const email = document.getElementById('loginEmail').value.trim();
+  const consented = document.getElementById('loginConsent').checked;
   const errEl = document.getElementById('loginError');
   const btn = document.querySelector('#loginModal .modal-confirm');
   if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email.'; return; }
+  // Defensive client-side check — the button is disabled until checked, but
+  // this guards against the button's disabled state being bypassed (e.g. a
+  // modified request). The backend independently requires consent too; see
+  // /auth/request, which is the actual enforcement point.
+  if (!consented) { errEl.textContent = 'Please confirm you have read and accept the Privacy Policy.'; return; }
   errEl.textContent = '';
   btn.textContent = 'Sending...';
   btn.disabled = true;
@@ -1578,7 +1645,7 @@ async function submitLogin() {
     const res = await fetch(WORKER_URL + '/auth/request', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email, consent: true })
     });
     const data = await res.json();
     if (data.ok) {
@@ -1588,6 +1655,9 @@ async function submitLogin() {
       const btns = document.querySelector('#loginModal .modal-btns');
       btns.innerHTML = '<button class="modal-cancel" style="width:100%;" onclick="closeLoginModal()">Close</button>';
       btns.style.display = 'flex';
+    } else if (data.reason === 'consent_required') {
+      errEl.textContent = 'Please confirm you have read and accept the Privacy Policy.';
+      btn.textContent = 'Send link'; btn.disabled = false;
     } else {
       errEl.textContent = 'Something went wrong. Please try again.';
       btn.textContent = 'Send link'; btn.disabled = false;
@@ -1618,7 +1688,8 @@ async function verifyMagicLink(token) {
   } catch (err) { console.error('verify failed', err); }
 }
 
-async function loadUser() {
+async function loadUser(opts) {
+  opts = opts || {};
   try {
     const res = await fetch(WORKER_URL + '/auth/me', { headers: { 'X-Auth-Token': authToken } });
     const data = await res.json();
@@ -1628,16 +1699,34 @@ async function loadUser() {
       mantraUnlocked = data.mantraUnlocked || false;
       canNewChat = data.canNewChat || false;
       userTier = data.tier || null;
+      canBuyMantra = data.canBuyMantra !== false;
+      giftCredits = data.giftCredits || { mantra: 0, sanctuary: 0, retreat: 0 };
       isPaid = messagesBalance > 0 || mantraUnlocked;
       updateAccountUI();
       updateCounter();
       await loadSessionList();
+      if (data.pendingWelcome && !opts.suppressWelcome) showPlanActivationBanner(data.pendingWelcome);
     } else {
       authToken = null;
       localStorage.removeItem('demian_auth');
       updateAccountUI();
     }
   } catch (err) { console.error('loadUser failed', err); }
+}
+
+// Polls /auth/me every few seconds so a Stripe purchase completed in another
+// tab shows up as a banner in this one without the user needing to refresh
+// or send a message. Cheap KV read on the backend, no LLM cost. Runs only
+// while logged in, since pendingWelcome only ever applies to an account.
+let _userPollInterval = null;
+function startUserPolling() {
+  if (_userPollInterval) return;
+  _userPollInterval = setInterval(() => {
+    if (authToken) loadUser();
+  }, 4000);
+}
+function stopUserPolling() {
+  if (_userPollInterval) { clearInterval(_userPollInterval); _userPollInterval = null; }
 }
 
 function handleAccountClick(triggerEl) {
@@ -1844,11 +1933,20 @@ function startRename(el, sessionId, currentTitle) {
 
 function openLoginModal() {
   document.getElementById('loginModal').classList.add('open');
+  document.getElementById('loginConsent').checked = false;
+  updateLoginConsentState();
   setTimeout(() => document.getElementById('loginEmail').focus(), 100);
 }
 function closeLoginModal() {
   document.getElementById('loginModal').classList.remove('open');
   document.getElementById('loginError').textContent = '';
+}
+function updateLoginConsentState() {
+  const checked = document.getElementById('loginConsent').checked;
+  const btn = document.getElementById('loginConfirmBtn');
+  btn.disabled = !checked;
+  btn.style.opacity = checked ? '1' : '0.45';
+  btn.style.cursor = checked ? 'pointer' : 'not-allowed';
 }
 
 async function newChat(triggerEl) {
@@ -2578,6 +2676,22 @@ function openServiceWindow(key) {
     shoutSubEl.style.display = 'none';
   }
   document.getElementById('swBtnGet').textContent = s.btnLabel + ' €' + s.price;
+
+  // Mantra is a one-off, new-user-only offer: once a user has ever had
+  // Mantra (bought it, or reached it via gift redemption) or already owns
+  // Sanctuary/Retreat, buying Mantra again makes no sense — Demian can make
+  // a fresh one for them directly under those plans instead. In that case
+  // the Gift button becomes the prominent action (same two buttons, colors
+  // swapped) since gifting is the one thing they can still meaningfully do
+  // here. This check only applies to the mantra service window — Sanctuary
+  // and Retreat have no purchase restriction.
+  const swBtnsEl = document.getElementById('swBtns');
+  if (key === 'mantra' && !canBuyMantra) {
+    swBtnsEl.classList.add('gift-priority');
+  } else {
+    swBtnsEl.classList.remove('gift-priority');
+  }
+
   document.getElementById('serviceWindow').scrollTop = 0;
   document.querySelector('.sw-body').scrollTop = 0;
   document.getElementById('serviceOverlay').classList.add('open');
@@ -2610,6 +2724,29 @@ function closeCodeModal() {
   document.getElementById('codeInput').value = '';
 }
 
+// Auto-redeems a gift code the user typed while logged out, now that
+// they're logged in (see submitCode's login_required branch and the
+// localStorage pickup in the page-init sequence). Mirrors submitCode's
+// success path but has no modal/input field to manage and fails silently
+// if the code turned out to be invalid/already-used by the time they
+// actually registered — there's nothing more to ask the user at this point,
+// and the original modal flow already told them the code was valid.
+async function redeemPendingGiftCode(code) {
+  try {
+    const response = await fetch(WORKER_URL + '/redeem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Auth-Token': authToken },
+      body: JSON.stringify({ code, authToken })
+    });
+    const data = await response.json();
+    if (data.valid) {
+      handlePurchaseReturn(data.tier, data.messages, data.mantra);
+    }
+  } catch (err) {
+    console.error('redeemPendingGiftCode failed', err);
+  }
+}
+
 async function submitCode() {
   const code = document.getElementById('codeInput').value.trim().toUpperCase();
   if (!code) return;
@@ -2628,7 +2765,26 @@ async function submitCode() {
     });
     const data = await response.json();
     if (!data.valid) {
-      const reasons = { 'invalid_code':'Code not recognised. Please check and try again.', 'already_used':'This code has already been used.', 'no_code':'Please enter a code.' };
+      if (data.reason === 'login_required') {
+        // The code is still valid and untouched server-side — this user
+        // just needs to register first, then redeem again. Registering
+        // sends a magic link by email, which means a full page reload (and
+        // possibly a different tab) by the time they're actually logged
+        // in — any in-memory JS state is gone by then, so the typed code
+        // is stashed in localStorage and restored after login completes,
+        // rather than asking them to dig it back out of an email/message.
+        localStorage.setItem('demian_pending_gift_code', code);
+        errorEl.innerHTML = 'Your gift code is valid. To activate it you need to register your email. <a href="#" onclick="closeCodeModal(); openLoginModal(); return false;" style="color:inherit;text-decoration:underline;">Register now</a>';
+        confirmBtn.textContent = 'Confirm';
+        confirmBtn.disabled = false;
+        return;
+      }
+      const reasons = {
+        'invalid_code':'Code not recognised. Please check and try again.',
+        'already_used':'This code has already been used.',
+        'no_code':'Please enter a code.',
+        'mantra_already_used': 'Mantra is a one-off offer for new users, and you\'ve already had one. This code is still valid — you could pass it on to someone who hasn\'t tried Demian yet.',
+      };
       errorEl.textContent = reasons[data.reason] || 'Invalid code.';
       confirmBtn.textContent = 'Confirm';
       confirmBtn.disabled = false;
@@ -2661,9 +2817,13 @@ function handlePurchaseReturn(tier, msgs, mantra) {
   messagesBalance = msgs;
   canNewChat = (tier === 'sanctuary' || tier === 'retreat');
   if (mantra) mantraUnlocked = true;
-  appendSystemMessage('✦ Unlocked — ' + msgs + ' exchanges are yours. The lamp is lit.');
-  // If logged in, reload user to get fresh balance from KV
-  if (authToken) loadUser();
+  // Fire the banner immediately — we already know the tier from the
+  // redirect, no need to wait for the next poll. loadUser() below will
+  // still run to pull the authoritative balance from KV, but its own
+  // pendingWelcome (if present) is now stale/already-shown, so suppress it
+  // for this one refresh to avoid a duplicate banner.
+  showPlanActivationBanner(tier);
+  if (authToken) loadUser({ suppressWelcome: true });
   else updateCounter();
 }
 
@@ -2741,6 +2901,50 @@ function appendSystemMessage(text) {
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   bubble.textContent = text;
+  wrap.appendChild(bubble);
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// Tier icon SVGs and copy, reused from the sidebar service icons so the
+// banner matches the rest of the UI exactly rather than introducing a
+// separate asset.
+const PLAN_ACTIVATION = {
+  mantra: {
+    label: 'Mantra',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="pamantra"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#pamantra)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z" fill="#18400e" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#31a117"/></g></svg>',
+    desc: "I'll focus fully on shaping your mantra now. When it's ready, you'll get it as a card to keep — then 15 exchanges with me in full premium mode."
+  },
+  sanctuary: {
+    label: 'Sanctuary',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="pasanctuary"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#pasanctuary)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
+    desc: "100 exchanges are yours, no expiry. I'm here for vocation, reflection, or whatever you need to work through."
+  },
+  retreat: {
+    label: 'Retreat',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="paretreat"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#paretreat)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
+    desc: "500 exchanges are yours, no expiry. I'm here for vocation, reflection, or whatever you need to work through."
+  }
+};
+
+// Neutral system-style activation card — not a message "from Demian" — shown
+// the instant a purchase or code redemption is detected, either immediately
+// on a Stripe redirect-back / code confirm, or via the polling loop picking
+// up a webhook-set flag while the tab stayed open. No LLM call involved.
+function showPlanActivationBanner(tier) {
+  const plan = PLAN_ACTIVATION[tier];
+  if (!plan) return;
+  const chat = document.getElementById('chat');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg system';
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.innerHTML =
+    '<div class="plan-activation">' +
+      '<span class="plan-activation-icon">' + plan.icon + '</span>' +
+      '<span class="plan-activation-title">' + plan.label + ' plan activated</span>' +
+      '<span class="plan-activation-desc">' + plan.desc + '</span>' +
+    '</div>';
   wrap.appendChild(bubble);
   chat.appendChild(wrap);
   chat.scrollTop = chat.scrollHeight;

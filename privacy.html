@@ -497,6 +497,8 @@
         <li><a href="#legal-basis">Legal basis for processing</a></li>
         <li><a href="#transfers">International data transfers</a></li>
         <li><a href="#safety">Safety</a></li>
+        <li><a href="#architecture">How anonymization actually works</a></li>
+        <li><a href="#consent">Consent</a></li>
         <li><a href="#your-rights">Your rights under GDPR</a></li>
         <li><a href="#retention">Data retention</a></li>
         <li><a href="#age">Age</a></li>
@@ -589,23 +591,21 @@
         Anthropic's servers to generate replies.
         <a href="https://www.anthropic.com/legal/privacy" target="_blank">Anthropic's API policy</a>
         does not use these conversations to train AI models. Conversation data is retained by
-        Anthropic for up to 7 days for abuse prevention, then deleted.
+        Anthropic for up to 30 days, then deleted.
       </p>
 
       <p>
         <strong>Anonymous session logs.</strong> Demian keeps anonymous logs identified only by a
         random session ID — never by your name, email, or IP address. These are retained for up to
-        12 months to improve the service and maintain a record in case of safety or legal concerns.
-        They cannot be traced back to you under normal circumstances.
+        12 months to improve the service and for legal protection in case of safety concerns. There
+        is no mechanism that links a session ID back to your identity.
       </p>
 
       <p>
         <strong>Email address.</strong> Collected only if you choose to purchase credits or a mantra
         session. Your email is stored separately from conversation logs and used only to manage your
-        account and deliver what you purchased. If you explicitly opt in, it may be used to send
-        occasional updates via <a href="https://barabeke.substack.com/" target="_blank">The Odd Gospel</a>,
-        Barabeke's newsletter — unsubscribe at any time. Your email is never sold or shared with
-        third parties, and can be deleted on request.
+        account and deliver what you purchased. Your email is never sold or shared with third
+        parties, and can be deleted on request.
       </p>
 
       <p>
@@ -613,9 +613,45 @@
         Not stored permanently. Not linked to conversation content in logs.
       </p>
 
+      <h2 id="architecture">How anonymization actually works</h2>
+
       <p>
-        <strong>Payment data.</strong> Payments are processed by Stripe, Inc. Barabeke never sees
-        or stores your card details. Stripe's own privacy policy applies to payment processing.
+        Demian's privacy design is not just a policy — it is a structural property of the system.
+        When you register an account, your email and your conversation content are stored as two
+        entirely separate records, with no field in either one that points to the other. Verifying
+        that a conversation belongs to your account works by checking your own private list of
+        session IDs — never by attaching your identity to the conversation record itself. The
+        conversation content never carries an identity field, at any point, for any user, logged in
+        or not.
+      </p>
+
+      <p>
+        The one channel that remains, as with any text-based service: if you choose to type your own
+        name, phone number, or other identifying detail directly into a message, that detail exists
+        in what you typed. Demian is instructed never to ask for this information. In addition, an
+        automated filter scans messages before long-term storage and redacts common, detectable forms
+        of self-identification — email addresses, phone numbers, and explicit statements like "my
+        name is ___" — before they ever enter the long-term anonymous log. This filter is a
+        meaningful safeguard, not a perfect one: free-text writing can identify someone in ways no
+        automated filter can fully anticipate, and the filter cannot catch every possible way a
+        detail could be identifying. The strongest protection remains simply not volunteering
+        identifying details in conversation — which is never required to use Demian.
+      </p>
+
+      <h2 id="consent">Consent</h2>
+
+      <p>
+        Registering an account requires actively confirming you have read and accept this Privacy
+        Policy, presented as an explicit checkbox at the point of registration — not a passive
+        assumption. This consent is recorded with a timestamp. You do not need to register, and do
+        not need to give any consent, to use Demian's free tier anonymously.
+      </p>
+
+
+      <p>
+        <strong>Payment data.</strong> Payments are processed entirely by Stripe, Inc. — full card
+        details never reach Demian's systems at any point; Stripe's checkout page collects them
+        directly. Stripe's own privacy policy applies to payment processing.
       </p>
 
       <p>
@@ -652,24 +688,28 @@
       <h2 id="safety">Safety</h2>
 
       <p>
-        Demian operates two layers of safety protection. The first is Anthropic's Constitutional AI
-        framework — an automated system built into the underlying model that handles explicit
-        self-harm signals, clinical crises, and other high-risk content before a response is generated.
+        Demian's safety relies on Anthropic's Constitutional AI framework — training built into the
+        underlying model itself that handles self-harm signals, clinical crises, and other high-risk
+        content carefully at the moment a response is generated. This is a property of the model,
+        not a separate monitoring system.
       </p>
 
       <p>
-        The second layer is Demian's own logic: if a conversation contains language associated with
-        personal crisis, it is flagged for potential human review. Flagged conversations remain
-        anonymous unless a serious legal concern requires identifying the source.
+        Human review of conversation logs is technically possible — for continuous improvement of the
+        service, or for legal protection in case of safety concerns — the same way it is for any AI
+        service. What review can never do is identify you: conversations are anonymized by the system
+        and are not joined to any account, email, or payment record under any circumstance. The only
+        way a conversation could ever be associated with you is if you yourself choose to share
+        identifying personal details in the conversation — which Demian is instructed never to ask
+        for, beyond what is reasonably needed to provide the service.
       </p>
 
       <h2 id="your-rights">Your rights under GDPR</h2>
 
       <p>
         You have the right to access, rectify, erase, restrict, or port your personal data, and to
-        object to its processing. To exercise any of these rights, reach out via
-        <a href="https://x.com/barabeke" target="_blank">X (@barabeke)</a> or
-        <a href="https://t.me/barabeke" target="_blank">Telegram</a>.
+        object to its processing. See <a href="#contact">Contact</a> below to exercise any of these
+        rights.
       </p>
 
       <p>
@@ -712,7 +752,8 @@
 
     <h2 id="contact">Contact</h2>
     <p>
-      For any privacy-related matter — whether concerning the website or Demian — reach Barabeke via
+      For any privacy-related matter — whether concerning the website or Demian — email
+      <a href="mailto:demian@demianism.org">demian@demianism.org</a>. You can also reach Barabeke via
       <a href="https://x.com/barabeke" target="_blank">X (@barabeke)</a> or
       <a href="https://t.me/barabeke" target="_blank">Telegram (t.me/barabeke)</a>.
     </p>
