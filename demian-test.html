@@ -369,8 +369,8 @@ body {
   padding: 4px 2px;
 }
 .msg.system .plan-activation-icon {
-  width: 44px;
-  height: 44px;
+  width: 66px;
+  height: 66px;
   margin-bottom: 6px;
 }
 .msg.system .plan-activation-title {
@@ -388,6 +388,82 @@ body {
   line-height: 1.4;
   max-width: 320px;
 }
+
+/* Message meta row: timestamp + copy button, shown under each bubble.
+   Hidden by default on pointer devices and revealed on hover so the chat
+   doesn't look cluttered; always visible on touch devices (no hover) since
+   there's no equivalent reveal gesture. */
+.msg-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 18px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  padding: 0 2px;
+}
+.msg:hover .msg-meta { opacity: 1; }
+.msg.user .msg-meta { flex-direction: row-reverse; }
+@media (hover: none) {
+  .msg-meta { opacity: 0.6; }
+}
+.msg-timestamp {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+.msg-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 5px;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.msg-copy-btn:hover {
+  background: rgba(104,100,187,0.18);
+  color: var(--purple-light);
+}
+.msg-copy-btn svg { width: 14px; height: 14px; }
+.msg-copy-btn.copied { color: #7fd99a; }
+
+/* Jump-to-bottom button — fixed just above the input zone, shown only when
+   the user has scrolled away from the latest message. */
+.scroll-to-bottom-btn {
+  position: fixed;
+  left: 50%;
+  bottom: 96px; /* fallback; actual offset is set dynamically in JS to track input-zone height */
+  transform: translateX(-50%) translateY(8px);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--card-bg);
+  border: 1px solid rgba(104,100,187,0.4);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  color: var(--purple-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 49;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.scroll-to-bottom-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.scroll-to-bottom-btn svg { width: 18px; height: 18px; }
 
 /* input-zone → see Layout section above */
 
@@ -1359,6 +1435,10 @@ body {
   </div>
 </div>
 
+<button class="scroll-to-bottom-btn" id="scrollToBottomBtn" onclick="scrollToBottom()" title="Jump to latest message" aria-label="Jump to latest message">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+</button>
+
 <div class="input-zone">
   <div class="bottom-inner">
     <div class="input-bar">
@@ -1582,6 +1662,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   updateCounter();
   updateAccountUI();
+  initScrollToBottomButton();
 
   window.addEventListener('storage', async (e) => {
     if (e.key === 'demian_auth_signal' && e.newValue) {
@@ -1652,6 +1733,9 @@ async function submitLogin() {
       document.getElementById('loginTitle').textContent = 'Check your inbox';
       document.getElementById('loginDesc').textContent = 'We sent a secure access link to ' + email + '. It expires in 15 minutes.';
       document.getElementById('loginEmail').style.display = 'none';
+      // Consent checkbox + T&C text are no longer relevant once the link has
+      // been sent — hide the whole label (checkbox + text), not just the input.
+      document.getElementById('loginConsent').closest('label').style.display = 'none';
       const btns = document.querySelector('#loginModal .modal-btns');
       btns.innerHTML = '<button class="modal-cancel" style="width:100%;" onclick="closeLoginModal()">Close</button>';
       btns.style.display = 'flex';
@@ -1843,6 +1927,27 @@ async function restoreSession() {
       } catch (e) { /* ignore */ }
     }
   }
+  // Logged in but no KV session exists yet — this happens right after
+  // registering/redeeming mid-conversation: the messages exchanged while
+  // still a free/logged-out user live only in localStorage, never in KV
+  // (KV sessions are only created once a sessionId is assigned by /chat).
+  // Without this, that pre-existing conversation would be silently lost
+  // the moment the user authenticates. Restore it locally; it becomes a
+  // real KV-backed session automatically on the next message sent, since
+  // /chat assigns and persists a sessionId whenever one isn't already set.
+  if (authToken && !currentSessionId) {
+    const savedMessages = localStorage.getItem('demian_messages');
+    if (savedMessages) {
+      try {
+        const parsed = JSON.parse(savedMessages);
+        if (parsed.length > 0) {
+          messages = parsed;
+          renderRestoredChat(parsed, null);
+          return;
+        }
+      } catch (e) { /* ignore */ }
+    }
+  }
   // No session to restore — show opening message
   sendOpeningMessage();
 }
@@ -1855,7 +1960,10 @@ function renderRestoredChat(savedMessages, title) {
   // Then replay messages (skip opening content)
   for (const msg of savedMessages) {
     const role = msg.role === 'assistant' ? 'demian' : 'user';
-    appendMessage(role, msg.content);
+    // No per-message timestamp is stored server-side yet, so we deliberately
+    // don't fabricate one here — appendMessage shows just the copy button
+    // when ts is omitted, rather than a misleading "just now" on old history.
+    appendMessage(role, msg.content, msg.ts);
   }
   messages = savedMessages.map(m => ({
     role: m.role === 'assistant' ? 'assistant' : 'user',
@@ -1933,7 +2041,16 @@ function startRename(el, sessionId, currentTitle) {
 
 function openLoginModal() {
   document.getElementById('loginModal').classList.add('open');
+  // Reset modal to its initial state in case it was left in the
+  // post-submit "Check your inbox" state from a previous open.
+  document.getElementById('loginTitle').textContent = 'Sign in to Demian';
+  document.getElementById('loginDesc').textContent = "Enter your email and we'll send you a secure access link. No password needed.";
+  document.getElementById('loginEmail').style.display = '';
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginConsent').closest('label').style.display = '';
   document.getElementById('loginConsent').checked = false;
+  const btns = document.querySelector('#loginModal .modal-btns');
+  btns.innerHTML = '<button class="modal-confirm" id="loginConfirmBtn" onclick="submitLogin()" disabled style="opacity:0.45;cursor:not-allowed;">Send link</button><button class="modal-cancel" onclick="closeLoginModal()">Cancel</button>';
   updateLoginConsentState();
   setTimeout(() => document.getElementById('loginEmail').focus(), 100);
 }
@@ -2139,7 +2256,7 @@ async function sendMessage() {
   updateCounter();
 
   messages.push({ role: 'user', content: text });
-  const userMsgEl = appendMessage('user', text);
+  const userMsgEl = appendMessage('user', text, Date.now());
   if (userMsgEl) {
     requestAnimationFrame(() => {
       const top = userMsgEl.getBoundingClientRect().top + window.scrollY - 80;
@@ -2191,7 +2308,7 @@ async function callAPI(msgs) {
     const reply = data.content[0].text;
     removeTyping(typingEl);
     messages.push({ role: 'assistant', content: reply });
-    appendMessage('demian', reply);
+    appendMessage('demian', reply, Date.now());
 
     // Update balance from server response
     if (data._session) {
@@ -2226,7 +2343,7 @@ async function callAPI(msgs) {
 
   } catch (err) {
     removeTyping(typingEl);
-    appendMessage('demian', 'Something interrupted our connection. Please try again.');
+    appendMessage('demian', 'Something interrupted our connection. Please try again.', Date.now());
     setStatus(false);
     console.error(err);
   }
@@ -2827,7 +2944,7 @@ function handlePurchaseReturn(tier, msgs, mantra) {
   else updateCounter();
 }
 
-function appendMessage(role, text) {
+function appendMessage(role, text, ts) {
   const chat = document.getElementById('chat');
   const wrap = document.createElement('div');
   wrap.className = `msg ${role}`;
@@ -2886,12 +3003,113 @@ function appendMessage(role, text) {
     bubble.textContent = cleanText;
   }
   wrap.appendChild(bubble);
+
+  // Meta row: timestamp + copy button. Only for real user/demian messages
+  // (not system banners, which have their own simpler markup).
+  if (role === 'user' || role === 'demian') {
+    const meta = document.createElement('div');
+    meta.className = 'msg-meta';
+    const timeStr = formatMsgTime(ts);
+    if (timeStr) {
+      const timeEl = document.createElement('span');
+      timeEl.className = 'msg-timestamp';
+      timeEl.textContent = timeStr;
+      meta.appendChild(timeEl);
+    }
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'msg-copy-btn';
+    copyBtn.type = 'button';
+    copyBtn.title = 'Copy';
+    copyBtn.setAttribute('aria-label', 'Copy message');
+    copyBtn.innerHTML = COPY_ICON_SVG;
+    copyBtn.onclick = () => copyMsgText(copyBtn, cleanText);
+    meta.appendChild(copyBtn);
+    wrap.appendChild(meta);
+  }
+
   chat.appendChild(wrap);
   if (role === 'demian') {
     const nearBottom = (window.innerHeight + window.scrollY) >= (document.body.scrollHeight - 300);
     if (nearBottom) window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   }
+  if (typeof updateScrollToBottomVisibility === 'function') {
+    requestAnimationFrame(updateScrollToBottomVisibility);
+  }
   return wrap;
+}
+
+// Icon swapped to a checkmark briefly on click to confirm the copy succeeded.
+const COPY_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+const CHECK_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+function formatMsgTime(ts) {
+  // Best-practice chat timestamp: time-only for today, "Mon 14:32" within
+  // the last week, full date beyond that — avoids a wall of redundant
+  // dates while still being unambiguous for older history.
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return '';
+  const now = new Date();
+  const sameDay = d.toDateString() === now.toDateString();
+  const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (sameDay) return timeStr;
+  const diffDays = Math.floor((now.setHours(0,0,0,0) - new Date(d).setHours(0,0,0,0)) / 86400000);
+  if (diffDays >= 0 && diffDays < 7) {
+    const weekday = d.toLocaleDateString([], { weekday: 'short' });
+    return weekday + ' ' + timeStr;
+  }
+  return d.toLocaleDateString([], { day: '2-digit', month: 'short' }) + ' ' + timeStr;
+}
+
+function copyMsgText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.innerHTML;
+    btn.innerHTML = CHECK_ICON_SVG;
+    btn.classList.add('copied');
+    btn.title = 'Copied!';
+    setTimeout(() => {
+      btn.innerHTML = original;
+      btn.classList.remove('copied');
+      btn.title = 'Copy';
+    }, 1500);
+  }).catch(err => console.error('copy failed', err));
+}
+
+/* ═══ JUMP TO BOTTOM ═══ */
+// Mirrors the familiar Claude/chat-app pattern: a small floating button
+// appears once the user has scrolled up away from the latest message, and
+// disappears again once they're back near the bottom. Position tracks the
+// input zone's actual height (not a fixed value) since the textarea grows.
+let _scrollBtnTicking = false;
+function initScrollToBottomButton() {
+  positionScrollToBottomButton();
+  updateScrollToBottomVisibility();
+  window.addEventListener('scroll', () => {
+    if (_scrollBtnTicking) return;
+    _scrollBtnTicking = true;
+    requestAnimationFrame(() => {
+      updateScrollToBottomVisibility();
+      _scrollBtnTicking = false;
+    });
+  }, { passive: true });
+  window.addEventListener('resize', positionScrollToBottomButton);
+  const ta = document.getElementById('userInput');
+  if (ta) ta.addEventListener('input', positionScrollToBottomButton);
+}
+function positionScrollToBottomButton() {
+  const btn = document.getElementById('scrollToBottomBtn');
+  const inputZone = document.querySelector('.input-zone');
+  if (!btn || !inputZone) return;
+  const h = inputZone.getBoundingClientRect().height;
+  btn.style.bottom = (h + 14) + 'px';
+}
+function updateScrollToBottomVisibility() {
+  const btn = document.getElementById('scrollToBottomBtn');
+  if (!btn) return;
+  const distanceFromBottom = document.body.scrollHeight - (window.innerHeight + window.scrollY);
+  btn.classList.toggle('visible', distanceFromBottom > 400);
+}
+function scrollToBottom() {
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
 function appendSystemMessage(text) {
