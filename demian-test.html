@@ -1494,21 +1494,32 @@ body {
 
 <div class="modal-overlay" id="loginModal">
   <div class="modal">
-    <h3 id="loginTitle">Sign in to Demian</h3>
+    <h3 id="loginTitle">Continue to Demian</h3>
     <p id="loginDesc">Enter your email and we'll send you a secure access link. No password needed.</p>
     <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email" style="letter-spacing:0.5px;" />
-    <label style="display:flex;align-items:flex-start;gap:8px;margin:14px 2px;cursor:pointer;font-size:12.5px;line-height:1.45;color:rgba(255,255,255,0.75);">
-      <input type="checkbox" id="loginConsent" onchange="updateLoginConsentState()" style="margin-top:2px;width:15px;height:15px;flex-shrink:0;accent-color:var(--purple-mid);" />
-      <span>
-        I understand that my email is stored separately from my conversations, that conversation
-        content is anonymized and never linked back to my identity, and I agree to the
-        <a href="/privacy.html" target="_blank" style="color:var(--purple-light);text-decoration:underline;">Privacy Policy</a>.
-      </span>
-    </label>
     <div class="modal-error" id="loginError"></div>
     <div class="modal-btns">
-      <button class="modal-confirm" id="loginConfirmBtn" onclick="submitLogin()" disabled style="opacity:0.45;cursor:not-allowed;">Send link</button>
+      <button class="modal-confirm" id="loginConfirmBtn" onclick="submitLogin()">Continue</button>
       <button class="modal-cancel" onclick="closeLoginModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Shown only the first time a given email is seen — /auth/request returns
+     consent_required for unknown emails, never for ones that already have an
+     account. A returning user (recognized email) never sees this. -->
+<div class="modal-overlay" id="consentModal">
+  <div class="modal">
+    <h3>Before we continue</h3>
+    <p style="font-size:13.5px;line-height:1.55;color:rgba(255,255,255,0.8);margin-bottom:4px;">
+      I understand that my email is stored separately from my conversations, that conversation
+      content is anonymized and never linked back to my identity, and I agree to the
+      <a href="/privacy.html" target="_blank" style="color:var(--purple-light);text-decoration:underline;">Privacy Policy</a>.
+    </p>
+    <div class="modal-error" id="consentError"></div>
+    <div class="modal-btns">
+      <button class="modal-confirm" id="consentConfirmBtn" onclick="acceptConsentAndSend()">Accept &amp; send link</button>
+      <button class="modal-cancel" onclick="cancelConsentModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -1708,17 +1719,57 @@ function closeSidebar() {
 }
 
 /* ═══ AUTH ═══ */
+// Pending email held between submitLogin() and acceptConsentAndSend() — only
+// ever populated for genuinely new emails, while the consent popup is open.
+let _pendingLoginEmail = null;
+
 async function submitLogin() {
   const email = document.getElementById('loginEmail').value.trim();
-  const consented = document.getElementById('loginConsent').checked;
   const errEl = document.getElementById('loginError');
-  const btn = document.querySelector('#loginModal .modal-confirm');
+  const btn = document.getElementById('loginConfirmBtn');
   if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email.'; return; }
-  // Defensive client-side check — the button is disabled until checked, but
-  // this guards against the button's disabled state being bypassed (e.g. a
-  // modified request). The backend independently requires consent too; see
-  // /auth/request, which is the actual enforcement point.
-  if (!consented) { errEl.textContent = 'Please confirm you have read and accept the Privacy Policy.'; return; }
+  errEl.textContent = '';
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  try {
+    // No consent field on this first attempt. The backend already knows,
+    // from the email alone, whether this is a returning account (consent
+    // was recorded once, at first signup, and is never re-asked) or a new
+    // one (which comes back asking for it) — see /auth/request.
+    const res = await fetch(WORKER_URL + '/auth/request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showCheckYourInbox(email);
+    } else if (data.reason === 'consent_required') {
+      // Genuinely new email — show the consent popup. Login modal stays
+      // open underneath; nothing has been sent yet.
+      _pendingLoginEmail = email;
+      btn.textContent = 'Continue';
+      btn.disabled = false;
+      openConsentModal();
+    } else {
+      errEl.textContent = 'Something went wrong. Please try again.';
+      btn.textContent = 'Continue'; btn.disabled = false;
+    }
+  } catch (err) {
+    errEl.textContent = 'Connection error. Please try again.';
+    btn.textContent = 'Continue'; btn.disabled = false;
+  }
+}
+
+// Fires only after the person accepts in the consent popup, for a brand-new
+// email. Resubmits the same request with consent: true, which is the actual
+// enforcement point server-side (see /auth/request) — this call is what
+// actually sends the magic link for a first-time signup.
+async function acceptConsentAndSend() {
+  const email = _pendingLoginEmail;
+  const errEl = document.getElementById('consentError');
+  const btn = document.getElementById('consentConfirmBtn');
+  if (!email) { closeConsentModal(); return; }
   errEl.textContent = '';
   btn.textContent = 'Sending...';
   btn.disabled = true;
@@ -1730,26 +1781,58 @@ async function submitLogin() {
     });
     const data = await res.json();
     if (data.ok) {
-      document.getElementById('loginTitle').textContent = 'Check your inbox';
-      document.getElementById('loginDesc').textContent = 'We sent a secure access link to ' + email + '. It expires in 15 minutes.';
-      document.getElementById('loginEmail').style.display = 'none';
-      // Consent checkbox + T&C text are no longer relevant once the link has
-      // been sent — hide the whole label (checkbox + text), not just the input.
-      document.getElementById('loginConsent').closest('label').style.display = 'none';
-      const btns = document.querySelector('#loginModal .modal-btns');
-      btns.innerHTML = '<button class="modal-cancel" style="width:100%;" onclick="closeLoginModal()">Close</button>';
-      btns.style.display = 'flex';
-    } else if (data.reason === 'consent_required') {
-      errEl.textContent = 'Please confirm you have read and accept the Privacy Policy.';
-      btn.textContent = 'Send link'; btn.disabled = false;
+      closeConsentModal();
+      showCheckYourInbox(email);
     } else {
       errEl.textContent = 'Something went wrong. Please try again.';
-      btn.textContent = 'Send link'; btn.disabled = false;
+      btn.textContent = 'Accept & send link'; btn.disabled = false;
     }
   } catch (err) {
     errEl.textContent = 'Connection error. Please try again.';
-    btn.textContent = 'Send link'; btn.disabled = false;
+    btn.textContent = 'Accept & send link'; btn.disabled = false;
+  } finally {
+    _pendingLoginEmail = null;
   }
+}
+
+// Shared by both the returning-user path (submitLogin) and the new-user path
+// (acceptConsentAndSend) — same end state either way: the link is on its way.
+// Re-asserts .open on the login modal since the new-user path hides it while
+// the consent popup is showing (see openConsentModal).
+function showCheckYourInbox(email) {
+  document.getElementById('loginModal').classList.add('open');
+  document.getElementById('loginTitle').textContent = 'Check your inbox';
+  document.getElementById('loginDesc').textContent = 'We sent a secure access link to ' + email + '. It expires in 15 minutes.';
+  document.getElementById('loginEmail').style.display = 'none';
+  const btns = document.querySelector('#loginModal .modal-btns');
+  btns.innerHTML = '<button class="modal-cancel" style="width:100%;" onclick="closeLoginModal()">Close</button>';
+  btns.style.display = 'flex';
+}
+
+function openConsentModal() {
+  document.getElementById('consentError').textContent = '';
+  const btn = document.getElementById('consentConfirmBtn');
+  btn.textContent = 'Accept & send link';
+  btn.disabled = false;
+  // Swap rather than stack — two full-screen overlays at once looks broken.
+  // The login modal reappears underneath if the person cancels out of this
+  // one, so they're not forced to retype their email from scratch.
+  document.getElementById('loginModal').classList.remove('open');
+  document.getElementById('consentModal').classList.add('open');
+}
+function closeConsentModal() {
+  document.getElementById('consentModal').classList.remove('open');
+  _pendingLoginEmail = null;
+}
+function cancelConsentModal() {
+  // Distinct from closeConsentModal (used internally on success/teardown):
+  // this is the person clicking Cancel, so bring the login modal back with
+  // their email still in it rather than dismissing everything.
+  document.getElementById('consentModal').classList.remove('open');
+  _pendingLoginEmail = null;
+  document.getElementById('loginModal').classList.add('open');
+  const btn = document.getElementById('loginConfirmBtn');
+  if (btn) { btn.textContent = 'Continue'; btn.disabled = false; }
 }
 
 async function verifyMagicLink(token) {
@@ -2043,27 +2126,21 @@ function openLoginModal() {
   document.getElementById('loginModal').classList.add('open');
   // Reset modal to its initial state in case it was left in the
   // post-submit "Check your inbox" state from a previous open.
-  document.getElementById('loginTitle').textContent = 'Sign in to Demian';
+  document.getElementById('loginTitle').textContent = 'Continue to Demian';
   document.getElementById('loginDesc').textContent = "Enter your email and we'll send you a secure access link. No password needed.";
   document.getElementById('loginEmail').style.display = '';
   document.getElementById('loginEmail').value = '';
-  document.getElementById('loginConsent').closest('label').style.display = '';
-  document.getElementById('loginConsent').checked = false;
   const btns = document.querySelector('#loginModal .modal-btns');
-  btns.innerHTML = '<button class="modal-confirm" id="loginConfirmBtn" onclick="submitLogin()" disabled style="opacity:0.45;cursor:not-allowed;">Send link</button><button class="modal-cancel" onclick="closeLoginModal()">Cancel</button>';
-  updateLoginConsentState();
+  btns.innerHTML = '<button class="modal-confirm" id="loginConfirmBtn" onclick="submitLogin()">Continue</button><button class="modal-cancel" onclick="closeLoginModal()">Cancel</button>';
   setTimeout(() => document.getElementById('loginEmail').focus(), 100);
 }
 function closeLoginModal() {
   document.getElementById('loginModal').classList.remove('open');
   document.getElementById('loginError').textContent = '';
-}
-function updateLoginConsentState() {
-  const checked = document.getElementById('loginConsent').checked;
-  const btn = document.getElementById('loginConfirmBtn');
-  btn.disabled = !checked;
-  btn.style.opacity = checked ? '1' : '0.45';
-  btn.style.cursor = checked ? 'pointer' : 'not-allowed';
+  // The consent popup only ever makes sense layered on top of an open login
+  // attempt — if that attempt is being dismissed, close it too rather than
+  // leaving it orphaned with a stale pending email.
+  closeConsentModal();
 }
 
 async function newChat(triggerEl) {
