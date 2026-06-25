@@ -756,6 +756,18 @@ button#send svg { width: 17px; height: 17px; }
 .sw-btns.gift-priority .sw-btn-primary:hover { background:#3a3950; }
 .sw-btns.gift-priority .sw-btn-gift { flex:0 0 72%; background:#35327e; color:#cfcfd4; font-weight:700; font-size:15px; }
 .sw-btns.gift-priority .sw-btn-gift:hover { background:#3f3c90; }
+.sw-blocked-note {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(104,100,187,0.1);
+  border: 1px solid rgba(104,100,187,0.25);
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.75);
+  text-align: center;
+}
 @media (max-width:520px) {
   .service-window { max-width:100%; border-radius:20px 20px 0 0; position:fixed; bottom:0; left:0; right:0; max-height:94vh; }
   .service-overlay.open { align-items:flex-end; padding:0; }
@@ -1475,6 +1487,7 @@ body {
           Gift
         </button>
       </div>
+      <p class="sw-blocked-note" id="swBlockedNote" style="display:none;"></p>
     </div>
   </div>
 </div>
@@ -2869,22 +2882,32 @@ function openServiceWindow(key) {
     shoutEl.style.display = 'none';
     shoutSubEl.style.display = 'none';
   }
-  document.getElementById('swBtnGet').textContent = s.btnLabel + ' €' + s.price;
-
   // Mantra is a one-off, new-user-only offer: once a user has ever had
   // Mantra (bought it, or reached it via gift redemption) or already owns
   // Sanctuary/Retreat, buying Mantra again makes no sense — Demian can make
   // a fresh one for them directly under those plans instead. In that case
   // the Gift button becomes the prominent action (same two buttons, colors
   // swapped) since gifting is the one thing they can still meaningfully do
-  // here. This check only applies to the mantra service window — Sanctuary
-  // and Retreat have no purchase restriction.
+  // here, and the Get button is relabeled and disabled rather than still
+  // quietly linking to Stripe. This check only applies to the mantra
+  // service window — Sanctuary and Retreat have no purchase restriction
+  // and can always be bought/recharged even with another plan active.
   const swBtnsEl = document.getElementById('swBtns');
-  if (key === 'mantra' && !canBuyMantra) {
+  const blockedNote = document.getElementById('swBlockedNote');
+  const mantraBlocked = (key === 'mantra' && !canBuyMantra);
+  if (mantraBlocked) {
     swBtnsEl.classList.add('gift-priority');
+    const getBtn = document.getElementById('swBtnGet');
+    getBtn.textContent = 'Already activated';
+    getBtn.title = 'Mantra is a one-off offer, already used.';
   } else {
     swBtnsEl.classList.remove('gift-priority');
+    const getBtn = document.getElementById('swBtnGet');
+    getBtn.textContent = s.btnLabel + ' €' + s.price;
+    getBtn.title = '';
   }
+  blockedNote.style.display = 'none';
+  blockedNote.textContent = '';
 
   document.getElementById('serviceWindow').scrollTop = 0;
   document.querySelector('.sw-body').scrollTop = 0;
@@ -2899,6 +2922,15 @@ function closeServiceWindow() {
 
 function purchaseService() {
   if (!currentService) return;
+  // Mantra is a one-off introductory offer — once blocked (already had one,
+  // or already on Sanctuary/Retreat), clicking Get must never reach Stripe.
+  // Show the explanation in place instead of opening a new tab.
+  if (currentService === 'mantra' && !canBuyMantra) {
+    const note = document.getElementById('swBlockedNote');
+    note.textContent = "Mantra was a one-off introductory offer, meant to be used once. You can use Sanctuary or Retreat to get a new mantra in premium mode.";
+    note.style.display = '';
+    return;
+  }
   window.open(SERVICE_LINKS[currentService], '_blank');
 }
 
