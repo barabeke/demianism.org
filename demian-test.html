@@ -27,7 +27,7 @@
   --card-bg: #171637;
   --navbar-bg: #12103a;
   --status-color: #a29ef1;
-  --user-bg: #1f1f39; /* not currently referenced by .msg.user .msg-bubble, which uses its own literal hex — kept in sync manually for now */
+  --user-bg: #23233e; /* not currently referenced by .msg.user .msg-bubble, which uses its own literal hex — kept in sync manually for now */
   --input-bg: #242335; /* not currently referenced by .input-bar, which uses its own literal hex — kept in sync manually for now */
   --placeholder: #686781; /* not currently referenced by textarea::placeholder, which uses its own literal hex — kept in sync manually for now */
   --glow: rgba(104,100,187,0.55);
@@ -331,7 +331,7 @@ body {
 }
 
 .msg.user .msg-bubble {
-  background: #1f1f39;
+  background: #23233e;
   border: 1px solid rgba(104,100,187,0.25);
   color: var(--text-body);
   font-family: 'Libre Baskerville', serif;
@@ -1279,14 +1279,14 @@ button#send svg { width: 17px; height: 17px; }
   position: relative;
   margin: 14px 0 6px;
   padding: 18px 18px 16px;
-  background: rgba(18,16,58,0.55);
+  background: #23233e;
   border: 1px solid rgba(104,100,187,0.35);
   border-radius: 12px;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
   font-family: 'Libre Baskerville', Georgia, serif;
 }
-.mantra-copyblock:hover { border-color: rgba(104,100,187,0.7); background: rgba(18,16,58,0.75); }
+.mantra-copyblock:hover { border-color: rgba(104,100,187,0.7); background: #292946; }
 .mantra-copyblock .mc-para { color: #d4d4f0; line-height: 1.6; margin-bottom: 0.7em; }
 .mantra-copyblock .mc-para:last-of-type { margin-bottom: 0; }
 .mantra-copyblock .mc-cta { color: #8b88e0; }
@@ -1296,6 +1296,15 @@ button#send svg { width: 17px; height: 17px; }
   display: flex; align-items: center; gap: 6px;
 }
 .mantra-copyblock.copied .mc-hint { color: #31a117; }
+
+/* Draft variant: same shape/behavior as the final mantra box, with a small
+   label so it's clear at a glance this is a proposal still open for
+   feedback, not the finalized, card-backed mantra. */
+.mantra-copyblock.mc-draft .mc-draft-label {
+  font-family: 'Inter', sans-serif; font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.6px; text-transform: uppercase; color: rgba(255,255,255,0.4);
+  margin-bottom: 10px; display: block;
+}
 
 
 /* ── Starry sky background ── */
@@ -2607,6 +2616,37 @@ async function rcLoadScriptFonts(text) {
   await new Promise(r => setTimeout(r, 300));
 }
 
+// Shared box-builder for both [MANTRA_DRAFT] proposals and the final
+// [MANTRA_TEXT] mantra — same shape, same tap-to-copy behavior. isDraft
+// adds a small "Proposed mantra" label and a distinct class so CSS/future
+// logic can tell the two apart without re-parsing text.
+function buildMantraCopyBlock(mantraText, { isDraft = false } = {}) {
+  const mantraParas = mantraText.split(/\n+/).map(l => l.trim()).filter(Boolean);
+  const plainForCopy = mantraParas
+    .map(p => p.replace(/\[([^\]]*)\]/g, '$1'))
+    .join('\n\n');
+  const block = document.createElement('div');
+  block.className = 'mantra-copyblock' + (isDraft ? ' mc-draft' : '');
+  const labelHTML = isDraft ? '<span class="mc-draft-label">Proposed mantra</span>' : '';
+  block.innerHTML = labelHTML + mantraParas
+    .map((p) => {
+      const isCTA = /\[[^\]]*\]/.test(p);
+      const inner = colorBracketsRC(p); // strips brackets, wraps in .actionable
+      return `<div class="mc-para${isCTA ? ' mc-cta' : ''}">${inner}</div>`;
+    })
+    .join('') + '<div class="mc-hint">⧉ tap to copy</div>';
+  block.addEventListener('click', () => {
+    navigator.clipboard.writeText(plainForCopy).then(() => {
+      block.classList.add('copied');
+      const hint = block.querySelector('.mc-hint');
+      const prev = hint.textContent;
+      hint.textContent = '✓ copied';
+      setTimeout(() => { block.classList.remove('copied'); hint.textContent = prev; }, 1600);
+    });
+  });
+  return { block, mantraParas, plainForCopy };
+}
+
 function colorBracketsRC(raw) {
   let out = '', last = 0, m;
   const re = /\[([^\]]*)\]/g;
@@ -2656,14 +2696,6 @@ async function handleSessionComplete(reply) {
   }
   const mantraText = mantraMatch[1].trim();
 
-  // Build the clickable copy-block shown in chat. Paragraphs come from line
-  // breaks; the final [bracketed] line is the CTA, shown in indigo but with
-  // the brackets stripped — the user never sees raw brackets, and copying
-  // yields clean plain text (paragraphs as blank-line-separated, no brackets).
-  const mantraParas = mantraText.split(/\n+/).map(l => l.trim()).filter(Boolean);
-  const plainForCopy = mantraParas
-    .map(p => p.replace(/\[([^\]]*)\]/g, '$1'))
-    .join('\n\n');
   const chatNow = document.getElementById('chat');
   const demianMsgsNow = chatNow.querySelectorAll('.msg.demian');
   const bubbleForBlock = demianMsgsNow.length ? demianMsgsNow[demianMsgsNow.length - 1].querySelector('.msg-bubble') : null;
@@ -2682,24 +2714,7 @@ async function handleSessionComplete(reply) {
     });
   }
   if (bubbleForBlock) {
-    const block = document.createElement('div');
-    block.className = 'mantra-copyblock';
-    block.innerHTML = mantraParas
-      .map((p, i) => {
-        const isCTA = /\[[^\]]*\]/.test(p);
-        const inner = colorBracketsRC(p); // strips brackets, wraps in .actionable
-        return `<div class="mc-para${isCTA ? ' mc-cta' : ''}">${inner}</div>`;
-      })
-      .join('') + '<div class="mc-hint">⧉ tap to copy</div>';
-    block.addEventListener('click', () => {
-      navigator.clipboard.writeText(plainForCopy).then(() => {
-        block.classList.add('copied');
-        const hint = block.querySelector('.mc-hint');
-        const prev = hint.textContent;
-        hint.textContent = '✓ copied';
-        setTimeout(() => { block.classList.remove('copied'); hint.textContent = prev; }, 1600);
-      });
-    });
+    const { block, mantraParas, plainForCopy } = buildMantraCopyBlock(mantraText, { isDraft: false });
     bubbleForBlock.appendChild(block);
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   }
@@ -3200,6 +3215,15 @@ function appendMessage(role, text, ts) {
     }
     return '';
   });
+  // Extract any proposed-mantra draft block(s) — these can appear in any
+  // Demian reply, not just a [SESSION_COMPLETE] one, so this is handled
+  // unconditionally here rather than gated like handleSessionComplete.
+  const draftTexts = [];
+  text = text.replace(/\[MANTRA_DRAFT\]([\s\S]*?)\[\/MANTRA_DRAFT\]/g, (_, inner) => {
+    draftTexts.push(inner.trim());
+    return '';
+  });
+
   const cleanText = text
     .replace(/\[SESSION_COMPLETE\]/g, '')
     .replace(/\[MANTRA_TEXT\][\s\S]*?\[\/MANTRA_TEXT\]/g, '')
@@ -3210,6 +3234,10 @@ function appendMessage(role, text, ts) {
   bubble.className = 'msg-bubble';
   if (role === 'demian') {
     bubble.innerHTML = autolinkText(marked.parse(cleanText)) + (imageHTML || '');
+    for (const draftText of draftTexts) {
+      const { block } = buildMantraCopyBlock(draftText, { isDraft: true });
+      bubble.appendChild(block);
+    }
   } else {
     bubble.textContent = cleanText;
   }
