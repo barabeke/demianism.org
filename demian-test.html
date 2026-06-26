@@ -1683,7 +1683,15 @@ function autolinkText(html) {
   // manifold.xyz, archive.org, mybook.to, t.me, x.com, etc.) — meaning a
   // bare https:// URL to any of those would sit inert as plain unclickable
   // text. Now matches any http(s) URL or bare www./demianism.org one.
-  return html.replace(/(?<![="'>\/])(\bhttps?:\/\/[^\s<"')\]]+|\b(?:www\.|demianism\.org)[^\s<"')\]]+)/g, (url) => {
+  //
+  // The lookbehind only excludes a URL that's already sitting inside an
+  // href="..." attribute (preceded by ="), which is the one real case that
+  // must never be re-linked. The previous version excluded ANY tag-boundary
+  // character (<, >, /, quotes) before the URL — which also blocked the
+  // extremely common case of a URL being the first thing in its own <p>
+  // (immediately preceded by the tag's closing >), making whole-line links
+  // silently un-clickable. That was the actual bug here, not the model.
+  return html.replace(/(?<!=")(\bhttps?:\/\/[^\s<"')\]]+|\b(?:www\.|demianism\.org)[^\s<"')\]]+)/g, (url) => {
     // Skip if already inside an anchor
     const href = url.startsWith('http') ? url : 'https://' + url;
     return '<a href="' + href + '" target="_blank" rel="noopener" style="color:var(--text-link)">' + url + '</a>';
