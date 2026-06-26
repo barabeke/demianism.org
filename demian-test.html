@@ -1229,7 +1229,7 @@ button#send svg { width: 17px; height: 17px; }
 #mantra-render-card .rc-body {
   position: relative; z-index: 2; flex: 1; width: 100%;
   display: flex; align-items: center; justify-content: center;
-  padding: 32px 0 243px; /* 3% / 18% of 1350 */
+  padding: 32px 0;
   overflow: hidden;
 }
 #mantra-render-card .rc-text {
@@ -1257,6 +1257,15 @@ button#send svg { width: 17px; height: 17px; }
 #mantra-render-card .rc-foot-brand { height: 21px; width: auto; display: block; filter: brightness(1.15); position: relative; }
 
 /* ── INLINE MANTRA CARD (shown in chat after SESSION_COMPLETE) ── */
+.mantra-card-intro {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(212,212,240,0.8);
+  margin: 14px 0 4px;
+}
+.mantra-card-intro a { color: var(--text-link); text-decoration: underline; }
+.mantra-card-intro a:hover { color: var(--text-link-hover); }
 .mantra-card-inline {
   margin: 12px 0 4px;
   display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
@@ -1300,7 +1309,8 @@ button#send svg { width: 17px; height: 17px; }
 /* Draft variant: same shape/behavior as the final mantra box, with a small
    label so it's clear at a glance this is a proposal still open for
    feedback, not the finalized, card-backed mantra. */
-.mantra-copyblock.mc-draft .mc-draft-label {
+.mantra-copyblock.mc-draft .mc-draft-label,
+.mantra-copyblock.mc-approved .mc-draft-label {
   font-family: 'Inter', sans-serif; font-size: 10.5px; font-weight: 600;
   letter-spacing: 0.6px; text-transform: uppercase; color: rgba(255,255,255,0.4);
   margin-bottom: 10px; display: block;
@@ -2622,16 +2632,17 @@ async function rcLoadScriptFonts(text) {
 // logic can tell the two apart without re-parsing text.
 function buildMantraCopyBlock(mantraText, { isDraft = false } = {}) {
   const mantraParas = mantraText.split(/\n+/).map(l => l.trim()).filter(Boolean);
-  const plainForCopy = mantraParas
-    .map(p => p.replace(/\[([^\]]*)\]/g, '$1'))
-    .join('\n\n');
+  // Brackets are kept in the copied text on purpose — see colorBracketsKeepRC
+  // above for why — so what's copied matches the same bracket syntax visible
+  // in the box, rather than silently stripping something the user can see.
+  const plainForCopy = mantraParas.join('\n\n');
   const block = document.createElement('div');
-  block.className = 'mantra-copyblock' + (isDraft ? ' mc-draft' : '');
-  const labelHTML = isDraft ? '<span class="mc-draft-label">Proposed mantra</span>' : '';
+  block.className = 'mantra-copyblock' + (isDraft ? ' mc-draft' : ' mc-approved');
+  const labelHTML = '<span class="mc-draft-label">' + (isDraft ? 'Proposed mantra' : 'Approved mantra') + '</span>';
   block.innerHTML = labelHTML + mantraParas
     .map((p) => {
       const isCTA = /\[[^\]]*\]/.test(p);
-      const inner = colorBracketsRC(p); // strips brackets, wraps in .actionable
+      const inner = colorBracketsKeepRC(p); // keeps brackets visible, wraps in .actionable
       return `<div class="mc-para${isCTA ? ' mc-cta' : ''}">${inner}</div>`;
     })
     .join('') + '<div class="mc-hint">⧉ tap to copy</div>';
@@ -2645,6 +2656,25 @@ function buildMantraCopyBlock(mantraText, { isDraft = false } = {}) {
     });
   });
   return { block, mantraParas, plainForCopy };
+}
+
+// Used only for the chat copy-box display (buildMantraCopyBlock) — unlike
+// colorBracketsRC (used for the actual card image, where brackets must never
+// be visible), this keeps the literal [ and ] characters in place, colored
+// along with the CTA text, since the copied plain text is expected to
+// preserve them for downstream use (e.g. pasting into the mantra
+// customization tool, which parses the same bracket syntax Demian outputs).
+function colorBracketsKeepRC(raw) {
+  let out = '', last = 0, m;
+  const re = /\[([^\]]*)\]/g;
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  while ((m = re.exec(raw)) !== null) {
+    if (m.index > last) out += esc(raw.slice(last, m.index));
+    out += '<span class="actionable">[' + esc(m[1]) + ']</span>';
+    last = m.index + m[0].length;
+  }
+  if (last < raw.length) out += esc(raw.slice(last));
+  return out;
 }
 
 function colorBracketsRC(raw) {
@@ -2739,7 +2769,7 @@ async function handleSessionComplete(reply) {
   const topMarkEl = document.querySelector('#mantra-render-card .rc-top');
   const footEl = document.querySelector('#mantra-render-card .rc-foot');
   const bodyEl = document.querySelector('#mantra-render-card .rc-body');
-  const MAX_SIZE_PX = 36; // 1.32rem at the 1080px export width's base 16px... using px directly here
+  const MAX_SIZE_PX = 44; // raised from 36 now that .rc-body's dead bottom padding is gone — short mantras have real room to use; the shrink loop below still protects longer ones
   const MIN_SIZE_PX = MAX_SIZE_PX * 0.4;
   let rcSize = MAX_SIZE_PX;
   textEl.style.fontSize = rcSize + 'px';
@@ -2826,6 +2856,14 @@ async function handleSessionComplete(reply) {
   const lastBubble = demianMsgs.length ? demianMsgs[demianMsgs.length - 1].querySelector('.msg-bubble') : null;
 
   if (lastBubble && dataUrl) {
+    // Fixed, consistent copy shown every time, right before the card image —
+    // not left to the model to paraphrase each time, so this exact guidance
+    // (copy vs. download vs. customize) is always presented the same way.
+    const introP = document.createElement('p');
+    introP.className = 'mantra-card-intro';
+    introP.innerHTML = 'You can copy the text of your mantra above or download it as a card. If you want to customize the design of your card, copy the text above and paste it as it is on this <a href="https://demianism.org/mantra" target="_blank" rel="noopener">custom mantra tool</a>.';
+    lastBubble.appendChild(introP);
+
     const cardWrap = document.createElement('div');
     cardWrap.className = 'mantra-card-inline';
 
@@ -3224,11 +3262,31 @@ function appendMessage(role, text, ts) {
     return '';
   });
 
+  // Same for the final, agreed mantra — captured here too so the "copy
+  // whole message" button can include it (see fullCopyText below). The
+  // visual card itself is still built separately and asynchronously by
+  // handleSessionComplete; this capture is just for the plain-text copy.
+  const finalMantraTexts = [];
+  text = text.replace(/\[MANTRA_TEXT\]([\s\S]*?)\[\/MANTRA_TEXT\]/g, (_, inner) => {
+    finalMantraTexts.push(inner.trim());
+    return '';
+  });
+
   const cleanText = text
     .replace(/\[SESSION_COMPLETE\]/g, '')
-    .replace(/\[MANTRA_TEXT\][\s\S]*?\[\/MANTRA_TEXT\]/g, '')
     .replace(/\[MANTRA_UNLOCKED\]/g, '')
     .trim();
+
+  // What "copy message" actually copies: the prose plus any mantra box
+  // content, each clearly separated — previously the mantra text was
+  // silently dropped from this since it's rendered as its own box, not
+  // part of cleanText. Brackets are kept around the CTA line here (not
+  // stripped) per the box's own copy behavior, so a separately-copied
+  // mantra and a copied-as-part-of-the-message mantra are identical.
+  const mantraBoxTexts = [...draftTexts, ...finalMantraTexts];
+  const fullCopyText = mantraBoxTexts.length
+    ? cleanText + mantraBoxTexts.map(t => '\n\n---\n\n' + t).join('')
+    : cleanText;
 
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
@@ -3261,7 +3319,7 @@ function appendMessage(role, text, ts) {
     copyBtn.title = 'Copy';
     copyBtn.setAttribute('aria-label', 'Copy message');
     copyBtn.innerHTML = COPY_ICON_SVG;
-    copyBtn.onclick = () => copyMsgText(copyBtn, cleanText);
+    copyBtn.onclick = () => copyMsgText(copyBtn, fullCopyText);
     meta.appendChild(copyBtn);
     wrap.appendChild(meta);
   }
