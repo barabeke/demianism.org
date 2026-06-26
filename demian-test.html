@@ -192,6 +192,14 @@ body {
   padding: 18px 20px;
   width: 100%;
 }
+.demian-prefix-triangle {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: baseline;
+  margin-right: 0.4em;
+  flex-shrink: 0;
+}
 
 .msg.demian .msg-bubble p { margin: 0 0 10px 0; }
 .msg.demian .msg-bubble p:last-child { margin-bottom: 0; }
@@ -414,7 +422,7 @@ body {
 .msg-timestamp {
   font-family: 'Inter', sans-serif;
   font-size: 11px;
-  color: rgba(255,255,255,0.4);
+  color: #6864bb;
   letter-spacing: 0.2px;
   white-space: nowrap;
 }
@@ -428,7 +436,7 @@ body {
   background: none;
   border: none;
   border-radius: 5px;
-  color: rgba(255,255,255,0.45);
+  color: #6864bb;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
@@ -1642,6 +1650,16 @@ renderer.link = function(token) {
 marked.setOptions({ breaks: true, gfm: true, renderer });
 
 function autolinkText(html) {
+  // Defensive backstop: if the model produced a malformed markdown link
+  // whose visible label rendered as the literal word "undefined" (a sign
+  // of broken link-generation, not something the rendering pipeline can fix
+  // after the fact), unwrap it to the bare URL as plain text instead of
+  // showing a confusing clickable "undefined". This can't repair what the
+  // model already wrote wrong, but it stops the broken result from ever
+  // being visible — see the system prompt's link-formatting rules for the
+  // actual fix, which is preventing the model from writing it this way.
+  html = html.replace(/<a\s+href="([^"]+)"[^>]*>\s*undefined\s*<\/a>/gi, '$1');
+
   // Make bare URLs clickable (e.g. demianism.org/doctrine without https://)
   return html.replace(/(?<![="'>\/])(\b(?:https?:\/\/)?(?:www\.|demianism\.org)[^\s<"')\]]+)/g, (url) => {
     // Skip if already inside an anchor
@@ -2724,7 +2742,7 @@ async function handleSessionComplete(reply) {
       return;
     }
   }
-  const mantraText = mantraMatch[1].trim();
+  const mantraText = smartQuotes(mantraMatch[1].trim());
 
   const chatNow = document.getElementById('chat');
   const demianMsgsNow = chatNow.querySelectorAll('.msg.demian');
@@ -3208,6 +3226,27 @@ function handlePurchaseReturn(tier, msgs, mantra) {
   else updateCounter();
 }
 
+// Converts straight quotes/apostrophes to proper typographic (curly) ones.
+// Applied to raw text BEFORE markdown/HTML parsing — doing this after would
+// risk mangling HTML attribute quotes or markdown link syntax. The model's
+// own replies were never being converted at all; only the hardcoded
+// onboarding copy used proper &rsquo; entities, which is why real Demian
+// messages still showed straight ' and " regardless of this fix's intent
+// elsewhere.
+function smartQuotes(text) {
+  return text
+    // Opening double quote: start of string, or after whitespace/([{—-
+    .replace(/(^|[\s([{\u2014-])"/g, '$1\u201c')
+    // Remaining double quotes are closing
+    .replace(/"/g, '\u201d')
+    // Apostrophe in contractions/possessives (letter or digit on both sides,
+    // or at the end of a word like "the '90s" / "James'") — curls as U+2019
+    // in effectively all real usage; a true opening single-quote (rare,
+    // e.g. quoting within a quote) is the main case this simplification
+    // doesn't handle, which is an acceptable tradeoff for reliability.
+    .replace(/'/g, '\u2019');
+}
+
 function appendMessage(role, text, ts) {
   const chat = document.getElementById('chat');
   const wrap = document.createElement('div');
@@ -3272,10 +3311,22 @@ function appendMessage(role, text, ts) {
     return '';
   });
 
-  const cleanText = text
+  let cleanText = text
     .replace(/\[SESSION_COMPLETE\]/g, '')
     .replace(/\[MANTRA_UNLOCKED\]/g, '')
     .trim();
+
+  // Demian's own generated text never had its straight quotes/apostrophes
+  // converted to proper typographic ones — only the hardcoded onboarding
+  // copy did (via manual &rsquo; entities). Applied here, before markdown
+  // parsing, so it's consistent across display, copy, and the mantra
+  // box/card (which read from draftTexts/finalMantraTexts below). User
+  // messages are untouched — only what Demian generates gets this.
+  if (role === 'demian') {
+    cleanText = smartQuotes(cleanText);
+    for (let i = 0; i < draftTexts.length; i++) draftTexts[i] = smartQuotes(draftTexts[i]);
+    for (let i = 0; i < finalMantraTexts.length; i++) finalMantraTexts[i] = smartQuotes(finalMantraTexts[i]);
+  }
 
   // What "copy message" actually copies: the prose plus any mantra box
   // content, each clearly separated — previously the mantra text was
@@ -3291,7 +3342,18 @@ function appendMessage(role, text, ts) {
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   if (role === 'demian') {
-    bubble.innerHTML = autolinkText(marked.parse(cleanText)) + (imageHTML || '');
+    const TRIANGLE_SVG = '<svg class="demian-prefix-triangle" viewBox="0 0 27.71 24" xmlns="http://www.w3.org/2000/svg"><polygon points="13.86,0 27.71,24 0,24" fill="#6864bb"/></svg>';
+    let parsedHTML = autolinkText(marked.parse(cleanText)) + (imageHTML || '');
+    // Insert the triangle as the very first thing inside the first
+    // paragraph, so it sits inline with the first line of text rather than
+    // on its own line above it.
+    const firstOpenP = parsedHTML.indexOf('<p>');
+    if (firstOpenP !== -1) {
+      parsedHTML = parsedHTML.slice(0, firstOpenP + 3) + TRIANGLE_SVG + parsedHTML.slice(firstOpenP + 3);
+    } else {
+      parsedHTML = TRIANGLE_SVG + parsedHTML;
+    }
+    bubble.innerHTML = parsedHTML;
     for (const draftText of draftTexts) {
       const { block } = buildMantraCopyBlock(draftText, { isDraft: true });
       bubble.appendChild(block);
