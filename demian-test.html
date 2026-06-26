@@ -1653,17 +1653,37 @@ marked.setOptions({ breaks: true, gfm: true, renderer });
 
 function autolinkText(html) {
   // Defensive backstop: if the model produced a malformed markdown link
-  // whose visible label rendered as the literal word "undefined" (a sign
-  // of broken link-generation, not something the rendering pipeline can fix
-  // after the fact), unwrap it to the bare URL as plain text instead of
-  // showing a confusing clickable "undefined". This can't repair what the
+  // whose visible label is effectively just the word "undefined" (a sign of
+  // broken link-generation), unwrap it to the bare URL as plain text instead
+  // of showing a confusing clickable "undefined". This can't repair what the
   // model already wrote wrong, but it stops the broken result from ever
   // being visible — see the system prompt's link-formatting rules for the
   // actual fix, which is preventing the model from writing it this way.
-  html = html.replace(/<a\s+href="([^"]+)"[^>]*>\s*undefined\s*<\/a>/gi, '$1');
+  //
+  // This uses real DOM parsing rather than a regex against raw HTML on
+  // purpose: a regex anchored to ">\s*undefined\s*<" only catches the exact
+  // case where "undefined" is the link's sole, unwrapped, unpunctuated text
+  // — it silently misses "undefined." (trailing punctuation), "undefined"
+  // wrapped in <em>/<strong>, or any other structural variant. Reading each
+  // link's actual textContent (which flattens all of that automatically)
+  // and comparing the punctuation-stripped result closes the whole class of
+  // gaps at once instead of patching one shape at a time.
+  const container = document.createElement('div');
+  container.innerHTML = html;
+  container.querySelectorAll('a[href]').forEach(a => {
+    const stripped = (a.textContent || '').trim().replace(/[.,;:!?]+$/, '');
+    if (/^undefined$/i.test(stripped)) {
+      a.replaceWith(document.createTextNode(a.getAttribute('href')));
+    }
+  });
+  html = container.innerHTML;
 
-  // Make bare URLs clickable (e.g. demianism.org/doctrine without https://)
-  return html.replace(/(?<![="'>\/])(\b(?:https?:\/\/)?(?:www\.|demianism\.org)[^\s<"')\]]+)/g, (url) => {
+  // Make bare URLs clickable. Previously this only matched www./demianism.org
+  // URLs, missing every other real domain Demian links to (heyzine.com,
+  // manifold.xyz, archive.org, mybook.to, t.me, x.com, etc.) — meaning a
+  // bare https:// URL to any of those would sit inert as plain unclickable
+  // text. Now matches any http(s) URL or bare www./demianism.org one.
+  return html.replace(/(?<![="'>\/])(\bhttps?:\/\/[^\s<"')\]]+|\b(?:www\.|demianism\.org)[^\s<"')\]]+)/g, (url) => {
     // Skip if already inside an anchor
     const href = url.startsWith('http') ? url : 'https://' + url;
     return '<a href="' + href + '" target="_blank" rel="noopener" style="color:var(--text-link)">' + url + '</a>';
