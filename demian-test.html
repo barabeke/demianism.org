@@ -2054,6 +2054,32 @@ async function restoreSession() {
         }
       } catch (e) { /* ignore */ }
     }
+    // No stray free-mode messages either — but that doesn't mean there's
+    // nothing to restore. The local pointer to "which session was I in"
+    // (demian_session) is deliberately cleared on sign-out, and is simply
+    // absent on a new device. The account's real conversation history is
+    // never lost — it lives server-side in KV, keyed by account, not by
+    // device or local pointer. Ask the server directly rather than giving
+    // up: this is the actual fix for "logging in should never lose your
+    // conversations" — relying solely on a local pointer surviving every
+    // logout/login/device-switch was never going to hold up.
+    try {
+      const res = await fetch(WORKER_URL + '/sessions', { headers: { 'X-Auth-Token': authToken } });
+      const data = await res.json();
+      if (data.ok && data.sessions && data.sessions.length > 0) {
+        // Sessions are expected most-recent-first; if that assumption ever
+        // changes server-side, sort by lastMessage here defensively.
+        const mostRecent = data.sessions.slice().sort((a, b) => (b.lastMessage || 0) - (a.lastMessage || 0))[0];
+        const sessionRes = await fetch(`${WORKER_URL}/sessions/${mostRecent.id}`, { headers: { 'X-Auth-Token': authToken } });
+        const sessionData = await sessionRes.json();
+        if (sessionData.ok && sessionData.session.messages.length > 0) {
+          currentSessionId = mostRecent.id;
+          localStorage.setItem('demian_session', currentSessionId);
+          renderRestoredChat(sessionData.session.messages, sessionData.session.title);
+          return;
+        }
+      }
+    } catch (err) { console.error('account session fallback failed', err); }
   }
   // No session to restore — show opening message
   sendOpeningMessage();
