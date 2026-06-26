@@ -2621,14 +2621,39 @@ function colorBracketsRC(raw) {
 }
 
 async function handleSessionComplete(reply) {
-  const mantraMatch = reply.match(/\[MANTRA_TEXT\]([\s\S]*?)\[\/MANTRA_TEXT\]/);
+  let mantraMatch = reply.match(/\[MANTRA_TEXT\]([\s\S]*?)\[\/MANTRA_TEXT\]/);
+  let usedFallback = false;
 
   mantraUnlocked = false;
   isPaid = true;
   if (authToken) loadSessionList();
   updateCounter();
 
-  if (!mantraMatch) return;
+  if (!mantraMatch) {
+    // FALLBACK: the model sometimes drifts from the exact [MANTRA_TEXT]
+    // wrapper while still producing mantra-shaped content — the spec always
+    // requires a single bracketed CTA line ("[And today... I...]"), so its
+    // presence is a reasonably strong signal this is a finalized mantra
+    // even without the outer tags. Without this fallback, a tag slip means
+    // the mantra renders as indistinguishable plain prose with zero visual
+    // treatment — exactly the bug this is fixing. This only fires for a
+    // SESSION_COMPLETE reply (the caller already gates on that), so the
+    // false-positive risk is limited to mantra-session replies specifically.
+    const ctaLineMatch = reply.match(/^\s*\[([^\]]{15,200})\]\s*$/m);
+    if (ctaLineMatch) {
+      const ctaIndex = reply.indexOf(ctaLineMatch[0]);
+      const before = reply.slice(0, ctaIndex).trim();
+      const paragraphsBefore = before.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+      // Heuristic: the mantra body is rarely more than ~4 short paragraphs;
+      // take the last few rather than risk pulling in unrelated lead-in prose.
+      const body = paragraphsBefore.slice(-4).join('\n\n');
+      mantraMatch = [null, body + '\n\n' + ctaLineMatch[0]];
+      usedFallback = true;
+      console.warn('[MANTRA_TEXT] tags missing — used CTA-line fallback to render card anyway. Flag for system-prompt review.');
+    } else {
+      return;
+    }
+  }
   const mantraText = mantraMatch[1].trim();
 
   // Build the clickable copy-block shown in chat. Paragraphs come from line
@@ -2642,6 +2667,20 @@ async function handleSessionComplete(reply) {
   const chatNow = document.getElementById('chat');
   const demianMsgsNow = chatNow.querySelectorAll('.msg.demian');
   const bubbleForBlock = demianMsgsNow.length ? demianMsgsNow[demianMsgsNow.length - 1].querySelector('.msg-bubble') : null;
+  if (bubbleForBlock && usedFallback) {
+    // Remove the duplicated raw paragraphs that appendMessage already
+    // rendered as plain prose before this function ran. Match by trimmed
+    // text content rather than exact node identity, since marked.parse()
+    // may have wrapped each paragraph in its own <p> — comparing text is
+    // more robust than assuming a particular DOM shape.
+    const rawParaTexts = new Set(
+      mantraText.split(/\n+/).map(l => l.trim().replace(/^\[|\]$/g, '')).filter(Boolean)
+    );
+    Array.from(bubbleForBlock.children).forEach(child => {
+      const childText = (child.textContent || '').trim();
+      if (rawParaTexts.has(childText)) child.remove();
+    });
+  }
   if (bubbleForBlock) {
     const block = document.createElement('div');
     block.className = 'mantra-copyblock';
