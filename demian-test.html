@@ -2020,7 +2020,13 @@ async function restoreSession() {
       try {
         const parsed = JSON.parse(savedMessages);
         if (parsed.length > 0) {
-          messages = parsed;
+          // Don't assign `parsed` to `messages` directly — it's whatever
+          // shape happens to be sitting in localStorage, which could be
+          // stale data saved before an earlier fix (e.g. carrying a `ts`
+          // field per message, which the API rejects with "Extra inputs
+          // are not permitted"). renderRestoredChat already builds a clean
+          // {role, content}-only version internally; let that be the only
+          // path messages ever gets assigned through here.
           renderRestoredChat(parsed, null);
           return;
         }
@@ -2041,7 +2047,8 @@ async function restoreSession() {
       try {
         const parsed = JSON.parse(savedMessages);
         if (parsed.length > 0) {
-          messages = parsed;
+          // Same fix as the free-user branch above — never assign raw
+          // parsed localStorage data to `messages` directly.
           renderRestoredChat(parsed, null);
           return;
         }
@@ -2312,7 +2319,7 @@ function sendOpeningMessage() {
 
   wrap.appendChild(bubble);
   chat.appendChild(wrap);
-  chat.scrollTop = 0;
+  window.scrollTo({ top: 0 });
 }
 
 function setPrompt(text) {
@@ -2373,7 +2380,14 @@ async function callAPI(msgs) {
     const headers = { 'Content-Type': 'application/json' };
     if (authToken) headers['X-Auth-Token'] = authToken;
 
-    const body = { messages: msgs };
+    // Defensive: the Anthropic API rejects any field on a message object
+    // beyond {role, content} ("Extra inputs are not permitted"). Rather than
+    // relying on every upstream place that builds `messages` to remember
+    // this, strip to exactly that shape right here at the actual API
+    // boundary — this is what ultimately closes the bug class, regardless
+    // of how stale or contaminated data might find its way into `messages`.
+    const cleanMsgs = msgs.map(m => ({ role: m.role, content: m.content }));
+    const body = { messages: cleanMsgs };
     if (currentSessionId) body.sessionId = currentSessionId;
 
     const response = await fetch(WORKER_URL, {
@@ -2396,9 +2410,24 @@ async function callAPI(msgs) {
         isLoading = false;
         return;
       }
+      // Any other backend error (e.g. a 500 from an unhandled exception,
+      // which index.js's outer catch returns as { error: { message: ... } })
+      // carries a real, specific message. Surface it instead of throwing it
+      // away into a generic "connection interrupted" notice the next catch
+      // block would otherwise show — that swallowing is exactly what made
+      // this class of bug silent and unreportable.
       throw new Error(data.error.message || JSON.stringify(data.error));
     }
 
+    // Defensive: data.content is the raw Anthropic response shape, forwarded
+    // as-is by the backend. If the upstream call itself failed in a way the
+    // backend's try/catch didn't classify as `data.error` (e.g. a malformed
+    // 200, or a field genuinely missing), reading data.content[0].text
+    // directly would throw an opaque TypeError with no diagnostic value.
+    // Report what's actually missing instead.
+    if (!data.content || !data.content[0] || typeof data.content[0].text !== 'string') {
+      throw new Error('Unexpected response shape from server: ' + JSON.stringify(data).slice(0, 300));
+    }
     const reply = data.content[0].text;
     removeTyping(typingEl);
     messages.push({ role: 'assistant', content: reply });
@@ -2439,7 +2468,11 @@ async function callAPI(msgs) {
     removeTyping(typingEl);
     appendMessage('demian', 'Something interrupted our connection. Please try again.', Date.now());
     setStatus(false);
-    console.error(err);
+    // Logged with context (not just the bare error) so this is actually
+    // diagnosable — the error message itself now carries real backend detail
+    // when available (see the error-surfacing fix above), instead of always
+    // being a generic, contentless catch.
+    console.error('callAPI failed:', err.message, { sessionId: currentSessionId, authToken: !!authToken, mantraUnlocked });
   }
 
   isLoading = false;
@@ -2603,7 +2636,7 @@ async function handleSessionComplete(reply) {
       });
     });
     bubbleForBlock.appendChild(block);
-    chatNow.scrollTop = chatNow.scrollHeight;
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   }
 
   // Build the hidden card
@@ -2733,7 +2766,7 @@ async function handleSessionComplete(reply) {
     cardWrap.appendChild(dlBtn);
 
     lastBubble.appendChild(cardWrap);
-    chat.scrollTop = chat.scrollHeight;
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   } else if (lastBubble) {
     // Fallback if canvas failed
     const fallback = document.createElement('p');
@@ -3234,7 +3267,18 @@ function appendSystemMessage(text) {
   bubble.textContent = text;
   wrap.appendChild(bubble);
   chat.appendChild(wrap);
-  chat.scrollTop = chat.scrollHeight;
+  // BUG FIX: this page scrolls via window/body (see appendMessage), not via
+  // an internal scroll container on #chat — #chat has no overflow:auto, so
+  // chat.scrollTop was always a no-op. That silently left system messages
+  // (like the free-limit-reached notice) rendered below the visible
+  // viewport, hidden behind the fixed input bar, with no obvious way to
+  // notice them short of manually scrolling down. Always scroll into view
+  // here (not conditionally, like appendMessage's near-bottom check) since
+  // these are important standalone notices the person needs to see.
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  if (typeof updateScrollToBottomVisibility === 'function') {
+    requestAnimationFrame(updateScrollToBottomVisibility);
+  }
 }
 
 // Tier icon SVGs and copy, reused from the sidebar service icons so the
@@ -3278,7 +3322,7 @@ function showPlanActivationBanner(tier) {
     '</div>';
   wrap.appendChild(bubble);
   chat.appendChild(wrap);
-  chat.scrollTop = chat.scrollHeight;
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
 function showTyping() {
@@ -3291,7 +3335,7 @@ function showTyping() {
   typing.innerHTML = '<span></span><span></span><span></span>';
   wrap.appendChild(typing);
   chat.appendChild(wrap);
-  chat.scrollTop = chat.scrollHeight;
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   return wrap;
 }
 
