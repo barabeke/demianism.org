@@ -424,7 +424,7 @@ body {
 .msg-timestamp {
   font-family: 'Inter', sans-serif;
   font-size: 11px;
-  color: #23233e;
+  color: #4a4a6f;
   letter-spacing: 0.2px;
   white-space: nowrap;
 }
@@ -438,7 +438,7 @@ body {
   background: none;
   border: none;
   border-radius: 5px;
-  color: #23233e;
+  color: #4a4a6f;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
@@ -1160,7 +1160,7 @@ button#send svg { width: 17px; height: 17px; }
   .sidebar .sb-collapse-icon { display: flex; margin-left: auto; }
   .sidebar .sb-logo-tri { display: flex; }
 
-  .main-area { margin-left: 0; padding-top: var(--topbar-h); }
+  .main-area { margin-left: 0; padding-top: 44px; }
 
   /* Input zone: full width, no sidebar offset, no top border */
   .input-zone { left: 0; }
@@ -1168,13 +1168,15 @@ button#send svg { width: 17px; height: 17px; }
 
   /* Chat fills full width, no side padding gap */
   .page-wrap { padding: 12px 0 110px; }
-  #chat { padding: 16px 14px; }
+  #chat { padding: 16px 0; }
+  .msg.demian .msg-bubble { font-size: 19px; }
+  .msg.user .msg-bubble { font-size: 18px; }
 
   .topbar {
     display: flex;
     position: fixed;
     top: 0; left: 0; right: 0;
-    height: var(--topbar-h);
+    height: 44px; /* 15% shorter than the shared --topbar-h (52px), mobile only — desktop's sidebar header still uses the full 52px via --topbar-h */
     background: var(--navbar-bg);
     align-items: center;
     justify-content: center;
@@ -1185,7 +1187,7 @@ button#send svg { width: 17px; height: 17px; }
   .topbar-burger {
     width: 28px; height: 28px;
     display: flex; align-items: center; justify-content: center;
-    color: var(--purple-light);
+    color: #6864bb;
     cursor: pointer; background: none; border: none;
     position: absolute; left: 12px;
   }
@@ -1334,7 +1336,7 @@ body {
   background-size: cover;
   background-position: center;
 }
-.page-wrap, aside, .topbar { position: relative; z-index: 1; }
+.page-wrap, aside { position: relative; z-index: 1; }
 
 </style>
 </head>
@@ -1487,7 +1489,7 @@ body {
 <div class="input-zone">
   <div class="bottom-inner">
     <div class="input-bar">
-      <textarea id="userInput" placeholder="Message Demian" rows="1"></textarea>
+      <textarea id="userInput" placeholder="Message Demian in any language" rows="1"></textarea>
       <button id="send" onclick="sendMessage()" title="Send">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
       </button>
@@ -3344,6 +3346,7 @@ function appendMessage(role, text, ts) {
   let cleanText = text
     .replace(/\[SESSION_COMPLETE\]/g, '')
     .replace(/\[MANTRA_UNLOCKED\]/g, '')
+    .replace(/\[EDUCATOR_MODE\]/g, '')
     .trim();
 
   // Demian's own generated text never had its straight quotes/apostrophes
