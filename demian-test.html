@@ -1688,6 +1688,73 @@ const SERVICE_ICONS = {
   retreat: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swRetreat"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swRetreat)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>'
 };
 
+const SERVICES = {
+  mantra: {
+    name: 'Mantra',
+    count: null,
+    price: 5,
+    accent: '#31a117',
+    heroImg: 'mantra-hero.png',
+    heroGrad: 'radial-gradient(120% 130% at 0% 100%, #1a0c0a 0%, #1a0c0a 30%, rgba(26,12,10,0.7) 55%, rgba(26,12,10,0.15) 80%, rgba(26,12,10,0) 100%)',
+    heroFallback: 'linear-gradient(125deg, #4a1c10 0%, #331410 45%, #1f0d0a 100%)',
+    badge: null,
+    desc: 'A mantra crafted by Demian to help you follow your call in life and overcome the challenges you are facing.',
+    features: [
+      '100% unique and tailored to you.',
+      'Satisfaction guaranteed, if you collaborate (the mantra is yours to approve).',
+      'Delivered also as a card image to save on your phone.',
+      'After your mantra, you get 15 premium exchanges with Demian — a taste of what Sanctuary and Retreat offer.'
+    ],
+    closing: "Don't know what your call in life is?\nDemian will help you find it.",
+    shoutSub: 'Chat with Demian whenever you wish.',
+    btnLabel: 'Get yours for'
+  },
+  sanctuary: {
+    name: 'Sanctuary',
+    count: 100,
+    price: 12,
+    accent: '#dfa51a',
+    heroImg: 'sanctuary-hero.png',
+    heroGrad: 'radial-gradient(120% 130% at 0% 100%, #0c0a28 0%, #0c0a28 30%, rgba(12,10,40,0.7) 55%, rgba(12,10,40,0.15) 80%, rgba(12,10,40,0) 100%)',
+    heroFallback: 'linear-gradient(125deg, #2a1855 0%, #1f1545 45%, #160f33 100%)',
+    badge: null,
+    desc: 'Unlock the full power of Demian.',
+    features: [
+      'Designed to help you follow your true calling in life and find more meaning, clarity, and balance.',
+      'Trained to support you through all sorts of struggles that the human condition entails.',
+      'Not made to please, but to act as an honest mirror. For those who seek growth, not just comfort.',
+      'Acting within strict ethical limits. No medical advice, no replacement for professional care where needed.',
+      
+      'Personal Mantra included. Open new chats with optional memory preservation.'
+    ],
+    closing: null,
+    shoutSub: 'Chat with Demian whenever you wish.',
+    btnLabel: 'Get for'
+  },
+  retreat: {
+    name: 'Retreat',
+    count: 500,
+    price: 39,
+    accent: '#dfa51a',
+    heroImg: 'retreat-hero.png',
+    heroGrad: 'radial-gradient(120% 130% at 0% 100%, #0a0f1a 0%, #0a0f1a 30%, rgba(10,15,26,0.7) 55%, rgba(10,15,26,0.15) 80%, rgba(10,15,26,0) 100%)',
+    heroFallback: 'linear-gradient(125deg, #1a2540 0%, #141d33 45%, #0a0f1f 100%)',
+    desc: '',
+    features: [
+      'Designed to help you follow your true calling in life and find more meaning, clarity, and balance.',
+      'Trained to support you through all sorts of struggles that the human condition entails.',
+      'Not made to please, but to act as an honest mirror. For those who seek growth, not just comfort.',
+      'Acting within strict ethical limits. No medical advice, no replacement for professional care where needed.',
+      
+      'Personal Mantra included. Open new chats with optional memory preservation.'
+    ],
+    closing: null,
+    shoutSub: 'Chat with Demian whenever you wish.',
+    btnLabel: 'Get for'
+  }
+};
+
+
 function updateActivePlanUI() {
   // Active means: currently in a mantra session, OR holds a paid tier with
   // remaining balance/access. A depleted balance with no mantra session
@@ -3105,71 +3172,7 @@ function setStatus(online) {
 /* (SERVICE_ICONS moved up next to SERVICE_LABELS, near updateActivePlanUI —
    both are needed by the mode switcher which renders earlier in the script) */
 
-const SERVICES = {
-  mantra: {
-    name: 'Mantra',
-    count: null,
-    price: 5,
-    accent: '#31a117',
-    heroImg: 'mantra-hero.png',
-    heroGrad: 'radial-gradient(120% 130% at 0% 100%, #1a0c0a 0%, #1a0c0a 30%, rgba(26,12,10,0.7) 55%, rgba(26,12,10,0.15) 80%, rgba(26,12,10,0) 100%)',
-    heroFallback: 'linear-gradient(125deg, #4a1c10 0%, #331410 45%, #1f0d0a 100%)',
-    badge: null,
-    desc: 'A mantra crafted by Demian to help you follow your call in life and overcome the challenges you are facing.',
-    features: [
-      '100% unique and tailored to you.',
-      'Satisfaction guaranteed, if you collaborate (the mantra is yours to approve).',
-      'Delivered also as a card image to save on your phone.',
-      'After your mantra, you get 15 premium exchanges with Demian — a taste of what Sanctuary and Retreat offer.'
-    ],
-    closing: "Don't know what your call in life is?\nDemian will help you find it.",
-    shoutSub: 'Chat with Demian whenever you wish.',
-    btnLabel: 'Get yours for'
-  },
-  sanctuary: {
-    name: 'Sanctuary',
-    count: 100,
-    price: 12,
-    accent: '#dfa51a',
-    heroImg: 'sanctuary-hero.png',
-    heroGrad: 'radial-gradient(120% 130% at 0% 100%, #0c0a28 0%, #0c0a28 30%, rgba(12,10,40,0.7) 55%, rgba(12,10,40,0.15) 80%, rgba(12,10,40,0) 100%)',
-    heroFallback: 'linear-gradient(125deg, #2a1855 0%, #1f1545 45%, #160f33 100%)',
-    badge: null,
-    desc: 'Unlock the full power of Demian.',
-    features: [
-      'Designed to help you follow your true calling in life and find more meaning, clarity, and balance.',
-      'Trained to support you through all sorts of struggles that the human condition entails.',
-      'Not made to please, but to act as an honest mirror. For those who seek growth, not just comfort.',
-      'Acting within strict ethical limits. No medical advice, no replacement for professional care where needed.',
-      
-      'Personal Mantra included. Open new chats with optional memory preservation.'
-    ],
-    closing: null,
-    shoutSub: 'Chat with Demian whenever you wish.',
-    btnLabel: 'Get for'
-  },
-  retreat: {
-    name: 'Retreat',
-    count: 500,
-    price: 39,
-    accent: '#dfa51a',
-    heroImg: 'retreat-hero.png',
-    heroGrad: 'radial-gradient(120% 130% at 0% 100%, #0a0f1a 0%, #0a0f1a 30%, rgba(10,15,26,0.7) 55%, rgba(10,15,26,0.15) 80%, rgba(10,15,26,0) 100%)',
-    heroFallback: 'linear-gradient(125deg, #1a2540 0%, #141d33 45%, #0a0f1f 100%)',
-    desc: '',
-    features: [
-      'Designed to help you follow your true calling in life and find more meaning, clarity, and balance.',
-      'Trained to support you through all sorts of struggles that the human condition entails.',
-      'Not made to please, but to act as an honest mirror. For those who seek growth, not just comfort.',
-      'Acting within strict ethical limits. No medical advice, no replacement for professional care where needed.',
-      
-      'Personal Mantra included. Open new chats with optional memory preservation.'
-    ],
-    closing: null,
-    shoutSub: 'Chat with Demian whenever you wish.',
-    btnLabel: 'Get for'
-  }
-};
+/* SERVICES declared above, near SERVICE_ICONS */
 
 const SERVICE_LINKS = {
   mantra:    'https://buy.stripe.com/eVq4gA0wzbND5Gr60h6oo04',
