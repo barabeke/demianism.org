@@ -535,6 +535,63 @@ button#send:hover { background-color: var(--purple-light); box-shadow: 0 0 14px 
 button#send:disabled { opacity: 0.4; cursor: not-allowed; }
 button#send svg { width: 17px; height: 17px; }
 
+/* ── Mode switcher (input bar) ── */
+#modeSwitcher {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(104,100,187,0.12);
+  border: 1px solid rgba(104,100,187,0.28);
+  border-radius: 10px;
+  padding: 6px 10px 6px 8px;
+  height: 36px;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-light);
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+#modeSwitcher:hover { background: rgba(104,100,187,0.2); border-color: var(--purple-mid); }
+#modeSwitcher.ms-recharge { border-color: rgba(223,165,26,0.5); color: #dfa51a; }
+#modeSwitcher.ms-recharge:hover { background: rgba(223,165,26,0.12); }
+#modeSwitcher .ms-icon { width: 18px; height: 18px; flex-shrink: 0; display: flex; }
+#modeSwitcher .ms-icon svg { width: 100%; height: 100%; display: block; }
+#modeSwitcher .ms-chevron { width: 12px; height: 12px; opacity: 0.6; flex-shrink: 0; }
+
+.ms-menu {
+  display: none;
+  position: fixed;
+  z-index: 300;
+  background: #1a1930;
+  border: 1px solid rgba(104,100,187,0.3);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+}
+.ms-menu.open { display: block; }
+.ms-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.ms-menu-item:hover { background: rgba(104,100,187,0.16); }
+.ms-menu-item .ms-icon { width: 26px; height: 26px; flex-shrink: 0; }
+.ms-menu-item .ms-icon svg { width: 100%; height: 100%; display: block; }
+.ms-menu-item-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.ms-menu-item-title {
+  font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 600; color: var(--text-light);
+}
+.ms-menu-item-desc {
+  font-family: 'Inter', sans-serif; font-size: 11.5px; color: rgba(255,255,255,0.45);
+}
+
 .action-row {
   display: flex;
   align-items: center;
@@ -1490,6 +1547,11 @@ body {
   <div class="bottom-inner">
     <div class="input-bar">
       <textarea id="userInput" placeholder="Message Demian in any language" rows="1"></textarea>
+      <div id="modeSwitcher" onclick="toggleModeSwitcherMenu(this)" role="button" aria-haspopup="true" aria-label="Choose a plan">
+        <span class="ms-icon" id="msIcon"></span>
+        <span id="msLabel">Choose mode</span>
+        <svg class="ms-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
       <button id="send" onclick="sendMessage()" title="Send">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
       </button>
@@ -1526,6 +1588,8 @@ body {
     </div>
   </div>
 </div>
+
+<div class="ms-menu" id="msMenu"></div>
 
 <div class="modal-overlay" id="codeModal">
   <div class="modal">
@@ -1615,6 +1679,15 @@ function updateCounter() {
 
 const SERVICE_LABELS = { mantra: 'Mantra', sanctuary: 'Sanctuary', retreat: 'Retreat' };
 
+/* ── Service window system (Mantra / Sanctuary / Retreat) ──
+   Declared here (not down near openServiceWindow) because the mode switcher,
+   which renders earlier via updateActivePlanUI(), depends on it too. */
+const SERVICE_ICONS = {
+  mantra: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swMantra"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swMantra)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z" fill="#18400e" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#31a117"/></g></svg>',
+  sanctuary: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swSanct"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swSanct)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
+  retreat: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swRetreat"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swRetreat)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>'
+};
+
 function updateActivePlanUI() {
   // Active means: currently in a mantra session, OR holds a paid tier with
   // remaining balance/access. A depleted balance with no mantra session
@@ -1637,6 +1710,84 @@ function updateActivePlanUI() {
     if (tagEl) tagEl.textContent = isActive ? ' (active)' : '';
     if (tooltipEl) tooltipEl.textContent = SERVICE_LABELS[key] + (isActive ? ' (active)' : '');
   });
+
+  updateModeSwitcherUI(activeKey);
+}
+
+// ── Mode switcher (input bar dropdown) ──────────────────────────
+// Single source of truth for its state is the same activeKey computed just
+// above in updateActivePlanUI() — this function only renders, it never
+// recomputes tier/session state itself.
+function updateModeSwitcherUI(activeKey) {
+  const sw = document.getElementById('modeSwitcher');
+  const icon = document.getElementById('msIcon');
+  const label = document.getElementById('msLabel');
+  if (!sw) return;
+
+  // "Recharge" state: the user has had Mantra and/or a paid tier before
+  // (canBuyMantra === false, i.e. they're past the new-user stage) but
+  // nothing is currently active/has balance. Distinct from a brand-new
+  // user who has simply never bought anything yet.
+  const everHadAnything = !canBuyMantra || !!userTier;
+  const isExhausted = !activeKey && everHadAnything;
+
+  sw.classList.toggle('ms-recharge', isExhausted);
+
+  if (activeKey) {
+    icon.innerHTML = SERVICE_ICONS[activeKey] || '';
+    label.textContent = SERVICE_LABELS[activeKey];
+  } else if (isExhausted) {
+    icon.innerHTML = '';
+    label.textContent = 'Recharge';
+  } else {
+    icon.innerHTML = '';
+    label.textContent = 'Choose mode';
+  }
+}
+
+function toggleModeSwitcherMenu(triggerEl) {
+  const menu = document.getElementById('msMenu');
+  if (menu.classList.contains('open')) { closeModeSwitcherMenu(); return; }
+
+  // Decide which items to show: brand-new/free user with mantra still
+  // available -> all three. Anyone past that point (mantra already used,
+  // or holding/having held a paid tier) -> Sanctuary + Retreat only, never
+  // Mantra again, regardless of whether something is currently active or
+  // exhausted (recharge always offers both, never just the current tier).
+  const items = [];
+  if (canBuyMantra) {
+    items.push({ key: 'mantra', title: 'Mantra', desc: 'Create your personal mantra' });
+  }
+  items.push({ key: 'sanctuary', title: 'Sanctuary', desc: '100 exchanges in premium companion mode' });
+  items.push({ key: 'retreat', title: 'Retreat', desc: '500 exchanges in premium companion mode' });
+
+  menu.innerHTML = items.map(it => `
+    <div class="ms-menu-item" onclick="closeModeSwitcherMenu(); openServiceWindow('${it.key}');">
+      <span class="ms-icon">${SERVICE_ICONS[it.key] || ''}</span>
+      <span class="ms-menu-item-text">
+        <span class="ms-menu-item-title">${it.title}</span>
+        <span class="ms-menu-item-desc">${it.desc}</span>
+      </span>
+    </div>
+  `).join('');
+
+  positionMenu(menu, triggerEl, 'above');
+  menu.classList.add('open');
+  document.addEventListener('click', _msOutsideClick, { capture: true });
+}
+
+function closeModeSwitcherMenu() {
+  const menu = document.getElementById('msMenu');
+  if (menu) menu.classList.remove('open');
+  document.removeEventListener('click', _msOutsideClick, { capture: true });
+}
+
+function _msOutsideClick(e) {
+  const menu = document.getElementById('msMenu');
+  const trigger = document.getElementById('modeSwitcher');
+  if (menu && !menu.contains(e.target) && trigger && !trigger.contains(e.target)) {
+    closeModeSwitcherMenu();
+  }
 }
 
 // Auth + session state
@@ -2951,12 +3102,8 @@ function setStatus(online) {
   if (text) text.textContent = online ? 'Online' : 'Offline';
 }
 
-/* ── Service window system (Mantra / Sanctuary / Retreat) ── */
-const SERVICE_ICONS = {
-  mantra: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swMantra"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swMantra)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z" fill="#18400e" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#31a117"/></g></svg>',
-  sanctuary: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swSanct"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swSanct)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
-  retreat: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swRetreat"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swRetreat)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>'
-};
+/* (SERVICE_ICONS moved up next to SERVICE_LABELS, near updateActivePlanUI —
+   both are needed by the mode switcher which renders earlier in the script) */
 
 const SERVICES = {
   mantra: {
