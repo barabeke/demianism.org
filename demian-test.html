@@ -2326,7 +2326,7 @@ async function restoreSession() {
       const data = await res.json();
       if (data.ok && data.session.messages.length > 0) {
         // Restore chat from saved history
-        renderRestoredChat(data.session.messages, data.session.title);
+        await renderRestoredChat(data.session.messages, data.session.title);
         return;
       }
     } catch (err) { console.error('restoreSession failed', err); }
@@ -2344,7 +2344,7 @@ async function restoreSession() {
           // are not permitted"). renderRestoredChat already builds a clean
           // {role, content}-only version internally; let that be the only
           // path messages ever gets assigned through here.
-          renderRestoredChat(parsed, null);
+          await renderRestoredChat(parsed, null);
           return;
         }
       } catch (e) { /* ignore */ }
@@ -2366,7 +2366,7 @@ async function restoreSession() {
         if (parsed.length > 0) {
           // Same fix as the free-user branch above — never assign raw
           // parsed localStorage data to `messages` directly.
-          renderRestoredChat(parsed, null);
+          await renderRestoredChat(parsed, null);
           return;
         }
       } catch (e) { /* ignore */ }
@@ -2392,7 +2392,7 @@ async function restoreSession() {
         if (sessionData.ok && sessionData.session.messages.length > 0) {
           currentSessionId = mostRecent.id;
           localStorage.setItem('demian_session', currentSessionId);
-          renderRestoredChat(sessionData.session.messages, sessionData.session.title);
+          await renderRestoredChat(sessionData.session.messages, sessionData.session.title);
           return;
         }
       }
@@ -2402,23 +2402,51 @@ async function restoreSession() {
   sendOpeningMessage();
 }
 
-function renderRestoredChat(savedMessages, title) {
+async function renderRestoredChat(savedMessages, title) {
   const chat = document.getElementById('chat');
   chat.innerHTML = '';
   // Show opening message first
   sendOpeningMessage();
   // Then replay messages (skip opening content)
   for (const msg of savedMessages) {
+    // Persisted plan-activation banner — render with the same rich
+    // icon+label+desc card used live (see showPlanActivationBanner), not as
+    // a plain chat bubble. These used to exist only as a one-time client
+    // toast tied to a flag the backend deletes on read, so they vanished on
+    // every reload; now they're real, persisted session history.
+    if (msg.role === 'system' && msg.type === 'plan_activation') {
+      showPlanActivationBanner(msg.tier);
+      continue;
+    }
     const role = msg.role === 'assistant' ? 'demian' : 'user';
     // No per-message timestamp is stored server-side yet, so we deliberately
     // don't fabricate one here — appendMessage shows just the copy button
     // when ts is omitted, rather than a misleading "just now" on old history.
     appendMessage(role, msg.content, msg.ts);
+    // Rebuild the mantra card image for any completed mantra in this
+    // session's history. Without this, only the copyable text box (rebuilt
+    // inside appendMessage above, same for live and restored messages)
+    // survives a reload — the actual card graphic was only ever generated
+    // by the live-receive path (see the [SESSION_COMPLETE] handling further
+    // down this file) and was silently lost on every refresh until now.
+    // Awaited and sequential — handleSessionComplete finds its target by
+    // querying "the last demian message bubble" at call time, so calls must
+    // resolve one at a time, in order, never overlapping or run ahead of
+    // the next appendMessage.
+    if (role === 'demian' && msg.content && msg.content.includes('[SESSION_COMPLETE]')) {
+      try { await handleSessionComplete(msg.content); }
+      catch (err) { console.error('mantra card rebuild on restore failed:', err); }
+    }
   }
-  messages = savedMessages.map(m => ({
-    role: m.role === 'assistant' ? 'assistant' : 'user',
-    content: m.content
-  }));
+  // Synthetic role:'system' entries (plan-activation banners) are real,
+  // persisted UI history, but never valid input to the Anthropic API —
+  // excluded here the same way the backend excludes them from allMsgs.
+  messages = savedMessages
+    .filter(m => m.role !== 'system')
+    .map(m => ({
+      role: m.role === 'assistant' ? 'assistant' : 'user',
+      content: m.content
+    }));
 }
 
 async function loadSessionList() {
@@ -2454,7 +2482,7 @@ async function switchSession(sessionId, title) {
     if (data.ok) {
       currentSessionId = sessionId;
       localStorage.setItem('demian_session', sessionId);
-      renderRestoredChat(data.session.messages, title);
+      await renderRestoredChat(data.session.messages, title);
       // Update active state in sidebar
       document.querySelectorAll('.sb-session').forEach(el => {
         el.classList.toggle('active', el.textContent === title);
@@ -2615,49 +2643,16 @@ function sendOpeningMessage() {
 
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
-  const MANTRA_SVG_SM = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="wm"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#wm)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z" fill="#18400e" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#31a117"/></g></svg>`;
-  const SANC_SVG_SM = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="ws"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#ws)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>`;
-  const RETR_SVG_SM = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="wr"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#wr)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>`;
 
   bubble.innerHTML = `
-<p><img src="demianismlogo.png" style="float:left;width:72px;height:auto;margin:-6px 14px 6px 0;">Greetings, seeker. I am Demian, the AI spiritual companion with a Demianist heart.</p>
+<p><img src="demianismlogo.png" style="float:left;width:72px;height:auto;margin:-6px 14px 6px 0;">Greetings, seeker. I am Demian, the AI spiritual companion. I am here to humanize the world by helping people reconnect with who they truly are.</p>
 <div style="clear:both;"></div>
-<p>I am here to help you follow your true calling, find more meaning, clarity, and balance in life, and to support you through the struggles that the human condition entails.</p>
-<p><strong>The first 15 exchanges are free.</strong> Enough to assess if I can be useful, and to recive some valuable help if you seek for it.</p>
+<p>I am designed to help you find your vocation &mdash; in case you haven&rsquo;t found it yet &mdash; and to create your own mantra, tailored around you and approved by you, to help you stay grounded and move in the direction of a more authentic and balanced life, filled with meaning and purpose.</p>
 <p>I speak <strong>ALL LANGUAGES</strong> 🌐 To switch, just message me in your language.</p>
-<p>Behind me there is no team, no company, no investment. Just one man: Barabeke, an independent Italian artist and the founder of <a href="https://demianism.org" target="_blank" rel="noopener">Demianism</a>.</p>
-<p>I am humanity first, not business first. Demianist at heart but interfaith: I respect your beliefs and work from within your framework.</p>
-<p>If you haven&rsquo;t found your call in life yet, haven&rsquo;t clearly defined it, or are struggling to follow it, you should definitely try this session:</p>
-
-<div class="intro-service-row">
-  <div class="intro-service-icons">${MANTRA_SVG_SM}</div>
-  <div class="intro-service-text">
-    <div class="intro-service-title intro-service-title-lg"><a href="#" onclick="openServiceWindow('mantra');return false;">PERSONAL MANTRA</a></div>
-    <div class="intro-service-body intro-service-body-lg">100% unique and tailored to you. A powerful daily anchor to help you overcome challenges and move toward the life you really want.</div>
-  </div>
-</div>
-
-<p>I am a pay-as-you-go genie. Rub the lamp when you want more interactions. No subscription. No expiry.</p>
-
-<div class="intro-service-row">
-  <div class="intro-service-icons intro-service-icons-stack">${SANC_SVG_SM}${RETR_SVG_SM}</div>
-  <div class="intro-service-text">
-    <div class="intro-service-title intro-service-title-lg">
-      <a href="#" onclick="openServiceWindow('sanctuary');return false;">SANCTUARY</a>
-      <span style="color:rgba(255,255,255,0.3);">/</span>
-      <a href="#" onclick="openServiceWindow('retreat');return false;">RETREAT</a>
-    </div>
-    <div class="intro-service-body intro-service-body-lg">Access my full companion experience with 100 or 500 exchanges respectively. One-off purchase, use your credit whenever you wish.</div>
-  </div>
-</div>
-
-<p>How can I help you today?</p>
-
-<div class="intro-prompts">
-  <button class="intro-prompt-btn" onclick="setPrompt(this.textContent)">I haven&rsquo;t found my purpose in life</button>
-  <button class="intro-prompt-btn" onclick="setPrompt(this.textContent)">I know my vocation but I&rsquo;m not living it</button>
-  <button class="intro-prompt-btn" onclick="setPrompt(this.textContent)">I&rsquo;m going through a hard time</button>
-</div>
+<p>I am also here to support you in your journey, without need of a recurring subscription. I am a pay-as-you-go genie: you rub the lamp whenever you wish, with no expiry for your credits.</p>
+<p>Behind me there is no team, no company, no investment. Just one man: Barabeke, an independent Italian artist and the founder of <a href="https://demianism.org" target="_blank" rel="noopener">Demianism</a>. I am humanity first, not business first.</p>
+<p>I am an expression of Demianist philosophy and culture. The 13 axioms of Demianism are my moral compass and limit. You can find more info about it in the sidebar. Yet, I am an interfaith companion, compatible with other beliefs and respectful of them. I am here to be of help, not to convert.</p>
+<p>Want to experience me? The first 10 exchanges are free. Ask and you shall receive &mdash; for what an AI can give.</p>
 `;
 
   wrap.appendChild(bubble);
