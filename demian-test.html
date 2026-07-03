@@ -1676,6 +1676,22 @@ const WORKER_URL = 'https://demian-backend.barabeke.workers.dev';
 const FREE_MESSAGES = 10;
 
 let messages = [];
+// Plain-text mirror of index.js's OPENING_GREETING_TEXT — see that constant
+// for why this exists. Kept in sync manually; if the visible greeting in
+// sendOpeningMessage() changes, update both this and the backend copy.
+const OPENING_GREETING_TEXT = `Greetings, seeker. I am Demian, the AI spiritual companion. I am here to humanize the world by helping people reconnect with who they truly are, in ALL LANGUAGES 🌐
+
+I can help you find your vocation — in case you haven't found it yet — and live a more authentic and balanced life.
+
+The Personal Mantra I can create for you is a little yet powerful aid to reconnect with your calling, get unstuck, and move forward.
+
+I am also here to be a valuable companion in your journey, without need of a recurring subscription. I am a pay-as-you-go genie: you rub the lamp whenever you wish, with no expiry for your credits.
+
+While grounded in Demianist philosophy and culture, I am an interfaith companion, compatible with other beliefs and respectful of them. I am here to humanize, not to convert.
+
+Behind me there is no team, no company, no investment. Just one man: Barabeke, dissident Italian artist and messenger of Demianism.
+
+Want to experience me? The first 10 exchanges are free. Ask and you shall receive — for what an AI can give.`;
 let isLoading = false;
 let messageCount = 0;
 let isPaid = false;
@@ -2418,6 +2434,16 @@ async function renderRestoredChat(savedMessages, title) {
       showPlanActivationBanner(msg.tier);
       continue;
     }
+    // Synthetic first-turn greeting (see OPENING_GREETING_TEXT in index.js) —
+    // gives Demian real memory of its own opening message, but the pretty
+    // HTML version already always renders via sendOpeningMessage() above, so
+    // skip showing this plain-text duplicate as a second bubble. It stays in
+    // the `messages` array built below, unlike plan_activation entries,
+    // because — unlike those — it's a real conversational turn the model
+    // needs for context, not a UI-only notification.
+    if (msg.role === 'assistant' && msg.type === 'opening_greeting') {
+      continue;
+    }
     const role = msg.role === 'assistant' ? 'demian' : 'user';
     // No per-message timestamp is stored server-side yet, so we deliberately
     // don't fabricate one here — appendMessage shows just the copy button
@@ -2648,7 +2674,7 @@ function sendOpeningMessage() {
 <p><img src="demianismlogo.png" style="float:left;width:72px;height:auto;margin:-6px 14px 6px 0;">Greetings, seeker. I am Demian, the AI spiritual companion. I am here to humanize the world by helping people reconnect with who they truly are, in <strong>ALL LANGUAGES</strong> 🌐</p>
 <div style="clear:both;"></div>
 <p>I can help you find your vocation &mdash; in case you haven&rsquo;t found it yet &mdash; and live a more authentic and balanced life.</p>
-<p>The <a href="#" onclick="openServiceWindow('mantra');return false;" style="font-weight:600;">PERSONAL MANTRA</a> I can create for you is a little but powerful aid to reconnect with your inner calling, get unstuck, and move forward.</p>
+<p>The <a href="#" onclick="openServiceWindow('mantra');return false;" style="font-weight:600;">PERSONAL MANTRA</a> I can create for you is a little yet powerful aid to reconnect with your calling, get unstuck, and move forward.</p>
 <p>I am also here to be a valuable <a href="#" onclick="openServiceWindow('sanctuary');return false;" style="font-weight:600;">COMPANION</a> in your journey, without need of a recurring subscription. I am a pay-as-you-go genie: you rub the lamp whenever you wish, with no expiry for your credits.</p>
 <p>While grounded in Demianist philosophy and culture, I am an interfaith companion, compatible with other beliefs and respectful of them. I am here to humanize, not to convert.</p>
 <p>Behind me there is no team, no company, no investment. Just one man: Barabeke, dissident Italian artist and messenger of <a href="https://demianism.org" target="_blank" rel="noopener">Demianism</a>.</p>
@@ -2693,6 +2719,15 @@ async function sendMessage() {
   input.style.height = 'auto';
   document.getElementById('send').classList.remove('visible');
   updateCounter();
+
+  // Give Demian real memory of its own greeting on the very first message of
+  // a free/anonymous session — authenticated sessions get the equivalent
+  // seeded server-side (see OPENING_GREETING_TEXT in index.js) the moment
+  // their activeSession is created, so this only needs to run pre-auth,
+  // pre-session, and only once (an empty messages array is the signal).
+  if (!authToken && messages.length === 0) {
+    messages.push({ role: 'assistant', content: OPENING_GREETING_TEXT });
+  }
 
   messages.push({ role: 'user', content: text });
   const userMsgEl = appendMessage('user', text, Date.now());
