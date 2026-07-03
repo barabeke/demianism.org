@@ -2822,7 +2822,14 @@ async function callAPI(msgs) {
     }
     updateCounter();
 
-    if (reply.includes('[SESSION_COMPLETE]')) handleSessionComplete(reply);
+    // See index.js's matching fix for why MANTRA_TEXT alone is now treated as
+    // sufficient — the model has repeatedly delivered a real, well-formed
+    // mantra while dropping the separate bare SESSION_COMPLETE marker, most
+    // often on its richest, most emotionally resonant completions. Without
+    // this, the backend would correctly graduate the user while the card
+    // image still silently never renders, since this call is the only path
+    // to handleSessionComplete.
+    if (reply.includes('[SESSION_COMPLETE]') || /\[MANTRA_TEXT\][\s\S]*?\[\/MANTRA_TEXT\]/.test(reply)) handleSessionComplete(reply);
 
     // Low balance warnings
     if (authToken && !mantraUnlocked && messagesBalance <= 5 && messagesBalance > 0) {
