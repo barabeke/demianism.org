@@ -1700,6 +1700,7 @@ let mantraUnlocked = false;
 let messagesBalance = 0;
 let canBuyMantra = true; // updated from /auth/me; defaults true for logged-out/new visitors
 let giftCredits = { mantra: 0, sanctuary: 0, retreat: 0 };
+let userMantras = []; // permanently saved mantras from the user profile ({text, ts}) — card regenerable from text on demand
 
 function updateCounter() {
   const remNum = document.getElementById('remNum');
@@ -2218,6 +2219,7 @@ async function loadUser(opts) {
       userTier = data.tier || null;
       canBuyMantra = data.canBuyMantra !== false;
       giftCredits = data.giftCredits || { mantra: 0, sanctuary: 0, retreat: 0 };
+      userMantras = data.mantras || [];
       isPaid = messagesBalance > 0 || mantraUnlocked;
       updateAccountUI();
       updateCounter();
@@ -2270,12 +2272,85 @@ function openAccountMenu(triggerEl) {
       '<div style="font-family:\'Inter\',sans-serif;font-size:12px;color:rgba(255,255,255,0.5);padding:8px 10px;background:rgba(104,100,187,0.1);border-radius:8px;border:1px solid rgba(104,100,187,0.2);">💬 ' + countLine + '</div>' +
     '</div>' +
     '<div style="border-top:1px solid rgba(104,100,187,0.18);">' +
+      (userMantras.length ? '<button onclick="openMyMantras();document.getElementById(\'accountMenu\').classList.remove(\'open\');" style="width:100%;text-align:left;padding:11px 18px;font-family:\'Inter\',sans-serif;font-size:14px;color:var(--text-light);background:none;border:none;cursor:pointer;">✦ My Mantra' + (userMantras.length > 1 ? 's' : '') + '</button>' : '') +
       '<button onclick="openCodeModal();document.getElementById(\'accountMenu\').classList.remove(\'open\');" style="width:100%;text-align:left;padding:11px 18px;font-family:\'Inter\',sans-serif;font-size:14px;color:var(--text-light);background:none;border:none;cursor:pointer;">🎁 Redeem a gift code</button>' +
       '<a href="/privacy" target="_blank" style="display:block;padding:11px 18px;font-family:\'Inter\',sans-serif;font-size:14px;color:var(--text-light);text-decoration:none;">🔒 Privacy Policy</a>' +
       '<button onclick="signOut();document.getElementById(\'accountMenu\').classList.remove(\'open\');" style="width:100%;text-align:left;padding:11px 18px 14px;font-family:\'Inter\',sans-serif;font-size:14px;color:#e08a8a;background:none;border:none;cursor:pointer;">↩ Sign out</button>' +
     '</div>';
   positionMenu(menu, triggerEl, 'above');
   menu.classList.add('open');
+}
+
+// ── MY MANTRAS (profile) ──────────────────────────────────────────
+// Shows every permanently saved mantra: the text as a tap-to-copy block
+// (reusing the exact same "Approved mantra" box from chat) plus a
+// "Download card" button that regenerates the PNG on demand from the
+// stored text — no image is stored anywhere; the card is deterministic
+// from its text via the same hidden template used at delivery time.
+function openMyMantras() {
+  let overlay = document.getElementById('myMantrasOverlay');
+  if (overlay) overlay.remove();
+  overlay = document.createElement('div');
+  overlay.id = 'myMantrasOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(6,5,18,0.82);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+  const panel = document.createElement('div');
+  panel.style.cssText = 'background:#12102b;border:1px solid rgba(104,100,187,0.35);border-radius:14px;max-width:560px;width:100%;max-height:82vh;overflow-y:auto;padding:22px 24px;position:relative;';
+
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕';
+  closeBtn.style.cssText = 'position:absolute;top:12px;right:14px;background:none;border:none;color:var(--text-body);font-size:16px;cursor:pointer;padding:4px 8px;';
+  closeBtn.addEventListener('click', () => overlay.remove());
+  panel.appendChild(closeBtn);
+
+  const title = document.createElement('h3');
+  title.textContent = userMantras.length > 1 ? 'My Mantras' : 'My Mantra';
+  title.style.cssText = "font-family:'Inter',sans-serif;font-weight:700;font-size:17px;color:#fff;margin:0 0 14px;";
+  panel.appendChild(title);
+
+  // Newest first
+  const sorted = [...userMantras].sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  for (const m of sorted) {
+    const item = document.createElement('div');
+    item.style.cssText = 'margin-bottom:20px;';
+    const { block } = buildMantraCopyBlock(smartQuotes(m.text), { isDraft: false });
+    item.appendChild(block);
+
+    const dlBtn = document.createElement('button');
+    dlBtn.className = 'dl-btn';
+    dlBtn.textContent = 'Download card';
+    dlBtn.style.marginTop = '10px';
+    dlBtn.addEventListener('click', async () => {
+      dlBtn.disabled = true;
+      dlBtn.textContent = 'Generating…';
+      try {
+        const dataUrl = await generateMantraCardDataUrl(m.text);
+        if (dataUrl) {
+          const a = document.createElement('a');
+          a.download = 'demian-mantra.png';
+          a.href = dataUrl;
+          a.click();
+          dlBtn.textContent = 'Download card';
+        } else {
+          dlBtn.textContent = 'Failed — try the mantra tool';
+          const fb = document.createElement('p');
+          fb.style.cssText = 'margin-top:8px;font-size:13px;color:var(--purple-light);';
+          fb.innerHTML = 'Paste the text above at <a href="https://demianism.org/mantra" target="_blank" style="color:var(--text-link)">demianism.org/mantra</a> to generate your card there.';
+          item.appendChild(fb);
+        }
+      } catch (e) {
+        console.error('profile card generation failed:', e);
+        dlBtn.textContent = 'Failed — try again';
+      }
+      dlBtn.disabled = false;
+    });
+    item.appendChild(dlBtn);
+    panel.appendChild(item);
+  }
+
+  overlay.appendChild(panel);
+  document.body.appendChild(overlay);
 }
 
 function signOut() {
@@ -2289,6 +2364,7 @@ function signOut() {
   canNewChat = false;
   isPaid = false;
   userTier = null;
+  userMantras = [];
   currentSessionId = null;
   localStorage.removeItem('demian_auth');
   localStorage.removeItem('demian_session');
@@ -3025,66 +3101,13 @@ function colorBracketsRC(raw) {
   return out;
 }
 
-async function handleSessionComplete(reply) {
-  let mantraMatch = reply.match(/\[MANTRA_TEXT\]([\s\S]*?)\[\/MANTRA_TEXT\]/);
-  let usedFallback = false;
-
-  mantraUnlocked = false;
-  isPaid = true;
-  if (authToken) loadSessionList();
-  updateCounter();
-
-  if (!mantraMatch) {
-    // FALLBACK: the model sometimes drifts from the exact [MANTRA_TEXT]
-    // wrapper while still producing mantra-shaped content — the spec always
-    // requires a single bracketed CTA line ("[And today... I...]"), so its
-    // presence is a reasonably strong signal this is a finalized mantra
-    // even without the outer tags. Without this fallback, a tag slip means
-    // the mantra renders as indistinguishable plain prose with zero visual
-    // treatment — exactly the bug this is fixing. This only fires for a
-    // SESSION_COMPLETE reply (the caller already gates on that), so the
-    // false-positive risk is limited to mantra-session replies specifically.
-    const ctaLineMatch = reply.match(/^\s*\[([^\]]{15,200})\]\s*$/m);
-    if (ctaLineMatch) {
-      const ctaIndex = reply.indexOf(ctaLineMatch[0]);
-      const before = reply.slice(0, ctaIndex).trim();
-      const paragraphsBefore = before.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
-      // Heuristic: the mantra body is rarely more than ~4 short paragraphs;
-      // take the last few rather than risk pulling in unrelated lead-in prose.
-      const body = paragraphsBefore.slice(-4).join('\n\n');
-      mantraMatch = [null, body + '\n\n' + ctaLineMatch[0]];
-      usedFallback = true;
-      console.warn('[MANTRA_TEXT] tags missing — used CTA-line fallback to render card anyway. Flag for system-prompt review.');
-    } else {
-      return;
-    }
-  }
-  const mantraText = smartQuotes(mantraMatch[1].trim());
-
-  const chatNow = document.getElementById('chat');
-  const demianMsgsNow = chatNow.querySelectorAll('.msg.demian');
-  const bubbleForBlock = demianMsgsNow.length ? demianMsgsNow[demianMsgsNow.length - 1].querySelector('.msg-bubble') : null;
-  if (bubbleForBlock && usedFallback) {
-    // Remove the duplicated raw paragraphs that appendMessage already
-    // rendered as plain prose before this function ran. Match by trimmed
-    // text content rather than exact node identity, since marked.parse()
-    // may have wrapped each paragraph in its own <p> — comparing text is
-    // more robust than assuming a particular DOM shape.
-    const rawParaTexts = new Set(
-      mantraText.split(/\n+/).map(l => l.trim().replace(/^\[|\]$/g, '')).filter(Boolean)
-    );
-    Array.from(bubbleForBlock.children).forEach(child => {
-      const childText = (child.textContent || '').trim();
-      if (rawParaTexts.has(childText)) child.remove();
-    });
-  }
-  if (bubbleForBlock) {
-    const { block, mantraParas, plainForCopy } = buildMantraCopyBlock(mantraText, { isDraft: false });
-    bubbleForBlock.appendChild(block);
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-  }
-
-  // Build the hidden card
+// Reusable card generation: takes mantra text, populates the hidden 1080×1350
+// template, shrink-fits, and returns a PNG dataUrl (or null on failure).
+// Used by handleSessionComplete on live delivery AND by the profile's
+// "Download card" to regenerate any saved mantra's card on demand — the card
+// is fully deterministic from its text, so nothing image-shaped ever needs
+// storing anywhere.
+async function generateMantraCardDataUrl(mantraText) {
   paintRCBackground();
   buildContoursSVG();
   const textEl = document.getElementById('rc-mantra-text');
@@ -3184,6 +3207,72 @@ async function handleSessionComplete(reply) {
   } catch (err) {
     console.error('Mantra card render error:', err);
   }
+  return dataUrl;
+}
+
+async function handleSessionComplete(reply) {
+  let mantraMatch = reply.match(/\[MANTRA_TEXT\]([\s\S]*?)\[\/MANTRA_TEXT\]/);
+  let usedFallback = false;
+
+  mantraUnlocked = false;
+  isPaid = true;
+  if (authToken) loadSessionList();
+  updateCounter();
+
+  if (!mantraMatch) {
+    // FALLBACK: the model sometimes drifts from the exact [MANTRA_TEXT]
+    // wrapper while still producing mantra-shaped content — the spec always
+    // requires a single bracketed CTA line ("[And today... I...]"), so its
+    // presence is a reasonably strong signal this is a finalized mantra
+    // even without the outer tags. Without this fallback, a tag slip means
+    // the mantra renders as indistinguishable plain prose with zero visual
+    // treatment — exactly the bug this is fixing. This only fires for a
+    // SESSION_COMPLETE reply (the caller already gates on that), so the
+    // false-positive risk is limited to mantra-session replies specifically.
+    const ctaLineMatch = reply.match(/^\s*\[([^\]]{15,200})\]\s*$/m);
+    if (ctaLineMatch) {
+      const ctaIndex = reply.indexOf(ctaLineMatch[0]);
+      const before = reply.slice(0, ctaIndex).trim();
+      const paragraphsBefore = before.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+      // Heuristic: the mantra body is rarely more than ~4 short paragraphs;
+      // take the last few rather than risk pulling in unrelated lead-in prose.
+      const body = paragraphsBefore.slice(-4).join('\n\n');
+      mantraMatch = [null, body + '\n\n' + ctaLineMatch[0]];
+      usedFallback = true;
+      console.warn('[MANTRA_TEXT] tags missing — used CTA-line fallback to render card anyway. Flag for system-prompt review.');
+    } else {
+      return;
+    }
+  }
+  const mantraText = smartQuotes(mantraMatch[1].trim());
+
+  const chatNow = document.getElementById('chat');
+  const demianMsgsNow = chatNow.querySelectorAll('.msg.demian');
+  const bubbleForBlock = demianMsgsNow.length ? demianMsgsNow[demianMsgsNow.length - 1].querySelector('.msg-bubble') : null;
+  if (bubbleForBlock && usedFallback) {
+    // Remove the duplicated raw paragraphs that appendMessage already
+    // rendered as plain prose before this function ran. Match by trimmed
+    // text content rather than exact node identity, since marked.parse()
+    // may have wrapped each paragraph in its own <p> — comparing text is
+    // more robust than assuming a particular DOM shape.
+    const rawParaTexts = new Set(
+      mantraText.split(/\n+/).map(l => l.trim().replace(/^\[|\]$/g, '')).filter(Boolean)
+    );
+    Array.from(bubbleForBlock.children).forEach(child => {
+      const childText = (child.textContent || '').trim();
+      if (rawParaTexts.has(childText)) child.remove();
+    });
+  }
+  if (bubbleForBlock) {
+    const { block, mantraParas, plainForCopy } = buildMantraCopyBlock(mantraText, { isDraft: false });
+    bubbleForBlock.appendChild(block);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+
+  // Build the hidden card and render it — factored into a reusable function
+  // so the profile's "Download card" can regenerate any saved mantra's card
+  // on demand from its stored text, identical to first-time generation.
+  const dataUrl = await generateMantraCardDataUrl(mantraText);
 
   // Inject card into the last Demian message bubble
   const chat = document.getElementById('chat');
