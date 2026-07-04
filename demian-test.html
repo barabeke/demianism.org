@@ -3205,6 +3205,23 @@ async function handleSessionComplete(reply) {
     const img = document.createElement('img');
     img.src = dataUrl;
     img.alt = 'Your personal mantra card';
+    // Some browsers (observed on mobile, especially after a tab is
+    // backgrounded for a while under memory pressure) silently discard a
+    // large inline base64 image and never re-fetch it, since there's no
+    // network request to retry — this is the one persistence gap left in
+    // the card: the generated PNG only ever lives in this live img.src,
+    // never in activeSession.messages or anywhere else, so nothing else can
+    // regenerate it without a full reload through renderRestoredChat. This
+    // handler at least makes that failure visible and recoverable in place,
+    // rather than a silently broken image with no explanation and no path
+    // forward short of the user realizing they should reload.
+    img.onerror = () => {
+      img.remove();
+      const recovered = document.createElement('p');
+      recovered.style.cssText = 'margin-top:12px; font-size:14px; color:var(--purple-light);';
+      recovered.innerHTML = 'Your card image didn\u2019t stay loaded (this can happen after switching apps for a while) — reload the page to bring it back, or use this in the meantime: <a href="https://demianism.org/mantra" target="_blank" style="color:var(--text-link)">demianism.org/mantra</a>';
+      cardWrap.appendChild(recovered);
+    };
     cardWrap.appendChild(img);
 
     const dlBtn = document.createElement('button');
