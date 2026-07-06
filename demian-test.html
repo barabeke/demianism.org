@@ -1695,6 +1695,7 @@ Want to experience me? The first 10 exchanges are free. Ask and you shall receiv
 let isLoading = false;
 let messageCount = 0;
 let isPaid = false;
+let currentSessionTier = null; // 'mantra' | 'sanctuary' | 'retreat' | null (free)
 let canNewChat = false;
 let mantraUnlocked = false;
 let messagesBalance = 0;
@@ -1705,7 +1706,16 @@ let userMantras = []; // permanently saved mantras from the user profile ({text,
 function updateCounter() {
   const remNum = document.getElementById('remNum');
   const sbRemaining = document.getElementById('sbRemaining');
+  const counterWrap = document.getElementById('counterWrap') || remNum?.parentElement;
   if (!remNum) return;
+  // Mantra sessions have no per-message balance — hide counter entirely
+  if (currentSessionTier === 'mantra') {
+    if (counterWrap) counterWrap.style.display = 'none';
+    if (sbRemaining) sbRemaining.style.display = 'none';
+    updateActivePlanUI();
+    return;
+  }
+  if (counterWrap) counterWrap.style.display = '';
   if (mantraUnlocked) {
     remNum.textContent = '∞';
     if (sbRemaining) sbRemaining.style.display = 'none';
@@ -2225,6 +2235,12 @@ async function loadUser(opts) {
       updateCounter();
       await loadSessionList();
       if (data.pendingWelcome && !opts.suppressWelcome) showPlanActivationBanner(data.pendingWelcome);
+      // Sanctuary/Retreat user just purchased a standalone Mantra session —
+      // redirect them to the new dedicated chat immediately.
+      if (data.newMantraSessionId && data.newMantraSessionId !== currentSessionId) {
+        await switchSession(data.newMantraSessionId, null);
+        showMantraOpeningScreen();
+      }
     } else {
       authToken = null;
       localStorage.removeItem('demian_auth');
@@ -2281,7 +2297,94 @@ function openAccountMenu(triggerEl) {
   menu.classList.add('open');
 }
 
-// ── MY MANTRAS (profile) ──────────────────────────────────────────
+// ── MANTRA OPENING SCREEN ────────────────────────────────────────
+// Shown instead of the standard welcome message in dedicated Mantra sessions.
+// Clean, focused: logo, tagline, memory preservation option.
+function showMantraOpeningScreen() {
+  const chat = document.getElementById('chat');
+  if (!chat) return;
+  chat.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.id = 'mantraOpening';
+  wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px 32px;gap:20px;text-align:center;';
+
+  // Logo
+  const logo = document.createElement('img');
+  logo.src = 'demianismlogo.png';
+  logo.style.cssText = 'width:72px;height:auto;opacity:0.9;';
+  wrap.appendChild(logo);
+
+  // Tagline
+  const tagline = document.createElement('p');
+  tagline.style.cssText = "font-family:'Libre Baskerville',serif;font-size:18px;color:var(--text-light);margin:0;line-height:1.5;";
+  tagline.textContent = "Let's build your mantra together.";
+  wrap.appendChild(tagline);
+
+  const sub = document.createElement('p');
+  sub.style.cssText = "font-family:'Libre Baskerville',serif;font-size:14px;color:var(--text-body);margin:0;max-width:360px;line-height:1.6;";
+  sub.textContent = 'Your mantra will be personal, precise, and yours to keep.';
+  wrap.appendChild(sub);
+
+  // Memory preservation option — only shown if there are prior conversations
+  // (checked by whether the session list has more than this one session)
+  const sessionItems = document.querySelectorAll('#sbSessions .sb-session');
+  if (sessionItems.length > 1) {
+    const memWrap = document.createElement('div');
+    memWrap.style.cssText = 'margin-top:8px;display:flex;flex-direction:column;gap:10px;align-items:center;';
+
+    const memLabel = document.createElement('p');
+    memLabel.style.cssText = "font-family:'Inter',sans-serif;font-size:13px;color:var(--text-body);margin:0;";
+    memLabel.textContent = 'Would you like me to draw on your previous conversations?';
+    memWrap.appendChild(memLabel);
+
+    const btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;gap:10px;';
+
+    const btnYes = document.createElement('button');
+    btnYes.textContent = 'Yes, use my history';
+    btnYes.style.cssText = 'padding:8px 18px;background:var(--purple-mid);color:#fff;border:none;border-radius:8px;font-family:\'Inter\',sans-serif;font-size:13px;cursor:pointer;';
+    btnYes.addEventListener('click', () => {
+      wrap.remove();
+      startMantraSession(true);
+    });
+
+    const btnNo = document.createElement('button');
+    btnNo.textContent = 'No, start fresh';
+    btnNo.style.cssText = 'padding:8px 18px;background:transparent;color:var(--text-body);border:1px solid rgba(104,100,187,0.3);border-radius:8px;font-family:\'Inter\',sans-serif;font-size:13px;cursor:pointer;';
+    btnNo.addEventListener('click', () => {
+      wrap.remove();
+      startMantraSession(false);
+    });
+
+    btnRow.appendChild(btnYes);
+    btnRow.appendChild(btnNo);
+    memWrap.appendChild(btnRow);
+    wrap.appendChild(memWrap);
+  } else {
+    // No prior history — start directly
+    const startBtn = document.createElement('button');
+    startBtn.textContent = 'Begin';
+    startBtn.style.cssText = 'padding:10px 28px;background:var(--purple-mid);color:#fff;border:none;border-radius:8px;font-family:\'Inter\',sans-serif;font-size:14px;cursor:pointer;margin-top:8px;';
+    startBtn.addEventListener('click', () => {
+      wrap.remove();
+      startMantraSession(false);
+    });
+    wrap.appendChild(startBtn);
+  }
+
+  chat.appendChild(wrap);
+}
+
+// Called after user makes memory choice on the mantra opening screen.
+// withMemory=true: inject prior session summary or last 15 messages as context.
+// withMemory=false: start clean (session already has its own history from evolution).
+async function startMantraSession(withMemory) {
+  if (withMemory) {
+    await injectMemoryContext();
+    appendSystemMessage('Your previous conversations have been shared with Demian to help build your mantra.');
+  }
+  document.getElementById('input')?.focus();
+}
 // Shows every permanently saved mantra: the text as a tap-to-copy block
 // (reusing the exact same "Approved mantra" box from chat) plus a
 // "Download card" button that regenerates the PNG on demand from the
@@ -2417,8 +2520,17 @@ async function restoreSession() {
       });
       const data = await res.json();
       if (data.ok && data.session.messages.length > 0) {
+        currentSessionTier = data.session.tier || null;
+        updateCounter();
         // Restore chat from saved history
         await renderRestoredChat(data.session.messages, data.session.title);
+        return;
+      }
+      // Empty session — check if it's a mantra session waiting to start
+      if (data.ok && data.session.tier === 'mantra') {
+        currentSessionTier = 'mantra';
+        updateCounter();
+        showMantraOpeningScreen();
         return;
       }
     } catch (err) { console.error('restoreSession failed', err); }
@@ -2583,11 +2695,20 @@ async function switchSession(sessionId, title) {
     const data = await res.json();
     if (data.ok) {
       currentSessionId = sessionId;
+      currentSessionTier = data.session.tier || null;
       localStorage.setItem('demian_session', sessionId);
-      await renderRestoredChat(data.session.messages, title);
+      updateCounter();
+      if (data.session.tier === 'mantra' && data.session.messages.filter(m => m.role !== 'system').length === 0) {
+        // Empty dedicated mantra session — show mantra opening screen
+        const chat = document.getElementById('chat');
+        if (chat) chat.innerHTML = '';
+        showMantraOpeningScreen();
+      } else {
+        await renderRestoredChat(data.session.messages, title);
+      }
       // Update active state in sidebar
       document.querySelectorAll('.sb-session').forEach(el => {
-        el.classList.toggle('active', el.textContent === title);
+        el.classList.toggle('active', el.textContent === (title || data.session.title));
       });
       if (window.innerWidth <= 720) closeSidebar();
     }
@@ -2655,16 +2776,102 @@ async function newChat(triggerEl) {
     const data = await res.json();
     if (data.ok) {
       currentSessionId = data.sessionId;
+      currentSessionTier = data.tier || userTier || null;
       localStorage.setItem('demian_session', currentSessionId);
       messages = [];
       messageCount = 0;
-      document.getElementById('chat').innerHTML = '';
-      sendOpeningMessage();
-      updateCounter();
       await loadSessionList();
       if (window.innerWidth <= 720) closeSidebar();
+      showNewChatOpeningScreen();
     }
   } catch (err) { console.error('newChat failed', err); }
+}
+
+// Shown at the start of every new companion chat — memory preservation prompt
+// if prior non-deleted sessions exist, otherwise straight to welcome.
+async function showNewChatOpeningScreen() {
+  const chat = document.getElementById('chat');
+  if (!chat) return;
+  chat.innerHTML = '';
+  updateCounter();
+
+  // Check if there are prior sessions worth offering to preserve
+  const sessionItems = document.querySelectorAll('#sbSessions .sb-session');
+  const hasPrior = sessionItems.length > 1; // more than just this new one
+
+  if (!hasPrior) {
+    sendOpeningMessage();
+    return;
+  }
+
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px 32px;gap:16px;text-align:center;';
+
+  const logo = document.createElement('img');
+  logo.src = 'demianismlogo.png';
+  logo.style.cssText = 'width:64px;height:auto;opacity:0.85;';
+  wrap.appendChild(logo);
+
+  const q = document.createElement('p');
+  q.style.cssText = "font-family:'Libre Baskerville',serif;font-size:16px;color:var(--text-light);margin:0;line-height:1.55;max-width:380px;";
+  q.textContent = 'Would you like Demian to remember your previous conversations?';
+  wrap.appendChild(q);
+
+  const sub = document.createElement('p');
+  sub.style.cssText = "font-family:'Libre Baskerville',serif;font-size:13px;color:var(--text-body);margin:0;max-width:360px;line-height:1.6;";
+  sub.textContent = 'This helps Demian pick up where you left off and avoids repeating yourself.';
+  wrap.appendChild(sub);
+
+  const btnRow = document.createElement('div');
+  btnRow.style.cssText = 'display:flex;gap:10px;margin-top:8px;';
+
+  const btnYes = document.createElement('button');
+  btnYes.textContent = 'Yes, remember';
+  btnYes.style.cssText = 'padding:9px 20px;background:var(--purple-mid);color:#fff;border:none;border-radius:8px;font-family:\'Inter\',sans-serif;font-size:13px;cursor:pointer;';
+  btnYes.addEventListener('click', async () => {
+    wrap.remove();
+    await injectMemoryContext();
+    sendOpeningMessage();
+  });
+
+  const btnNo = document.createElement('button');
+  btnNo.textContent = 'No, start fresh';
+  btnNo.style.cssText = 'padding:9px 20px;background:transparent;color:var(--text-body);border:1px solid rgba(104,100,187,0.3);border-radius:8px;font-family:\'Inter\',sans-serif;font-size:13px;cursor:pointer;';
+  btnNo.addEventListener('click', () => {
+    wrap.remove();
+    sendOpeningMessage();
+  });
+
+  btnRow.appendChild(btnYes);
+  btnRow.appendChild(btnNo);
+  wrap.appendChild(btnRow);
+  chat.appendChild(wrap);
+}
+
+// Injects memory from most recent prior non-mantra session into current messages array.
+// ≤15 messages: full history. >15: summary if available, else last 15.
+async function injectMemoryContext() {
+  try {
+    const res = await fetch(`${WORKER_URL}/sessions`, { headers: { 'X-Auth-Token': authToken } });
+    const data = await res.json();
+    if (!data.ok || !data.sessions) return;
+    const prior = data.sessions.find(s => s.id !== currentSessionId && !s.title?.startsWith('Mantra '));
+    if (!prior) return;
+    const sRes = await fetch(`${WORKER_URL}/sessions/${prior.id}`, { headers: { 'X-Auth-Token': authToken } });
+    const sData = await sRes.json();
+    if (!sData.ok) return;
+    const priorMsgs = sData.session.messages.filter(m => m.role !== 'system');
+    if (priorMsgs.length <= 15) {
+      messages = priorMsgs.map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }));
+    } else {
+      const summary = sData.session.summary;
+      if (summary) {
+        messages = [{ role: 'assistant', content: `[Context from previous conversations: ${summary}]` }];
+      } else {
+        messages = priorMsgs.slice(-15).map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }));
+      }
+    }
+  } catch (e) { console.error('injectMemoryContext failed:', e); }
 }
 
 // Generic: open a fixed side popup positioned like the side menus
