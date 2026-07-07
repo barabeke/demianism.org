@@ -579,19 +579,23 @@
       <p>
         <strong>Demian is an AI, not a human.</strong> This is stated clearly at the start of every
         conversation and is fundamental to how Demianism understands AI: a technological tool, not a
-        conscious being. It is powered by the <strong>Claude API</strong>, provided by Anthropic, PBC
-        (San Francisco, USA). Anthropic acts as a data processor under a Data Processing Agreement
-        that includes EU Standard Contractual Clauses.
+        conscious being. Demian's AI capabilities are delivered through
+        <strong>Requesty</strong> (<a href="https://www.requesty.ai" target="_blank">requesty.ai</a>),
+        an EU-based AI gateway that routes requests to one or more large language models depending
+        on the nature of the conversation. Requesty acts as the sole data processor for all AI
+        inference and is bound by a Data Processing Agreement compliant with GDPR.
       </p>
 
       <h2 id="what-demian-collects">What data Demian collects and why</h2>
 
       <p>
-        <strong>Conversation content.</strong> Your messages and Demian's responses are processed by
-        Anthropic's servers to generate replies.
-        <a href="https://www.anthropic.com/legal/privacy" target="_blank">Anthropic's API policy</a>
-        does not use these conversations to train AI models. Conversation data is retained by
-        Anthropic for up to 30 days, then deleted.
+        <strong>Conversation content.</strong> Your messages and Demian's responses are processed
+        exclusively through Requesty's infrastructure, hosted in <strong>Frankfurt, Germany</strong>.
+        Data never leaves EU jurisdiction. Requesty applies zero data retention by default:
+        your prompts and completions are proxied in real time and immediately discarded after
+        delivery — they are never stored on Requesty's servers. All data in transit is protected
+        by TLS 1.3 encryption. Requesty does not use conversation data to train AI models and
+        does not share it with third parties.
       </p>
 
       <p>
@@ -675,9 +679,10 @@
       <h2 id="transfers">International data transfers</h2>
 
       <p>
-        Anthropic is a US company. Your conversation content is processed on servers in the United
-        States. This transfer is covered by EU Standard Contractual Clauses (SCCs) under Anthropic's
-        Data Processing Agreement, which complies with GDPR requirements for international transfers.
+        AI inference is processed exclusively through Requesty's EU infrastructure in Frankfurt,
+        Germany. No conversation data leaves the European Union at any point. This means there are
+        no international data transfers to declare for AI processing — Requesty's gateway is both
+        the technical and legal boundary.
       </p>
 
       <p>
@@ -688,10 +693,10 @@
       <h2 id="safety">Safety</h2>
 
       <p>
-        Demian's safety relies on Anthropic's Constitutional AI framework — training built into the
-        underlying model itself that handles self-harm signals, clinical crises, and other high-risk
-        content carefully at the moment a response is generated. This is a property of the model,
-        not a separate monitoring system.
+        Demian's safety relies on trained safety behaviors built into the underlying AI models,
+        which handle self-harm signals, clinical crises, and other high-risk content carefully at
+        the moment a response is generated. This is a property of the models themselves, not a
+        separate monitoring system.
       </p>
 
       <p>
