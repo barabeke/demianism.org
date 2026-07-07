@@ -3112,7 +3112,21 @@ async function callAPI(msgs) {
     // this, the backend would correctly graduate the user while the card
     // image still silently never renders, since this call is the only path
     // to handleSessionComplete.
-    if (reply.includes('[SESSION_COMPLETE]') || /\[MANTRA_TEXT\][\s\S]*?\[\/MANTRA_TEXT\]/.test(reply)) handleSessionComplete(reply);
+    //
+    // GATED on currentSessionTier === 'mantra': a real, confirmed failure —
+    // an alternate model (during evaluation testing, likely because module
+    // content leaked across a non-production test harness) fabricated a full
+    // mantra delivery, complete with correctly-formatted card, inside a FREE
+    // session, unprompted, no purchase, right after a crisis disclosure. The
+    // backend's own graduation logic is already correctly gated on session
+    // tier (_wasMantraTierActive in index.js) — this was the one place that
+    // wasn't, meaning any model, through hallucination or injection, could
+    // trigger a full unauthorized product delivery just by emitting the
+    // right literal tag string, in any session type.
+    if (currentSessionTier === 'mantra' &&
+        (reply.includes('[SESSION_COMPLETE]') || /\[MANTRA_TEXT\][\s\S]*?\[\/MANTRA_TEXT\]/.test(reply))) {
+      handleSessionComplete(reply);
+    }
 
     // Low balance warnings
     if (authToken && !mantraUnlocked && messagesBalance <= 5 && messagesBalance > 0) {
