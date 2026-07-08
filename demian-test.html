@@ -886,6 +886,40 @@ button#send svg { width: 17px; height: 17px; }
 .modal-cancel:hover { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.3); color:rgba(255,255,255,0.65); }
 .modal-error { font-family:'Inter',sans-serif; font-size:13px; color:#e07070; min-height:16px; text-align:center; }
 
+/* ── Session context menu (right-click desktop / long-press mobile) ── */
+#sessionCtxMenu {
+  position: fixed;
+  z-index: 500;
+  background: #1a1840;
+  border: 1px solid rgba(104,100,187,0.45);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  padding: 4px 0;
+  min-width: 160px;
+  display: none;
+}
+#sessionCtxMenu.open { display: block; }
+#sessionCtxMenu button {
+  display: block;
+  width: 100%;
+  padding: 9px 16px;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+#sessionCtxMenu button:hover { background: rgba(104,100,187,0.18); }
+#sessionCtxMenu button.ctx-delete { color: #e07070; }
+#sessionCtxMenu button.ctx-delete:hover { background: rgba(224,112,112,0.12); }
+
+/* ── Delete confirm modal ── */
+#deleteConfirmModal .modal-confirm { background: #5a1c1c; border-color: rgba(224,112,112,0.4); }
+#deleteConfirmModal .modal-confirm:hover { background: #7a2020; box-shadow: 0 0 16px rgba(224,112,112,0.3); }
+
 /* ── Popup card (recharge-style) for info / mantra ── */
 .popup-card {
   background: var(--card-bg);
@@ -1617,6 +1651,24 @@ body {
 
 <div class="ms-menu" id="msMenu"></div>
 
+<!-- Session context menu (right-click desktop / long-press mobile) -->
+<div id="sessionCtxMenu">
+  <button id="ctxRename" onclick="ctxMenuRename()">Rename</button>
+  <button id="ctxDelete" class="ctx-delete" onclick="ctxMenuDelete()">Delete chat</button>
+</div>
+
+<!-- Delete chat confirmation modal -->
+<div class="modal-overlay" id="deleteConfirmModal">
+  <div class="modal" id="deleteConfirmModal">
+    <h3>Delete this chat?</h3>
+    <p>Demian will lose all memory of this conversation. This cannot be undone.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeDeleteConfirmModal()">Cancel</button>
+      <button class="modal-confirm" id="deleteConfirmBtn" onclick="confirmDeleteSession()">Delete</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="codeModal">
   <div class="modal">
     <h3>Redeem your gift code</h3>
@@ -1676,6 +1728,7 @@ const WORKER_URL = 'https://demian-backend.barabeke.workers.dev';
 const FREE_MESSAGES = 10;
 
 let messages = [];
+let pendingMemoryContext = null; // set by injectMemoryContext(), consumed on next callAPI()
 // Plain-text mirror of index.js's OPENING_GREETING_TEXT — see that constant
 // for why this exists. Kept in sync manually; if the visible greeting in
 // sendOpeningMessage() changes, update both this and the backend copy.
@@ -2680,9 +2733,23 @@ function renderSessionList(sessions) {
     el.className = 'sb-session' + (s.id === currentSessionId ? ' active' : '');
     el.textContent = s.title;
     el.title = s.title;
+    el.dataset.sessionId = s.id;
+    el.dataset.sessionTitle = s.title;
     el.onclick = () => switchSession(s.id, s.title);
-    // Double-click to rename
+    // Double-click to rename (desktop)
     el.ondblclick = (e) => { e.stopPropagation(); startRename(el, s.id, s.title); };
+    // Right-click context menu (desktop)
+    el.oncontextmenu = (e) => { e.preventDefault(); openSessionCtxMenu(e, s.id, s.title, el); };
+    // Long-press context menu (mobile/tablet) — 500ms hold
+    let _lpTimer = null;
+    el.addEventListener('touchstart', (e) => {
+      _lpTimer = setTimeout(() => {
+        _lpTimer = null;
+        openSessionCtxMenu(e.touches[0], s.id, s.title, el);
+      }, 500);
+    }, { passive: true });
+    el.addEventListener('touchend', () => { if (_lpTimer) { clearTimeout(_lpTimer); _lpTimer = null; } });
+    el.addEventListener('touchmove', () => { if (_lpTimer) { clearTimeout(_lpTimer); _lpTimer = null; } });
     container.appendChild(el);
   }
   updateHistoryVisibility();
@@ -2713,6 +2780,84 @@ async function switchSession(sessionId, title) {
       if (window.innerWidth <= 720) closeSidebar();
     }
   } catch (err) { console.error('switchSession failed', err); }
+}
+
+// ── Session context menu ──────────────────────────────────────────
+let _ctxSessionId = null;
+let _ctxSessionEl = null;
+
+function openSessionCtxMenu(e, sessionId, sessionTitle, el) {
+  _ctxSessionId = sessionId;
+  _ctxSessionEl = el;
+  const menu = document.getElementById('sessionCtxMenu');
+  menu.classList.add('open');
+  // Position near the pointer/touch point, keeping within viewport
+  const x = e.clientX ?? e.pageX ?? 0;
+  const y = e.clientY ?? e.pageY ?? 0;
+  menu.style.left = Math.min(x, window.innerWidth - 180) + 'px';
+  menu.style.top = Math.min(y, window.innerHeight - 80) + 'px';
+  // Close on next click/tap anywhere
+  setTimeout(() => document.addEventListener('click', closeSessionCtxMenu, { once: true }), 0);
+}
+
+function closeSessionCtxMenu() {
+  document.getElementById('sessionCtxMenu')?.classList.remove('open');
+  _ctxSessionId = null;
+  _ctxSessionEl = null;
+}
+
+function ctxMenuRename() {
+  closeSessionCtxMenu();
+  if (!_ctxSessionId || !_ctxSessionEl) return;
+  startRename(_ctxSessionEl, _ctxSessionId, _ctxSessionEl.dataset.sessionTitle || _ctxSessionEl.textContent);
+}
+
+function ctxMenuDelete() {
+  closeSessionCtxMenu();
+  if (!_ctxSessionId) return;
+  // Show confirmation modal
+  document.getElementById('deleteConfirmModal').classList.add('open');
+}
+
+function closeDeleteConfirmModal() {
+  document.getElementById('deleteConfirmModal').classList.remove('open');
+}
+
+async function confirmDeleteSession() {
+  const sessionId = _ctxSessionId;
+  if (!sessionId || !authToken) return;
+  const btn = document.getElementById('deleteConfirmBtn');
+  btn.textContent = 'Deleting…';
+  btn.disabled = true;
+  try {
+    const res = await fetch(`${WORKER_URL}/sessions/${sessionId}`, {
+      method: 'DELETE',
+      headers: { 'X-Auth-Token': authToken }
+    });
+    const data = await res.json();
+    closeDeleteConfirmModal();
+    btn.textContent = 'Delete';
+    btn.disabled = false;
+    if (data.ok) {
+      // If we deleted the current session, start a fresh one
+      if (sessionId === currentSessionId) {
+        currentSessionId = null;
+        localStorage.removeItem('demian_session');
+        messages = [];
+        const chat = document.getElementById('chat');
+        if (chat) chat.innerHTML = '';
+        sendOpeningMessage();
+      }
+      await loadSessionList();
+    }
+  } catch (err) {
+    closeDeleteConfirmModal();
+    btn.textContent = 'Delete';
+    btn.disabled = false;
+    console.error('deleteSession failed', err);
+  }
+  _ctxSessionId = null;
+  _ctxSessionEl = null;
 }
 
 function startRename(el, sessionId, currentTitle) {
@@ -2855,22 +3000,37 @@ async function injectMemoryContext() {
     const res = await fetch(`${WORKER_URL}/sessions`, { headers: { 'X-Auth-Token': authToken } });
     const data = await res.json();
     if (!data.ok || !data.sessions) return;
+    // Find most recent prior non-mantra session (not the current one)
     const prior = data.sessions.find(s => s.id !== currentSessionId && !s.title?.startsWith('Mantra '));
     if (!prior) return;
     const sRes = await fetch(`${WORKER_URL}/sessions/${prior.id}`, { headers: { 'X-Auth-Token': authToken } });
     const sData = await sRes.json();
     if (!sData.ok) return;
     const priorMsgs = sData.session.messages.filter(m => m.role !== 'system');
-    if (priorMsgs.length <= 15) {
-      messages = priorMsgs.map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }));
-    } else {
-      const summary = sData.session.summary;
-      if (summary) {
-        messages = [{ role: 'assistant', content: `[Context from previous conversations: ${summary}]` }];
-      } else {
-        messages = priorMsgs.slice(-15).map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }));
-      }
+
+    // Build the memory payload. If the session has a backend-generated
+    // summary, use that — it's concise and purpose-built for context.
+    // Otherwise reconstruct from the last 15 messages verbatim.
+    // Either way, store it in pendingMemoryContext; callAPI() will send it
+    // as body.memoryContext on the FIRST message, and the backend appends
+    // it to systemAddition as a [MEMORY] block — the exact tag the system
+    // prompt instructs Demian to treat as real knowledge of the user.
+    // Previously this was injected as a fake assistant message in the
+    // messages array, which Demian's model correctly (and honestly) ignored
+    // because it looked like something it had said to itself, not a system
+    // instruction — hence the "I don't see any memory" responses.
+    if (sData.session.summary) {
+      pendingMemoryContext = sData.session.summary;
+    } else if (priorMsgs.length > 0) {
+      // No summary yet: reconstruct a compact text from the last 15 messages
+      const window = priorMsgs.slice(-15);
+      pendingMemoryContext = window.map(m => {
+        const speaker = (m.role === 'assistant' || m.role === 'demian') ? 'Demian' : 'User';
+        return `${speaker}: ${m.content}`;
+      }).join('\n');
     }
+    // Do NOT touch the messages array here — memory is injected at the
+    // system level via pendingMemoryContext, not as conversation history.
   } catch (e) { console.error('injectMemoryContext failed:', e); }
 }
 
@@ -3045,6 +3205,13 @@ async function callAPI(msgs) {
     const cleanMsgs = msgs.map(m => ({ role: m.role, content: m.content }));
     const body = { messages: cleanMsgs };
     if (currentSessionId) body.sessionId = currentSessionId;
+    // If the user chose "remember previous conversations", pendingMemoryContext
+    // holds the prior-session content. Send it once on the first message only,
+    // then clear it so subsequent messages in this session don't re-inject it.
+    if (pendingMemoryContext) {
+      body.memoryContext = pendingMemoryContext;
+      pendingMemoryContext = null;
+    }
 
     const response = await fetch(WORKER_URL, {
       method: 'POST',
@@ -3437,6 +3604,12 @@ async function handleSessionComplete(reply) {
 
   mantraUnlocked = false;
   isPaid = true;
+  // After graduation the session is now a Sanctuary session — update
+  // currentSessionTier so that updateCounter() shows the balance (not
+  // hidden mantra-mode) and updateActivePlanUI() shows Sanctuary as active
+  // in both the sidebar and the mode-switcher, on THIS chat immediately,
+  // without waiting for a reload or a new loadUser() call.
+  if (currentSessionTier === 'mantra') currentSessionTier = 'sanctuary';
   if (authToken) loadSessionList();
   updateCounter();
 
@@ -3758,6 +3931,7 @@ async function submitCode() {
         'invalid_code':'Code not recognised. Please check and try again.',
         'already_used':'This code has already been used.',
         'no_code':'Please enter a code.',
+        'own_gift_code': 'This is a code you generated yourself — it can only be redeemed by someone else. Share it with a friend.',
         'mantra_already_used': 'Mantra is a one-off offer for new users, and you\'ve already had one. This code is still valid — you could pass it on to someone who hasn\'t tried Demian yet.',
       };
       errorEl.textContent = reasons[data.reason] || 'Invalid code.';
@@ -3936,7 +4110,17 @@ function appendMessage(role, text, ts) {
       bubble.appendChild(block);
     }
   } else {
-    bubble.textContent = cleanText;
+    // Use innerHTML with escaped text so that newlines (single \n) and
+    // paragraph breaks (double \n\n) are rendered as visible line breaks
+    // rather than collapsed into a single run of text by the browser.
+    // Text is manually escaped to prevent XSS — never trust raw user input
+    // as HTML, but <br> tags injected by us are safe.
+    const escaped = cleanText
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+    bubble.innerHTML = escaped.replace(/\n/g, '<br>');
   }
   wrap.appendChild(bubble);
 
