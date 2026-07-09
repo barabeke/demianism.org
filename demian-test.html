@@ -2283,7 +2283,7 @@ async function loadUser(opts) {
       canBuyMantra = data.canBuyMantra !== false;
       giftCredits = data.giftCredits || { mantra: 0, sanctuary: 0, retreat: 0 };
       userMantras = data.mantras || [];
-      isPaid = messagesBalance > 0 || mantraUnlocked;
+      isPaid = data.hasPaid || messagesBalance > 0 || mantraUnlocked;
       updateAccountUI();
       updateCounter();
       await loadSessionList();
