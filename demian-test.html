@@ -88,9 +88,9 @@ body {
      column (visible only in the side margins outside .page-wrap) no
      matter how transparent individual message bubbles were made. */
   background:
-    radial-gradient(circle at 20% 20%, rgba(53,50,126,0.14), transparent 60%),
-    radial-gradient(circle at 80% 30%, rgba(53,50,126,0.11), transparent 65%),
-    radial-gradient(circle at 50% 80%, rgba(53,50,126,0.175), transparent 70%);
+    radial-gradient(circle at 20% 20%, rgba(53,50,126,0.22), transparent 60%),
+    radial-gradient(circle at 80% 30%, rgba(53,50,126,0.18), transparent 65%),
+    radial-gradient(circle at 50% 80%, rgba(53,50,126,0.26), transparent 70%);
 }
 
 /* ── STICKY HEADER ── */
@@ -424,7 +424,7 @@ body {
 .msg-timestamp {
   font-family: 'Inter', sans-serif;
   font-size: 11px;
-  color: #4a4a6f;
+  color: #6864bb;
   letter-spacing: 0.2px;
   white-space: nowrap;
 }
@@ -438,7 +438,7 @@ body {
   background: none;
   border: none;
   border-radius: 5px;
-  color: #4a4a6f;
+  color: #6864bb;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
@@ -451,7 +451,7 @@ body {
 .msg-edit-btn, .msg-regen-btn, .msg-thumb-btn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 22px; height: 22px; padding: 0; background: none; border: none;
-  border-radius: 5px; color: #4a4a6f; cursor: pointer;
+  border-radius: 5px; color: #6864bb; cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
 .msg-edit-btn svg, .msg-regen-btn svg, .msg-thumb-btn svg { width: 14px; height: 14px; }
@@ -460,6 +460,11 @@ body {
 }
 .msg-thumb-btn.voted-up { color: #7fd99a; }
 .msg-thumb-btn.voted-down { color: #e07070; }
+/* Edit only on last user message, regen only on last Demian message */
+.msg.user .msg-edit-btn { display: none; }
+.msg.user.is-last .msg-edit-btn { display: inline-flex; }
+.msg.demian .msg-regen-btn { display: none; }
+.msg.demian.is-last .msg-regen-btn { display: inline-flex; }
 .msg-edit-area {
   width: 100%; min-height: 60px; background: #23233e;
   border: 1px solid rgba(104,100,187,0.5); border-radius: 10px;
@@ -4248,6 +4253,7 @@ function appendMessage(role, text, ts) {
   if (typeof updateScrollToBottomVisibility === 'function') {
     requestAnimationFrame(updateScrollToBottomVisibility);
   }
+  updateLastMessageButtons();
   return wrap;
 }
 
@@ -4282,6 +4288,7 @@ function startInlineEdit(userWrap, originalText) {
     allMsgWraps.slice(wrapIdx).forEach(el => el.remove());
     messages.push({ role: 'user', content: newText });
     appendMessage('user', newText, Date.now());
+    // appendMessage already calls updateLastMessageButtons
     await callAPI(messages, { isRegeneration: true });
   };
   const cancelBtn = document.createElement('button');
@@ -4306,6 +4313,7 @@ async function regenerateLastReply(demianWrap) {
   demianWrap.remove();
   const lastIdx = messages.map(m => m.role).lastIndexOf('assistant');
   if (lastIdx >= 0) messages.splice(lastIdx, 1);
+  updateLastMessageButtons();
   await callAPI(messages, { isRegeneration: true });
 }
 
@@ -4322,6 +4330,17 @@ async function submitFeedback(demianWrap, rating, demianText) {
       body: JSON.stringify({ sessionId: currentSessionId, rating, demianText, userText })
     });
   } catch (e) {}
+}
+
+// After every message is appended, re-evaluate which user message gets
+// the edit button and which Demian message gets the regen button.
+// CSS hides the buttons by default; only the .is-last element shows them.
+function updateLastMessageButtons() {
+  const chat = document.getElementById('chat');
+  const userMsgs = Array.from(chat.querySelectorAll('.msg.user'));
+  const demianMsgs = Array.from(chat.querySelectorAll('.msg.demian'));
+  userMsgs.forEach((el, i) => el.classList.toggle('is-last', i === userMsgs.length - 1));
+  demianMsgs.forEach((el, i) => el.classList.toggle('is-last', i === demianMsgs.length - 1));
 }
 
 function formatMsgTime(ts) {
