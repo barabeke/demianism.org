@@ -448,6 +448,34 @@ body {
 }
 .msg-copy-btn svg { width: 14px; height: 14px; }
 .msg-copy-btn.copied { color: #7fd99a; }
+.msg-edit-btn, .msg-regen-btn, .msg-thumb-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; padding: 0; background: none; border: none;
+  border-radius: 5px; color: #4a4a6f; cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.msg-edit-btn svg, .msg-regen-btn svg, .msg-thumb-btn svg { width: 14px; height: 14px; }
+.msg-edit-btn:hover, .msg-regen-btn:hover, .msg-thumb-btn:hover {
+  background: rgba(104,100,187,0.18); color: var(--purple-light);
+}
+.msg-thumb-btn.voted-up { color: #7fd99a; }
+.msg-thumb-btn.voted-down { color: #e07070; }
+.msg-edit-area {
+  width: 100%; min-height: 60px; background: #23233e;
+  border: 1px solid rgba(104,100,187,0.5); border-radius: 10px;
+  color: var(--text-body); font-family: 'Libre Baskerville', serif;
+  font-size: 16px; padding: 10px 12px; resize: vertical; outline: none;
+  box-sizing: border-box;
+}
+.msg-edit-btns { display: flex; gap: 8px; margin-top: 6px; justify-content: flex-end; }
+.msg-edit-confirm, .msg-edit-cancel {
+  font-family: 'Inter', sans-serif; font-size: 12px; padding: 5px 12px;
+  border-radius: 6px; border: none; cursor: pointer; transition: background 0.15s;
+}
+.msg-edit-confirm { background: var(--purple-mid); color: #fff; }
+.msg-edit-confirm:hover { background: var(--purple-light); }
+.msg-edit-cancel { background: rgba(255,255,255,0.07); color: var(--text-body); }
+.msg-edit-cancel:hover { background: rgba(255,255,255,0.12); }
 
 /* Jump-to-bottom button — fixed just above the input zone, shown only when
    the user has scrolled away from the latest message. */
@@ -1982,31 +2010,25 @@ renderer.link = function(token) {
 marked.setOptions({ breaks: true, gfm: true, renderer });
 
 function autolinkText(html) {
-  // Defensive backstop: strip "undefined" label from broken markdown links.
+  // Strip "undefined" label from broken markdown links.
   const container = document.createElement('div');
   container.innerHTML = html;
   container.querySelectorAll('a[href]').forEach(a => {
     const stripped = (a.textContent || '').trim().replace(/[.,;:!?]+$/, '');
-    if (/^undefined$/i.test(stripped)) {
-      a.replaceWith(document.createTextNode(a.getAttribute('href')));
-    }
+    if (/^undefined$/i.test(stripped)) a.replaceWith(document.createTextNode(a.getAttribute('href')));
   });
   html = container.innerHTML;
 
-  // Fix mailto: links — strip "mailto:" prefix from visible label.
+  // Strip "mailto:" prefix from visible label of mailto links.
   html = html.replace(/>mailto:([^<]+)</g, (_, email) => '>' + email + '<');
 
   // Make bare email addresses clickable.
-  html = html.replace(/(?<![="@\w\/])\b([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})\b(?![^<]*>)/g, (email) => {
-    return '<a href="mailto:' + email + '" style="color:var(--text-link)">' + email + '</a>';
-  });
+  html = html.replace(/(?<![="@\w\/])\b([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})\b(?![^<]*>)/g,
+    email => '<a href="mailto:' + email + '" style="color:var(--text-link)">' + email + '</a>');
 
-  // Known URL to human-readable label map.
-  // This is the definitive fix for bare URLs appearing mid-sentence.
-  // Instead of relying on the model to format links correctly (it doesn't,
-  // reliably, across DeepSeek and GLM), we intercept every bare URL at
-  // render time and replace it with the correct label. The model can emit
-  // whatever it wants — the user always sees the right text.
+  // Known URL → human-readable label map.
+  // Definitive fix for bare URLs: intercept at render time, always show
+  // the right label regardless of what the model outputs.
   const URL_LABELS = {
     'https://demianism.org/doctrine':      'la Dottrina Rivelata',
     'https://demianism.org/culture':       'manifesto e libro',
@@ -2032,32 +2054,22 @@ function autolinkText(html) {
     'https://www.facebook.com/barabeke/':  'Facebook',
   };
 
-  // Match bare https:// URLs not already inside an href="".
   return html.replace(/(?<!=")(https?:\/\/[^\s<"'\)\[\]]+)/g, (url) => {
-    // Strip trailing punctuation captured by the regex
     const trailingMatch = url.match(/[.,;:!?)]+$/);
     const trailing = trailingMatch ? trailingMatch[0] : '';
     const cleanUrl = trailing ? url.slice(0, -trailing.length) : url;
-
-    // Exact match first
     let label = URL_LABELS[cleanUrl];
     if (!label) {
-      // Prefix match for URLs with query strings or trailing slash variants
       const entry = Object.entries(URL_LABELS).find(([k]) =>
-        cleanUrl.startsWith(k) && (cleanUrl.length === k.length || cleanUrl[k.length] === '/' || cleanUrl[k.length] === '?')
+        cleanUrl.startsWith(k) && (cleanUrl.length === k.length || '/?#'.includes(cleanUrl[k.length]))
       );
       label = entry ? entry[1] : null;
     }
     if (!label) {
-      // Unknown URL: show clean domain+path, never raw full URL
-      label = cleanUrl
-        .replace(/^https?:\/\//, '')
-        .replace(/^www\./, '')
-        .replace(/\/+$/, '');
+      label = cleanUrl.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/+$/, '');
       const parts = label.split('/');
       if (parts.length > 2) label = parts[0] + '/' + parts[1] + '/\u2026';
     }
-
     return '<a href="' + cleanUrl + '" target="_blank" rel="noopener" style="color:var(--text-link)">' + label + '</a>' + trailing;
   });
 }
@@ -3223,7 +3235,7 @@ async function sendMessage() {
   await callAPI(messages);
 }
 
-async function callAPI(msgs) {
+async function callAPI(msgs, opts = {}) {
   isLoading = true;
   const typingEl = showTyping();
 
@@ -3247,6 +3259,7 @@ async function callAPI(msgs) {
       body.memoryContext = pendingMemoryContext;
       pendingMemoryContext = null;
     }
+    if (opts.isRegeneration) body.isRegeneration = true;
 
     const response = await fetch(WORKER_URL, {
       method: 'POST',
@@ -4179,6 +4192,51 @@ function appendMessage(role, text, ts) {
     copyBtn.innerHTML = COPY_ICON_SVG;
     copyBtn.onclick = () => copyMsgText(copyBtn, fullCopyText);
     meta.appendChild(copyBtn);
+
+    if (role === 'user') {
+      const editBtn = document.createElement('button');
+      editBtn.className = 'msg-edit-btn';
+      editBtn.type = 'button';
+      editBtn.title = 'Edit and resend';
+      editBtn.setAttribute('aria-label', 'Edit message');
+      editBtn.innerHTML = EDIT_ICON_SVG;
+      editBtn.onclick = () => startInlineEdit(wrap, cleanText);
+      meta.appendChild(editBtn);
+    }
+
+    if (role === 'demian') {
+      const regenBtn = document.createElement('button');
+      regenBtn.className = 'msg-regen-btn';
+      regenBtn.type = 'button';
+      regenBtn.title = 'Regenerate response';
+      regenBtn.setAttribute('aria-label', 'Regenerate response');
+      regenBtn.innerHTML = REGEN_ICON_SVG;
+      regenBtn.onclick = () => regenerateLastReply(wrap);
+      meta.appendChild(regenBtn);
+
+      const thumbUpBtn = document.createElement('button');
+      thumbUpBtn.className = 'msg-thumb-btn';
+      thumbUpBtn.type = 'button';
+      thumbUpBtn.title = 'Good response';
+      thumbUpBtn.innerHTML = THUMB_UP_SVG;
+      const thumbDownBtn = document.createElement('button');
+      thumbDownBtn.className = 'msg-thumb-btn';
+      thumbDownBtn.type = 'button';
+      thumbDownBtn.title = 'Bad response';
+      thumbDownBtn.innerHTML = THUMB_DOWN_SVG;
+      const voteFn = (rating) => {
+        if (thumbUpBtn.disabled) return;
+        thumbUpBtn.disabled = true; thumbDownBtn.disabled = true;
+        if (rating === 'up') thumbUpBtn.classList.add('voted-up');
+        else thumbDownBtn.classList.add('voted-down');
+        submitFeedback(wrap, rating, fullCopyText);
+      };
+      thumbUpBtn.onclick = () => voteFn('up');
+      thumbDownBtn.onclick = () => voteFn('down');
+      meta.appendChild(thumbUpBtn);
+      meta.appendChild(thumbDownBtn);
+    }
+
     wrap.appendChild(meta);
   }
 
@@ -4196,6 +4254,75 @@ function appendMessage(role, text, ts) {
 // Icon swapped to a checkmark briefly on click to confirm the copy succeeded.
 const COPY_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
 const CHECK_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+const EDIT_ICON_SVG  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+const REGEN_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>';
+const THUMB_UP_SVG   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>';
+const THUMB_DOWN_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>';
+
+function startInlineEdit(userWrap, originalText) {
+  if (isLoading) return;
+  const bubble = userWrap.querySelector('.msg-bubble');
+  if (!bubble) return;
+  const chat = document.getElementById('chat');
+  const allMsgWraps = Array.from(chat.querySelectorAll('.msg.user, .msg.demian'));
+  const wrapIdx = allMsgWraps.indexOf(userWrap);
+  const userMsgsBefore = allMsgWraps.slice(0, wrapIdx).filter(w => w.classList.contains('user')).length;
+  const textarea = document.createElement('textarea');
+  textarea.className = 'msg-edit-area';
+  textarea.value = originalText;
+  const btnRow = document.createElement('div');
+  btnRow.className = 'msg-edit-btns';
+  const confirmBtn = document.createElement('button');
+  confirmBtn.className = 'msg-edit-confirm';
+  confirmBtn.textContent = 'Send';
+  confirmBtn.onclick = async () => {
+    const newText = textarea.value.trim();
+    if (!newText || isLoading) return;
+    messages = messages.slice(0, userMsgsBefore);
+    allMsgWraps.slice(wrapIdx).forEach(el => el.remove());
+    messages.push({ role: 'user', content: newText });
+    appendMessage('user', newText, Date.now());
+    await callAPI(messages, { isRegeneration: true });
+  };
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'msg-edit-cancel';
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.onclick = () => editContainer.replaceWith(bubble);
+  btnRow.appendChild(cancelBtn);
+  btnRow.appendChild(confirmBtn);
+  const editContainer = document.createElement('div');
+  editContainer.appendChild(textarea);
+  editContainer.appendChild(btnRow);
+  bubble.replaceWith(editContainer);
+  textarea.focus();
+  textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+}
+
+async function regenerateLastReply(demianWrap) {
+  if (isLoading) return;
+  const chat = document.getElementById('chat');
+  const allDemianWraps = Array.from(chat.querySelectorAll('.msg.demian'));
+  if (allDemianWraps[allDemianWraps.length - 1] !== demianWrap) return;
+  demianWrap.remove();
+  const lastIdx = messages.map(m => m.role).lastIndexOf('assistant');
+  if (lastIdx >= 0) messages.splice(lastIdx, 1);
+  await callAPI(messages, { isRegeneration: true });
+}
+
+async function submitFeedback(demianWrap, rating, demianText) {
+  try {
+    const chat = document.getElementById('chat');
+    const allWraps = Array.from(chat.querySelectorAll('.msg.user, .msg.demian'));
+    const idx = allWraps.indexOf(demianWrap);
+    const prevUser = allWraps.slice(0, idx).reverse().find(w => w.classList.contains('user'));
+    const userText = prevUser ? (prevUser.querySelector('.msg-bubble')?.textContent || '') : '';
+    await fetch(`${WORKER_URL}/feedback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: currentSessionId, rating, demianText, userText })
+    });
+  } catch (e) {}
+}
 
 function formatMsgTime(ts) {
   // Best-practice chat timestamp: time-only for today, "Mon 14:32" within
