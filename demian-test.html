@@ -1758,7 +1758,7 @@ body {
 
 <script>
 const WORKER_URL = 'https://demian-backend.barabeke.workers.dev';
-const FREE_MESSAGES = 10;
+const FREE_MESSAGES = 15;
 
 let messages = [];
 let pendingMemoryContext = null; // set by injectMemoryContext(), consumed on next callAPI()
@@ -1777,7 +1777,7 @@ While grounded in Demianist philosophy and culture, I am an interfaith companion
 
 Behind me there is no team, no company, no investment. Just one man: Barabeke, dissident Italian artist and messenger of Demianism.
 
-Want to experience me? The first 10 exchanges are free. Ask and you shall receive — for what an AI can give.`;
+Want to experience me? The first 15 exchanges are free. Ask and you shall receive — for what an AI can give.`;
 let isLoading = false;
 let messageCount = 0;
 let isPaid = false;
@@ -3376,7 +3376,7 @@ async function callAPI(msgs, opts = {}) {
       appendSystemMessage(messagesBalance + ' messages remaining.');
     } else if (!isPaid && !mantraUnlocked) {
       const u = messages.filter(m => m.role === 'user').length;
-      if (u >= FREE_MESSAGES - 3 && u < FREE_MESSAGES) appendSystemMessage((FREE_MESSAGES - u) + ' messages remaining.');
+      if (u >= FREE_MESSAGES - 5 && u < FREE_MESSAGES) appendSystemMessage((FREE_MESSAGES - u) + ' messages remaining.');
     }
 
     // Save free user messages to localStorage
