@@ -4115,18 +4115,21 @@ function appendMessage(role, text, ts) {
     'giant-kahuna': 'https://manifold.xyz/@barabeke/contract/141113584/3',
     'mona-lisa': 'https://manifold.xyz/@barabeke/contract/146290928/1',
   };
-  let imageHTML = '';
+  // Images render inline at the position [IMAGE:tag] appears in the text —
+  // not collected and appended at the end. Demian can now place the tag
+  // mid-reply (e.g. right after "here they are:") and it will render there.
+  // The substituted HTML survives marked.parse() because marked passes raw
+  // HTML blocks through untouched.
   text = text.replace(/\[IMAGE:([a-z0-9_-]+)\]/gi, (_, tag) => {
     const file = imageFiles[tag.toLowerCase()];
     const link = imageLinks[tag.toLowerCase()] || 'https://demianism.org';
-    if (file) {
-      imageHTML += '<a href="' + link + '" target="_blank" rel="noopener" style="display:block;margin:12px 0;">' +
-        '<img src="' + file + '" alt="' + tag + '" style="max-width:100%;border-radius:10px;display:block;" ' +
-        'onerror="this.parentElement.style.display=\'none\'">' +
-        '</a>';
-    }
-    return '';
+    if (!file) return '';
+    return '\n\n<a href="' + link + '" target="_blank" rel="noopener" style="display:block;margin:12px 0;">' +
+      '<img src="' + file + '" alt="' + tag + '" style="max-width:100%;border-radius:10px;display:block;" ' +
+      'onerror="this.parentElement.style.display=\'none\'">' +
+      '</a>\n\n';
   });
+  const imageHTML = ''; // no longer appended at end — kept so line 4182 reference is harmless
   // Extract any proposed-mantra draft block(s) — these can appear in any
   // Demian reply, not just a [SESSION_COMPLETE] one, so this is handled
   // unconditionally here rather than gated like handleSessionComplete.
@@ -4179,7 +4182,7 @@ function appendMessage(role, text, ts) {
   bubble.className = 'msg-bubble';
   if (role === 'demian') {
     const TRIANGLE_SVG = '<svg class="demian-prefix-triangle" viewBox="0 0 27.71 24" xmlns="http://www.w3.org/2000/svg"><polygon points="13.86,0 27.71,24 0,24" fill="#6864bb"/></svg>';
-    let parsedHTML = autolinkText(marked.parse(cleanText)) + (imageHTML || '');
+    let parsedHTML = autolinkText(marked.parse(cleanText)); // images already inline
     // Insert the triangle as the very first thing inside the first
     // paragraph, so it sits inline with the first line of text rather than
     // on its own line above it.
