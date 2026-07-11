@@ -4029,9 +4029,9 @@ async function submitCode() {
 function handlePurchaseReturn(tier, msgs, mantra) {
   if (msgs === undefined) {
     const tiers = {
-      'mantra':    { messages: 70,  mantra: true },
-      'sanctuary': { messages: 100, mantra: true },
-      'retreat':   { messages: 500, mantra: true },
+      'mantra':    { messages: 70,  mantra: true  },
+      'sanctuary': { messages: 100, mantra: false },
+      'retreat':   { messages: 500, mantra: false },
     };
     const t = tiers[tier];
     if (!t) return;
@@ -4041,7 +4041,16 @@ function handlePurchaseReturn(tier, msgs, mantra) {
   isPaid = true;
   messagesBalance = msgs;
   canNewChat = (tier === 'sanctuary' || tier === 'retreat');
+  // Only the Mantra tier enters a mantra session; Sanctuary/Retreat are
+  // straight companion sessions and must NOT set mantraUnlocked — that flag
+  // causes updateActivePlanUI() to label everything "Mantra" regardless of
+  // what tier was actually purchased.
   if (mantra) mantraUnlocked = true;
+  // Set userTier immediately so updateActivePlanUI() can show the correct
+  // sidebar/dropdown label before loadUser() resolves (which may take a
+  // moment on slow connections). Without this, Sanctuary/Retreat purchases
+  // would briefly show "Mode" (no active key) even if mantra isn't set.
+  if (tier !== 'mantra') userTier = tier;
   // Fire the banner immediately — we already know the tier from the
   // redirect, no need to wait for the next poll. loadUser() below will
   // still run to pull the authoritative balance from KV, but its own
