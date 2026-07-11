@@ -2339,6 +2339,29 @@ async function loadUser(opts) {
       updateAccountUI();
       updateCounter();
       await loadSessionList();
+      // After loading the session list, if no session is currently active
+      // (after logout/login or on a new device where demian_session was
+      // cleared), auto-restore the most recent session so the chat isn't
+      // blank. Without this, the sidebar shows history correctly but the
+      // main chat stays empty because the restoration block in the init
+      // flow only fires for non-authenticated paths.
+      if (!currentSessionId) {
+        try {
+          const _sRes = await fetch(WORKER_URL + '/sessions', { headers: { 'X-Auth-Token': authToken } });
+          const _sData = await _sRes.json();
+          if (_sData.ok && _sData.sessions && _sData.sessions.length > 0) {
+            const _recent = _sData.sessions.slice().sort((a, b) => (b.lastMessage || 0) - (a.lastMessage || 0))[0];
+            const _mRes = await fetch(`${WORKER_URL}/sessions/${_recent.id}`, { headers: { 'X-Auth-Token': authToken } });
+            const _mData = await _mRes.json();
+            if (_mData.ok && _mData.session.messages.length > 0) {
+              currentSessionId = _recent.id;
+              localStorage.setItem('demian_session', currentSessionId);
+              currentSessionTier = _mData.session.tier || null;
+              await renderRestoredChat(_mData.session.messages, _mData.session.title);
+            }
+          }
+        } catch (_e) { console.error('auto-restore session failed', _e); }
+      }
       if (data.pendingWelcome && !opts.suppressWelcome) showPlanActivationBanner(data.pendingWelcome);
       // Sanctuary/Retreat user just purchased a standalone Mantra session —
       // redirect them to the new dedicated chat immediately.
