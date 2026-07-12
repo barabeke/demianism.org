@@ -949,6 +949,26 @@ button#send svg { width: 17px; height: 17px; }
   margin-bottom: 2px;
 }
 .cmp-gift-icon svg { width: 100%; height: 100%; }
+/* /mo and /yr suffixes at 66% of the price font size */
+.cmp-price-mo {
+  font-size: 0.66em;
+  font-weight: 600;
+  color: #dfa51a;
+  vertical-align: baseline;
+}
+/* Gift column icon: use stroke like the sidebar version, force yellow */
+.cmp-gift-col .cmp-gift-icon svg {
+  stroke: #dfa51a;
+  fill: none;
+  width: 36px;
+  height: 36px;
+}
+/* Gift textarea */
+.cmp-gift-textarea {
+  resize: none;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+}
 
 /* ── EXPANDED PANEL ─────────────────────────────────────────────────
    Appears below the bar when Subscribe or Gift is selected.
@@ -1920,33 +1940,14 @@ body {
         <button class="cmp-col cmp-sub" id="cmpSub" onclick="cmpSelect('sub')">
           <span class="cmp-label">SUBSCRIBE</span>
           <span class="cmp-detail">Unlimited exchanges</span>
-          <span class="cmp-price">€6.99</span>
-          <span class="cmp-price-sub">monthly or yearly</span>
+          <span class="cmp-price">€6.99<span class="cmp-price-mo">/mo</span></span>
+          <span class="cmp-price-sub">or €47.50<span class="cmp-price-mo">/yr</span></span>
         </button>
 
         <!-- 20%: Gift -->
         <button class="cmp-col cmp-gift-col" id="cmpGift" onclick="cmpSelect('gift')">
           <!-- Same SVG diamond style used by the mantra icon -->
-          <span class="cmp-gift-icon">
-            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-              <defs><clipPath id="cgift"><circle cx="100" cy="100" r="90"/></clipPath></defs>
-              <g clip-path="url(#cgift)">
-                <circle cx="100" cy="100" r="90" fill="#1a1838"/>
-                <!-- Gift box body -->
-                <rect x="52" y="108" width="96" height="60" rx="5" fill="#6864bb"/>
-                <!-- Gift box lid -->
-                <rect x="46" y="88" width="108" height="24" rx="5" fill="#8580d0"/>
-                <!-- Ribbon vertical -->
-                <rect x="90" y="88" width="20" height="80" fill="#dfa51a"/>
-                <!-- Ribbon horizontal on lid -->
-                <rect x="46" y="96" width="108" height="8" fill="#dfa51a"/>
-                <!-- Bow left loop -->
-                <path d="M100 88 Q72 60 60 72 Q52 84 100 88Z" fill="#dfa51a"/>
-                <!-- Bow right loop -->
-                <path d="M100 88 Q128 60 140 72 Q148 84 100 88Z" fill="#dfa51a"/>
-              </g>
-            </svg>
-          </span>
+          <span class="cmp-gift-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
           <span class="cmp-label">Gift</span>
         </button>
 
@@ -4272,15 +4273,21 @@ function renderCmpPanel() {
           <span class="cmp-gift-btn-name">One year</span>
           <span class="cmp-gift-btn-what">Unlimited exchanges</span>
           <span class="cmp-gift-btn-price">€47.50</span>
-          <span class="cmp-gift-btn-unit">one-off, no recurring charge</span>
+          <span class="cmp-gift-btn-unit">no recurring charge</span>
         </button>
       </div>
       <div class="cmp-email-wrap" id="cmpGiftEmailWrap" style="display:none">
-        <label class="cmp-email-label" for="cmpRecipientEmail">Recipient's email</label>
+        <label class="cmp-email-label" for="cmpRecipientEmail">To (recipient's email)</label>
         <input type="email" id="cmpRecipientEmail" class="cmp-email-input"
                placeholder="friend@example.com" autocomplete="email" inputmode="email">
-        <p class="cmp-email-note">They receive an email from Demian and get immediate access. Nothing is charged to them, now or later.</p>
-        <button class="cmp-manage-btn" style="margin-top:12px" onclick="doGiftSend()">Send the gift →</button>
+        <label class="cmp-email-label" style="margin-top:10px" for="cmpGiftFrom">From</label>
+        <input type="text" id="cmpGiftFrom" class="cmp-email-input"
+               placeholder="Your name" autocomplete="name">
+        <label class="cmp-email-label" style="margin-top:10px" for="cmpGiftMessage">Message <span style="font-weight:400;text-transform:none;letter-spacing:0;color:rgba(255,255,255,0.28);">(optional)</span></label>
+        <textarea id="cmpGiftMessage" class="cmp-email-input cmp-gift-textarea"
+                  placeholder="A short note to accompany the gift…" rows="3"></textarea>
+        <p class="cmp-email-note">They will receive an email from Demian with your name and message. Their year begins the moment you complete the purchase.</p>
+        <button class="cmp-manage-btn" style="margin-top:12px" onclick="doGiftSend()">Purchase gift →</button>
       </div>
       <p class="cmp-panel-note" id="cmpGiftNote" style="display:none"></p>`;
     cmpGiftType = null;
@@ -4322,23 +4329,50 @@ function buySub(period) {
 
 function doGiftSend() {
   if (cmpGiftType === 'payg') {
-    // Campfire gift: reuse existing code-based flow
     window.open(SERVICE_LINKS.campfire + '?gift=1', '_blank');
     return;
   }
-  // Annual sanctuary gift: validate email, then open Stripe
-  const input = document.getElementById('cmpRecipientEmail');
-  const email = (input?.value || '').trim().toLowerCase();
+
+  // Validate required fields
+  const emailInput = document.getElementById('cmpRecipientEmail');
+  const fromInput  = document.getElementById('cmpGiftFrom');
+  const msgInput   = document.getElementById('cmpGiftMessage');
+  const email   = (emailInput?.value || '').trim().toLowerCase();
+  const from    = (fromInput?.value  || '').trim();
+  const message = (msgInput?.value   || '').trim();
+
   if (!email || !email.includes('@')) {
-    if (input) {
-      input.focus();
-      input.classList.add('input-error');
-      setTimeout(() => input.classList.remove('input-error'), 1800);
-    }
+    emailInput?.focus();
+    emailInput?.classList.add('input-error');
+    setTimeout(() => emailInput?.classList.remove('input-error'), 1800);
     return;
   }
+  if (!from) {
+    fromInput?.focus();
+    fromInput?.classList.add('input-error');
+    setTimeout(() => fromInput?.classList.remove('input-error'), 1800);
+    return;
+  }
+
+  // Pass all three fields as Stripe custom-field prefills.
+  // Stripe payment links support up to 3 custom fields; we need:
+  //   recipient_email  (key 0) — required, used by the webhook to activate the account
+  //   gift_from        (key 1) — included in the recipient email Demian sends
+  //   gift_message     (key 2) — included in the recipient email (optional, may be empty)
+  // The ?prefill_field_* params pre-fill the fields for the giver so they
+  // don't have to retype what they already entered. The webhook reads
+  // stripeSession.custom_fields by key, so the key names must match exactly
+  // what you configured in the Stripe dashboard for this payment link.
   const giftLink = 'https://buy.stripe.com/REPLACE_ME_GIFT_SANCTUARY';
-  window.open(`${giftLink}?prefill_field_key[0]=recipient_email&prefill_field_value[0]=${encodeURIComponent(email)}`, '_blank');
+  const params = new URLSearchParams({
+    'prefill_field_key[0]':   'recipient_email',
+    'prefill_field_value[0]':  email,
+    'prefill_field_key[1]':   'gift_from',
+    'prefill_field_value[1]':  from,
+    'prefill_field_key[2]':   'gift_message',
+    'prefill_field_value[2]':  message,
+  });
+  window.open(`${giftLink}?${params.toString()}`, '_blank');
 }
 
 function renderCompanion() {
