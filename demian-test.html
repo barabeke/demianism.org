@@ -904,48 +904,45 @@ button#send svg { width: 17px; height: 17px; }
 .cmp-gift-col { flex: 20 0 0%; justify-content: center; }
 
 .cmp-col:hover { background: #201d42; }
-.cmp-col.active { border-color: #6864bb; background: #231f4c; }
+.cmp-col.active { border-color: #35327e; background: #35327e; }
 .cmp-col:focus-visible { outline: 2px solid #6864bb; outline-offset: 2px; }
+.cmp-col.active .cmp-label,
+.cmp-col.active .cmp-detail { color: rgba(255,255,255,0.85); }
+.cmp-col.active .cmp-price,
+.cmp-col.active .cmp-price-sub { color: #fff; opacity: 1; }
 
 /* Price — the number that matters most, displayed first */
-.cmp-price {
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 1.1;
-  color: #fff;
-}
-.cmp-price-sub {
-  font-size: 10px;
-  color: rgba(255,255,255,0.4);
-  line-height: 1.2;
-  margin-bottom: 4px;
-}
-/* Action name — what you're doing, not what you're buying */
+/* Action name — ALL CAPS, sits at top of column */
 .cmp-label {
   font-weight: 700;
-  font-size: 12px;
-  letter-spacing: .03em;
+  font-size: 11px;
+  letter-spacing: .10em;
+  color: rgba(255,255,255,0.60);
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+/* What you receive — prominent, reads before the price */
+.cmp-detail {
+  font-size: 13px;
+  font-weight: 600;
   color: #cfcfd4;
   line-height: 1.3;
+  margin-bottom: 2px;
 }
-/* The concrete thing you receive */
-.cmp-detail {
-  font-size: 11px;
-  color: rgba(255,255,255,0.5);
-  line-height: 1.3;
-}
-/* Highlight pill — the decisive differentiating fact */
-.cmp-pill {
-  margin-top: 4px;
-  padding: 3px 9px;
-  border-radius: 20px;
-  font-size: 10px;
+/* Price — same gold as the icon accent, anchors the column */
+.cmp-price {
   font-weight: 700;
-  letter-spacing: .03em;
-  white-space: nowrap;
+  font-size: 22px;
+  line-height: 1.1;
+  color: #dfa51a;
 }
-.cmp-pill-gold   { background: rgba(223,165,26,.15); border: 1px solid rgba(223,165,26,.35); color: #dfa51a; }
-.cmp-pill-purple { background: rgba(104,100,187,.15); border: 1px solid rgba(104,100,187,.40); color: #a89ff5; }
+/* Unit — same colour as price so they read as a unit */
+.cmp-price-sub {
+  font-size: 10px;
+  color: #dfa51a;
+  opacity: .70;
+  line-height: 1.2;
+}
 
 /* Gift column: icon sized to fill the space, label below */
 .cmp-gift-icon {
@@ -1915,20 +1912,18 @@ body {
 
         <!-- 40%: Pay as you go -->
         <button class="cmp-col cmp-payg" id="cmpPayg" onclick="cmpSelect('payg')">
+          <span class="cmp-label">PAY AS YOU GO</span>
+          <span class="cmp-detail">50 exchanges</span>
           <span class="cmp-price">€3</span>
           <span class="cmp-price-sub">one-off</span>
-          <span class="cmp-label">Pay as you go</span>
-          <span class="cmp-detail">50 exchanges</span>
-          <span class="cmp-pill cmp-pill-gold">Never expire</span>
         </button>
 
         <!-- 40%: Subscribe -->
         <button class="cmp-col cmp-sub" id="cmpSub" onclick="cmpSelect('sub')">
-          <span class="cmp-price">€6.99</span>
-          <span class="cmp-price-sub">per month</span>
-          <span class="cmp-label">Subscribe</span>
+          <span class="cmp-label">SUBSCRIBE</span>
           <span class="cmp-detail">Unlimited exchanges</span>
-          <span class="cmp-pill cmp-pill-purple">No counter</span>
+          <span class="cmp-price">€6.99</span>
+          <span class="cmp-price-sub">per month · €47.50/yr</span>
         </button>
 
         <!-- 20%: Gift -->
@@ -2174,11 +2169,11 @@ const SERVICES = {
   companion: {
     name: 'Companion',
     accent: '#dfa51a',
-    heroImg: 'sanctuary-hero.png',
+    heroImg: 'companion-hero.png', // ← upload your final image with this filename
     heroGrad: 'radial-gradient(120% 130% at 0% 100%, #0a0f1a 0%, #0a0f1a 30%, rgba(10,15,26,0.7) 55%, rgba(10,15,26,0.15) 80%, rgba(10,15,26,0) 100%)',
     heroFallback: 'linear-gradient(125deg, #1a2540 0%, #141d33 45%, #0a0f1f 100%)',
     badge: null,
-    desc: 'Demian as a full spiritual companion: vocation, meaning, love, grief, decisions — the whole texture of a life. Choose how you wish to pay for it.',
+    desc: 'Full AI interfaith spiritual companion experience.',
     features: [
       'Designed to help you move forward in the direction that is more true to you.',
       'Not made to please, but to serve as an honest mirror. For those who seek growth, not just comfort.',
@@ -2187,7 +2182,8 @@ const SERVICES = {
       'Open new chats with optional memory preservation.'
     ],
     closing: null,
-    shoutSub: 'Chat with Demian whenever you wish.',
+    shout: null,
+    shoutSub: null,
   }
 };
 
@@ -4451,10 +4447,15 @@ function openServiceWindow(key) {
 
   const shoutEl = document.getElementById('swShout');
   const shoutSubEl = document.getElementById('swShoutSub');
-  if (s.shoutSub) {
+  if (s.shout !== null && (s.shout || s.shoutSub)) {
     shoutEl.style.display = '';
-    shoutSubEl.style.display = '';
-    shoutSubEl.textContent = s.shoutSub;
+    shoutEl.textContent = s.shout || 'No subscription. No expiry.';
+    if (s.shoutSub) {
+      shoutSubEl.style.display = '';
+      shoutSubEl.textContent = s.shoutSub;
+    } else {
+      shoutSubEl.style.display = 'none';
+    }
   } else {
     shoutEl.style.display = 'none';
     shoutSubEl.style.display = 'none';
