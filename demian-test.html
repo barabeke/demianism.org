@@ -852,7 +852,7 @@ button#send svg { width: 17px; height: 17px; }
   line-height: 1;
 }
 
-/* ── Service window (Mantra / Sanctuary / Retreat) ── */
+/* ── Service window (Mantra / Campfire / Sanctuary) ── */
 .service-overlay { display:none; position:fixed; inset:0; background:rgba(4,3,12,0.82); z-index:300; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(3px); }
 .service-overlay.open { display:flex; }
 .service-window { position:relative; background:#12103a; width:100%; max-width:480px; border-radius:20px; overflow:hidden; border:1px solid #2a2560; box-shadow:0 0 60px rgba(0,0,0,0.6); max-height:92vh; display:flex; flex-direction:column; }
@@ -871,6 +871,14 @@ button#send svg { width: 17px; height: 17px; }
 .sw-shout { font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#fff; margin:0 0 2px; }
 .sw-shout-sub { font-family:'Libre Baskerville',serif; font-size:14px; color:var(--text-body); line-height:1.6; margin:0; }
 .sw-footer { flex-shrink:0; padding:16px 28px 22px; background:#12103a; }
+/* ── Sanctuary billing toggle (monthly / annual) ── */
+.sw-billing { display:flex; gap:10px; margin-bottom:14px; }
+.sw-bill-opt { position:relative; flex:1; padding:12px 10px; background:#1a1838; border:1.5px solid #2c2a52; border-radius:10px; font-family:'Inter',sans-serif; color:#cfcfd4; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:2px; transition:border-color .15s, background .15s; }
+.sw-bill-opt:hover { background:#201d42; }
+.sw-bill-opt.sel { border-color:#6864bb; background:#231f4c; }
+.sw-bill-price { font-weight:700; font-size:16px; }
+.sw-bill-per { font-size:11px; color:rgba(255,255,255,0.5); }
+.sw-bill-save { position:absolute; top:-8px; right:-4px; background:#dfa51a; color:#000; font-size:9px; font-weight:700; padding:2px 6px; border-radius:6px; letter-spacing:.03em; }
 .sw-btns { display:flex; gap:12px; }
 .sw-btn-primary { flex:0 0 72%; padding:14px; background:#35327e; border:none; border-radius:10px; font-family:'Inter',sans-serif; font-weight:700; font-size:15px; color:#cfcfd4; cursor:pointer; transition:background 0.15s; }
 .sw-btn-primary:hover { background:#3f3c90; }
@@ -1084,7 +1092,7 @@ button#send svg { width: 17px; height: 17px; }
   color: #ffffff;
 }
 .sb-icon svg { width: 25px; height: 25px; }
-/* Service icons (mantra/sanctuary/retreat) render full-color, slightly larger */
+/* Service icons (mantra/campfire/sanctuary) render full-color, slightly larger */
 .sb-icon.sb-icon-service svg { width: 27px; height: 27px; }
 .sb-icon-service { width: 29px; height: 29px; position: relative; }
 
@@ -1101,8 +1109,8 @@ button#send svg { width: 17px; height: 17px; }
   pointer-events: none;
 }
 .sb-item-active[data-service="mantra"] .sb-icon-service::after { border-color: #31a117; }
-.sb-item-active[data-service="sanctuary"] .sb-icon-service::after,
-.sb-item-active[data-service="retreat"] .sb-icon-service::after { border-color: #dfa51a; }
+.sb-item-active[data-service="campfire"] .sb-icon-service::after,
+.sb-item-active[data-service="sanctuary"] .sb-icon-service::after { border-color: #dfa51a; }
 
 .sb-label { display: none; }
 .sidebar.open .sb-label { display: inline; }
@@ -1555,16 +1563,16 @@ body {
       <span class="sb-tooltip" id="sbTooltipMantra">Mantra</span>
     </button>
 
-    <button class="sb-item" data-service="sanctuary" id="sbItemSanctuary" onclick="openServiceWindow('sanctuary', this)">
-      <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="csanctuary"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#csanctuary)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg></span>
-      <span class="sb-label">Sanctuary<span class="sb-active-tag" id="sbActiveTagSanctuary"></span></span>
-      <span class="sb-tooltip" id="sbTooltipSanctuary">Sanctuary</span>
+    <button class="sb-item" data-service="campfire" id="sbItemCampfire" onclick="openServiceWindow('campfire', this)">
+      <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="ccampfire"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#ccampfire)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg></span>
+      <span class="sb-label">Campfire<span class="sb-active-tag" id="sbActiveTagCampfire"></span></span>
+      <span class="sb-tooltip" id="sbTooltipCampfire">Campfire</span>
     </button>
 
-    <button class="sb-item" data-service="retreat" id="sbItemRetreat" onclick="openServiceWindow('retreat', this)">
-      <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="cretreat"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#cretreat)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg></span>
-      <span class="sb-label">Retreat<span class="sb-active-tag" id="sbActiveTagRetreat"></span></span>
-      <span class="sb-tooltip" id="sbTooltipRetreat">Retreat</span>
+    <button class="sb-item" data-service="sanctuary" id="sbItemSanctuary" onclick="openServiceWindow('sanctuary', this)">
+      <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="csanctuary"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#csanctuary)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg></span>
+      <span class="sb-label">Sanctuary<span class="sb-active-tag" id="sbActiveTagSanctuary"></span></span>
+      <span class="sb-tooltip" id="sbTooltipSanctuary">Sanctuary</span>
     </button>
 
 
@@ -1670,6 +1678,7 @@ body {
       <p class="sw-shout-sub" id="swShoutSub"></p>
     </div>
     <div class="sw-footer">
+      <div class="sw-billing" id="swBilling" style="display:none;"></div>
       <div class="sw-btns" id="swBtns">
         <button class="sw-btn-primary" id="swBtnGet" onclick="purchaseService()"></button>
         <button class="sw-btn-gift" id="swBtnGift" onclick="giftService()">
@@ -1751,7 +1760,7 @@ body {
   <div class="credits-menu" id="newChatMenu">
     <div class="menu-header">
       <div class="menu-title">Paid feature</div>
-      <div class="menu-sub" style="padding:0 6px 6px;">Only users who have purchased a Sanctuary or Retreat can open new chats.</div>
+      <div class="menu-sub" style="padding:0 6px 6px;">Only users with Campfire credits or an active Sanctuary can open new chats.</div>
     </div>
   </div>
 </div>
@@ -1781,50 +1790,69 @@ Want to experience me? The first 15 exchanges are free. Ask and you shall receiv
 let isLoading = false;
 let messageCount = 0;
 let isPaid = false;
-let currentSessionTier = null; // 'mantra' | 'sanctuary' | 'retreat' | null (free)
+let currentSessionTier = null; // 'mantra' | 'campfire' | 'sanctuary' | null (free)
 let canNewChat = false;
 let mantraUnlocked = false;
 let messagesBalance = 0;
+// Subscription state (Sanctuary). hasSanctuary is the authoritative
+// "unlimited" flag — never infer it from messagesBalance, which stays frozen
+// at whatever Campfire credits the user had when they subscribed.
+let hasSanctuary = false;
+let subscriptionStatus = null;
+let subscriptionPeriodEnd = null;
+let portalUrl = null;
 let canBuyMantra = true; // updated from /auth/me; defaults true for logged-out/new visitors
-let giftCredits = { mantra: 0, sanctuary: 0, retreat: 0 };
+let giftCredits = { mantra: 0, campfire: 0, sanctuary: 0 };
 let userMantras = []; // permanently saved mantras from the user profile ({text, ts}) — card regenerable from text on demand
 
 function updateCounter() {
   const remNum = document.getElementById('remNum');
   const sbRemaining = document.getElementById('sbRemaining');
+  const remTxt = document.querySelector('.rem-txt');
   const counterWrap = document.getElementById('counterWrap') || remNum?.parentElement;
   if (!remNum) return;
-  // Mantra sessions have no per-message balance — hide counter entirely
-  if (currentSessionTier === 'mantra') {
+
+  // ── COUNTER VISIBILITY ──────────────────────────────────────────
+  // The counter appears in exactly TWO states, and nowhere else:
+  //   1. Free tier      → counts down from FREE_MESSAGES
+  //   2. Campfire       → counts down remaining paid exchanges
+  // It is hidden for:
+  //   • Mantra sessions — the 70-exchange cap is deliberately undisclosed;
+  //     showing a number would turn an open conversation into a countdown.
+  //   • Sanctuary       — unlimited. There is nothing to count, and a "∞"
+  //     glyph is just noise once the user knows what they bought.
+  const hideCounter = (currentSessionTier === 'mantra') || hasSanctuary;
+  if (hideCounter) {
     if (counterWrap) counterWrap.style.display = 'none';
     if (sbRemaining) sbRemaining.style.display = 'none';
     updateActivePlanUI();
     return;
   }
+
   if (counterWrap) counterWrap.style.display = '';
-  if (mantraUnlocked) {
-    remNum.textContent = '∞';
-    if (sbRemaining) sbRemaining.style.display = 'none';
-  } else if (isPaid || messagesBalance > 0) {
+  if (messagesBalance > 0 || isPaid) {
+    // Campfire (or post-mantra graduation credits)
     remNum.textContent = messagesBalance;
+    if (remTxt) remTxt.textContent = 'exchanges left';
     if (sbRemaining) sbRemaining.style.display = '';
   } else {
     const used = messages.filter(m => m.role === 'user').length;
     remNum.textContent = Math.max(0, FREE_MESSAGES - used);
+    if (remTxt) remTxt.textContent = 'free exchanges left';
     if (sbRemaining) sbRemaining.style.display = '';
   }
   updateActivePlanUI();
 }
 
-const SERVICE_LABELS = { mantra: 'Mantra', sanctuary: 'Sanctuary', retreat: 'Retreat' };
+const SERVICE_LABELS = { mantra: 'Mantra', campfire: 'Campfire', sanctuary: 'Sanctuary' };
 
-/* ── Service window system (Mantra / Sanctuary / Retreat) ──
+/* ── Service window system (Mantra / Campfire / Sanctuary) ──
    Declared here (not down near openServiceWindow) because the mode switcher,
    which renders earlier via updateActivePlanUI(), depends on it too. */
 const SERVICE_ICONS = {
   mantra: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swMantra"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swMantra)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z" fill="#18400e" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#31a117"/></g></svg>',
-  sanctuary: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swSanct"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swSanct)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
-  retreat: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swRetreat"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swRetreat)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>'
+  campfire: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swSanct"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swSanct)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
+  sanctuary: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="swSanctuary"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#swSanctuary)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>'
 };
 
 const SERVICES = {
@@ -1848,17 +1876,19 @@ const SERVICES = {
     shoutSub: 'Chat with Demian whenever you wish.',
     btnLabel: 'Get yours for'
   },
-  sanctuary: {
-    name: 'Sanctuary',
-    count: 100,
-    price: 12,
+  campfire: {
+    name: 'Campfire',
+    count: 50,
+    price: 3,
+    subscription: false,
     accent: '#dfa51a',
-    heroImg: 'sanctuary-hero.png',
+    heroImg: 'campfire-hero.png',
     heroGrad: 'radial-gradient(120% 130% at 0% 100%, #0c0a28 0%, #0c0a28 30%, rgba(12,10,40,0.7) 55%, rgba(12,10,40,0.15) 80%, rgba(12,10,40,0) 100%)',
     heroFallback: 'linear-gradient(125deg, #2a1855 0%, #1f1545 45%, #160f33 100%)',
     badge: null,
-    desc: 'Unlock the full power of Demian. For a life of meaning, purpose, authenticity, and balance.',
+    desc: 'Pay as you go. Fifty exchanges with Demian, yours to spend whenever you wish. No subscription, no expiry.',
     features: [
+      '50 exchanges. They never expire — return whenever you wish.',
       'Designed to help you move forward in the direction that is more true to you.',
       'Not made to please, but to serve as an honest mirror. For those who seek growth, not just comfort.',
       'Grounded in Demianist philosophy but compatible with other beliefs and respectful of them.',
@@ -1866,29 +1896,40 @@ const SERVICES = {
       'Open new chats with optional memory preservation.'
     ],
     closing: null,
-    shoutSub: 'Chat with Demian whenever you wish.',
+    shoutSub: 'Rub the lamp whenever you wish. No recurring charge.',
     btnLabel: 'Get for'
   },
-  retreat: {
-    name: 'Retreat',
-    count: 500,
-    price: 39,
+  sanctuary: {
+    name: 'Sanctuary',
+    count: null,          // unlimited — no counter, ever
+    price: 6.99,          // monthly
+    priceAnnual: 47.50,   // annual (~€3.96/mo)
+    subscription: true,
     accent: '#dfa51a',
-    heroImg: 'retreat-hero.png',
+    heroImg: 'sanctuary-hero.png',
     heroGrad: 'radial-gradient(120% 130% at 0% 100%, #0a0f1a 0%, #0a0f1a 30%, rgba(10,15,26,0.7) 55%, rgba(10,15,26,0.15) 80%, rgba(10,15,26,0) 100%)',
     heroFallback: 'linear-gradient(125deg, #1a2540 0%, #141d33 45%, #0a0f1f 100%)',
-    desc: 'Unlock the full power of Demian. For a life of meaning, purpose, authenticity, and balance.',
+    desc: 'Live here. Unlimited exchanges with Demian, for those who have made this part of their life.',
     features: [
+      'Unlimited exchanges. No counter, no rationing, no watching a number fall.',
       'Designed to help you move forward in the direction that is more true to you.',
       'Not made to please, but to serve as an honest mirror. For those who seek growth, not just comfort.',
       'Grounded in Demianist philosophy but compatible with other beliefs and respectful of them.',
       'Acting within strict ethical limits. No therapy, no medical advice, no replacement for professional care.',
       'Open new chats with optional memory preservation.'
     ],
-    closing: null,
-    shoutSub: 'Chat with Demian whenever you wish.',
-    btnLabel: 'Get for'
+    closing: 'Cancel whenever you wish — you keep access until the period you paid for has ended.',
+    shoutSub: 'Unlimited. The lamp stays lit.',
+    btnLabel: 'Subscribe for'
   }
+};
+
+// ⚠️ REPLACE: Stripe Checkout links for the two Sanctuary subscription prices.
+// Create ONE Stripe Product ("Sanctuary") with TWO recurring Prices, then a
+// payment link for each. These must match PRICE_TIERS in index.js.
+const SANCTUARY_LINKS = {
+  monthly: 'https://buy.stripe.com/REPLACE_ME_SANCTUARY_MONTHLY',
+  annual:  'https://buy.stripe.com/REPLACE_ME_SANCTUARY_ANNUAL',
 };
 
 
@@ -1900,11 +1941,16 @@ function updateActivePlanUI() {
   let activeKey = null;
   if (mantraUnlocked) {
     activeKey = 'mantra';
+  } else if (hasSanctuary) {
+    // Authoritative, and checked BEFORE any balance test: a subscriber is
+    // active even with messagesBalance === 0, because a subscription has no
+    // balance. Testing balance first would show them as having no active plan.
+    activeKey = 'sanctuary';
   } else if (userTier && (messagesBalance > 0 || canNewChat)) {
     activeKey = userTier;
   }
 
-  ['mantra', 'sanctuary', 'retreat'].forEach(key => {
+  ['mantra', 'campfire', 'sanctuary'].forEach(key => {
     const itemEl = document.getElementById('sbItem' + key.charAt(0).toUpperCase() + key.slice(1));
     const tagEl = document.getElementById('sbActiveTag' + key.charAt(0).toUpperCase() + key.slice(1));
     const tooltipEl = document.getElementById('sbTooltip' + key.charAt(0).toUpperCase() + key.slice(1));
@@ -1956,7 +2002,7 @@ function toggleModeSwitcherMenu(triggerEl) {
 
   // Decide which items to show: brand-new/free user with mantra still
   // available -> all three. Anyone past that point (mantra already used,
-  // or holding/having held a paid tier) -> Sanctuary + Retreat only, never
+  // or holding/having held a paid tier) -> Campfire + Sanctuary only, never
   // Mantra again, regardless of whether something is currently active or
   // exhausted (recharge always offers both, never just the current tier).
   const itemHTML = (it) => `
@@ -1975,9 +2021,9 @@ function toggleModeSwitcherMenu(triggerEl) {
     html += `<hr class="ms-menu-divider">`;
   }
   html += `<div class="ms-menu-section-title">Premium companion mode</div>`;
-  html += itemHTML({ key: 'sanctuary', title: 'Sanctuary', desc: '100 exchanges' });
+  html += itemHTML({ key: 'campfire', title: 'Campfire', desc: '50 exchanges · pay as you go' });
   html += `<hr class="ms-menu-divider">`;
-  html += itemHTML({ key: 'retreat', title: 'Retreat', desc: '500 exchanges' });
+  html += itemHTML({ key: 'sanctuary', title: 'Sanctuary', desc: 'Unlimited · subscription' });
 
   menu.innerHTML = html;
 
@@ -2148,7 +2194,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!d.authToken) return;
         authToken = d.authToken;
         userEmail = d.email;
-        if (d.messagesBalance > 0 || d.mantraUnlocked) {
+        if (d.hasSanctuary !== undefined) {
+          hasSanctuary = d.hasSanctuary;
+          subscriptionStatus = d.subscriptionStatus || null;
+          subscriptionPeriodEnd = d.subscriptionPeriodEnd || null;
+          portalUrl = d.portalUrl || portalUrl;
+        }
+        if (d.messagesBalance > 0 || d.mantraUnlocked || d.hasSanctuary) {
           messagesBalance = d.messagesBalance;
           isPaid = true;
         }
@@ -2329,11 +2381,15 @@ async function loadUser(opts) {
     if (data.ok) {
       userEmail = data.email;
       messagesBalance = data.messagesBalance || 0;
+      hasSanctuary = data.hasSanctuary || false;
+      subscriptionStatus = data.subscriptionStatus || null;
+      subscriptionPeriodEnd = data.subscriptionPeriodEnd || null;
+      portalUrl = data.portalUrl || portalUrl;
       mantraUnlocked = data.mantraUnlocked || false;
       canNewChat = data.canNewChat || false;
       userTier = data.tier || null;
       canBuyMantra = data.canBuyMantra !== false;
-      giftCredits = data.giftCredits || { mantra: 0, sanctuary: 0, retreat: 0 };
+      giftCredits = data.giftCredits || { mantra: 0, campfire: 0, sanctuary: 0 };
       userMantras = data.mantras || [];
       isPaid = messagesBalance > 0 || mantraUnlocked;
       updateAccountUI();
@@ -2363,7 +2419,7 @@ async function loadUser(opts) {
         } catch (_e) { console.error('auto-restore session failed', _e); }
       }
       if (data.pendingWelcome && !opts.suppressWelcome) showPlanActivationBanner(data.pendingWelcome);
-      // Sanctuary/Retreat user just purchased a standalone Mantra session —
+      // Campfire/Sanctuary user just purchased a standalone Mantra session —
       // redirect them to the new dedicated chat immediately.
       if (data.newMantraSessionId && data.newMantraSessionId !== currentSessionId) {
         await switchSession(data.newMantraSessionId, null);
@@ -2403,7 +2459,7 @@ function openAccountMenu(triggerEl) {
   ['newChatMenu','sbAboutMenu'].forEach(m => document.getElementById(m)?.classList.remove('open'));
   if (wasOpen) { menu.classList.remove('open'); return; }
   const tierLabel = userTier
-    ? ({'mantra':'Mantra','sanctuary':'Sanctuary','retreat':'Retreat'}[userTier] || userTier)
+    ? ({'mantra':'Mantra','campfire':'Campfire','sanctuary':'Sanctuary'}[userTier] || userTier)
     : 'Free account';
   const used = messages.filter(m => m.role === 'user').length;
   const countLine = mantraUnlocked ? '∞ messages (mantra session)'
@@ -2591,6 +2647,9 @@ function signOut() {
   authToken = null;
   userEmail = null;
   messagesBalance = 0;
+  hasSanctuary = false;
+  subscriptionStatus = null;
+  subscriptionPeriodEnd = null;
   mantraUnlocked = false;
   canNewChat = false;
   isPaid = false;
@@ -3193,7 +3252,7 @@ function sendOpeningMessage() {
 <div style="clear:both;"></div>
 <p>I can help you find your vocation &mdash; in case you haven&rsquo;t found it yet &mdash; and live a more authentic and balanced life.</p>
 <p>The <a href="#" onclick="openServiceWindow('mantra');return false;" style="font-weight:600;">PERSONAL MANTRA</a> I can create for you is a little yet powerful aid to reconnect with your calling, get unstuck, and move forward.</p>
-<p>I am also here to be a valuable <a href="#" onclick="openServiceWindow('sanctuary');return false;" style="font-weight:600;">COMPANION</a> in your journey, without need of a recurring subscription. I am a pay-as-you-go genie: you rub the lamp whenever you wish, with no expiry for your credits.</p>
+<p>I am also here to be a valuable <a href="#" onclick="openServiceWindow('campfire');return false;" style="font-weight:600;">COMPANION</a> in your journey, without need of a recurring subscription. I am a pay-as-you-go genie: you rub the lamp whenever you wish, with no expiry for your credits.</p>
 <p>While grounded in Demianist philosophy and culture, I am an interfaith companion, compatible with other beliefs and respectful of them. I am here to humanize, not to convert.</p>
 <p>Behind me there is no team, no company, no investment. Just one man: Barabeke, dissident Italian artist and messenger of <a href="https://demianism.org" target="_blank" rel="noopener">Demianism</a>.</p>
 <p>Want to experience me? <strong>THE FIRST 10 EXCHANGES ARE FREE.</strong> Ask and you shall receive &mdash; for what an AI can give.</p>
@@ -3680,12 +3739,12 @@ async function handleSessionComplete(reply) {
 
   mantraUnlocked = false;
   isPaid = true;
-  // After graduation the session is now a Sanctuary session — update
+  // After graduation the session is now a Campfire session — update
   // currentSessionTier so that updateCounter() shows the balance (not
-  // hidden mantra-mode) and updateActivePlanUI() shows Sanctuary as active
+  // hidden mantra-mode) and updateActivePlanUI() shows Campfire as active
   // in both the sidebar and the mode-switcher, on THIS chat immediately,
   // without waiting for a reload or a new loadUser() call.
-  if (currentSessionTier === 'mantra') currentSessionTier = 'sanctuary';
+  if (currentSessionTier === 'mantra') currentSessionTier = 'campfire';
   if (authToken) loadSessionList();
   updateCounter();
 
@@ -3818,10 +3877,29 @@ function setStatus(online) {
 /* SERVICES declared above, near SERVICE_ICONS */
 
 const SERVICE_LINKS = {
-  mantra:    'https://buy.stripe.com/eVq4gA0wzbND5Gr60h6oo04',
-  sanctuary: 'https://buy.stripe.com/dRmbJ26UXbND3yj9ct6oo05',
-  retreat:   'https://buy.stripe.com/bJe7sM5QT9Fvfh19ct6oo06'
+  mantra:    'https://buy.stripe.com/eVq4gA0wzbND5Gr60h6oo04',   // €2 one-off
+  // ⚠️ REPLACE: create a NEW €3 one-off payment link for Campfire (50 exchanges).
+  // The old link below was the €12/100-exchange product and MUST NOT be reused.
+  campfire:  'https://buy.stripe.com/REPLACE_ME_CAMPFIRE_3EUR',  // €3 one-off · 50 exchanges
+  // Sanctuary is a subscription — see SANCTUARY_LINKS (monthly / annual).
+  sanctuary: null
 };
+
+// Which Sanctuary billing period the user has selected in the service window.
+let sanctuaryBilling = 'monthly';
+
+function setSanctuaryBilling(period) {
+  sanctuaryBilling = period;
+  document.querySelectorAll('.sw-bill-opt').forEach(el => {
+    el.classList.toggle('sel', el.dataset.period === period);
+  });
+  const btn = document.getElementById('swBtnGet');
+  if (!btn || currentService !== 'sanctuary' || hasSanctuary) return;
+  const s = SERVICES.sanctuary;
+  btn.textContent = period === 'annual'
+    ? `Subscribe for €${s.priceAnnual.toFixed(2)}/year`
+    : `Subscribe for €${s.price.toFixed(2)}/month`;
+}
 
 let currentService = null;
 
@@ -3842,7 +3920,7 @@ function openServiceWindow(key) {
   // Bullet accent colour per service
   document.getElementById('serviceWindow').style.setProperty('--sw-accent', s.accent);
 
-  // Badge (Retreat "Best value")
+  // Badge (Sanctuary "Best value")
   const badgeEl = document.getElementById('swBadge');
   if (s.badge) {
     badgeEl.textContent = s.badge;
@@ -3882,17 +3960,38 @@ function openServiceWindow(key) {
   }
   // Mantra is a one-off, new-user-only offer: once a user has ever had
   // Mantra (bought it, or reached it via gift redemption) or already owns
-  // Sanctuary/Retreat, buying Mantra again makes no sense — Demian can make
+  // Campfire/Sanctuary, buying Mantra again makes no sense — Demian can make
   // a fresh one for them directly under those plans instead. In that case
   // the Gift button becomes the prominent action (same two buttons, colors
   // swapped) since gifting is the one thing they can still meaningfully do
   // here, and the Get button is relabeled and disabled rather than still
   // quietly linking to Stripe. This check only applies to the mantra
-  // service window — Sanctuary and Retreat have no purchase restriction
+  // service window — Campfire and Sanctuary have no purchase restriction
   // and can always be bought/recharged even with another plan active.
   const swBtnsEl = document.getElementById('swBtns');
   const blockedNote = document.getElementById('swBlockedNote');
   const mantraBlocked = (key === 'mantra' && !canBuyMantra);
+  // Sanctuary billing toggle (monthly / annual) — rendered only for the
+  // subscription tier, and hidden entirely once the user is subscribed
+  // (nothing to choose; the button becomes "Manage subscription").
+  const billEl = document.getElementById('swBilling');
+  if (key === 'sanctuary' && !hasSanctuary) {
+    const perMo = (s.priceAnnual / 12).toFixed(2);
+    billEl.style.display = '';
+    billEl.innerHTML =
+      `<button class="sw-bill-opt sel" data-period="monthly" onclick="setSanctuaryBilling('monthly')">
+         <span class="sw-bill-price">€${s.price.toFixed(2)}</span><span class="sw-bill-per">per month</span>
+       </button>
+       <button class="sw-bill-opt" data-period="annual" onclick="setSanctuaryBilling('annual')">
+         <span class="sw-bill-price">€${s.priceAnnual.toFixed(2)}</span><span class="sw-bill-per">per year · €${perMo}/mo</span>
+         <span class="sw-bill-save">Save 43%</span>
+       </button>`;
+    sanctuaryBilling = 'monthly';
+  } else {
+    billEl.style.display = 'none';
+    billEl.innerHTML = '';
+  }
+
   if (mantraBlocked) {
     swBtnsEl.classList.add('gift-priority');
     const getBtn = document.getElementById('swBtnGet');
@@ -3901,8 +4000,25 @@ function openServiceWindow(key) {
   } else {
     swBtnsEl.classList.remove('gift-priority');
     const getBtn = document.getElementById('swBtnGet');
-    getBtn.textContent = s.btnLabel + ' €' + s.price;
-    getBtn.title = '';
+    if (key === 'sanctuary') {
+      if (hasSanctuary) {
+        // Already subscribed — offer management, not a second purchase.
+        const until = subscriptionPeriodEnd
+          ? new Date(subscriptionPeriodEnd * 1000).toLocaleDateString()
+          : null;
+        getBtn.textContent = 'Manage subscription';
+        getBtn.title = subscriptionStatus === 'canceled' && until
+          ? `Cancelled — access continues until ${until}.`
+          : (subscriptionStatus === 'past_due'
+              ? 'Payment issue — please update your card.'
+              : 'Active subscription.');
+      } else {
+        getBtn.textContent = `${s.btnLabel} €${s.price.toFixed(2)}/month`;
+      }
+    } else {
+      getBtn.textContent = s.btnLabel + ' €' + s.price;
+    }
+    getBtn.title = getBtn.title || '';
   }
   blockedNote.style.display = 'none';
   blockedNote.textContent = '';
@@ -3921,16 +4037,31 @@ function closeServiceWindow() {
 function purchaseService() {
   if (!currentService) return;
   // Mantra is a one-off introductory offer — once blocked (already had one,
-  // or already on Sanctuary/Retreat), clicking Get must never reach Stripe.
+  // or already on Campfire/Sanctuary), clicking Get must never reach Stripe.
   // Show the explanation in place instead of opening a new tab.
   if (currentService === 'mantra' && !canBuyMantra) {
     const note = document.getElementById('swBlockedNote');
-    note.textContent = "Mantra was a one-off introductory offer, meant to be used once. You can use Sanctuary or Retreat to get a new mantra in premium mode.";
+    note.textContent = "Mantra was a one-off introductory offer, meant to be used once. You can use Campfire or Sanctuary to get a new mantra in premium mode.";
     note.style.display = '';
+    return;
+  }
+  // Sanctuary is a subscription. If one is already live, the button becomes
+  // "Manage subscription" and sends the user to Stripe's hosted portal —
+  // cancellation, card updates and invoices all live there, so we build none
+  // of it ourselves.
+  if (currentService === 'sanctuary') {
+    if (hasSanctuary) {
+      window.open(portalUrl || STRIPE_PORTAL_FALLBACK, '_blank');
+      return;
+    }
+    window.open(SANCTUARY_LINKS[sanctuaryBilling], '_blank');
     return;
   }
   window.open(SERVICE_LINKS[currentService], '_blank');
 }
+
+// Used only if the backend hasn't supplied portalUrl yet.
+const STRIPE_PORTAL_FALLBACK = 'https://billing.stripe.com/p/login/REPLACE_ME';
 
 function giftService() {
   if (!currentService) return;
@@ -4030,8 +4161,8 @@ function handlePurchaseReturn(tier, msgs, mantra) {
   if (msgs === undefined) {
     const tiers = {
       'mantra':    { messages: 70,  mantra: true  },
-      'sanctuary': { messages: 100, mantra: false },
-      'retreat':   { messages: 500, mantra: false },
+      'campfire': { messages: 100, mantra: false },
+      'sanctuary':   { messages: 500, mantra: false },
     };
     const t = tiers[tier];
     if (!t) return;
@@ -4040,15 +4171,15 @@ function handlePurchaseReturn(tier, msgs, mantra) {
   }
   isPaid = true;
   messagesBalance = msgs;
-  canNewChat = (tier === 'sanctuary' || tier === 'retreat');
-  // Only the Mantra tier enters a mantra session; Sanctuary/Retreat are
+  canNewChat = (tier === 'campfire' || tier === 'sanctuary');
+  // Only the Mantra tier enters a mantra session; Campfire/Sanctuary are
   // straight companion sessions and must NOT set mantraUnlocked — that flag
   // causes updateActivePlanUI() to label everything "Mantra" regardless of
   // what tier was actually purchased.
   if (mantra) mantraUnlocked = true;
   // Set userTier immediately so updateActivePlanUI() can show the correct
   // sidebar/dropdown label before loadUser() resolves (which may take a
-  // moment on slow connections). Without this, Sanctuary/Retreat purchases
+  // moment on slow connections). Without this, Campfire/Sanctuary purchases
   // would briefly show "Mode" (no active key) even if mantra isn't set.
   if (tier !== 'mantra') userTier = tier;
   // Fire the banner immediately — we already know the tier from the
@@ -4480,20 +4611,20 @@ const PLAN_ACTIVATION = {
     icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="pamantra"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#pamantra)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z" fill="#18400e" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#31a117"/></g></svg>',
     desc: "I'll focus fully on shaping your mantra now. When it's ready, you'll get it as a card to keep — then 15 exchanges with me in full premium mode."
   },
+  campfire: {
+    label: 'Campfire',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="pacampfire"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#pacampfire)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
+    desc: "50 exchanges are yours, no expiry. I'm here for vocation, reflection, or whatever you need to work through."
+  },
   sanctuary: {
     label: 'Sanctuary',
-    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="pasanctuary"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#pasanctuary)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
-    desc: "100 exchanges are yours, no expiry. I'm here for vocation, reflection, or whatever you need to work through."
-  },
-  retreat: {
-    label: 'Retreat',
-    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="paretreat"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#paretreat)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
-    desc: "500 exchanges are yours, no expiry. I'm here for vocation, reflection, or whatever you need to work through."
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="pasanctuary"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#pasanctuary)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
+    desc: "Unlimited exchanges. No counter, nothing to ration. I'm here for vocation, reflection, or whatever you need to work through."
   },
   mantra_graduation: {
-    label: 'Mantra complete — Sanctuary unlocked',
+    label: 'Mantra complete — Campfire unlocked',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="pamantragrad"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#pamantragrad)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
-    desc: "Your mantra is complete. You've unlocked 15 premium exchanges in full Sanctuary-level companion mode — no expiry, use them whenever you need."
+    desc: "Your mantra is complete. You've unlocked 15 premium exchanges in full Campfire-level companion mode — no expiry, use them whenever you need."
   }
 };
 
