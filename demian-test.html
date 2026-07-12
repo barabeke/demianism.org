@@ -870,153 +870,252 @@ button#send svg { width: 17px; height: 17px; }
 .sw-closing { font-family:'Libre Baskerville',serif; font-size:14px; color:var(--text-body); line-height:1.6; margin:0 0 14px; }
 .sw-shout { font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#fff; margin:0 0 2px; }
 .sw-shout-sub { font-family:'Libre Baskerville',serif; font-size:14px; color:var(--text-body); line-height:1.6; margin:0; }
-.sw-footer { flex-shrink:0; padding:16px 28px 22px; background:#12103a; }
-/* ── Companion billing selector (pay-as-you-go / monthly / yearly) ──
-   Vertical stacked cards at ALL widths. Deliberate: a horizontal 3-up row
-   forces the price, the unit and the differentiator into ~90px columns, which
-   is unreadable on a phone and cramped even on a laptop. Stacked rows give
-   each option a full line — name + what you get on the left, price on the
-   right, differentiator badge below — and read identically at 380px and
-   1400px, so there is no separate mobile layout to keep in sync. */
-.sw-billing { margin-bottom: 16px; }
-.bill-cards { display:flex; flex-direction:column; gap:9px; }
-.bill-card {
-  position:relative; width:100%; box-sizing:border-box;
-  display:grid; grid-template-columns:auto 1fr auto; align-items:center;
-  column-gap:11px; row-gap:6px;
-  padding:13px 14px;
-  background:#1a1838; border:1.5px solid #2c2a52; border-radius:11px;
-  font-family:'Inter',sans-serif; color:#cfcfd4; text-align:left;
-  cursor:pointer; transition:border-color .15s, background .15s;
-}
-.bill-card:hover { background:#201d42; }
-.bill-card.sel { border-color:#6864bb; background:#231f4c; }
-.bill-card:focus-visible { outline:2px solid #6864bb; outline-offset:2px; }
-
-/* Radio affordance — makes it unmistakable that these are mutually exclusive
-   choices, not three separate buy buttons. */
-.bill-radio {
-  width:16px; height:16px; border-radius:50%;
-  border:1.5px solid #4a4780; background:transparent;
-  flex:0 0 auto; transition:border-color .15s, box-shadow .15s;
-}
-.bill-card.sel .bill-radio {
-  border-color:#6864bb;
-  box-shadow: inset 0 0 0 4px #6864bb;
+.sw-footer { flex-shrink:0; padding:0 0 18px; background:#12103a; }
+/* ══════════════════════════════════════════════════════════════════
+   COMPANION ACTION BAR  —  3-column horizontal layout
+   40% pay-as-you-go  |  40% subscribe  |  20% gift
+   ══════════════════════════════════════════════════════════════════ */
+.cmp-bar {
+  display: flex;
+  gap: 8px;
+  padding: 14px 16px 4px;
 }
 
-.bill-main { display:flex; flex-direction:column; gap:1px; min-width:0; }
-.bill-name { font-weight:700; font-size:14px; line-height:1.3; }
-.bill-headline { font-size:12px; color:rgba(255,255,255,0.55); line-height:1.3; }
+/* Each column is a full-bleed button. The two wide columns are
+   visually equal; the gift column is narrower and quieter — it's a
+   secondary action, not competing with the primary choice. */
+.cmp-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 8px 12px;
+  border: 1.5px solid #2c2a52;
+  border-radius: 12px;
+  background: #1a1838;
+  color: #cfcfd4;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  text-align: center;
+}
+.cmp-payg { flex: 40 0 0%; }
+.cmp-sub  { flex: 40 0 0%; }
+.cmp-gift-col { flex: 20 0 0%; justify-content: center; }
 
-.bill-right { display:flex; flex-direction:column; align-items:flex-end; gap:1px; white-space:nowrap; }
-.bill-price { font-weight:700; font-size:16px; line-height:1.2; }
-.bill-unit { font-size:10.5px; color:rgba(255,255,255,0.45); line-height:1.2; }
+.cmp-col:hover { background: #201d42; }
+.cmp-col.active { border-color: #6864bb; background: #231f4c; }
+.cmp-col:focus-visible { outline: 2px solid #6864bb; outline-offset: 2px; }
 
-/* The decisive fact, on its own line spanning the card so it can never be
-   truncated: "Never expire" for pay-as-you-go, "No counter" for the
-   subscriptions, "€3.96/month" for the annual. */
-.bill-highlight {
-  grid-column:2 / -1;
-  justify-self:start;
-  font-size:11px; font-weight:600; letter-spacing:.02em;
-  color:#dfa51a;
-  background:rgba(223,165,26,0.10);
-  border:1px solid rgba(223,165,26,0.28);
-  padding:2.5px 8px; border-radius:20px;
+/* Price — the number that matters most, displayed first */
+.cmp-price {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.1;
+  color: #fff;
 }
-.bill-badge {
-  position:absolute; top:-7px; right:10px;
-  background:#dfa51a; color:#000;
-  font-size:9px; font-weight:700; letter-spacing:.03em;
-  padding:2px 7px; border-radius:6px;
+.cmp-price-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.2;
+  margin-bottom: 4px;
 }
-/* Fuller explanation of the SELECTED option. Sits below the cards so the cards
-   stay scannable while the detail is always visible — never a tooltip, never
-   hidden behind a tap. */
-.bill-note {
-  margin-top:11px; padding:10px 12px;
-  background:rgba(104,100,187,0.08);
-  border-left:2px solid #6864bb; border-radius:0 8px 8px 0;
-  font-family:'Inter',sans-serif; font-size:12.5px; line-height:1.55;
-  color:rgba(255,255,255,0.68);
+/* Action name — what you're doing, not what you're buying */
+.cmp-label {
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .03em;
+  color: #cfcfd4;
+  line-height: 1.3;
 }
-/* Already-subscribed state — no choice to make. */
-.bill-active {
-  padding:13px 14px; background:#231f4c;
-  border:1.5px solid #6864bb; border-radius:11px;
-  font-family:'Inter',sans-serif; font-size:13px; line-height:1.55; color:#cfcfd4;
+/* The concrete thing you receive */
+.cmp-detail {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.3;
 }
-.bill-active-sub {
-  margin-top:9px; padding-top:9px;
-  border-top:1px solid rgba(255,255,255,0.10);
-  font-size:12px; color:rgba(255,255,255,0.60);
+/* Highlight pill — the decisive differentiating fact */
+.cmp-pill {
+  margin-top: 4px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  white-space: nowrap;
 }
-/* ── Gift separator ── */
-.bill-gift-sep {
-  display:flex; align-items:center; gap:10px;
-  margin:14px 0 10px; color:rgba(255,255,255,0.25); font-size:12px;
-}
-.bill-gift-sep::before, .bill-gift-sep::after {
-  content:''; flex:1; height:1px; background:rgba(255,255,255,0.10);
-}
-/* Gift card: same grid as regular cards but subtler base style to visually
-   de-emphasise it as the secondary action (the three regular plans are the
-   primary choice; the gift is the "or" path). Selected state still gets
-   the full purple ring so selection is unambiguous. */
-.bill-gift-card {
-  background:#141230; border-color:#221f40;
-}
-.bill-gift-card:hover { background:#1a1838; }
-.bill-gift-card.sel { border-color:#6864bb; background:#231f4c; }
+.cmp-pill-gold   { background: rgba(223,165,26,.15); border: 1px solid rgba(223,165,26,.35); color: #dfa51a; }
+.cmp-pill-purple { background: rgba(104,100,187,.15); border: 1px solid rgba(104,100,187,.40); color: #a89ff5; }
 
-/* Recipient email input — appears inline below the gift card when it's
-   selected, so the flow stays in one place rather than opening a modal. */
-.gift-input-wrap {
-  margin-top:10px; padding:12px 14px;
-  background:#0e0c28; border:1.5px solid #2c2a52; border-radius:10px;
+/* Gift column: icon sized to fill the space, label below */
+.cmp-gift-icon {
+  display: block;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 2px;
 }
-.gift-input-label {
-  display:block; font-family:'Inter',sans-serif;
-  font-size:11px; font-weight:600; letter-spacing:.05em;
-  color:rgba(255,255,255,0.45); text-transform:uppercase; margin-bottom:7px;
-}
-.gift-input {
-  display:block; width:100%; box-sizing:border-box;
-  padding:10px 12px;
-  background:#1a1838; border:1.5px solid #2c2a52; border-radius:8px;
-  font-family:'Inter',sans-serif; font-size:14px; color:#cfcfd4;
-  outline:none; transition:border-color .15s;
-}
-.gift-input::placeholder { color:rgba(255,255,255,0.25); }
-.gift-input:focus { border-color:#6864bb; }
-.gift-input.input-error { border-color:#c0392b; animation:shake .25s; }
-@keyframes shake {
-  0%,100% { transform:translateX(0); }
-  25%      { transform:translateX(-5px); }
-  75%      { transform:translateX(5px); }
-}
-.gift-input-note {
-  margin:8px 0 0; font-family:'Inter',sans-serif;
-  font-size:11.5px; line-height:1.55; color:rgba(255,255,255,0.38);
+.cmp-gift-icon svg { width: 100%; height: 100%; }
+
+/* ── EXPANDED PANEL ─────────────────────────────────────────────────
+   Appears below the bar when Subscribe or Gift is selected.
+   Kept restrained so it reads as detail-on-demand, not a second screen. */
+.cmp-panel {
+  margin: 10px 16px 0;
+  padding: 14px 16px;
+  background: #12103a;
+  border: 1.5px solid #2c2a52;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
 }
 
-/* Auto-renewal legal notice — must be legible but not competing with the CTA.
-   Shown only for subscription plans; hidden for pay-as-you-go and gift. */
-.bill-auto-renew-notice {
-  margin:10px 0 0; font-family:'Inter',sans-serif;
-  font-size:11px; line-height:1.5; color:rgba(255,255,255,0.35);
-  text-align:center;
+/* Subscribe panel: two buttons side by side */
+.cmp-sub-opts {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.cmp-sub-btn {
+  flex: 1;
+  position: relative;
+  padding: 12px 10px;
+  background: #1a1838;
+  border: 1.5px solid #2c2a52;
+  border-radius: 10px;
+  color: #cfcfd4;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  transition: border-color .15s, background .15s;
+}
+.cmp-sub-btn:hover { background: #201d42; }
+.cmp-sub-btn-price { font-weight: 700; font-size: 16px; }
+.cmp-sub-btn-unit  { font-size: 11px; color: rgba(255,255,255,0.45); }
+.cmp-sub-btn-eff   { font-size: 10.5px; color: #a89ff5; margin-top: 2px; }
+.cmp-sub-badge {
+  position: absolute;
+  top: -8px; right: -4px;
+  background: #dfa51a; color: #000;
+  font-size: 9px; font-weight: 700;
+  padding: 2px 6px; border-radius: 6px;
+  letter-spacing: .03em;
+}
+.cmp-panel-note {
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.42);
+}
+.cmp-renew-notice {
+  margin-top: 8px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.30);
+  text-align: center;
 }
 
-@media (max-width:480px) {
-  .bill-card { padding:12px; column-gap:9px; }
-  .bill-name { font-size:13.5px; }
-  .bill-price { font-size:15px; }
-  .bill-note { font-size:12px; }
-  .gift-input { font-size:16px; } /* prevent iOS auto-zoom on focus */
+/* Gift panel: two gift-type buttons + recipient email for the subscription gift */
+.cmp-gift-opts {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
 }
-.sw-btns { display:flex; gap:12px; }
+.cmp-gift-btn {
+  flex: 1;
+  padding: 12px 10px;
+  background: #1a1838;
+  border: 1.5px solid #2c2a52;
+  border-radius: 10px;
+  color: #cfcfd4;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  transition: border-color .15s, background .15s;
+  text-align: center;
+}
+.cmp-gift-btn:hover { background: #201d42; }
+.cmp-gift-btn-name  { font-weight: 700; font-size: 13px; }
+.cmp-gift-btn-what  { font-size: 11px; color: rgba(255,255,255,0.45); }
+.cmp-gift-btn-price { font-weight: 700; font-size: 15px; margin-top: 4px; }
+.cmp-gift-btn-unit  { font-size: 10px; color: rgba(255,255,255,0.35); }
+
+/* Recipient email input */
+.cmp-email-wrap { margin-top: 10px; }
+.cmp-email-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+  margin-bottom: 6px;
+}
+.cmp-email-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  background: #1a1838;
+  border: 1.5px solid #2c2a52;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #cfcfd4;
+  outline: none;
+  transition: border-color .15s;
+}
+.cmp-email-input::placeholder { color: rgba(255,255,255,0.22); }
+.cmp-email-input:focus { border-color: #6864bb; }
+.cmp-email-input.input-error { border-color: #c0392b; animation: shake .25s; }
+.cmp-email-note {
+  margin: 7px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.30);
+}
+
+/* Active-user state (already subscribed / gifted) */
+.cmp-active-wrap {
+  margin: 10px 16px 0;
+  padding: 13px 15px;
+  background: #231f4c;
+  border: 1.5px solid #6864bb;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #cfcfd4;
+}
+.cmp-active-sub {
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(255,255,255,0.10);
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+}
+.cmp-manage-btn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px;
+  background: #35327e;
+  border: none;
+  border-radius: 9px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: #cfcfd4;
+  cursor: pointer;
+  transition: background .15s;
+}
+.cmp-manage-btn:hover { background: #3f3c90; }
+
+/* ── LEGACY BUTTON AREA (mantra + non-companion windows) ───────────── */
+.sw-btns { display: flex; gap: 12px; padding: 0 16px 14px; }
 .sw-btn-primary { flex:0 0 72%; padding:14px; background:#35327e; border:none; border-radius:10px; font-family:'Inter',sans-serif; font-weight:700; font-size:15px; color:#cfcfd4; cursor:pointer; transition:background 0.15s; }
 .sw-btn-primary:hover { background:#3f3c90; }
 .sw-btn-gift { flex:1; padding:14px 8px; background:#36354c; border:none; border-radius:10px; font-family:'Inter',sans-serif; font-weight:500; font-size:14px; color:rgba(255,255,255,0.55); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; transition:all 0.15s; }
@@ -1807,15 +1906,71 @@ body {
       <p class="sw-shout" id="swShout">No subscription. No expiry.</p>
       <p class="sw-shout-sub" id="swShoutSub"></p>
     </div>
-    <div class="sw-footer">
-      <div class="sw-billing" id="swBilling" style="display:none;"></div>
-      <div class="sw-btns" id="swBtns">
+    <div class="sw-footer" id="swFooter">
+
+      <!-- ── COMPANION: 3-column action bar ──────────────────────── -->
+      <!-- Only rendered for the companion window; mantra keeps the    -->
+      <!-- old single-button layout below.                             -->
+      <div class="cmp-bar" id="cmpBar" style="display:none">
+
+        <!-- 40%: Pay as you go -->
+        <button class="cmp-col cmp-payg" id="cmpPayg" onclick="cmpSelect('payg')">
+          <span class="cmp-price">€3</span>
+          <span class="cmp-price-sub">one-off</span>
+          <span class="cmp-label">Pay as you go</span>
+          <span class="cmp-detail">50 exchanges</span>
+          <span class="cmp-pill cmp-pill-gold">Never expire</span>
+        </button>
+
+        <!-- 40%: Subscribe -->
+        <button class="cmp-col cmp-sub" id="cmpSub" onclick="cmpSelect('sub')">
+          <span class="cmp-price">€6.99</span>
+          <span class="cmp-price-sub">per month</span>
+          <span class="cmp-label">Subscribe</span>
+          <span class="cmp-detail">Unlimited exchanges</span>
+          <span class="cmp-pill cmp-pill-purple">No counter</span>
+        </button>
+
+        <!-- 20%: Gift -->
+        <button class="cmp-col cmp-gift-col" id="cmpGift" onclick="cmpSelect('gift')">
+          <!-- Same SVG diamond style used by the mantra icon -->
+          <span class="cmp-gift-icon">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs><clipPath id="cgift"><circle cx="100" cy="100" r="90"/></clipPath></defs>
+              <g clip-path="url(#cgift)">
+                <circle cx="100" cy="100" r="90" fill="#1a1838"/>
+                <!-- Gift box body -->
+                <rect x="52" y="108" width="96" height="60" rx="5" fill="#6864bb"/>
+                <!-- Gift box lid -->
+                <rect x="46" y="88" width="108" height="24" rx="5" fill="#8580d0"/>
+                <!-- Ribbon vertical -->
+                <rect x="90" y="88" width="20" height="80" fill="#dfa51a"/>
+                <!-- Ribbon horizontal on lid -->
+                <rect x="46" y="96" width="108" height="8" fill="#dfa51a"/>
+                <!-- Bow left loop -->
+                <path d="M100 88 Q72 60 60 72 Q52 84 100 88Z" fill="#dfa51a"/>
+                <!-- Bow right loop -->
+                <path d="M100 88 Q128 60 140 72 Q148 84 100 88Z" fill="#dfa51a"/>
+              </g>
+            </svg>
+          </span>
+          <span class="cmp-label">Gift</span>
+        </button>
+
+      </div>
+
+      <!-- ── COMPANION: expanded panel below the bar ──────────────── -->
+      <div class="cmp-panel" id="cmpPanel" style="display:none"></div>
+
+      <!-- ── MANTRA / other: legacy single-button layout ─────────── -->
+      <div class="sw-btns" id="swBtns" style="display:none">
         <button class="sw-btn-primary" id="swBtnGet" onclick="purchaseService()"></button>
-        <button class="sw-btn-gift" id="swBtnGift" onclick="giftService()">
+        <button class="sw-btn-gift" id="swBtnGiftLegacy" onclick="giftService()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
           Gift
         </button>
       </div>
+
       <p class="sw-blocked-note" id="swBlockedNote" style="display:none;"></p>
     </div>
   </div>
@@ -4058,133 +4213,192 @@ const BILLING_PLANS = [
 // isn't sure yet should not land on a subscription pre-selected.
 let selectedBilling = 'payg';
 
-function selectBilling(id) {
-  selectedBilling = id;
-  const plan = BILLING_PLANS.find(p => p.id === id);
-  document.querySelectorAll('.bill-card').forEach(el => {
-    const on = el.dataset.plan === id;
-    el.classList.toggle('sel', on);
-    el.setAttribute('aria-checked', on ? 'true' : 'false');
+// ── COMPANION WINDOW CONTROLLER ─────────────────────────────────
+// Three states for the 3-column bar:
+//   'payg'  → direct purchase, no panel
+//   'sub'   → expands subscribe panel (monthly / annual)
+//   'gift'  → expands gift panel (50 exchanges or 1-year gift)
+// Each state is self-contained: clicking a column renders the panel
+// and routes correctly from purchaseService / giftService callers.
+let cmpMode = null; // 'payg' | 'sub' | 'gift'
+let cmpGiftType = null; // 'payg' | 'annual'   (within gift panel)
+
+function cmpSelect(mode) {
+  cmpMode = mode;
+  ['payg','sub','gift'].forEach(m => {
+    const el = document.getElementById('cmp' + m.charAt(0).toUpperCase() + m.slice(1));
+    if (el) el.classList.toggle('active', m === mode);
   });
-  const noteEl = document.getElementById('billNote');
-  if (noteEl && plan) noteEl.textContent = plan.note;
-
-  // Gift plan: show the recipient-email input; hide it for all other plans.
-  const giftInputWrap = document.getElementById('giftInputWrap');
-  if (giftInputWrap) giftInputWrap.style.display = id === 'gift' ? '' : 'none';
-
-  const btn = document.getElementById('swBtnGet');
-  if (btn && plan && !hasSanctuary) btn.textContent = plan.cta;
-  updateAutoRenewNotice();
+  renderCmpPanel();
 }
 
-function renderBilling() {
-  const wrap = document.getElementById('swBilling');
-  if (!wrap) return;
+function renderCmpPanel() {
+  const panel = document.getElementById('cmpPanel');
+  if (!panel) return;
 
-  // ── Gifted state: no choice to make, no charge coming ──────────
-  if (isGifted) {
-    const expiryStr = giftedUntil
-      ? new Date(giftedUntil * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-      : null;
-    wrap.style.display = '';
-    wrap.innerHTML = `<div class="bill-active">
-      <div class="bill-active-msg">You have a gifted year of Sanctuary.${expiryStr ? ` Unlimited access until <strong>${expiryStr}</strong>.` : ''} Nothing will be charged when it ends — you simply decide then whether to continue.</div>
-      ${(messagesBalance || 0) > 0 ? `<div class="bill-active-sub">Your ${messagesBalance} pay-as-you-go exchanges are untouched and waiting. They do not expire.</div>` : ''}
-    </div>`;
+  if (cmpMode === 'payg') {
+    // No panel — direct purchase. Just hide any open panel.
+    panel.style.display = 'none';
+    panel.innerHTML = '';
     return;
   }
 
-  // ── Active subscription ─────────────────────────────────────────
-  if (hasSanctuary) {
-    const until = subscriptionPeriodEnd
-      ? new Date(subscriptionPeriodEnd * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-      : null;
-    let msg = 'Your Sanctuary subscription is active. Unlimited exchanges, no counter.';
-    if (subscriptionStatus === 'canceled' && until)
-      msg = `Your subscription is cancelled. You keep unlimited access until ${until}.`;
-    else if (subscriptionStatus === 'past_due')
-      msg = 'There is a payment issue with your subscription. Your access continues while we retry — you may want to update your card.';
-    wrap.style.display = '';
-    wrap.innerHTML = `<div class="bill-active">
-      <div class="bill-active-msg">${msg}</div>
-      ${(messagesBalance || 0) > 0 ? `<div class="bill-active-sub">Your ${messagesBalance} pay-as-you-go exchanges are untouched and waiting. They do not expire.</div>` : ''}
-    </div>`;
+  if (cmpMode === 'sub') {
+    panel.style.display = '';
+    panel.innerHTML = `
+      <div class="cmp-sub-opts">
+        <button class="cmp-sub-btn" onclick="buySub('monthly')">
+          <span class="cmp-sub-btn-price">€6.99</span>
+          <span class="cmp-sub-btn-unit">per month</span>
+        </button>
+        <button class="cmp-sub-btn" onclick="buySub('annual')">
+          <span class="cmp-sub-badge">Save 43%</span>
+          <span class="cmp-sub-btn-price">€47.50</span>
+          <span class="cmp-sub-btn-unit">per year</span>
+          <span class="cmp-sub-btn-eff">€3.96 / month</span>
+        </button>
+      </div>
+      <p class="cmp-panel-note">Unlimited exchanges. No counter. Cancel whenever you wish — you keep access until the end of the period you paid for.</p>
+      <p class="cmp-renew-notice">Auto-renews at the chosen rate. Cancel anytime from your account.</p>`;
     return;
   }
 
-  // ── Not yet subscribed: show the three billing cards + gift ─────
-  wrap.style.display = '';
-  // Gift card is always last and visually separated
-  const regularPlans = BILLING_PLANS.filter(p => p.id !== 'gift');
-  const giftPlan     = BILLING_PLANS.find(p => p.id === 'gift');
-
-  wrap.innerHTML =
-    `<div class="bill-cards" role="radiogroup" aria-label="Choose how to pay">` +
-    regularPlans.map(p => `
-      <button type="button" class="bill-card${p.id === selectedBilling ? ' sel' : ''}"
-              data-plan="${p.id}" role="radio"
-              aria-checked="${p.id === selectedBilling ? 'true' : 'false'}"
-              onclick="selectBilling('${p.id}')">
-        ${p.badge ? `<span class="bill-badge">${p.badge}</span>` : ''}
-        <span class="bill-radio" aria-hidden="true"></span>
-        <span class="bill-main">
-          <span class="bill-name">${p.name}</span>
-          <span class="bill-headline">${p.headline}</span>
-        </span>
-        <span class="bill-right">
-          <span class="bill-price">${p.priceLabel}</span>
-          <span class="bill-unit">${p.unit}</span>
-        </span>
-        <span class="bill-highlight">${p.highlight}</span>
-      </button>`).join('') +
-    `</div>
-    <div class="bill-note" id="billNote"></div>` +
-    (giftPlan ? `
-    <div class="bill-gift-sep"><span>or</span></div>
-    <button type="button" class="bill-card bill-gift-card${selectedBilling === 'gift' ? ' sel' : ''}"
-            data-plan="gift" role="radio" aria-checked="${selectedBilling === 'gift' ? 'true' : 'false'}"
-            onclick="selectBilling('gift')">
-      <span class="bill-radio" aria-hidden="true"></span>
-      <span class="bill-main">
-        <span class="bill-name">${giftPlan.name}</span>
-        <span class="bill-headline">${giftPlan.headline}</span>
-      </span>
-      <span class="bill-right">
-        <span class="bill-price">${giftPlan.priceLabel}</span>
-        <span class="bill-unit">${giftPlan.unit}</span>
-      </span>
-      <span class="bill-highlight">${giftPlan.highlight}</span>
-    </button>
-    <div id="giftInputWrap" class="gift-input-wrap" style="display:${selectedBilling === 'gift' ? '' : 'none'}">
-      <label for="giftRecipientEmail" class="gift-input-label">Recipient's email address</label>
-      <input type="email" id="giftRecipientEmail" class="gift-input"
-             placeholder="friend@example.com"
-             autocomplete="email" inputmode="email">
-      <p class="gift-input-note">They will receive an email from Demian with instructions to open their gift. Their year starts the moment you complete the purchase.</p>
-    </div>` : '') +
-    `<p class="bill-auto-renew-notice" id="billAutoRenewNotice"></p>`;
-
-  selectBilling(selectedBilling);
-  // Show/hide the auto-renewal legal notice depending on selection.
-  // This must be visible at point of purchase — EU/US legal requirement.
-  updateAutoRenewNotice();
+  if (cmpMode === 'gift') {
+    panel.style.display = '';
+    panel.innerHTML = `
+      <div class="cmp-gift-opts">
+        <button class="cmp-gift-btn" onclick="cmpGiftChoose('payg')">
+          <span class="cmp-gift-btn-name">50 exchanges</span>
+          <span class="cmp-gift-btn-what">Pay as you go</span>
+          <span class="cmp-gift-btn-price">€3</span>
+          <span class="cmp-gift-btn-unit">one-off</span>
+        </button>
+        <button class="cmp-gift-btn" onclick="cmpGiftChoose('annual')">
+          <span class="cmp-gift-btn-name">One year</span>
+          <span class="cmp-gift-btn-what">Unlimited · no recurring charge</span>
+          <span class="cmp-gift-btn-price">€47.50</span>
+          <span class="cmp-gift-btn-unit">one-off</span>
+        </button>
+      </div>
+      <div class="cmp-email-wrap" id="cmpGiftEmailWrap" style="display:none">
+        <label class="cmp-email-label" for="cmpRecipientEmail">Recipient's email</label>
+        <input type="email" id="cmpRecipientEmail" class="cmp-email-input"
+               placeholder="friend@example.com" autocomplete="email" inputmode="email">
+        <p class="cmp-email-note">They receive an email from Demian and get immediate access. Nothing is charged to them, now or later.</p>
+        <button class="cmp-manage-btn" style="margin-top:12px" onclick="doGiftSend()">Send the gift →</button>
+      </div>
+      <p class="cmp-panel-note" id="cmpGiftNote" style="display:none"></p>`;
+    cmpGiftType = null;
+    return;
+  }
 }
 
-function updateAutoRenewNotice() {
-  const el = document.getElementById('billAutoRenewNotice');
-  if (!el) return;
-  const plan = BILLING_PLANS.find(p => p.id === selectedBilling);
-  if (plan && plan.kind === 'sub') {
-    const amt   = plan.id === 'annual' ? '€47.50 per year' : '€6.99 per month';
-    const period = plan.id === 'annual' ? 'year' : 'month';
-    el.textContent = `Auto-renews at ${amt}. Cancel anytime — you keep access until the end of the ${period} you paid for.`;
-    el.style.display = '';
+function cmpGiftChoose(type) {
+  cmpGiftType = type;
+  // Highlight chosen button
+  document.querySelectorAll('.cmp-gift-btn').forEach((el, i) => {
+    el.style.borderColor = (i === 0 && type === 'payg') || (i === 1 && type === 'annual')
+      ? '#6864bb' : '#2c2a52';
+    el.style.background = (i === 0 && type === 'payg') || (i === 1 && type === 'annual')
+      ? '#231f4c' : '#1a1838';
+  });
+
+  const emailWrap = document.getElementById('cmpGiftEmailWrap');
+  const noteEl    = document.getElementById('cmpGiftNote');
+
+  if (type === 'payg') {
+    // Pay-as-you-go gift: direct link, no email needed on our side —
+    // the recipient gets a code via the existing mantra-style gift system.
+    if (emailWrap) emailWrap.style.display = 'none';
+    if (noteEl) {
+      noteEl.textContent = 'You will be sent a gift code to pass on. The recipient redeems it when they open Demian.';
+      noteEl.style.display = '';
+    }
   } else {
-    el.textContent = '';
-    el.style.display = 'none';
+    // Annual gift: recipient email required so we can activate their account.
+    if (emailWrap) emailWrap.style.display = '';
+    if (noteEl) noteEl.style.display = 'none';
   }
 }
+
+function buySub(period) {
+  window.open(SANCTUARY_LINKS[period], '_blank');
+}
+
+function doGiftSend() {
+  if (cmpGiftType === 'payg') {
+    // Campfire gift: reuse existing code-based flow
+    window.open(SERVICE_LINKS.campfire + '?gift=1', '_blank');
+    return;
+  }
+  // Annual sanctuary gift: validate email, then open Stripe
+  const input = document.getElementById('cmpRecipientEmail');
+  const email = (input?.value || '').trim().toLowerCase();
+  if (!email || !email.includes('@')) {
+    if (input) {
+      input.focus();
+      input.classList.add('input-error');
+      setTimeout(() => input.classList.remove('input-error'), 1800);
+    }
+    return;
+  }
+  const giftLink = 'https://buy.stripe.com/REPLACE_ME_GIFT_SANCTUARY';
+  window.open(`${giftLink}?prefill_field_key[0]=recipient_email&prefill_field_value[0]=${encodeURIComponent(email)}`, '_blank');
+}
+
+function renderCompanion() {
+  const bar        = document.getElementById('cmpBar');
+  const panel      = document.getElementById('cmpPanel');
+  const swBtns     = document.getElementById('swBtns');
+  const blockedNote= document.getElementById('swBlockedNote');
+  if (!bar) return;
+
+  // Hide legacy button row
+  if (swBtns) swBtns.style.display = 'none';
+
+  // ── Already subscribed or gifted ──────────────────────────────
+  if (hasSanctuary) {
+    bar.style.display = 'none';
+    if (panel) { panel.style.display = 'none'; panel.innerHTML = ''; }
+
+    // Remove any old active-wrap before inserting
+    const old = document.getElementById('cmpActiveWrap');
+    if (old) old.remove();
+
+    let msg = 'Your Sanctuary is active. Unlimited exchanges, no counter.';
+    if (isGifted) {
+      const until = giftedUntil
+        ? new Date(giftedUntil * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+        : null;
+      msg = `You have a gifted year of Sanctuary.${until ? ' Unlimited access until <strong>' + until + '</strong>.' : ''} Nothing will be charged when it ends.`;
+    } else if (subscriptionStatus === 'canceled' && subscriptionPeriodEnd) {
+      const until = new Date(subscriptionPeriodEnd * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      msg = `Your subscription is cancelled. You keep full access until ${until}.`;
+    } else if (subscriptionStatus === 'past_due') {
+      msg = 'There is a payment issue. Your access continues while we retry — you may want to update your card.';
+    }
+    const wrap = document.createElement('div');
+    wrap.id = 'cmpActiveWrap';
+    wrap.className = 'cmp-active-wrap';
+    wrap.innerHTML = `<div>${msg}</div>` +
+      ((messagesBalance || 0) > 0
+        ? `<div class="cmp-active-sub">Your ${messagesBalance} pay-as-you-go exchanges are untouched and waiting. They never expire.</div>`
+        : '') +
+      (!isGifted ? `<button class="cmp-manage-btn" onclick="window.open(portalUrl||'${STRIPE_PORTAL_FALLBACK}','_blank')">Manage subscription</button>` : '');
+    const footer = document.getElementById('swFooter');
+    if (footer) footer.insertBefore(wrap, footer.firstChild);
+    if (blockedNote) { blockedNote.style.display = 'none'; }
+    return;
+  }
+
+  // ── Not subscribed: show the 3-column bar ─────────────────────
+  bar.style.display = 'flex';
+  if (blockedNote) blockedNote.style.display = 'none';
+  if (!cmpMode) cmpSelect('payg');
+  else          cmpSelect(cmpMode); // re-render current selection
+}
+
+
 
 
 
@@ -4258,14 +4472,21 @@ function openServiceWindow(key) {
   const swBtnsEl = document.getElementById('swBtns');
   const blockedNote = document.getElementById('swBlockedNote');
   const mantraBlocked = (key === 'mantra' && !canBuyMantra);
-  // Companion is the only tier with a billing choice. renderBilling() handles
-  // both the "choose a plan" and the "already subscribed" states.
-  const billEl = document.getElementById('swBilling');
+  // Route companion vs everything else
+  const cmpBarEl = document.getElementById('cmpBar');
+  const swBtnsEl2 = document.getElementById('swBtns');
   if (key === 'companion') {
-    renderBilling();
-  } else if (billEl) {
-    billEl.style.display = 'none';
-    billEl.innerHTML = '';
+    // Remove stale active-wrap from a previous open
+    const old = document.getElementById('cmpActiveWrap');
+    if (old) old.remove();
+    if (swBtnsEl2) swBtnsEl2.style.display = 'none';
+    renderCompanion();
+  } else {
+    // Non-companion: hide the 3-col bar, show legacy buttons
+    if (cmpBarEl) cmpBarEl.style.display = 'none';
+    const cmpPanel2 = document.getElementById('cmpPanel');
+    if (cmpPanel2) { cmpPanel2.style.display = 'none'; cmpPanel2.innerHTML = ''; }
+    if (swBtnsEl2) swBtnsEl2.style.display = '';
   }
 
   if (mantraBlocked) {
@@ -4276,21 +4497,10 @@ function openServiceWindow(key) {
   } else {
     swBtnsEl.classList.remove('gift-priority');
     const getBtn = document.getElementById('swBtnGet');
-    if (key === 'companion') {
-      if (hasSanctuary) {
-        getBtn.textContent = 'Manage subscription';
-        getBtn.title = subscriptionStatus === 'past_due'
-          ? 'Payment issue — please update your card.'
-          : 'Active subscription.';
-      } else {
-        // renderBilling() -> selectBilling() already set the CTA to match the
-        // selected plan; don't overwrite it here.
-        getBtn.title = '';
-      }
-    } else {
+    if (key !== 'companion') {
       getBtn.textContent = s.btnLabel + ' €' + s.price;
     }
-    getBtn.title = getBtn.title || '';
+    getBtn.title = '';
   }
   blockedNote.style.display = 'none';
   blockedNote.textContent = '';
@@ -4321,47 +4531,12 @@ function purchaseService() {
   // "Manage subscription" and sends the user to Stripe's hosted portal —
   // cancellation, card updates and invoices all live there, so we build none
   // of it ourselves.
-  // Companion: one product, three ways to pay. Route by the selected billing
-  // option, not by the service key.
+  // Companion: handled entirely by cmpSelect / buySub / doGiftSend.
+  // purchaseService() is now only called from the legacy mantra button.
   if (currentService === 'companion') {
-    if (hasSanctuary) {
-      // Nothing to sell — send them to Stripe's portal to manage what they have.
-      window.open(portalUrl || STRIPE_PORTAL_FALLBACK, '_blank');
-      return;
-    }
-    const plan = BILLING_PLANS.find(p => p.id === selectedBilling);
-    if (!plan) return;
-
-    if (plan.kind === 'gift') {
-      // Gift: validate the recipient email first, then append it as a query
-      // parameter so Stripe can pre-fill the custom field we added to the link.
-      // The real enforcement is in Stripe's custom field + our webhook handler
-      // (which reads stripeSession.custom_fields). The ?prefill_email= param is
-      // just a UX convenience — not a security mechanism.
-      const recipientInput = document.getElementById('giftRecipientEmail');
-      const recipientEmail = (recipientInput?.value || '').trim().toLowerCase();
-      if (!recipientEmail || !recipientEmail.includes('@')) {
-        if (recipientInput) {
-          recipientInput.focus();
-          recipientInput.classList.add('input-error');
-          setTimeout(() => recipientInput.classList.remove('input-error'), 1800);
-        }
-        return;
-      }
-      // ⚠️ REPLACE: paste the gift Sanctuary payment link here.
-      // Must be the PLINK_GIFT_SANCTUARY_REPLACE_ME link from index.js — a
-      // ONE-OFF €47.50 Payment Link with a custom field keyed 'recipient_email'.
-      const giftLink = 'https://buy.stripe.com/REPLACE_ME_GIFT_SANCTUARY';
-      window.open(`${giftLink}?prefill_field_key[0]=recipient_email&prefill_field_value[0]=${encodeURIComponent(recipientEmail)}`, '_blank');
-      return;
-    }
-
-    if (plan.kind === 'sub') {
-      window.open(SANCTUARY_LINKS[plan.id], '_blank');
-      return;
-    }
-    // pay-as-you-go (campfire)
-    window.open(SERVICE_LINKS.campfire, '_blank');
+    if (cmpMode === 'payg')  { window.open(SERVICE_LINKS.campfire, '_blank'); return; }
+    if (cmpMode === 'sub')   { /* panel handles sub buttons */                return; }
+    if (cmpMode === 'gift')  { /* panel handles gift buttons */               return; }
     return;
   }
   window.open(SERVICE_LINKS[currentService], '_blank');
@@ -4373,17 +4548,10 @@ const STRIPE_PORTAL_FALLBACK = 'https://billing.stripe.com/p/login/REPLACE_ME';
 function giftService() {
   if (!currentService) return;
   if (currentService === 'companion') {
-    // Gifting = annual gift plan. Select it so the cards update and the
-    // recipient-email input appears, then scroll to it.
-    selectBilling('gift');
-    updateAutoRenewNotice();
-    setTimeout(() => {
-      const el = document.getElementById('giftRecipientEmail');
-      if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); }
-    }, 120);
+    cmpSelect('gift');
     return;
   }
-  // Mantra: old code-based gift still applies
+  // Mantra: existing code-based gift
   const link = SERVICE_LINKS[currentService];
   if (!link) return;
   window.open(link + '?gift=1', '_blank');
