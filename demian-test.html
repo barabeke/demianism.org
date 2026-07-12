@@ -2344,8 +2344,15 @@ function autolinkText(html) {
   });
   html = container.innerHTML;
 
-  // Strip "mailto:" prefix from visible label of mailto links.
+  // Strip "mailto:" prefix from visible label of mailto links already wrapped in <a>.
   html = html.replace(/>mailto:([^<]+)</g, (_, email) => '>' + email + '<');
+
+  // Convert bare "mailto:address" text nodes (written by Demian, not yet linked)
+  // into proper links showing only the address — no "mailto:" prefix visible.
+  html = html.replace(
+    /(?<![="'\w])mailto:([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})(?![^<]*>)/g,
+    (_, email) => '<a href="mailto:' + email + '" style="color:var(--text-link)">' + email + '</a>'
+  );
 
   // Make bare email addresses clickable.
   html = html.replace(/(?<![="@\w\/])\b([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})\b(?![^<]*>)/g,
