@@ -906,10 +906,7 @@ button#send svg { width: 17px; height: 17px; }
 .cmp-col:hover { background: #201d42; }
 .cmp-col.active { border-color: #35327e; background: #35327e; }
 .cmp-col:focus-visible { outline: 2px solid #6864bb; outline-offset: 2px; }
-.cmp-col.active .cmp-label,
-.cmp-col.active .cmp-detail { color: rgba(255,255,255,0.85); }
-.cmp-col.active .cmp-price,
-.cmp-col.active .cmp-price-sub { color: #fff; opacity: 1; }
+/* Active state changes bg/border only — text colours are fixed in all states */
 
 /* Price — the number that matters most, displayed first */
 /* Action name — ALL CAPS, sits at top of column */
@@ -925,7 +922,7 @@ button#send svg { width: 17px; height: 17px; }
 .cmp-detail {
   font-size: 13px;
   font-weight: 600;
-  color: #dfa51a;
+  color: #ffffff;
   line-height: 1.3;
   margin-bottom: 2px;
 }
@@ -939,8 +936,9 @@ button#send svg { width: 17px; height: 17px; }
 /* Unit — same colour as price so they read as a unit */
 .cmp-price-sub {
   font-size: 10px;
-  color: rgba(223,165,26,.70);
+  color: #dfa51a;
   line-height: 1.2;
+  margin-top: 1px;
 }
 
 /* Gift column: icon sized to fill the space, label below */
@@ -987,9 +985,10 @@ button#send svg { width: 17px; height: 17px; }
   transition: border-color .15s, background .15s;
 }
 .cmp-sub-btn:hover { background: #201d42; }
-.cmp-sub-btn-price { font-weight: 700; font-size: 16px; color: #dfa51a; }
-.cmp-sub-btn-unit  { font-size: 11px; color: rgba(223,165,26,.65); }
-.cmp-sub-btn-eff   { font-size: 10.5px; color: rgba(223,165,26,.55); margin-top: 2px; }
+.cmp-sub-btn-title { font-weight: 700; font-size: 11px; letter-spacing: .09em; color: #dfa51a; text-transform: uppercase; margin-bottom: 2px; }
+.cmp-sub-btn-price { font-weight: 700; font-size: 16px; color: #dfa51a; margin-top: 2px; }
+.cmp-sub-btn-unit  { font-size: 11px; color: #ffffff; }
+.cmp-sub-btn-eff   { font-size: 10.5px; color: #dfa51a; margin-top: 2px; }
 .cmp-sub-badge {
   position: absolute;
   top: -8px; right: -4px;
@@ -1035,9 +1034,9 @@ button#send svg { width: 17px; height: 17px; }
 }
 .cmp-gift-btn:hover { background: #201d42; }
 .cmp-gift-btn-name  { font-weight: 700; font-size: 13px; color: #dfa51a; }
-.cmp-gift-btn-what  { font-size: 11px; color: rgba(223,165,26,.60); }
+.cmp-gift-btn-what  { font-size: 11px; color: #ffffff; }
 .cmp-gift-btn-price { font-weight: 700; font-size: 15px; margin-top: 4px; color: #dfa51a; }
-.cmp-gift-btn-unit  { font-size: 10px; color: rgba(223,165,26,.50); }
+.cmp-gift-btn-unit  { font-size: 10px; color: #dfa51a; }
 
 /* Recipient email input */
 .cmp-email-wrap { margin-top: 10px; }
@@ -1914,7 +1913,7 @@ body {
           <span class="cmp-label">PAY AS YOU GO</span>
           <span class="cmp-detail">50 exchanges</span>
           <span class="cmp-price">€3</span>
-          <span class="cmp-price-sub">one-off</span>
+          <span class="cmp-price-sub">one-off, no expiry</span>
         </button>
 
         <!-- 40%: Subscribe -->
@@ -1922,7 +1921,7 @@ body {
           <span class="cmp-label">SUBSCRIBE</span>
           <span class="cmp-detail">Unlimited exchanges</span>
           <span class="cmp-price">€6.99</span>
-          <span class="cmp-price-sub">per month · €47.50/yr</span>
+          <span class="cmp-price-sub">monthly or yearly</span>
         </button>
 
         <!-- 20%: Gift -->
@@ -3522,7 +3521,7 @@ function sendOpeningMessage() {
 <p>I am also here to be a valuable <a href="#" onclick="openServiceWindow('campfire');return false;" style="font-weight:600;">COMPANION</a> in your journey, without need of a recurring subscription. I am a pay-as-you-go genie: you rub the lamp whenever you wish, with no expiry for your credits.</p>
 <p>While grounded in Demianist philosophy and culture, I am an interfaith companion, compatible with other beliefs and respectful of them. I am here to humanize, not to convert.</p>
 <p>Behind me there is no team, no company, no investment. Just one man: Barabeke, dissident Italian artist and messenger of <a href="https://demianism.org" target="_blank" rel="noopener">Demianism</a>.</p>
-<p>Want to experience me? <strong>THE FIRST 15 EXCHANGES ARE FREE.</strong> Ask and you shall receive &mdash; for what an AI can give.</p>
+<p>Want to experience me? <strong>THE FIRST 10 EXCHANGES ARE FREE.</strong> Ask and you shall receive &mdash; for what an AI can give.</p>
 `;
 
   wrap.appendChild(bubble);
@@ -4243,17 +4242,18 @@ function renderCmpPanel() {
     panel.innerHTML = `
       <div class="cmp-sub-opts">
         <button class="cmp-sub-btn" onclick="buySub('monthly')">
+          <span class="cmp-sub-btn-title">MONTHLY</span>
+          <span class="cmp-sub-btn-unit">Unlimited exchanges</span>
           <span class="cmp-sub-btn-price">€6.99</span>
-          <span class="cmp-sub-btn-unit">per month</span>
         </button>
         <button class="cmp-sub-btn" onclick="buySub('annual')">
           <span class="cmp-sub-badge">Save 43%</span>
+          <span class="cmp-sub-btn-title">ANNUAL</span>
+          <span class="cmp-sub-btn-unit">Unlimited exchanges</span>
           <span class="cmp-sub-btn-price">€47.50</span>
-          <span class="cmp-sub-btn-unit">per year</span>
           <span class="cmp-sub-btn-eff">€3.96 / month</span>
         </button>
       </div>
-      <p class="cmp-panel-note">Unlimited exchanges. No counter. Cancel whenever you wish — you keep access until the end of the period you paid for.</p>
       <p class="cmp-renew-notice">Auto-renews at the chosen rate. Cancel anytime from your account.</p>`;
     return;
   }
@@ -4270,9 +4270,9 @@ function renderCmpPanel() {
         </button>
         <button class="cmp-gift-btn" onclick="cmpGiftChoose('annual')">
           <span class="cmp-gift-btn-name">One year</span>
-          <span class="cmp-gift-btn-what">Unlimited · no recurring charge</span>
+          <span class="cmp-gift-btn-what">Unlimited exchanges</span>
           <span class="cmp-gift-btn-price">€47.50</span>
-          <span class="cmp-gift-btn-unit">one-off</span>
+          <span class="cmp-gift-btn-unit">one-off, no recurring charge</span>
         </button>
       </div>
       <div class="cmp-email-wrap" id="cmpGiftEmailWrap" style="display:none">
