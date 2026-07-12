@@ -871,14 +871,151 @@ button#send svg { width: 17px; height: 17px; }
 .sw-shout { font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#fff; margin:0 0 2px; }
 .sw-shout-sub { font-family:'Libre Baskerville',serif; font-size:14px; color:var(--text-body); line-height:1.6; margin:0; }
 .sw-footer { flex-shrink:0; padding:16px 28px 22px; background:#12103a; }
-/* ── Sanctuary billing toggle (monthly / annual) ── */
-.sw-billing { display:flex; gap:10px; margin-bottom:14px; }
-.sw-bill-opt { position:relative; flex:1; padding:12px 10px; background:#1a1838; border:1.5px solid #2c2a52; border-radius:10px; font-family:'Inter',sans-serif; color:#cfcfd4; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:2px; transition:border-color .15s, background .15s; }
-.sw-bill-opt:hover { background:#201d42; }
-.sw-bill-opt.sel { border-color:#6864bb; background:#231f4c; }
-.sw-bill-price { font-weight:700; font-size:16px; }
-.sw-bill-per { font-size:11px; color:rgba(255,255,255,0.5); }
-.sw-bill-save { position:absolute; top:-8px; right:-4px; background:#dfa51a; color:#000; font-size:9px; font-weight:700; padding:2px 6px; border-radius:6px; letter-spacing:.03em; }
+/* ── Companion billing selector (pay-as-you-go / monthly / yearly) ──
+   Vertical stacked cards at ALL widths. Deliberate: a horizontal 3-up row
+   forces the price, the unit and the differentiator into ~90px columns, which
+   is unreadable on a phone and cramped even on a laptop. Stacked rows give
+   each option a full line — name + what you get on the left, price on the
+   right, differentiator badge below — and read identically at 380px and
+   1400px, so there is no separate mobile layout to keep in sync. */
+.sw-billing { margin-bottom: 16px; }
+.bill-cards { display:flex; flex-direction:column; gap:9px; }
+.bill-card {
+  position:relative; width:100%; box-sizing:border-box;
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center;
+  column-gap:11px; row-gap:6px;
+  padding:13px 14px;
+  background:#1a1838; border:1.5px solid #2c2a52; border-radius:11px;
+  font-family:'Inter',sans-serif; color:#cfcfd4; text-align:left;
+  cursor:pointer; transition:border-color .15s, background .15s;
+}
+.bill-card:hover { background:#201d42; }
+.bill-card.sel { border-color:#6864bb; background:#231f4c; }
+.bill-card:focus-visible { outline:2px solid #6864bb; outline-offset:2px; }
+
+/* Radio affordance — makes it unmistakable that these are mutually exclusive
+   choices, not three separate buy buttons. */
+.bill-radio {
+  width:16px; height:16px; border-radius:50%;
+  border:1.5px solid #4a4780; background:transparent;
+  flex:0 0 auto; transition:border-color .15s, box-shadow .15s;
+}
+.bill-card.sel .bill-radio {
+  border-color:#6864bb;
+  box-shadow: inset 0 0 0 4px #6864bb;
+}
+
+.bill-main { display:flex; flex-direction:column; gap:1px; min-width:0; }
+.bill-name { font-weight:700; font-size:14px; line-height:1.3; }
+.bill-headline { font-size:12px; color:rgba(255,255,255,0.55); line-height:1.3; }
+
+.bill-right { display:flex; flex-direction:column; align-items:flex-end; gap:1px; white-space:nowrap; }
+.bill-price { font-weight:700; font-size:16px; line-height:1.2; }
+.bill-unit { font-size:10.5px; color:rgba(255,255,255,0.45); line-height:1.2; }
+
+/* The decisive fact, on its own line spanning the card so it can never be
+   truncated: "Never expire" for pay-as-you-go, "No counter" for the
+   subscriptions, "€3.96/month" for the annual. */
+.bill-highlight {
+  grid-column:2 / -1;
+  justify-self:start;
+  font-size:11px; font-weight:600; letter-spacing:.02em;
+  color:#dfa51a;
+  background:rgba(223,165,26,0.10);
+  border:1px solid rgba(223,165,26,0.28);
+  padding:2.5px 8px; border-radius:20px;
+}
+.bill-badge {
+  position:absolute; top:-7px; right:10px;
+  background:#dfa51a; color:#000;
+  font-size:9px; font-weight:700; letter-spacing:.03em;
+  padding:2px 7px; border-radius:6px;
+}
+/* Fuller explanation of the SELECTED option. Sits below the cards so the cards
+   stay scannable while the detail is always visible — never a tooltip, never
+   hidden behind a tap. */
+.bill-note {
+  margin-top:11px; padding:10px 12px;
+  background:rgba(104,100,187,0.08);
+  border-left:2px solid #6864bb; border-radius:0 8px 8px 0;
+  font-family:'Inter',sans-serif; font-size:12.5px; line-height:1.55;
+  color:rgba(255,255,255,0.68);
+}
+/* Already-subscribed state — no choice to make. */
+.bill-active {
+  padding:13px 14px; background:#231f4c;
+  border:1.5px solid #6864bb; border-radius:11px;
+  font-family:'Inter',sans-serif; font-size:13px; line-height:1.55; color:#cfcfd4;
+}
+.bill-active-sub {
+  margin-top:9px; padding-top:9px;
+  border-top:1px solid rgba(255,255,255,0.10);
+  font-size:12px; color:rgba(255,255,255,0.60);
+}
+/* ── Gift separator ── */
+.bill-gift-sep {
+  display:flex; align-items:center; gap:10px;
+  margin:14px 0 10px; color:rgba(255,255,255,0.25); font-size:12px;
+}
+.bill-gift-sep::before, .bill-gift-sep::after {
+  content:''; flex:1; height:1px; background:rgba(255,255,255,0.10);
+}
+/* Gift card: same grid as regular cards but subtler base style to visually
+   de-emphasise it as the secondary action (the three regular plans are the
+   primary choice; the gift is the "or" path). Selected state still gets
+   the full purple ring so selection is unambiguous. */
+.bill-gift-card {
+  background:#141230; border-color:#221f40;
+}
+.bill-gift-card:hover { background:#1a1838; }
+.bill-gift-card.sel { border-color:#6864bb; background:#231f4c; }
+
+/* Recipient email input — appears inline below the gift card when it's
+   selected, so the flow stays in one place rather than opening a modal. */
+.gift-input-wrap {
+  margin-top:10px; padding:12px 14px;
+  background:#0e0c28; border:1.5px solid #2c2a52; border-radius:10px;
+}
+.gift-input-label {
+  display:block; font-family:'Inter',sans-serif;
+  font-size:11px; font-weight:600; letter-spacing:.05em;
+  color:rgba(255,255,255,0.45); text-transform:uppercase; margin-bottom:7px;
+}
+.gift-input {
+  display:block; width:100%; box-sizing:border-box;
+  padding:10px 12px;
+  background:#1a1838; border:1.5px solid #2c2a52; border-radius:8px;
+  font-family:'Inter',sans-serif; font-size:14px; color:#cfcfd4;
+  outline:none; transition:border-color .15s;
+}
+.gift-input::placeholder { color:rgba(255,255,255,0.25); }
+.gift-input:focus { border-color:#6864bb; }
+.gift-input.input-error { border-color:#c0392b; animation:shake .25s; }
+@keyframes shake {
+  0%,100% { transform:translateX(0); }
+  25%      { transform:translateX(-5px); }
+  75%      { transform:translateX(5px); }
+}
+.gift-input-note {
+  margin:8px 0 0; font-family:'Inter',sans-serif;
+  font-size:11.5px; line-height:1.55; color:rgba(255,255,255,0.38);
+}
+
+/* Auto-renewal legal notice — must be legible but not competing with the CTA.
+   Shown only for subscription plans; hidden for pay-as-you-go and gift. */
+.bill-auto-renew-notice {
+  margin:10px 0 0; font-family:'Inter',sans-serif;
+  font-size:11px; line-height:1.5; color:rgba(255,255,255,0.35);
+  text-align:center;
+}
+
+@media (max-width:480px) {
+  .bill-card { padding:12px; column-gap:9px; }
+  .bill-name { font-size:13.5px; }
+  .bill-price { font-size:15px; }
+  .bill-note { font-size:12px; }
+  .gift-input { font-size:16px; } /* prevent iOS auto-zoom on focus */
+}
 .sw-btns { display:flex; gap:12px; }
 .sw-btn-primary { flex:0 0 72%; padding:14px; background:#35327e; border:none; border-radius:10px; font-family:'Inter',sans-serif; font-weight:700; font-size:15px; color:#cfcfd4; cursor:pointer; transition:background 0.15s; }
 .sw-btn-primary:hover { background:#3f3c90; }
@@ -1109,8 +1246,7 @@ button#send svg { width: 17px; height: 17px; }
   pointer-events: none;
 }
 .sb-item-active[data-service="mantra"] .sb-icon-service::after { border-color: #31a117; }
-.sb-item-active[data-service="campfire"] .sb-icon-service::after,
-.sb-item-active[data-service="sanctuary"] .sb-icon-service::after { border-color: #dfa51a; }
+.sb-item-active[data-service="companion"] .sb-icon-service::after { border-color: #dfa51a; }
 
 .sb-label { display: none; }
 .sidebar.open .sb-label { display: inline; }
@@ -1563,16 +1699,10 @@ body {
       <span class="sb-tooltip" id="sbTooltipMantra">Mantra</span>
     </button>
 
-    <button class="sb-item" data-service="campfire" id="sbItemCampfire" onclick="openServiceWindow('campfire', this)">
-      <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="ccampfire"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#ccampfire)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg></span>
-      <span class="sb-label">Campfire<span class="sb-active-tag" id="sbActiveTagCampfire"></span></span>
-      <span class="sb-tooltip" id="sbTooltipCampfire">Campfire</span>
-    </button>
-
-    <button class="sb-item" data-service="sanctuary" id="sbItemSanctuary" onclick="openServiceWindow('sanctuary', this)">
-      <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="csanctuary"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#csanctuary)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg></span>
-      <span class="sb-label">Sanctuary<span class="sb-active-tag" id="sbActiveTagSanctuary"></span></span>
-      <span class="sb-tooltip" id="sbTooltipSanctuary">Sanctuary</span>
+    <button class="sb-item" data-service="companion" id="sbItemCompanion" onclick="openServiceWindow('companion', this)">
+      <span class="sb-icon sb-icon-service"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="ccompanion"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#ccompanion)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg></span>
+      <span class="sb-label">Companion<span class="sb-active-tag" id="sbActiveTagCompanion"></span></span>
+      <span class="sb-tooltip" id="sbTooltipCompanion">Companion</span>
     </button>
 
 
@@ -1800,6 +1930,8 @@ let messagesBalance = 0;
 let hasSanctuary = false;
 let subscriptionStatus = null;
 let subscriptionPeriodEnd = null;
+let isGifted = false;     // true = Sanctuary via gift, not subscription
+let giftedUntil = null;   // Unix timestamp of gift expiry
 let portalUrl = null;
 let canBuyMantra = true; // updated from /auth/me; defaults true for logged-out/new visitors
 let giftCredits = { mantra: 0, campfire: 0, sanctuary: 0 };
@@ -1844,7 +1976,12 @@ function updateCounter() {
   updateActivePlanUI();
 }
 
-const SERVICE_LABELS = { mantra: 'Mantra', campfire: 'Campfire', sanctuary: 'Sanctuary' };
+// PRESENTATION keys, not backend tiers. Campfire and Sanctuary are the same
+// product (the companion) under two billing arrangements, so the UI shows ONE
+// 'companion' entry. The backend tiers stay 'campfire' / 'sanctuary' untouched.
+const SERVICE_LABELS = { mantra: 'Mantra', companion: 'Companion' };
+// Maps a backend tier -> the sidebar entry that represents it.
+const TIER_TO_SERVICE = { mantra: 'mantra', campfire: 'companion', sanctuary: 'companion' };
 
 /* ── Service window system (Mantra / Campfire / Sanctuary) ──
    Declared here (not down near openServiceWindow) because the mode switcher,
@@ -1876,19 +2013,18 @@ const SERVICES = {
     shoutSub: 'Chat with Demian whenever you wish.',
     btnLabel: 'Get yours for'
   },
-  campfire: {
-    name: 'Campfire',
-    count: 50,
-    price: 3,
-    subscription: false,
+  // ONE product, THREE billing arrangements. The user is not choosing between
+  // two experiences — they are choosing how to pay for the same one. Hence a
+  // single window with a billing selector, not two competing windows.
+  companion: {
+    name: 'Companion',
     accent: '#dfa51a',
-    heroImg: 'campfire-hero.png',
-    heroGrad: 'radial-gradient(120% 130% at 0% 100%, #0c0a28 0%, #0c0a28 30%, rgba(12,10,40,0.7) 55%, rgba(12,10,40,0.15) 80%, rgba(12,10,40,0) 100%)',
-    heroFallback: 'linear-gradient(125deg, #2a1855 0%, #1f1545 45%, #160f33 100%)',
+    heroImg: 'sanctuary-hero.png',
+    heroGrad: 'radial-gradient(120% 130% at 0% 100%, #0a0f1a 0%, #0a0f1a 30%, rgba(10,15,26,0.7) 55%, rgba(10,15,26,0.15) 80%, rgba(10,15,26,0) 100%)',
+    heroFallback: 'linear-gradient(125deg, #1a2540 0%, #141d33 45%, #0a0f1f 100%)',
     badge: null,
-    desc: 'Pay as you go. Fifty exchanges with Demian, yours to spend whenever you wish. No subscription, no expiry.',
+    desc: 'Demian as a full spiritual companion: vocation, meaning, love, grief, decisions — the whole texture of a life. Choose how you wish to pay for it.',
     features: [
-      '50 exchanges. They never expire — return whenever you wish.',
       'Designed to help you move forward in the direction that is more true to you.',
       'Not made to please, but to serve as an honest mirror. For those who seek growth, not just comfort.',
       'Grounded in Demianist philosophy but compatible with other beliefs and respectful of them.',
@@ -1896,31 +2032,7 @@ const SERVICES = {
       'Open new chats with optional memory preservation.'
     ],
     closing: null,
-    shoutSub: 'Rub the lamp whenever you wish. No recurring charge.',
-    btnLabel: 'Get for'
-  },
-  sanctuary: {
-    name: 'Sanctuary',
-    count: null,          // unlimited — no counter, ever
-    price: 6.99,          // monthly
-    priceAnnual: 47.50,   // annual (~€3.96/mo)
-    subscription: true,
-    accent: '#dfa51a',
-    heroImg: 'sanctuary-hero.png',
-    heroGrad: 'radial-gradient(120% 130% at 0% 100%, #0a0f1a 0%, #0a0f1a 30%, rgba(10,15,26,0.7) 55%, rgba(10,15,26,0.15) 80%, rgba(10,15,26,0) 100%)',
-    heroFallback: 'linear-gradient(125deg, #1a2540 0%, #141d33 45%, #0a0f1f 100%)',
-    desc: 'Live here. Unlimited exchanges with Demian, for those who have made this part of their life.',
-    features: [
-      'Unlimited exchanges. No counter, no rationing, no watching a number fall.',
-      'Designed to help you move forward in the direction that is more true to you.',
-      'Not made to please, but to serve as an honest mirror. For those who seek growth, not just comfort.',
-      'Grounded in Demianist philosophy but compatible with other beliefs and respectful of them.',
-      'Acting within strict ethical limits. No therapy, no medical advice, no replacement for professional care.',
-      'Open new chats with optional memory preservation.'
-    ],
-    closing: 'Cancel whenever you wish — you keep access until the period you paid for has ended.',
-    shoutSub: 'Unlimited. The lamp stays lit.',
-    btnLabel: 'Subscribe for'
+    shoutSub: 'Chat with Demian whenever you wish.',
   }
 };
 
@@ -1938,19 +2050,20 @@ function updateActivePlanUI() {
   // remaining balance/access. A depleted balance with no mantra session
   // active means nothing is "active" right now, even if userTier is set
   // from a past purchase.
+  // activeKey is a PRESENTATION key ('mantra' | 'companion'), not a backend
+  // tier — both campfire and sanctuary light up the single Companion entry.
   let activeKey = null;
   if (mantraUnlocked) {
     activeKey = 'mantra';
   } else if (hasSanctuary) {
-    // Authoritative, and checked BEFORE any balance test: a subscriber is
-    // active even with messagesBalance === 0, because a subscription has no
-    // balance. Testing balance first would show them as having no active plan.
-    activeKey = 'sanctuary';
+    // Checked BEFORE any balance test: a subscriber is active even with
+    // messagesBalance === 0, because a subscription has no balance at all.
+    activeKey = 'companion';
   } else if (userTier && (messagesBalance > 0 || canNewChat)) {
-    activeKey = userTier;
+    activeKey = TIER_TO_SERVICE[userTier] || null;
   }
 
-  ['mantra', 'campfire', 'sanctuary'].forEach(key => {
+  ['mantra', 'companion'].forEach(key => {
     const itemEl = document.getElementById('sbItem' + key.charAt(0).toUpperCase() + key.slice(1));
     const tagEl = document.getElementById('sbActiveTag' + key.charAt(0).toUpperCase() + key.slice(1));
     const tooltipEl = document.getElementById('sbTooltip' + key.charAt(0).toUpperCase() + key.slice(1));
@@ -2021,9 +2134,7 @@ function toggleModeSwitcherMenu(triggerEl) {
     html += `<hr class="ms-menu-divider">`;
   }
   html += `<div class="ms-menu-section-title">Premium companion mode</div>`;
-  html += itemHTML({ key: 'campfire', title: 'Campfire', desc: '50 exchanges · pay as you go' });
-  html += `<hr class="ms-menu-divider">`;
-  html += itemHTML({ key: 'sanctuary', title: 'Sanctuary', desc: 'Unlimited · subscription' });
+  html += itemHTML({ key: 'companion', title: 'Companion', desc: 'Pay as you go, or unlimited' });
 
   menu.innerHTML = html;
 
@@ -2198,6 +2309,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           hasSanctuary = d.hasSanctuary;
           subscriptionStatus = d.subscriptionStatus || null;
           subscriptionPeriodEnd = d.subscriptionPeriodEnd || null;
+          isGifted = d.isGifted || false;
+          giftedUntil = d.giftedUntil || null;
           portalUrl = d.portalUrl || portalUrl;
         }
         if (d.messagesBalance > 0 || d.mantraUnlocked || d.hasSanctuary) {
@@ -2384,6 +2497,8 @@ async function loadUser(opts) {
       hasSanctuary = data.hasSanctuary || false;
       subscriptionStatus = data.subscriptionStatus || null;
       subscriptionPeriodEnd = data.subscriptionPeriodEnd || null;
+      isGifted = data.isGifted || false;
+      giftedUntil = data.giftedUntil || null;
       portalUrl = data.portalUrl || portalUrl;
       mantraUnlocked = data.mantraUnlocked || false;
       canNewChat = data.canNewChat || false;
@@ -2650,6 +2765,8 @@ function signOut() {
   hasSanctuary = false;
   subscriptionStatus = null;
   subscriptionPeriodEnd = null;
+  isGifted = false;
+  giftedUntil = null;
   mantraUnlocked = false;
   canNewChat = false;
   isPaid = false;
@@ -3885,21 +4002,191 @@ const SERVICE_LINKS = {
   sanctuary: null
 };
 
-// Which Sanctuary billing period the user has selected in the service window.
-let sanctuaryBilling = 'monthly';
+// The three ways to pay for the SAME companion product. `tier` is the backend
+// tier this option actually buys — the UI never shows these names as products.
+const BILLING_PLANS = [
+  {
+    id: 'payg', tier: 'campfire', kind: 'oneoff',
+    name: 'Pay as you go',
+    price: 3, priceLabel: '€3', unit: 'one-off',
+    headline: '50 exchanges',
+    // The single most important line in this window. Without it, someone
+    // comparing €3 against €6.99/mo assumes the credits rot if unused, and
+    // the pressure to "use them up" pushes them away from buying at all.
+    highlight: 'Never expire',
+    note: 'No subscription. No commitment. Come back whenever you wish — your exchanges wait for you.',
+    badge: null,
+    cta: 'Get 50 exchanges for €3'
+  },
+  {
+    id: 'monthly', tier: 'sanctuary', kind: 'sub',
+    name: 'Monthly',
+    price: 6.99, priceLabel: '€6.99', unit: 'per month',
+    headline: 'Unlimited exchanges',
+    highlight: 'No counter',
+    note: 'Unlimited conversation, month to month. Cancel whenever you wish — you keep access until the end of the period you paid for.',
+    badge: null,
+    cta: 'Subscribe · €6.99/month'
+  },
+  {
+    id: 'annual', tier: 'sanctuary', kind: 'sub',
+    name: 'Yearly',
+    price: 47.50, priceLabel: '€47.50', unit: 'per year',
+    headline: 'Unlimited exchanges',
+    highlight: '€3.96/month',
+    note: 'The same unlimited access, paid once a year. Cancel whenever you wish — you keep access until the end of the year you paid for.',
+    badge: 'Save 43%',
+    cta: 'Subscribe · €47.50/year'
+  },
+  {
+    id: 'gift', tier: 'gift_sanctuary', kind: 'gift',
+    name: 'Gift a year',
+    price: 47.50, priceLabel: '€47.50', unit: 'one-off',
+    headline: '1 year · unlimited',
+    // No "Never expire" here — the whole point is that it *does* expire after
+    // one year, by design. What not to say: "subscription" (it isn't one for
+    // the recipient), "auto-renews" (it doesn't), "trial" (it's a full year).
+    highlight: 'For someone you care about',
+    note: 'You pay once. The recipient gets one full year of unlimited access. At the end of the year, nothing is charged — they simply decide if they want to continue on their own terms.',
+    badge: null,
+    cta: 'Continue to gift →'
+  }
+];
 
-function setSanctuaryBilling(period) {
-  sanctuaryBilling = period;
-  document.querySelectorAll('.sw-bill-opt').forEach(el => {
-    el.classList.toggle('sel', el.dataset.period === period);
+// Which billing option is currently selected in the Companion window.
+// Defaults to pay-as-you-go: the cheapest, lowest-commitment door. Someone who
+// isn't sure yet should not land on a subscription pre-selected.
+let selectedBilling = 'payg';
+
+function selectBilling(id) {
+  selectedBilling = id;
+  const plan = BILLING_PLANS.find(p => p.id === id);
+  document.querySelectorAll('.bill-card').forEach(el => {
+    const on = el.dataset.plan === id;
+    el.classList.toggle('sel', on);
+    el.setAttribute('aria-checked', on ? 'true' : 'false');
   });
+  const noteEl = document.getElementById('billNote');
+  if (noteEl && plan) noteEl.textContent = plan.note;
+
+  // Gift plan: show the recipient-email input; hide it for all other plans.
+  const giftInputWrap = document.getElementById('giftInputWrap');
+  if (giftInputWrap) giftInputWrap.style.display = id === 'gift' ? '' : 'none';
+
   const btn = document.getElementById('swBtnGet');
-  if (!btn || currentService !== 'sanctuary' || hasSanctuary) return;
-  const s = SERVICES.sanctuary;
-  btn.textContent = period === 'annual'
-    ? `Subscribe for €${s.priceAnnual.toFixed(2)}/year`
-    : `Subscribe for €${s.price.toFixed(2)}/month`;
+  if (btn && plan && !hasSanctuary) btn.textContent = plan.cta;
+  updateAutoRenewNotice();
 }
+
+function renderBilling() {
+  const wrap = document.getElementById('swBilling');
+  if (!wrap) return;
+
+  // ── Gifted state: no choice to make, no charge coming ──────────
+  if (isGifted) {
+    const expiryStr = giftedUntil
+      ? new Date(giftedUntil * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+      : null;
+    wrap.style.display = '';
+    wrap.innerHTML = `<div class="bill-active">
+      <div class="bill-active-msg">You have a gifted year of Sanctuary.${expiryStr ? ` Unlimited access until <strong>${expiryStr}</strong>.` : ''} Nothing will be charged when it ends — you simply decide then whether to continue.</div>
+      ${(messagesBalance || 0) > 0 ? `<div class="bill-active-sub">Your ${messagesBalance} pay-as-you-go exchanges are untouched and waiting. They do not expire.</div>` : ''}
+    </div>`;
+    return;
+  }
+
+  // ── Active subscription ─────────────────────────────────────────
+  if (hasSanctuary) {
+    const until = subscriptionPeriodEnd
+      ? new Date(subscriptionPeriodEnd * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+      : null;
+    let msg = 'Your Sanctuary subscription is active. Unlimited exchanges, no counter.';
+    if (subscriptionStatus === 'canceled' && until)
+      msg = `Your subscription is cancelled. You keep unlimited access until ${until}.`;
+    else if (subscriptionStatus === 'past_due')
+      msg = 'There is a payment issue with your subscription. Your access continues while we retry — you may want to update your card.';
+    wrap.style.display = '';
+    wrap.innerHTML = `<div class="bill-active">
+      <div class="bill-active-msg">${msg}</div>
+      ${(messagesBalance || 0) > 0 ? `<div class="bill-active-sub">Your ${messagesBalance} pay-as-you-go exchanges are untouched and waiting. They do not expire.</div>` : ''}
+    </div>`;
+    return;
+  }
+
+  // ── Not yet subscribed: show the three billing cards + gift ─────
+  wrap.style.display = '';
+  // Gift card is always last and visually separated
+  const regularPlans = BILLING_PLANS.filter(p => p.id !== 'gift');
+  const giftPlan     = BILLING_PLANS.find(p => p.id === 'gift');
+
+  wrap.innerHTML =
+    `<div class="bill-cards" role="radiogroup" aria-label="Choose how to pay">` +
+    regularPlans.map(p => `
+      <button type="button" class="bill-card${p.id === selectedBilling ? ' sel' : ''}"
+              data-plan="${p.id}" role="radio"
+              aria-checked="${p.id === selectedBilling ? 'true' : 'false'}"
+              onclick="selectBilling('${p.id}')">
+        ${p.badge ? `<span class="bill-badge">${p.badge}</span>` : ''}
+        <span class="bill-radio" aria-hidden="true"></span>
+        <span class="bill-main">
+          <span class="bill-name">${p.name}</span>
+          <span class="bill-headline">${p.headline}</span>
+        </span>
+        <span class="bill-right">
+          <span class="bill-price">${p.priceLabel}</span>
+          <span class="bill-unit">${p.unit}</span>
+        </span>
+        <span class="bill-highlight">${p.highlight}</span>
+      </button>`).join('') +
+    `</div>
+    <div class="bill-note" id="billNote"></div>` +
+    (giftPlan ? `
+    <div class="bill-gift-sep"><span>or</span></div>
+    <button type="button" class="bill-card bill-gift-card${selectedBilling === 'gift' ? ' sel' : ''}"
+            data-plan="gift" role="radio" aria-checked="${selectedBilling === 'gift' ? 'true' : 'false'}"
+            onclick="selectBilling('gift')">
+      <span class="bill-radio" aria-hidden="true"></span>
+      <span class="bill-main">
+        <span class="bill-name">${giftPlan.name}</span>
+        <span class="bill-headline">${giftPlan.headline}</span>
+      </span>
+      <span class="bill-right">
+        <span class="bill-price">${giftPlan.priceLabel}</span>
+        <span class="bill-unit">${giftPlan.unit}</span>
+      </span>
+      <span class="bill-highlight">${giftPlan.highlight}</span>
+    </button>
+    <div id="giftInputWrap" class="gift-input-wrap" style="display:${selectedBilling === 'gift' ? '' : 'none'}">
+      <label for="giftRecipientEmail" class="gift-input-label">Recipient's email address</label>
+      <input type="email" id="giftRecipientEmail" class="gift-input"
+             placeholder="friend@example.com"
+             autocomplete="email" inputmode="email">
+      <p class="gift-input-note">They will receive an email from Demian with instructions to open their gift. Their year starts the moment you complete the purchase.</p>
+    </div>` : '') +
+    `<p class="bill-auto-renew-notice" id="billAutoRenewNotice"></p>`;
+
+  selectBilling(selectedBilling);
+  // Show/hide the auto-renewal legal notice depending on selection.
+  // This must be visible at point of purchase — EU/US legal requirement.
+  updateAutoRenewNotice();
+}
+
+function updateAutoRenewNotice() {
+  const el = document.getElementById('billAutoRenewNotice');
+  if (!el) return;
+  const plan = BILLING_PLANS.find(p => p.id === selectedBilling);
+  if (plan && plan.kind === 'sub') {
+    const amt   = plan.id === 'annual' ? '€47.50 per year' : '€6.99 per month';
+    const period = plan.id === 'annual' ? 'year' : 'month';
+    el.textContent = `Auto-renews at ${amt}. Cancel anytime — you keep access until the end of the ${period} you paid for.`;
+    el.style.display = '';
+  } else {
+    el.textContent = '';
+    el.style.display = 'none';
+  }
+}
+
+
 
 let currentService = null;
 
@@ -3971,23 +4258,12 @@ function openServiceWindow(key) {
   const swBtnsEl = document.getElementById('swBtns');
   const blockedNote = document.getElementById('swBlockedNote');
   const mantraBlocked = (key === 'mantra' && !canBuyMantra);
-  // Sanctuary billing toggle (monthly / annual) — rendered only for the
-  // subscription tier, and hidden entirely once the user is subscribed
-  // (nothing to choose; the button becomes "Manage subscription").
+  // Companion is the only tier with a billing choice. renderBilling() handles
+  // both the "choose a plan" and the "already subscribed" states.
   const billEl = document.getElementById('swBilling');
-  if (key === 'sanctuary' && !hasSanctuary) {
-    const perMo = (s.priceAnnual / 12).toFixed(2);
-    billEl.style.display = '';
-    billEl.innerHTML =
-      `<button class="sw-bill-opt sel" data-period="monthly" onclick="setSanctuaryBilling('monthly')">
-         <span class="sw-bill-price">€${s.price.toFixed(2)}</span><span class="sw-bill-per">per month</span>
-       </button>
-       <button class="sw-bill-opt" data-period="annual" onclick="setSanctuaryBilling('annual')">
-         <span class="sw-bill-price">€${s.priceAnnual.toFixed(2)}</span><span class="sw-bill-per">per year · €${perMo}/mo</span>
-         <span class="sw-bill-save">Save 43%</span>
-       </button>`;
-    sanctuaryBilling = 'monthly';
-  } else {
+  if (key === 'companion') {
+    renderBilling();
+  } else if (billEl) {
     billEl.style.display = 'none';
     billEl.innerHTML = '';
   }
@@ -4000,20 +4276,16 @@ function openServiceWindow(key) {
   } else {
     swBtnsEl.classList.remove('gift-priority');
     const getBtn = document.getElementById('swBtnGet');
-    if (key === 'sanctuary') {
+    if (key === 'companion') {
       if (hasSanctuary) {
-        // Already subscribed — offer management, not a second purchase.
-        const until = subscriptionPeriodEnd
-          ? new Date(subscriptionPeriodEnd * 1000).toLocaleDateString()
-          : null;
         getBtn.textContent = 'Manage subscription';
-        getBtn.title = subscriptionStatus === 'canceled' && until
-          ? `Cancelled — access continues until ${until}.`
-          : (subscriptionStatus === 'past_due'
-              ? 'Payment issue — please update your card.'
-              : 'Active subscription.');
+        getBtn.title = subscriptionStatus === 'past_due'
+          ? 'Payment issue — please update your card.'
+          : 'Active subscription.';
       } else {
-        getBtn.textContent = `${s.btnLabel} €${s.price.toFixed(2)}/month`;
+        // renderBilling() -> selectBilling() already set the CTA to match the
+        // selected plan; don't overwrite it here.
+        getBtn.title = '';
       }
     } else {
       getBtn.textContent = s.btnLabel + ' €' + s.price;
@@ -4049,12 +4321,47 @@ function purchaseService() {
   // "Manage subscription" and sends the user to Stripe's hosted portal —
   // cancellation, card updates and invoices all live there, so we build none
   // of it ourselves.
-  if (currentService === 'sanctuary') {
+  // Companion: one product, three ways to pay. Route by the selected billing
+  // option, not by the service key.
+  if (currentService === 'companion') {
     if (hasSanctuary) {
+      // Nothing to sell — send them to Stripe's portal to manage what they have.
       window.open(portalUrl || STRIPE_PORTAL_FALLBACK, '_blank');
       return;
     }
-    window.open(SANCTUARY_LINKS[sanctuaryBilling], '_blank');
+    const plan = BILLING_PLANS.find(p => p.id === selectedBilling);
+    if (!plan) return;
+
+    if (plan.kind === 'gift') {
+      // Gift: validate the recipient email first, then append it as a query
+      // parameter so Stripe can pre-fill the custom field we added to the link.
+      // The real enforcement is in Stripe's custom field + our webhook handler
+      // (which reads stripeSession.custom_fields). The ?prefill_email= param is
+      // just a UX convenience — not a security mechanism.
+      const recipientInput = document.getElementById('giftRecipientEmail');
+      const recipientEmail = (recipientInput?.value || '').trim().toLowerCase();
+      if (!recipientEmail || !recipientEmail.includes('@')) {
+        if (recipientInput) {
+          recipientInput.focus();
+          recipientInput.classList.add('input-error');
+          setTimeout(() => recipientInput.classList.remove('input-error'), 1800);
+        }
+        return;
+      }
+      // ⚠️ REPLACE: paste the gift Sanctuary payment link here.
+      // Must be the PLINK_GIFT_SANCTUARY_REPLACE_ME link from index.js — a
+      // ONE-OFF €47.50 Payment Link with a custom field keyed 'recipient_email'.
+      const giftLink = 'https://buy.stripe.com/REPLACE_ME_GIFT_SANCTUARY';
+      window.open(`${giftLink}?prefill_field_key[0]=recipient_email&prefill_field_value[0]=${encodeURIComponent(recipientEmail)}`, '_blank');
+      return;
+    }
+
+    if (plan.kind === 'sub') {
+      window.open(SANCTUARY_LINKS[plan.id], '_blank');
+      return;
+    }
+    // pay-as-you-go (campfire)
+    window.open(SERVICE_LINKS.campfire, '_blank');
     return;
   }
   window.open(SERVICE_LINKS[currentService], '_blank');
@@ -4065,7 +4372,21 @@ const STRIPE_PORTAL_FALLBACK = 'https://billing.stripe.com/p/login/REPLACE_ME';
 
 function giftService() {
   if (!currentService) return;
-  window.open(SERVICE_LINKS[currentService] + '?gift=1', '_blank');
+  if (currentService === 'companion') {
+    // Gifting = annual gift plan. Select it so the cards update and the
+    // recipient-email input appears, then scroll to it.
+    selectBilling('gift');
+    updateAutoRenewNotice();
+    setTimeout(() => {
+      const el = document.getElementById('giftRecipientEmail');
+      if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); }
+    }, 120);
+    return;
+  }
+  // Mantra: old code-based gift still applies
+  const link = SERVICE_LINKS[currentService];
+  if (!link) return;
+  window.open(link + '?gift=1', '_blank');
 }
 
 function openCodeModal() {
@@ -4612,17 +4933,17 @@ const PLAN_ACTIVATION = {
     desc: "I'll focus fully on shaping your mantra now. When it's ready, you'll get it as a card to keep — then 15 exchanges with me in full premium mode."
   },
   campfire: {
-    label: 'Campfire',
+    label: 'Companion · Pay as you go',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="pacampfire"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#pacampfire)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
     desc: "50 exchanges are yours, no expiry. I'm here for vocation, reflection, or whatever you need to work through."
   },
   sanctuary: {
-    label: 'Sanctuary',
+    label: 'Companion · Unlimited',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="pasanctuary"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#pasanctuary)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 143.13 84.91 L 192.58 56.36 L 184.08 41.64 L 134.63 70.19 Z M 134.63 129.81 L 184.08 158.36 L 192.58 143.64 L 143.13 115.09 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 56.87 115.09 L 7.42 143.64 L 15.92 158.36 L 65.37 129.81 Z M 65.37 70.19 L 15.92 41.64 L 7.42 56.36 L 56.87 84.91 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
     desc: "Unlimited exchanges. No counter, nothing to ration. I'm here for vocation, reflection, or whatever you need to work through."
   },
   mantra_graduation: {
-    label: 'Mantra complete — Campfire unlocked',
+    label: 'Mantra complete — Companion unlocked',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><clipPath id="pamantragrad"><circle cx="100" cy="100" r="90"/></clipPath></defs><g clip-path="url(#pamantragrad)"><path d="M 100 10 A 90 90 0 0 1 100 190 A 90 90 0 0 1 100 10 Z M 100 55 A 45 45 0 0 0 100 145 A 45 45 0 0 0 100 55 Z M 108.5 55.1 L 108.5 -2 L 91.5 -2 L 91.5 55.1 Z M 144.9 108.5 L 202 108.5 L 202 91.5 L 144.9 91.5 Z M 91.5 144.9 L 91.5 202 L 108.5 202 L 108.5 144.9 Z M 55.1 91.5 L -2 91.5 L -2 108.5 L 55.1 108.5 Z" fill="#60481a" fill-rule="evenodd"/><circle cx="100" cy="100" r="28" fill="#dfa51a"/></g></svg>',
     desc: "Your mantra is complete. You've unlocked 15 premium exchanges in full Campfire-level companion mode — no expiry, use them whenever you need."
   }
