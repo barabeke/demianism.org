@@ -2334,7 +2334,31 @@ renderer.link = function(token) {
 };
 marked.setOptions({ breaks: true, gfm: true, renderer });
 
-function autolinkText(html) {
+// Lightweight language detector — identifies EN/IT/ES/FR/DE/PT/PL from
+// function words. Not a full NLP classifier; it only needs to be right
+// enough to pick the right URL label variant. Called on raw model text
+// before markdown parsing. Returns a 2-letter language code or 'en'.
+function detectMessageLang(text) {
+  if (!text || text.length < 20) return 'en';
+  const t = text.toLowerCase();
+  const score = (words) => words.filter(w => {
+    const re = new RegExp('\\b' + w + '\\b');
+    return re.test(t);
+  }).length;
+  const langs = [
+    // [code, score, keywords]
+    ['it', score(['sono','sei','è','che','con','una','gli','del','della','non','per','ma','hai','ho','mi','ti','si','ci','loro','anche','questo','questa','quello','più','come','cosa'])],
+    ['es', score(['soy','eres','es','que','con','una','los','del','no','para','pero','has','tengo','me','te','se','nos','ellos','también','este','esta','ese','más','cómo','qué'])],
+    ['fr', score(['suis','est','que','avec','une','les','du','de','ne','pas','pour','mais','avez','ai','me','te','se','nous','ils','aussi','ce','cette','plus','comment','quoi'])],
+    ['de', score(['bin','ist','dass','mit','eine','die','der','des','nicht','für','aber','haben','bin','ich','du','er','wir','sie','auch','dieser','diese','mehr','wie','was'])],
+    ['pt', score(['sou','é','que','com','uma','os','do','não','para','mas','tem','tenho','me','te','se','nós','eles','também','este','esta','esse','mais','como','o que'])],
+    ['pl', score(['jest','są','że','nie','tak','jak','co','się','na','do','ale','mam','masz','ma','ja','ty','on','my','wy','oni','też','ten','ta','to','czy'])],
+  ];
+  const best = langs.reduce((a, b) => b[1] > a[1] ? b : a, ['en', 0]);
+  return best[1] >= 2 ? best[0] : 'en';
+}
+
+function autolinkText(html, lang) {
   // Strip "undefined" label from broken markdown links.
   const container = document.createElement('div');
   container.innerHTML = html;
@@ -2361,19 +2385,94 @@ function autolinkText(html) {
   // Known URL → human-readable label map.
   // Definitive fix for bare URLs: intercept at render time, always show
   // the right label regardless of what the model outputs.
+  // Translatable labels: [en, it, es, fr, de, pt, pl]
+  // Proper nouns (Demianism, Barabeke, Canti Liberi, etc.) stay in their
+  // canonical form regardless of language — only descriptive phrases translate.
+  // Social handles stay as-is since they're identifiers, not phrases.
+  const _L = lang || 'en';
+  const _t = (variants) => {
+    const map = {en:0, it:1, es:2, fr:3, de:4, pt:5, pl:6};
+    return variants[map[_L] ?? 0] ?? variants[0];
+  };
+
   const URL_LABELS = {
-    'https://demianism.org/doctrine':      'la Dottrina Rivelata',
-    'https://demianism.org/culture':       'manifesto e libro',
-    'https://demianism.org/origin':        'origin story',
-    'https://demianism.org/about':         'about Barabeke',
-    'https://demianism.org/privacy':       'privacy policy',
-    'https://demianism.org/donate':        'donate',
-    'https://demianism.org/mantra':        'mantra tool',
+    'https://demianism.org/doctrine': _t([
+      'The Revealed Doctrine',       // en
+      'La Dottrina Rivelata',        // it
+      'La Doctrina Revelada',        // es
+      'La Doctrine Révélée',         // fr
+      'Die Offenbarte Lehre',        // de
+      'A Doutrina Revelada',         // pt
+      'Objawiona Doktryna',          // pl
+    ]),
+    'https://demianism.org/culture': _t([
+      'manifesto and book',          // en
+      'manifesto e libro',           // it
+      'manifiesto y libro',          // es
+      'manifeste et livre',          // fr
+      'Manifest und Buch',           // de
+      'manifesto e livro',           // pt
+      'manifest i książka',          // pl
+    ]),
+    'https://demianism.org/origin': _t([
+      'origin story',                // en
+      'storia delle origini',        // it
+      'historia de los orígenes',    // es
+      'histoire des origines',       // fr
+      'Ursprungsgeschichte',         // de
+      'história das origens',        // pt
+      'historia pochodzenia',        // pl
+    ]),
+    'https://demianism.org/about': _t([
+      'about Barabeke',              // en
+      'su Barabeke',                 // it
+      'sobre Barabeke',              // es
+      'à propos de Barabeke',        // fr
+      'über Barabeke',               // de
+      'sobre Barabeke',              // pt
+      'o Barabeke',                  // pl
+    ]),
+    'https://demianism.org/privacy': _t([
+      'privacy policy',              // en
+      'informativa sulla privacy',   // it
+      'política de privacidad',      // es
+      'politique de confidentialité',// fr
+      'Datenschutzrichtlinie',       // de
+      'política de privacidade',     // pt
+      'polityka prywatności',        // pl
+    ]),
+    'https://demianism.org/donate': _t([
+      'donate',                      // en
+      'dona',                        // it
+      'donar',                       // es
+      'faire un don',                // fr
+      'spenden',                     // de
+      'doar',                        // pt
+      'przekaż darowiznę',           // pl
+    ]),
+    'https://demianism.org/mantra': _t([
+      'mantra tool',                 // en
+      'strumento mantra',            // it
+      'herramienta de mantra',       // es
+      'outil mantra',                // fr
+      'Mantra-Tool',                 // de
+      'ferramenta de mantra',        // pt
+      'narzędzie mantra',            // pl
+    ]),
+    // Proper-noun URLs — same label in every language
     'https://demianism.org':               'Demianism',
     'https://mybook.to/rCfKQ':             'Ritorno a Eden 1',
     'https://mybook.to/2VGW':              'Book of Demianism',
     'https://mybook.to/qdVLiF':            'Libro del Demianesimo',
-    'https://heyzine.com/flip-book/3b03034a08.html': 'The Art of Barabeke',
+    'https://heyzine.com/flip-book/3b03034a08.html': _t([
+      'The Art of Barabeke',         // en
+      "L'Arte di Barabeke",          // it
+      'El Arte de Barabeke',         // es
+      "L'Art de Barabeke",           // fr
+      'Die Kunst von Barabeke',      // de
+      'A Arte de Barabeke',          // pt
+      'Sztuka Barabeke',             // pl
+    ]),
     'https://manifold.xyz/@barabeke/id/4083525872':  'The Revealed Doctrine NFT',
     'https://manifold.xyz/@barabeke/contract/141113584/3': 'The Giant Kahuna',
     'https://manifold.xyz/@barabeke/contract/146290928/1': 'Mona Lisa Reloaded',
@@ -2381,7 +2480,15 @@ function autolinkText(html) {
     'https://archive.org/details/una-nuova-alleanza-tra-uomini-e-donne': 'Una Nuova Alleanza',
     'https://barabeke.substack.com':       'The Odd Gospel',
     'https://t.me/barabeke':               'Telegram',
-    'https://x.com/barabeke':             '@barabeke su X',
+    'https://x.com/barabeke': _t([
+      '@barabeke on X',              // en
+      '@barabeke su X',              // it
+      '@barabeke en X',              // es
+      '@barabeke sur X',             // fr
+      '@barabeke auf X',             // de
+      '@barabeke no X',              // pt
+      '@barabeke na X',              // pl
+    ]),
     'https://www.instagram.com/barabeke/': 'Instagram',
     'https://www.facebook.com/barabeke/':  'Facebook',
   };
@@ -4846,7 +4953,11 @@ function appendMessage(role, text, ts) {
   bubble.className = 'msg-bubble';
   if (role === 'demian') {
     const TRIANGLE_SVG = '<svg class="demian-prefix-triangle" viewBox="0 0 27.71 24" xmlns="http://www.w3.org/2000/svg"><polygon points="13.86,0 27.71,24 0,24" fill="#6864bb"/></svg>';
-    let parsedHTML = autolinkText(marked.parse(cleanText));
+    // Detect language from the raw text before parsing — simple heuristic
+    // on common function words. Good enough for label selection; we only
+    // need to distinguish the major languages the URL_LABELS map covers.
+    const _detectedLang = detectMessageLang(cleanText);
+    let parsedHTML = autolinkText(marked.parse(cleanText), _detectedLang);
     // Substitute [IMAGE:tag] tokens now — AFTER markdown parsing so the
     // injected <a><img></a> blocks are never seen by marked and cannot be
     // escaped or wrapped in spurious <p> tags.
