@@ -3793,6 +3793,16 @@ async function callAPI(msgs, opts = {}) {
       }
       if (data._session.mantraUnlocked !== null) mantraUnlocked = data._session.mantraUnlocked;
       if (data._session.canNewChat !== null) canNewChat = data._session.canNewChat;
+      // Fill in currentSessionTier from the backend's authoritative record if
+      // our local copy is missing — never overwrite a tier we already know
+      // client-side (e.g. right after graduation flips it to 'campfire'),
+      // only fill the gap when we don't have one. See handleSessionComplete's
+      // tier guard and the matching fix in index.js's responseEnvelope for why
+      // this exists: the live mantra-delivery trigger below depends on this
+      // being in sync, and previously nothing ever populated it from the server.
+      if (data._session.tier && !currentSessionTier) {
+        currentSessionTier = data._session.tier;
+      }
       if (data._session.sessionId && !currentSessionId) {
         currentSessionId = data._session.sessionId;
         localStorage.setItem('demian_session', currentSessionId);
@@ -3810,18 +3820,25 @@ async function callAPI(msgs, opts = {}) {
     // image still silently never renders, since this call is the only path
     // to handleSessionComplete.
     //
-    // GATED on currentSessionTier === 'mantra': a real, confirmed failure —
-    // an alternate model (during evaluation testing, likely because module
-    // content leaked across a non-production test harness) fabricated a full
-    // mantra delivery, complete with correctly-formatted card, inside a FREE
-    // session, unprompted, no purchase, right after a crisis disclosure. The
-    // backend's own graduation logic is already correctly gated on session
-    // tier (_wasMantraTierActive in index.js) — this was the one place that
-    // wasn't, meaning any model, through hallucination or injection, could
-    // trigger a full unauthorized product delivery just by emitting the
-    // right literal tag string, in any session type.
-    if (currentSessionTier === 'mantra' &&
-        (reply.includes('[SESSION_COMPLETE]') || /\[MANTRA_TEXT\][\s\S]*?\[\/MANTRA_TEXT\]/.test(reply))) {
+    // NO LONGER gated on currentSessionTier === 'mantra' here — that check
+    // was meant to block a fabricated delivery in a non-mantra session (see
+    // the confirmed test-harness incident described below), but it had a
+    // worse failure mode in production: currentSessionTier is a client-side
+    // variable the backend never confirmed on every turn, and when it drifted
+    // stale/null (e.g. around the new-chat/memory-choice flow) a REAL mantra
+    // completion would silently render nothing — no box, no card, no error —
+    // while the backend still correctly graduated the account. The bracket
+    // tags themselves disappear from cleanText unconditionally in
+    // appendMessage() regardless of whether handleSessionComplete runs, so a
+    // skipped call here means the content vanishes with zero visible trace.
+    // renderRestoredChat() never had this guard and worked correctly on every
+    // reload, which is what exposed the bug: reopening the chat re-triggered
+    // handleSessionComplete from scratch and the card appeared fine.
+    // The safety check this used to provide (never deliver a mantra outside
+    // a real mantra session) now lives INSIDE handleSessionComplete itself,
+    // where it can be enforced without also blocking legitimate live delivery
+    // — see the tier guard at the top of that function.
+    if (reply.includes('[SESSION_COMPLETE]') || /\[MANTRA_TEXT\][\s\S]*?\[\/MANTRA_TEXT\]/.test(reply)) {
       handleSessionComplete(reply);
     }
 
@@ -4129,6 +4146,19 @@ async function generateMantraCardDataUrl(mantraText) {
 }
 
 async function handleSessionComplete(reply) {
+  // SAFETY GUARD (moved here from callAPI's trigger — see the comment there
+  // for why): block rendering a mantra delivery in a session we POSITIVELY
+  // know is not mantra. This still stops the confirmed failure mode this
+  // guard exists for (a non-mantra session fabricating/hallucinating a full
+  // delivery), while no longer blocking legitimate live delivery when
+  // currentSessionTier is simply stale or not yet populated (null/undefined) —
+  // the restore path (renderRestoredChat) has never had this guard and has
+  // always been safe, because it only ever replays content the backend
+  // already persisted for a real mantra session.
+  const tierKnown = currentSessionTier !== null && currentSessionTier !== undefined;
+  const tierIsNotMantra = currentSessionTier !== 'mantra';
+  if (tierKnown && tierIsNotMantra) return;
+
   let mantraMatch = reply.match(/\[MANTRA_TEXT\]([\s\S]*?)\[\/MANTRA_TEXT\]/);
   let usedFallback = false;
 
