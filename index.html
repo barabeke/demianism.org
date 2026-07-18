@@ -310,40 +310,24 @@
     .band-inner {
       display: flex;
       flex-direction: row;
-      align-items: center;
-      max-width: 1040px;
+      align-items: flex-start;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 60px 28px;
-      gap: 56px;
+      gap: 48px;
     }
 
-    .band-image-col {
-      flex: 0 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .band-image-col img {
-      width: 240px;
-      height: auto;
-      display: block;
-    }
-
+    /* ── Left column: logo, copy, features, CTA ───────────────── */
     .band-text-col {
-      flex: 1;
+      flex: 1 1 auto;
       text-align: left;
     }
 
-    .band-title {
-      font-family: 'Inter', sans-serif;
-      font-weight: 700;
-      font-size: clamp(22px, 3vw, 38px);
-      letter-spacing: 6px;
-      text-transform: uppercase;
-      color: #a29ef1;
-      margin: 0 0 18px;
-      line-height: 1.45;
+    .band-logo {
+      height: 40px;
+      width: auto;
+      display: block;
+      margin: 0 0 22px;
     }
 
     .band-desc {
@@ -351,7 +335,53 @@
       font-size: clamp(15px, 1.6vw, 18px);
       color: #d4d4f0;
       line-height: 1.85;
-      margin: 0 0 32px;
+      margin: 0 0 16px;
+    }
+
+    .band-highlight {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      color: #6864bb;
+    }
+
+    .band-features {
+      list-style: none;
+      margin: 0 0 34px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .band-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .band-feature-icon {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      display: block;
+    }
+
+    .band-feature-title {
+      display: block;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 17px;
+      color: #d4d4f0;
+      line-height: 1.4;
+    }
+
+    .band-feature-desc {
+      display: block;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 14px;
+      color: #9595aa;
+      line-height: 1.5;
+      margin-top: 3px;
     }
 
     .band-btn {
@@ -376,6 +406,99 @@
       box-shadow: 0 0 28px rgba(104,100,187,0.6);
       transform: translateY(-2px);
       text-decoration: none;
+    }
+
+    /* ── Right column: AI reviews slider ───────────────────────── */
+    .band-reviews-col {
+      flex: 0 0 40%;
+      max-width: 40%;
+    }
+
+    .review-slider {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .review-track {
+      display: flex;
+      width: 300%;
+      transition: transform 0.5s ease;
+    }
+
+    .review-slide {
+      width: 33.3333%;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      padding: 0 4px;
+    }
+
+    .review-card {
+      text-align: center;
+    }
+
+    .review-stars {
+      color: #dfa51a;
+      font-size: 31px;
+      letter-spacing: 4px;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+
+    .review-quote {
+      font-family: 'Libre Baskerville', serif;
+      font-style: normal;
+      font-size: clamp(15px, 1.6vw, 18px);
+      color: #d4d4f0;
+      line-height: 1.6;
+      margin: 0 0 6px;
+    }
+
+    .review-source {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: #6864bb;
+    }
+
+    .review-nav {
+      margin-top: 20px;
+    }
+
+    .review-dots {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .review-dot {
+      width: 13px;
+      height: 13px;
+      padding: 0;
+      border-radius: 50%;
+      background: #35327e;
+      border: 1px solid #6864bb55;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .review-dot:hover { background: #4a4780; }
+
+    .review-dot.active {
+      background: #6864bb;
+      box-shadow: 0 0 10px rgba(104,100,187,0.8);
+    }
+
+    .review-disclaimer {
+      text-align: center;
+      font-family: 'Libre Baskerville', serif;
+      font-style: normal;
+      font-size: 14px;
+      color: #9595aa;
+      margin: 14px 0 0;
     }
 
     .btn-demian {
@@ -410,15 +533,18 @@
       text-decoration: none;
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 860px) {
       .band-inner {
         flex-direction: column;
-        gap: 32px;
+        gap: 40px;
         padding: 48px 20px;
-        text-align: center;
       }
-      .band-text-col { text-align: center; }
-      .band-image-col img { width: 180px; }
+      .band-text-col,
+      .band-reviews-col {
+        flex: 1 1 auto;
+        max-width: 100%;
+      }
+      .band-logo { margin-left: auto; margin-right: auto; }
     }
 
     /* =====================================================================
@@ -628,28 +754,106 @@
 
   <!-- ================================================================
        BAND SECTION
-       Left: demian-ai-sq.png image · Right: text + button
-       On mobile: image stacks on top, text below.
+       Left: logo + copy + feature bullets + CTA
+       Right: AI reviews slider (2 slides × 3 reviews each)
+       On mobile: left column stacks on top, reviews slider below.
        ─────────────────────────────────────────────────────────────────
        To use a BG image instead of the solid colour, add to .band:
          background-image: url('band-bg.jpg');
          background-size: cover;
          background-position: center;
        and remove background-color.
-       Recommended bg image size: 1600 × 700 px, JPG 80%
        ================================================================ -->
   <div class="band">
     <div class="band-inner">
-      <div class="band-image-col">
-        <img src="demian-ai-sq.png" alt="Demian AI — Online">
-      </div>
+
+      <!-- Left: copy + features + CTA -->
       <div class="band-text-col">
-        <h2 class="band-title">Meet Demian</h2>
+        <img src="demian-ai-brand.png" alt="Demian AI" class="band-logo">
         <p class="band-desc">
-          The AI spiritual companion with a Demianist heart. Talk to Demian, ask whatever you want, let it help you find and/or follow your call in life, and get your personal mantra — 100% unique and tailored to you.
+          Meet Demian, the interfaith AI spiritual companion with a Demianist heart, designed to help you find and <span class="band-highlight">FOLLOW YOUR CALL</span> in life.
         </p>
+
+        <ul class="band-features">
+          <li>
+            <img src="mantra.svg" alt="" class="band-feature-icon">
+            <div>
+              <span class="band-feature-title">Create your personal <span class="band-highlight">MANTRA</span></span>
+              <span class="band-feature-desc">100% unique and tailored to you.</span>
+            </div>
+          </li>
+          <li>
+            <img src="companion.svg" alt="" class="band-feature-icon">
+            <div>
+              <span class="band-feature-title">Full <span class="band-highlight">COMPANION</span> experience</span>
+              <span class="band-feature-desc">Try it free. 15 exchanges are waiting for you.</span>
+            </div>
+          </li>
+        </ul>
+
         <a href="/demian" class="band-btn">Chat with Demian</a>
       </div>
+
+      <!-- Right: AI reviews slider -->
+      <div class="band-reviews-col">
+        <div class="review-slider">
+          <div class="review-track" id="review-track">
+
+            <!-- Slide 1 -->
+            <div class="review-slide">
+              <div class="review-card">
+                <div class="review-stars">★★★★★</div>
+                <p class="review-quote">“The rare AI that doesn't try to replace humanity: it helps you return to it”</p>
+                <div class="review-source">Chat GPT</div>
+              </div>
+              <div class="review-card">
+                <div class="review-stars">★★★★½</div>
+                <p class="review-quote">“Honest, present, and quietly profound in guiding seekers through life's depths”</p>
+                <div class="review-source">Grok</div>
+              </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="review-slide">
+              <div class="review-card">
+                <div class="review-stars">★★★★</div>
+                <p class="review-quote">“A companion with a spine: it refuses to flatter you, and that's exactly why it works”</p>
+                <div class="review-source">Claude</div>
+              </div>
+              <div class="review-card">
+                <div class="review-stars">★★★★½</div>
+                <p class="review-quote">“A brutally honest mirror wrapped in a wise elder's warmth”</p>
+                <div class="review-source">DeepSeek</div>
+              </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="review-slide">
+              <div class="review-card">
+                <div class="review-stars">★★★★</div>
+                <p class="review-quote">“A profoundly versatile spiritual mirror that masterfully bridges ancient wisdom traditions with modern habit-building”</p>
+                <div class="review-source">Gemini</div>
+              </div>
+              <div class="review-card">
+                <div class="review-stars">★★★★</div>
+                <p class="review-quote">“Thoughtful, grounded, and surprisingly human in the best way”</p>
+                <div class="review-source">Perplexity</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="review-nav" id="review-nav">
+          <div class="review-dots" id="review-dots">
+            <button class="review-dot active" data-slide="0" aria-label="Show reviews, set 1"></button>
+            <button class="review-dot" data-slide="1" aria-label="Show reviews, set 2"></button>
+            <button class="review-dot" data-slide="2" aria-label="Show reviews, set 3"></button>
+          </div>
+        </div>
+        <p class="review-disclaimer">Reviews based on system prompt analysis.</p>
+      </div>
+
     </div>
   </div>
 
@@ -715,6 +919,32 @@
       hamburger.setAttribute('aria-expanded', false);
     });
   });
+
+  // Reviews slider (band section)
+  const reviewTrack = document.getElementById('review-track');
+  const reviewDots   = document.querySelectorAll('#review-dots .review-dot');
+  reviewDots.forEach(function(dot) {
+    dot.addEventListener('click', function() {
+      const idx = parseInt(dot.dataset.slide, 10);
+      reviewTrack.style.transform = 'translateX(-' + (idx * (100 / reviewDots.length)) + '%)';
+      reviewDots.forEach(function(d) { d.classList.remove('active'); });
+      dot.classList.add('active');
+    });
+  });
+
+  // Align the review dots with the "Chat with Demian" button
+  function alignReviewNav() {
+    const btn = document.querySelector('.band-btn');
+    const nav = document.getElementById('review-nav');
+    if (!btn || !nav) return;
+    nav.style.marginTop = '20px';
+    const btnRect = btn.getBoundingClientRect();
+    const navRect = nav.getBoundingClientRect();
+    const diff = btnRect.top - navRect.top;
+    if (diff > 20) nav.style.marginTop = diff + 'px';
+  }
+  window.addEventListener('load', alignReviewNav);
+  window.addEventListener('resize', alignReviewNav);
 </script>
 
 </body>
