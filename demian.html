@@ -3299,6 +3299,17 @@ async function switchSession(sessionId, title) {
         const chat = document.getElementById('chat');
         if (chat) chat.innerHTML = '';
         showMantraOpeningScreen();
+      } else if (
+        data.session.messages.filter(m => m.role !== 'system').length === 0 &&
+        localStorage.getItem('demian_pending_memory_choice') === sessionId
+      ) {
+        // BUG FIX: this branch previously did not exist at all — an empty
+        // companion session still awaiting its memory-preservation choice
+        // fell straight into renderRestoredChat(), which rendered nothing
+        // (zero real messages) and silently dropped the fact that a choice
+        // was still pending, with no way to tell what (if anything) had
+        // been decided. Re-show the same prompt instead.
+        showNewChatOpeningScreen();
       } else {
         await renderRestoredChat(data.session.messages, title);
       }
@@ -3462,7 +3473,18 @@ async function newChat(triggerEl) {
 }
 
 // Shown at the start of every new companion chat — memory preservation prompt
-// if prior non-deleted sessions exist, otherwise straight to welcome.
+// if prior non-deleted sessions exist, otherwise the chat simply opens blank.
+//
+// BUG FIX: this function is only ever reachable via newChat(), which itself
+// requires `isRegistered && canNewChat && messagesBalance > 0` — i.e. this
+// is ALWAYS a paid user. sendOpeningMessage() renders the free-tier
+// marketing/onboarding greeting ("the first 15 exchanges are free..."),
+// which was previously being shown unconditionally on every path through
+// this function (no prior sessions, "Yes remember", and "No start fresh"
+// all called it). Paid users starting a new chat should just get a blank,
+// ready-to-type chat — matching the documented intent elsewhere in this file
+// ("paid users start blank") which this function alone didn't follow. All
+// three sendOpeningMessage() calls below have been removed accordingly.
 async function showNewChatOpeningScreen() {
   const chat = document.getElementById('chat');
   if (!chat) return;
@@ -3474,9 +3496,23 @@ async function showNewChatOpeningScreen() {
   const hasPrior = sessionItems.length > 1; // more than just this new one
 
   if (!hasPrior) {
-    sendOpeningMessage();
     return;
   }
+
+  // BUG FIX (chat active before a choice is made): lock the composer while
+  // this prompt is showing, so a message can't be sent before the user has
+  // decided whether to carry memory forward. Re-enabled in both button
+  // handlers below.
+  const _inputEl = document.getElementById('userInput');
+  const _sendEl = document.getElementById('send');
+  if (_inputEl) _inputEl.disabled = true;
+  if (_sendEl) _sendEl.disabled = true;
+
+  // BUG FIX (choice silently lost on navigate-away-and-back): persist which
+  // session is awaiting a memory choice, so switchSession() can detect it
+  // and re-show this same prompt instead of just rendering an empty chat
+  // with no record of what, if anything, was decided.
+  if (currentSessionId) localStorage.setItem('demian_pending_memory_choice', currentSessionId);
 
   const wrap = document.createElement('div');
   wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px 32px;gap:16px;text-align:center;';
@@ -3504,8 +3540,10 @@ async function showNewChatOpeningScreen() {
   btnYes.style.cssText = 'padding:9px 20px;background:var(--purple-mid);color:#fff;border:none;border-radius:8px;font-family:\'Inter\',sans-serif;font-size:13px;cursor:pointer;';
   btnYes.addEventListener('click', async () => {
     wrap.remove();
+    localStorage.removeItem('demian_pending_memory_choice');
+    if (_inputEl) _inputEl.disabled = false;
+    if (_sendEl) _sendEl.disabled = false;
     await injectMemoryContext();
-    sendOpeningMessage();
   });
 
   const btnNo = document.createElement('button');
@@ -3513,7 +3551,9 @@ async function showNewChatOpeningScreen() {
   btnNo.style.cssText = 'padding:9px 20px;background:transparent;color:var(--text-body);border:1px solid rgba(104,100,187,0.3);border-radius:8px;font-family:\'Inter\',sans-serif;font-size:13px;cursor:pointer;';
   btnNo.addEventListener('click', () => {
     wrap.remove();
-    sendOpeningMessage();
+    localStorage.removeItem('demian_pending_memory_choice');
+    if (_inputEl) _inputEl.disabled = false;
+    if (_sendEl) _sendEl.disabled = false;
   });
 
   btnRow.appendChild(btnYes);
@@ -3529,12 +3569,38 @@ async function injectMemoryContext() {
     const res = await fetch(`${WORKER_URL}/sessions`, { headers: { 'X-Auth-Token': authToken } });
     const data = await res.json();
     if (!data.ok || !data.sessions) return;
-    // Find most recent prior non-mantra session (not the current one)
-    const prior = data.sessions.find(s => s.id !== currentSessionId && !s.title?.startsWith('Mantra '));
-    if (!prior) return;
-    const sRes = await fetch(`${WORKER_URL}/sessions/${prior.id}`, { headers: { 'X-Auth-Token': authToken } });
-    const sData = await sRes.json();
-    if (!sData.ok) return;
+    // BUG FIX: the previous version used data.sessions.find(...) — the
+    // FIRST matching session in whatever order the backend happened to
+    // return them, with no recency guarantee and no check that it actually
+    // had any content. If that first match was an old or empty session
+    // (e.g. an abandoned "No, start fresh" chat), pendingMemoryContext
+    // silently never got set — producing exactly the "I don't recall
+    // anything about you" symptom, since no [MEMORY] block was ever sent.
+    //
+    // Also no longer excluding mantra sessions: for a user going straight
+    // from their mantra into companion mode, the mantra-building
+    // conversation is very often the ONLY real prior content on the
+    // account, so excluding it made "yes, remember" find nothing to work
+    // with in exactly the most common case. (If mantra content should stay
+    // excluded from memory as a deliberate product choice, re-add
+    // `&& !s.title?.startsWith('Mantra ')` to the filter below.)
+    const candidates = data.sessions
+      .filter(s => s.id !== currentSessionId)
+      .sort((a, b) => (b.lastMessage || 0) - (a.lastMessage || 0));
+    if (!candidates.length) return;
+    // Walk candidates newest-first until one actually has content (a
+    // summary or real messages) — don't give up on the first empty session.
+    let sData = null;
+    for (const cand of candidates) {
+      try {
+        const sRes = await fetch(`${WORKER_URL}/sessions/${cand.id}`, { headers: { 'X-Auth-Token': authToken } });
+        const candData = await sRes.json();
+        if (!candData.ok) continue;
+        const candMsgs = candData.session.messages.filter(m => m.role !== 'system');
+        if (candData.session.summary || candMsgs.length > 0) { sData = candData; break; }
+      } catch (e) { continue; }
+    }
+    if (!sData) return;
     const priorMsgs = sData.session.messages.filter(m => m.role !== 'system');
 
     // Build the memory payload. If the session has a backend-generated
@@ -4169,7 +4235,27 @@ async function handleSessionComplete(reply) {
   // hidden mantra-mode) and updateActivePlanUI() shows Campfire as active
   // in both the sidebar and the mode-switcher, on THIS chat immediately,
   // without waiting for a reload or a new loadUser() call.
-  if (currentSessionTier === 'mantra') currentSessionTier = 'campfire';
+  // BUG FIX: updateActivePlanUI()'s fallback branch (`userTier &&
+  // (messagesBalance > 0 || canNewChat)`) reads the separate ACCOUNT-level
+  // `userTier` global, not currentSessionTier. That variable is only ever
+  // set by a full /auth/me refresh (loadUser()), so flipping
+  // currentSessionTier alone left userTier stuck at 'mantra' — which is
+  // exactly why the sidebar and mode-switcher kept showing "Mantra (active)"
+  // indefinitely, even after a session switch (switchSession() only ever
+  // refreshes currentSessionTier, never userTier). Flip both here.
+  const _justGraduatedNow = (currentSessionTier === 'mantra');
+  if (_justGraduatedNow) {
+    currentSessionTier = 'campfire';
+    if (userTier === 'mantra') userTier = 'campfire';
+    // BUG FIX: the backend correctly pushes a `plan_activation` /
+    // 'mantra_graduation' system message into the session, but that's a
+    // server-side write only — nothing in this live-turn path ever
+    // rendered it. The only place that banner was ever shown was
+    // renderRestoredChat(), which only runs when a session is freshly
+    // loaded/switched into — hence it only appeared after leaving the chat
+    // and coming back. Show it live, right now, the same way a reload does.
+    showPlanActivationBanner('mantra_graduation');
+  }
   if (authToken) loadSessionList();
   updateCounter();
 
