@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Demian">
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Noto+Serif:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
@@ -1635,7 +1635,7 @@ button#send svg { width: 17px; height: 17px; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 43px 86px 32px; /* 4% / 8% / 3% of 1080×1350, matching mantra.html's card padding */
+  padding: 54px 86px; /* 5% top/bottom, 8% sides of 1080 width — matches mantra.html's #mantra-card padding:5% 8%, which is symmetric top/bottom by design (see its comment: single source of truth for eyebrow-to-top and footer-to-bottom spacing) */
   box-sizing: border-box;
 }
 #mantra-render-card .rc-bg-canvas {
@@ -1655,7 +1655,7 @@ button#send svg { width: 17px; height: 17px; }
 #mantra-render-card .rc-contour svg { width: 100%; height: 100%; }
 #mantra-render-card .rc-contour ellipse { fill: none; stroke: rgba(104,100,187,0.55); stroke-width: 1; }
 #mantra-render-card .rc-top {
-  position: relative; z-index: 2; width: 100%; text-align: center; padding-top: 81px; /* 6% */
+  position: relative; z-index: 2; width: 100%; text-align: center; padding-top: 19px; /* 1.8% of 1080 width, matching mantra.html's .card-top-mark { padding-top: 1.8% } — was 81px (6% of the 1350 height), which used the wrong basis and pushed the header much lower than the live tool */
   font-family: 'Inter','Noto Sans',sans-serif; font-size: 21px; font-weight: 700;
   letter-spacing: 0.3em; text-transform: uppercase; color: #6864bb;
 }
@@ -4158,10 +4158,21 @@ async function generateMantraCardDataUrl(mantraText) {
   const topMarkEl = document.querySelector('#mantra-render-card .rc-top');
   const footEl = document.querySelector('#mantra-render-card .rc-foot');
   const bodyEl = document.querySelector('#mantra-render-card .rc-body');
-  const MAX_SIZE_PX = 44; // raised from 36 now that .rc-body's dead bottom padding is gone — short mantras have real room to use; the shrink loop below still protects longer ones
+  // mantra.html's own ceiling is BASE_SIZE.noto (3.2rem) × cardScale, and at
+  // its 1080px export size cardScale is exactly 1 — so 3.2rem × 16px = 51.2px
+  // is the true reference max, not a flat 44px guess. Using the real value
+  // (instead of an arbitrary lower one) is what lets short mantras actually
+  // use the space the shrink loop below leaves available.
+  const MAX_SIZE_PX = 51.2;
   const MIN_SIZE_PX = MAX_SIZE_PX * 0.4;
   let rcSize = MAX_SIZE_PX;
   textEl.style.fontSize = rcSize + 'px';
+  // Wait for webfonts to be truly loaded before the FIRST measurement —
+  // previously only a flat 50ms timeout, which could measure against a
+  // fallback system serif (Noto Serif wasn't even linked in <head> until
+  // this fix) rather than the real Noto Serif metrics, risking an under- or
+  // over-estimate of how much text actually fits.
+  if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
   await new Promise(r => setTimeout(r, 50)); // let layout settle before measuring
   const cardTop = cardEl.getBoundingClientRect().top;
   const safeTop = topMarkEl.getBoundingClientRect().bottom - cardTop;
@@ -4169,8 +4180,11 @@ async function generateMantraCardDataUrl(mantraText) {
   const bufferPx = footEl.getBoundingClientRect().top * 0.025;
   const availableHeight = (safeBottom - safeTop) - bufferPx;
   let guard = 0;
-  while (textEl.scrollHeight > availableHeight && rcSize > MIN_SIZE_PX && guard < 200) {
-    rcSize -= 0.6;
+  // Step size matches mantra.html's own granularity (0.02rem × 16px = 0.32px)
+  // rather than the coarser 0.6px this card previously used, so the final
+  // size lands closer to the true largest-size-that-fits, same as the tool.
+  while (textEl.scrollHeight > availableHeight && rcSize > MIN_SIZE_PX && guard < 400) {
+    rcSize -= 0.32;
     textEl.style.fontSize = rcSize + 'px';
     guard++;
   }
