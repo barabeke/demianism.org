@@ -3624,9 +3624,39 @@ async function injectMemoryContext() {
         return `${speaker}: ${m.content}`;
       }).join('\n');
     }
+    // Prefix with how long it's been since that prior session was last
+    // active — mirrors formatTimeGapPhrase() server-side (same threshold and
+    // coarseness), so a "yes, remember" into a brand-new chat carries the
+    // same time-awareness as returning mid-gap into an existing one. Kept as
+    // a plain leading sentence rather than a bracketed tag, since this text
+    // becomes part of the free-form [MEMORY] block content, not a signal
+    // parsed by name.
+    if (pendingMemoryContext && sData.session.lastMessage) {
+      const gapPhrase = formatTimeGapPhraseJS(Date.now() - sData.session.lastMessage);
+      if (gapPhrase) {
+        pendingMemoryContext = `(It has been ${gapPhrase} since that prior conversation.)\n\n` + pendingMemoryContext;
+      }
+    }
     // Do NOT touch the messages array here — memory is injected at the
     // system level via pendingMemoryContext, not as conversation history.
   } catch (e) { console.error('injectMemoryContext failed:', e); }
+}
+
+// Mirrors formatTimeGapPhrase() in index.js — kept in sync manually since
+// this runs client-side for the cross-session memory prefix above, while the
+// backend uses its own copy for the same-session TIME_SINCE_LAST_MESSAGE
+// signal. Both use the same ~20h threshold and coarse phrasing on purpose,
+// so the two paths read the same way to Demian.
+function formatTimeGapPhraseJS(ms) {
+  const THRESHOLD_MS = 20 * 60 * 60 * 1000;
+  if (ms == null || ms < THRESHOLD_MS) return null;
+  const days = Math.round(ms / (24 * 60 * 60 * 1000));
+  if (days <= 1) return 'about a day';
+  if (days < 14) return `${days} days`;
+  const weeks = Math.round(days / 7);
+  if (weeks < 8) return weeks === 1 ? 'about a week' : `about ${weeks} weeks`;
+  const months = Math.round(days / 30);
+  return months === 1 ? 'about a month' : `about ${months} months`;
 }
 
 // Generic: open a fixed side popup positioned like the side menus
