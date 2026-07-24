@@ -2383,97 +2383,34 @@ function autolinkText(html, lang) {
   html = html.replace(/(?<![="@\w\/])\b([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})\b(?![^<]*>)/g,
     email => '<a href="mailto:' + email + '" style="color:var(--text-link)">' + email + '</a>');
 
-  // Known URL → human-readable label map.
-  // Definitive fix for bare URLs: intercept at render time, always show
-  // the right label regardless of what the model outputs.
-  // Translatable labels: [en, it, es, fr, de, pt, pl]
-  // Proper nouns (Demianism, Barabeke, Canti Liberi, etc.) stay in their
-  // canonical form regardless of language — only descriptive phrases translate.
-  // Social handles stay as-is since they're identifiers, not phrases.
-  const _L = lang || 'en';
-  const _t = (variants) => {
-    const map = {en:0, it:1, es:2, fr:3, de:4, pt:5, pl:6};
-    return variants[map[_L] ?? 0] ?? variants[0];
-  };
-
+  // Known URL -> human-readable label map, used ONLY as a fallback for the
+  // rare case the model emits a bare, unwrapped URL instead of a proper
+  // markdown link. Deliberately a single canonical label per URL, in
+  // English, with no per-language translation matrix at all: this file
+  // previously carried literal translated strings (including one in
+  // Polish and one in Spanish) sitting in a JS constant, and — regardless
+  // of the exact trigger condition — those literal foreign-language
+  // strings turned out to be reproducible in the chat UI. A canonical
+  // single-language label removes that possibility entirely rather than
+  // trying to get the triggering condition exactly right. The model
+  // remains solely responsible for producing a correctly-translated label
+  // on any properly-formatted markdown link it writes itself (see the
+  // LANGUAGE RULE FOR LINK LABELS in module_base.txt's <links> section) —
+  // this map only ever applies to the small minority of malformed/bare-URL
+  // cases.
   const URL_LABELS = {
-    'https://demianism.org/doctrine': _t([
-      'The Revealed Doctrine',       // en
-      'La Dottrina Rivelata',        // it
-      'La Doctrina Revelada',        // es
-      'La Doctrine Révélée',         // fr
-      'Die Offenbarte Lehre',        // de
-      'A Doutrina Revelada',         // pt
-      'Objawiona Doktryna',          // pl
-    ]),
-    'https://demianism.org/culture': _t([
-      'manifesto and book',          // en
-      'manifesto e libro',           // it
-      'manifiesto y libro',          // es
-      'manifeste et livre',          // fr
-      'Manifest und Buch',           // de
-      'manifesto e livro',           // pt
-      'manifest i książka',          // pl
-    ]),
-    'https://demianism.org/origin': _t([
-      'origin story',                // en
-      'storia delle origini',        // it
-      'historia de los orígenes',    // es
-      'histoire des origines',       // fr
-      'Ursprungsgeschichte',         // de
-      'história das origens',        // pt
-      'historia pochodzenia',        // pl
-    ]),
-    'https://demianism.org/about': _t([
-      'about Barabeke',              // en
-      'su Barabeke',                 // it
-      'sobre Barabeke',              // es
-      'à propos de Barabeke',        // fr
-      'über Barabeke',               // de
-      'sobre Barabeke',              // pt
-      'o Barabeke',                  // pl
-    ]),
-    'https://demianism.org/privacy': _t([
-      'privacy policy',              // en
-      'informativa sulla privacy',   // it
-      'política de privacidad',      // es
-      'politique de confidentialité',// fr
-      'Datenschutzrichtlinie',       // de
-      'política de privacidade',     // pt
-      'polityka prywatności',        // pl
-    ]),
-    'https://demianism.org/donate': _t([
-      'donate',                      // en
-      'dona',                        // it
-      'donar',                       // es
-      'faire un don',                // fr
-      'spenden',                     // de
-      'doar',                        // pt
-      'przekaż darowiznę',           // pl
-    ]),
-    'https://demianism.org/mantra': _t([
-      'mantra tool',                 // en
-      'strumento mantra',            // it
-      'herramienta de mantra',       // es
-      'outil mantra',                // fr
-      'Mantra-Tool',                 // de
-      'ferramenta de mantra',        // pt
-      'narzędzie mantra',            // pl
-    ]),
-    // Proper-noun URLs — same label in every language
+    'https://demianism.org/doctrine':      'The Revealed Doctrine',
+    'https://demianism.org/culture':       'manifesto and book',
+    'https://demianism.org/origin':        'origin story',
+    'https://demianism.org/about':         'about Barabeke',
+    'https://demianism.org/privacy':       'privacy policy',
+    'https://demianism.org/donate':        'donate',
+    'https://demianism.org/mantra':        'mantra tool',
     'https://demianism.org':               'Demianism',
     'https://mybook.to/rCfKQ':             'Ritorno a Eden 1',
     'https://mybook.to/2VGW':              'Book of Demianism',
     'https://mybook.to/qdVLiF':            'Libro del Demianesimo',
-    'https://heyzine.com/flip-book/3b03034a08.html': _t([
-      'The Art of Barabeke',         // en
-      "L'Arte di Barabeke",          // it
-      'El Arte de Barabeke',         // es
-      "L'Art de Barabeke",           // fr
-      'Die Kunst von Barabeke',      // de
-      'A Arte de Barabeke',          // pt
-      'Sztuka Barabeke',             // pl
-    ]),
+    'https://heyzine.com/flip-book/3b03034a08.html': 'The Art of Barabeke',
     'https://manifold.xyz/@barabeke/id/4083525872':  'The Revealed Doctrine NFT',
     'https://manifold.xyz/@barabeke/contract/141113584/3': 'The Giant Kahuna',
     'https://manifold.xyz/@barabeke/contract/146290928/1': 'Mona Lisa Reloaded',
@@ -2481,15 +2418,7 @@ function autolinkText(html, lang) {
     'https://archive.org/details/una-nuova-alleanza-tra-uomini-e-donne': 'Una Nuova Alleanza',
     'https://barabeke.substack.com':       'The Odd Gospel',
     'https://t.me/barabeke':               'Telegram',
-    'https://x.com/barabeke': _t([
-      '@barabeke on X',              // en
-      '@barabeke su X',              // it
-      '@barabeke en X',              // es
-      '@barabeke sur X',             // fr
-      '@barabeke auf X',             // de
-      '@barabeke no X',              // pt
-      '@barabeke na X',              // pl
-    ]),
+    'https://x.com/barabeke':              '@barabeke on X',
     'https://www.instagram.com/barabeke/': 'Instagram',
     'https://www.facebook.com/barabeke/':  'Facebook',
   };
