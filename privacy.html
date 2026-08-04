@@ -482,7 +482,7 @@
 
     <div class="page-eyebrow">demianism.org</div>
     <h1 class="page-title">Privacy Policy</h1>
-    <div class="page-date">Last updated: June 2026</div>
+    <div class="page-date">Last updated: August 2026</div>
 
     <!-- TABLE OF CONTENTS -->
     <nav class="toc" aria-label="Contents">
@@ -496,6 +496,7 @@
         <li><a href="#what-demian-collects">What data Demian collects</a></li>
         <li><a href="#legal-basis">Legal basis for processing</a></li>
         <li><a href="#transfers">International data transfers</a></li>
+        <li><a href="#us-processing">Which model handles your conversation, and where</a></li>
         <li><a href="#safety">Safety</a></li>
         <li><a href="#architecture">How anonymization actually works</a></li>
         <li><a href="#consent">Consent</a></li>
@@ -511,8 +512,13 @@
     <h2 id="controller">Data controller</h2>
     <p>
       The data controller for all processing described in this policy is Barabeke, an independent
-      creator operating from the EU. Contact details are in the <a href="#contact">Contact</a> section below.
-      As an EU-based operator, all processing is subject to the General Data Protection Regulation (GDPR).
+      creator: an Italian national established in the European Union. Contact details are in the
+      <a href="#contact">Contact</a> section below. All processing is therefore subject to the
+      General Data Protection Regulation (GDPR) and to the national data protection law of the
+      Member State of establishment. Any data subject may raise a matter directly by email, or
+      lodge a complaint with the supervisory authority of their own Member State; where a matter
+      needs to be referred to the authority competent for the controller, that authority will be
+      identified on request.
     </p>
 
     <hr class="divider">
@@ -562,7 +568,7 @@
       <div class="part-label">Part II</div>
       <div class="part-title" id="demian-intro">Demian AI — the sub-service</div>
       <div class="part-sub">
-        A distinct product hosted at demianism.org/demian. Demian has its own user accounts,
+        A distinct product hosted at demian.demianism.org. Demian has its own user accounts,
         payment flow, and data practices, described in full below.
       </div>
     </div>
@@ -582,20 +588,22 @@
         conscious being. Demian's AI capabilities are delivered through
         <strong>Requesty</strong> (<a href="https://www.requesty.ai" target="_blank">requesty.ai</a>),
         an EU-based AI gateway that routes requests to one or more large language models depending
-        on the nature of the conversation. Requesty acts as the sole data processor for all AI
-        inference and is bound by a Data Processing Agreement compliant with GDPR.
+        on the nature of the conversation. Requesty is a data processor bound by a GDPR-compliant
+        Data Processing Agreement; the model providers it routes to act as sub-processors, and each
+        one is named in <a href="#us-processing">Which model handles your conversation, and
+        where</a> below.
       </p>
 
       <h2 id="what-demian-collects">What data Demian collects and why</h2>
 
       <p>
-        <strong>Conversation content.</strong> Your messages and Demian's responses are processed
-        exclusively through Requesty's infrastructure, hosted in <strong>Frankfurt, Germany</strong>.
-        Data never leaves EU jurisdiction. Requesty applies zero data retention by default:
-        your prompts and completions are proxied in real time and immediately discarded after
-        delivery — they are never stored on Requesty's servers. All data in transit is protected
-        by TLS 1.3 encryption. Requesty does not use conversation data to train AI models and
-        does not share it with third parties.
+        <strong>Conversation content.</strong> Your messages and Demian's responses are routed through
+        <strong>Requesty</strong>, an EU-based AI gateway (Frankfurt, Germany) acting as data
+        processor under a GDPR Data Processing Agreement. Requesty itself never stores prompts or
+        completions — each conversation is proxied in real time, encrypted in transit (TLS 1.3), and
+        discarded after delivery. Requesty forwards your message to an underlying model provider, and it
+        is that provider's own retention and location that apply from there — see
+        <a href="#us-processing">Which model handles your conversation, and where</a> below.
       </p>
 
       <p>
@@ -615,6 +623,56 @@
       <p>
         <strong>IP address.</strong> Used temporarily for rate limiting and session management.
         Not stored permanently. Not linked to conversation content in logs.
+      </p>
+
+      <h2 id="us-processing">Which model handles your conversation, and where</h2>
+
+      <p>
+        Demian runs on a mix of AI models, not a single one. Our preference, and the direction we're
+        moving in, is toward EU-based providers with zero data retention and no use for training. Today,
+        that is not yet the default: on every plan, including free, conversation content is processed by
+        a GPT-family model reached through Requesty and hosted on <strong>OpenAI's US infrastructure</strong>.
+        We use it because it currently offers the best balance of quality and cost for an
+        independently-funded, one-person product.
+      </p>
+
+      <p>
+        OpenAI retains this content for up to <strong>30 days</strong>, solely for abuse monitoring, then
+        deletes it — it is not used to train OpenAI's models. This is governed by OpenAI's
+        <a href="https://openai.com/policies/data-processing-addendum/" target="_blank">Data Processing
+        Addendum</a> (not the consumer ChatGPT policy), which relies on Standard Contractual Clauses and
+        OpenAI's certification under the <strong>EU–US Data Privacy Framework</strong> — the
+        GDPR-recognised mechanisms for this kind of transfer.
+      </p>
+
+      <p>
+        <strong>Everyone consents to this before it happens.</strong> Registered users confirm it at
+        registration, as a dedicated step separate from general privacy consent. Anonymous free-tier
+        users are asked before their very first message is sent: the message is held in the composer,
+        the transfer and the 30-day retention are stated on screen, and nothing leaves the browser
+        until they accept. Declining sends nothing and loses nothing — the message stays where it
+        was. Because a conversation with Demian may touch your religious or philosophical beliefs — a
+        special category of personal data under GDPR Article 9 — that processing is covered by the
+        same explicit consent, on both paths.
+      </p>
+
+      <p>
+        <strong>Other processing of the same content.</strong> Alongside the model that writes
+        Demian's replies, a small amount of automated background processing runs on your messages:
+        a per-turn safety classifier, hosted by Microsoft Azure in <strong>France</strong>; and
+        conversation summaries and coarse intent classification, hosted by
+        <a href="https://sference.com" target="_blank">sference</a> on <strong>EU</strong>
+        infrastructure with no retention and no training use. Some safety-flagged turns are also
+        answered by that EU-hosted model rather than by OpenAI. Those routing decisions are made for
+        response quality and safety-behaviour reasons, not as a privacy guarantee — no category of
+        conversation is promised EU-only handling.
+      </p>
+
+      <p>
+        Regardless of which model handles a message, the anonymization architecture described in
+        <a href="#architecture">How anonymization actually works</a> below applies identically — no
+        conversation record, on any model, carries an identity field. This page will be updated as our
+        model mix changes.
       </p>
 
       <h2 id="architecture">How anonymization actually works</h2>
@@ -645,10 +703,39 @@
       <h2 id="consent">Consent</h2>
 
       <p>
-        Registering an account requires actively confirming you have read and accept this Privacy
-        Policy, presented as an explicit checkbox at the point of registration — not a passive
-        assumption. This consent is recorded with a timestamp. You do not need to register, and do
-        not need to give any consent, to use Demian's free tier anonymously.
+        <strong>If you register.</strong> Registration requires three separate, explicit, timestamped
+        confirmations, not one bundled acceptance: that you have read and accept this Privacy Policy;
+        that you understand conversations may be processed by OpenAI in the US with 30-day
+        abuse-monitoring retention; and that you consent to the processing of content revealing your
+        religious or philosophical beliefs under GDPR Article 9(2)(a). Each is recorded with its own
+        timestamp on your account record.
+      </p>
+
+      <p>
+        <strong>If you don't register.</strong> You can use the free tier anonymously, and the free
+        tier is processed the same way — so it is gated the same way. Before your first message is
+        sent, a window states the three points above and asks you to accept or decline. Nothing is
+        transmitted until you accept. Accepting records an entry against that conversation's random
+        session ID — the version of the wording you saw, and when you agreed — and nothing else: no
+        IP address, no device identifier, no email. That record is what lets us show, later, on what
+        basis a given conversation was processed, without it ever pointing back to a person. It is
+        kept for 3 years.
+      </p>
+
+      <p>
+        <strong>Purchases.</strong> Before checkout you are asked to confirm that you want immediate
+        delivery of what you're buying and that you understand this ends the 14-day right of
+        withdrawal once delivery has happened — a requirement of EU consumer law, not of data
+        protection law. That confirmation is a condition of proceeding to payment.
+      </p>
+
+      <p>
+        <strong>Withdrawing consent.</strong> You can withdraw at any time by writing to
+        <a href="mailto:demian@demianism.org">demian@demianism.org</a>, or, on the free tier, simply
+        by clearing your browser storage — the window will ask again, and declining stops the
+        processing. Withdrawal doesn't undo processing that already lawfully happened, and it means
+        Demian can no longer be used, since there is no version of the service that doesn't involve
+        this transfer.
       </p>
 
 
@@ -672,17 +759,38 @@
       <p><strong>Contract performance</strong> — processing your email and payment data to deliver
       the service you purchased.</p>
 
-      <p><strong>Consent</strong> — if you choose to share personal information that would make you
-      identifiable during a conversation (Demian never asks for it), that is your own choice.
-      Consent is also the basis for any optional email communications.</p>
+      <p><strong>Consent</strong> — under GDPR Article 9(2)(a), the basis for processing any content
+      revealing your religious or philosophical beliefs, which is asked as its own explicit,
+      specific point rather than bundled into a single blanket acceptance. Every user gives this
+      before any content is sent, registered or anonymous (see <a href="#consent">Consent</a>).
+      Consent is also the basis for any optional email communications. If you choose to share
+      personal information that would make you identifiable during a conversation (Demian never asks
+      for it), that too is your own choice.</p>
+
+      <p>
+        <strong>A note on the US transfer specifically.</strong> The transfer to OpenAI does not rest
+        on your consent. It rests on the European Commission's adequacy decision for the EU–US Data
+        Privacy Framework, with Standard Contractual Clauses in OpenAI's Data Processing Addendum as
+        an independent second mechanism. We ask you to confirm you understand it anyway, before the
+        first message, because you should know where your words go before they go there — not
+        because your agreement is what makes it lawful. The practical consequence is that if the
+        Framework were ever suspended or annulled, the transfer would continue to stand on the
+        Clauses, and this page would be updated to say so.
+      </p>
 
       <h2 id="transfers">International data transfers</h2>
 
       <p>
-        AI inference is processed exclusively through Requesty's EU infrastructure in Frankfurt,
-        Germany. No conversation data leaves the European Union at any point. This means there are
-        no international data transfers to declare for AI processing — Requesty's gateway is both
-        the technical and legal boundary.
+        Conversation content, across every plan, is transferred to the United States for processing by
+        OpenAI, under Standard Contractual Clauses and OpenAI's EU–US Data Privacy Framework
+        certification — see <a href="#us-processing">Which model handles your conversation, and
+        where</a> above for the full explanation.
+      </p>
+
+      <p>
+        The other processing described in that section — the safety classifier (Microsoft Azure,
+        France), and summaries, intent classification and safety-routed replies (sference, EU) —
+        stays within the EU and involves no international transfer.
       </p>
 
       <p>
@@ -693,20 +801,20 @@
       <h2 id="safety">Safety</h2>
 
       <p>
-        Demian's safety relies on trained safety behaviors built into the underlying AI models,
-        which handle self-harm signals, clinical crises, and other high-risk content carefully at
-        the moment a response is generated. This is a property of the models themselves, not a
-        separate monitoring system.
+        Demian's safety relies on trained safety behaviors built into the underlying AI models, which
+        handle self-harm signals, clinical crises, and other high-risk content at the moment a response
+        is generated, alongside an automated classifier — a small model hosted by Microsoft Azure in
+        France — that reads each turn and can route the conversation to a different model when it
+        needs steadier handling. This is a property of how Demian is built, not a separate human
+        monitoring system.
       </p>
 
       <p>
-        Human review of conversation logs is technically possible — for continuous improvement of the
-        service, or for legal protection in case of safety concerns — the same way it is for any AI
-        service. What review can never do is identify you: conversations are anonymized by the system
-        and are not joined to any account, email, or payment record under any circumstance. The only
-        way a conversation could ever be associated with you is if you yourself choose to share
-        identifying personal details in the conversation — which Demian is instructed never to ask
-        for, beyond what is reasonably needed to provide the service.
+        Human review of conversation logs is technically possible — for service improvement or legal
+        protection — as with any AI service. It can never identify you: conversations are anonymized and
+        never joined to any account, email, or payment record. The only way a conversation could be
+        associated with you is if you yourself share identifying details in it — which Demian is
+        instructed never to ask for.
       </p>
 
       <h2 id="your-rights">Your rights under GDPR</h2>
@@ -721,7 +829,9 @@
         Because conversations are logged anonymously, fulfilling access or erasure requests for
         conversation content requires you to provide your session ID (visible in your browser's
         developer tools under network requests to the Demian backend). Without it, individual
-        conversations cannot be identified.
+        conversations cannot be identified. The same applies to the anonymous consent record, which
+        is filed under that same session ID; note that erasing it also erases the evidence that the
+        conversation was authorised, so we will confirm before doing so.
       </p>
 
       <p>
@@ -733,14 +843,35 @@
 
       <p>
         Anonymous conversation logs: 12 months, then automatically deleted.<br>
+        Conversation content at OpenAI (US), across every plan: up to 30 days for abuse monitoring, then
+        deleted; not used for training. See
+        <a href="#us-processing">Which model handles your conversation, and where</a>.<br>
         Email addresses (paying users): retained while the account is active, deleted within 30 days
         of a deletion request.<br>
+        Consent records (anonymous free tier): 3 years, holding only the session ID, the wording
+        version accepted, and the timestamp — the legally required proof that processing was
+        authorised.<br>
+        Consent records (registered users): three timestamps on the account record, for as long as
+        the account exists.<br>
         Payment records: retained as required by applicable tax law, stored by Stripe.
       </p>
 
       <h2 id="age">Age</h2>
 
-      <p>Demian is intended for users aged 16 and over. If you are under 16, please do not use this service. By using Demian, you confirm that you are at least 16 years old.</p>
+      <p>
+        Demian is for people aged 16 and over, and the limit is enforced rather than merely stated.
+        You are asked to confirm your age in two places: before your first message, alongside the
+        consent window, and again at registration, where an account cannot be created without it.
+        Declaring yourself under 16 blocks the service — it does not simply return you to the
+        conversation to try a different answer. That declaration persists across visits.
+      </p>
+      <p>
+        This is a self-declaration, not identity verification, and no honest service at this scale
+        can claim otherwise: verifying age properly would mean collecting documents from everyone,
+        which would destroy the anonymity the rest of this policy is built on. What it does mean is
+        that no one under 16 reaches Demian without actively misstating their age, and that anyone
+        who tells the truth is stopped.
+      </p>
 
     </div><!-- end .demian-part -->
 
