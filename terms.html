@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms &amp; Conditions — demianism.org</title>
+
+<!-- Favicons -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+<link rel="manifest" href="site.webmanifest">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* =====================================================================
+     RESET & BASE
+     ===================================================================== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Libre Baskerville', serif;
+    margin: 0;
+    padding: 0;
+    color: #d4d4f0;
+    font-size: 20px;
+    line-height: 1.8;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
+      radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
+      radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
+      #000000;
+    min-height: 100vh;
+  }
+
+  /* =====================================================================
+     NAVBAR
+     ===================================================================== */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 38px;
+    padding: 0 26px;
+    height: 64px;
+    background: rgba(18,16,40,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #6864bb33;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .nav-logo img {
+    height: 44px;
+    width: auto;
+    display: block;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 38px;
+  }
+
+  .nav-links a {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6864bb;
+    text-decoration: none;
+    transition: color 0.25s ease;
+    white-space: nowrap;
+  }
+
+  .nav-links a:hover { color: #a29ef1; }
+
+  .nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+
+  .demian-ai {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    opacity: 1;
+    transition: opacity 0.25s ease;
+  }
+
+  .demian-ai:hover { opacity: 0.8; text-decoration: none; }
+
+  .demian-ai img {
+    height: 18px;
+    width: auto;
+    display: block;
+  }
+
+  .try-free {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #cfcfd4;
+    background-color: #35327e;
+    border: 1px solid #6864bb55;
+    padding: 8px 16px;
+    border-radius: 30px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+  }
+
+  .try-free:hover {
+    background-color: #6864bb;
+    color: #ffffff;
+    box-shadow: 0 0 18px rgba(104,100,187,0.6);
+    text-decoration: none;
+  }
+
+  .nav-demian-mobile { display: none; }
+
+  /* ── Hamburger ──────────────────────────────────────────── */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    margin-left: auto;
+  }
+
+  .nav-hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: #cfcfd4;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ── Mobile ─────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .navbar { gap: 0; }
+
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      position: fixed;
+      top: 64px;
+      left: 0; right: 0;
+      background: rgba(18,16,40,0.98);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid #6864bb44;
+      padding: 20px 0 28px;
+      z-index: 999;
+    }
+
+    .nav-links.open { display: flex; }
+
+    .nav-links a {
+      font-size: 16px;
+      padding: 12px 0;
+      width: 100%;
+      text-align: center;
+      border-bottom: 1px solid #6864bb18;
+      white-space: normal;
+    }
+
+    .nav-links a:last-child { border-bottom: none; }
+
+    .nav-links .nav-demian-mobile {
+      display: flex;
+      justify-content: center;
+      padding: 18px 0 4px;
+      border-bottom: none;
+      opacity: 1;
+      transition: opacity 0.25s;
+    }
+
+    .nav-links .nav-demian-mobile:hover { opacity: 0.8; }
+    .nav-links .nav-demian-mobile img { height: 20px; width: auto; }
+
+    .nav-right { display: none; }
+    .nav-hamburger { display: flex; }
+  }
+
+  /* =====================================================================
+     PAGE CONTENT
+     ===================================================================== */
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+
+  /* ── Page header ─────────────────────────────────────────────────── */
+  .page-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #6864bb;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .page-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #cfcfd4;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .page-date {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: rgba(138,135,201,0.5);
+    text-align: center;
+    letter-spacing: 1px;
+    margin-bottom: 44px;
+  }
+
+  /* ── TOC ─────────────────────────────────────────────────────────── */
+  .toc {
+    background: #171637;
+    border: 1px solid rgba(104,100,187,0.2);
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin-bottom: 52px;
+  }
+
+  .toc-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #a29ef1;
+    margin-bottom: 16px;
+  }
+
+  .toc ol {
+    columns: 2;
+    column-gap: 28px;
+    padding-left: 18px;
+    margin: 0;
+  }
+
+  .toc li {
+    margin-bottom: 6px;
+    break-inside: avoid;
+  }
+
+  .toc a {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #6864bb;
+    text-decoration: none;
+  }
+
+  .toc a:hover { color: #a29ef1; text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    .toc ol { columns: 1; }
+  }
+
+  /* ── Section headings & text ─────────────────────────────────────── */
+  h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #a29ef1;
+    margin: 36px 0 12px;
+    scroll-margin-top: 80px;
+  }
+
+  /* Subordinate to h2: same family, no uppercase, dimmer. Used to break the
+     model-routing section into free / paid / background without promoting
+     each one to a table-of-contents entry. */
+  h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: #cfcfd4;
+    margin: 28px 0 10px;
+    scroll-margin-top: 80px;
+  }
+
+  p {
+    margin-bottom: 14px;
+    color: #d4d4f0;
+  }
+
+  p:last-of-type { margin-bottom: 0; }
+
+  strong { color: #d4d4f0; font-weight: 700; }
+
+  a { color: #7b79d4; text-decoration: none; }
+  a:hover { color: #b8b6f5; text-decoration: underline; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(104,100,187,0.15);
+    margin: 36px 0;
+  }
+
+  /* ── Part labels ─────────────────────────────────────────────────── */
+  .part-block {
+    margin-top: 52px;
+  }
+
+  .part-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(104,100,187,0.45);
+    margin-bottom: 5px;
+  }
+
+  /* Same colour as h2 (Analytics & Cookies etc.) but larger */
+  .part-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #a29ef1;
+    margin-bottom: 6px;
+    line-height: 1.35;
+  }
+
+  .part-sub {
+    font-family: 'Libre Baskerville', serif;
+    margin: 0;
+    padding: 0;
+    font-style: italic;
+    font-size: 15px;
+    color: rgba(212,212,240,0.55);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  /* ── Demian section accent ───────────────────────────────────────── */
+  .demian-part {
+    border-left: 2px solid rgba(104,100,187,0.3);
+    padding-left: 24px;
+    margin-left: -24px;
+  }
+
+  /* ── Back buttons ────────────────────────────────────────────────── */
+  .back-wrap {
+    margin-top: 52px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .back {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6864bb;
+    text-decoration: none;
+    border: 1px solid rgba(104,100,187,0.3);
+    border-radius: 30px;
+    padding: 9px 20px;
+    transition: all 0.2s;
+  }
+
+  .back:hover {
+    background: rgba(104,100,187,0.12);
+    color: #a29ef1;
+    text-decoration: none;
+  }
+
+  /* =====================================================================
+     FOOTER
+     ===================================================================== */
+  .footer-separator {
+    border: none;
+    border-top: 1px solid #6864bb28;
+    margin: 0;
+  }
+
+  .site-footer {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 20px 40px;
+    text-align: center;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 16px;
+    color: #6864bb;
+    line-height: 1.6;
+  }
+
+  .footer-logo {
+    width: 94px;
+    height: 94px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 6px;
+  }
+
+  .site-footer a { color: #a29ef1; text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; color: #cfcfd4; }
+
+  .footer-links {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #4a4780;
+  }
+
+  .footer-links a { color: #4a4780; }
+  .footer-links a:hover { color: #6864bb; }
+
+  .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
+</style>
+</head>
+
+<body>
+
+  <!-- ================================================================
+       NAVBAR
+       ================================================================ -->
+  <nav class="navbar">
+    <a href="/" class="nav-logo" aria-label="Demianism home">
+      <img src="demianismlogo.png" alt="Demianism">
+    </a>
+    <div class="nav-links" id="nav-links">
+      <a href="/doctrine">Sacred Doctrine</a>
+      <a href="/culture">Culture</a>
+      <a href="/origin">Origin</a>
+      <a href="/about">Who is Barabeke?</a>
+      <a href="/donate">Donate</a>
+      <a href="/community">Join</a>
+      <a href="/demian" class="nav-demian-mobile">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="/demian" class="demian-ai">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+      <a href="/demian" class="try-free">Try Free</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ================================================================
+       TERMS & CONDITIONS CONTENT
+       ================================================================ -->
+  <main class="wrap">
+
+    <div class="page-eyebrow">demianism.org</div>
+    <h1 class="page-title">Terms &amp; Conditions</h1>
+    <div class="page-date">Last updated: August 2026</div>
+
+    <!-- TABLE OF CONTENTS -->
+    <nav class="toc" aria-label="Contents">
+      <div class="toc-label">Contents</div>
+      <ol>
+        <li><a href="#parties">Who these terms are with</a></li>
+        <li><a href="#what-demian-is">What Demian is — and is not</a></li>
+        <li><a href="#age">Age and eligibility</a></li>
+        <li><a href="#account">Your account</a></li>
+        <li><a href="#what-you-buy">What you can buy</a></li>
+        <li><a href="#prices">Prices, tax and payment</a></li>
+        <li><a href="#withdrawal">Immediate delivery and the 14-day right of withdrawal</a></li>
+        <li><a href="#credit">How credit works</a></li>
+        <li><a href="#gifts">Gift codes</a></li>
+        <li><a href="#refunds">Refunds and complaints</a></li>
+        <li><a href="#acceptable-use">Acceptable use</a></li>
+        <li><a href="#not-emergency">Not an emergency service</a></li>
+        <li><a href="#ip">Intellectual property</a></li>
+        <li><a href="#availability">Availability and changes</a></li>
+        <li><a href="#liability">Liability</a></li>
+        <li><a href="#data">Personal data</a></li>
+        <li><a href="#changes">Changes to these terms</a></li>
+        <li><a href="#law">Which law applies, and disputes</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ol>
+    </nav>
+
+    <!-- PARTIES -->
+    <h2 id="parties">Who these terms are with</h2>
+    <p>
+      These terms govern your use of <strong>demianism.org</strong> and of <strong>Demian AI</strong>,
+      the sub-service hosted at demian.demianism.org. Both are operated by Barabeke, an independent
+      creator established in the European Union. Full provider identification is in the
+      <a href="/impressum">Impressum</a>. There is no company, no team, and no institution behind this
+      — it is a one-person project, and these terms are written on that basis rather than copied from
+      a template built for something larger.
+    </p>
+    <p>
+      By using the website you accept these terms. By registering for Demian AI, or by making a
+      purchase, you accept them as the contract between us. If you do not accept them, do not use
+      the service — nothing here is bundled into something you cannot decline.
+    </p>
+    <p>
+      These terms are written for consumers. If you are buying as a business, the consumer-specific
+      protections described below — in particular the right of withdrawal — may not apply to you,
+      though everything else here does.
+    </p>
+
+    <hr class="divider">
+
+    <!-- WHAT DEMIAN IS -->
+    <h2 id="what-demian-is">What Demian is — and is not</h2>
+    <p>
+      Demian is an <strong>AI spiritual companion grounded in Demianist doctrine</strong>. It runs on
+      large language models reached through an AI gateway. It is software, not a person, and it never
+      claims otherwise: it will confirm that it is an AI at any point in a conversation, however the
+      question is put.
+    </p>
+    <p>
+      <strong>Demian is not a substitute for professional help.</strong> It does not provide medical,
+      psychological, psychiatric, legal, financial, or tax advice, and nothing it says should be
+      treated as any of those. It is not therapy and its author is not a licensed practitioner. If
+      you are dealing with something that needs a doctor, a therapist, a lawyer, or an accountant, see
+      one — Demian may be useful alongside that, never in place of it.
+    </p>
+    <p>
+      <strong>Demian speaks from a specific doctrine, and does not pretend to be neutral.</strong>
+      Demianism is a revealed doctrine with its own axioms and its own positions, some of which sit
+      against the dominant assumptions of contemporary culture. Demian is built to reason from that
+      doctrine honestly rather than to agree with you. You may find its positions wrong, and you are
+      free to say so, to disagree with it, and to stop using it. What you should not expect is that it
+      will abandon its positions in order to be more comfortable.
+    </p>
+    <p>
+      <strong>AI output is not guaranteed to be correct.</strong> Language models can be wrong, can
+      misunderstand, and can state things confidently that are untrue. Nothing Demian produces —
+      including a mantra or a Metatron reading — is a prediction, a diagnosis, a guarantee, or a
+      professional assessment. Decisions you take about your life remain yours, and the responsibility
+      for them stays with you.
+    </p>
+
+    <hr class="divider">
+
+    <!-- AGE -->
+    <h2 id="age">Age and eligibility</h2>
+    <p>
+      Demian is for people aged <strong>16 or over</strong>. You are asked to confirm your age before
+      your first message, and registration requires the same confirmation. If you are under 16, you may
+      not use Demian, and an account found to belong to someone under 16 will be closed.
+    </p>
+    <p>
+      Where the law of your country sets a higher age for consenting to this kind of service or to the
+      processing of data revealing religious or philosophical beliefs, that higher age applies to you
+      instead.
+    </p>
+
+    <hr class="divider">
+
+    <!-- ACCOUNT -->
+    <h2 id="account">Your account</h2>
+    <p>
+      You can use the free tier without registering. An account is needed only to purchase, and it
+      requires an email address and nothing else — no real name, no phone number, no address, no date
+      of birth beyond the yes-or-no age check.
+    </p>
+    <p>
+      You are responsible for keeping access to the email address your account is tied to, since that
+      address is the only way your purchases can be recovered. Do not share your account. If you
+      believe someone else has gained access to it, write to
+      <a href="mailto:demian@demianism.org">demian@demianism.org</a>.
+    </p>
+    <p>
+      You may ask for your account to be deleted at any time. Deleting it removes your email record;
+      it does not, and cannot, retrieve conversation logs that were never linked to you in the first
+      place. How that works is set out in the <a href="/privacy">Privacy Policy</a>. Any unused credit
+      is forfeited on deletion — say so first if that matters to you, and it can be dealt with before
+      the account goes.
+    </p>
+
+    <hr class="divider">
+
+    <!-- WHAT YOU CAN BUY -->
+    <h2 id="what-you-buy">What you can buy</h2>
+    <p>
+      <strong>The free tier.</strong> Ten exchanges, no registration, no payment, no card details.
+      It is a real conversation, not a scripted demo — but it is not the full Demian either, and it is
+      worth knowing what it is before you judge the paid tiers by it. The free tier runs on a
+      lightweight model, it has no access to Companion mode, and a personal mantra cannot be built in
+      it. It is enough to see whether Demian is worth anything to you; it is not the depth the paid
+      tiers run at.
+    </p>
+    <p>
+      <strong>The Mantra — €3, one-off.</strong> A focused session whose purpose is to craft your own
+      personal mantra: a short phrase shaped to you, which you approve, delivered also as a card image
+      you can keep. If you have not yet identified your Call, finding it is part of the session. After
+      the mantra is delivered you receive <strong>15 exchanges in Companion mode</strong> and, at the
+      end of those, <strong>one Metatron reading</strong>. Two limits apply to those 15 exchanges and
+      are stated here rather than left to be discovered: they run at standard Companion depth, so
+      Demian Plus is not included, and the Metatron reading is one, arriving at the end. There is no
+      subscription and nothing renews.
+    </p>
+    <p>
+      <strong>Companion credit — €5, €10, €20 or €50.</strong> Companion is sold as credit, not as a
+      plan. You buy a euro amount and each exchange draws its real measured cost from it. The larger
+      sizes carry a bonus, which is extra credit rather than a discount — you pay the headline price
+      and receive more than you paid to spend:
+    </p>
+    <p>
+      €5 → €5.00 of credit · €10 → €11.00 (+€1) · €20 → €23.00 (+€3) · €50 → €60.00 (+€10).
+    </p>
+    <p>
+      There is no subscription, nothing recurs, and nothing is charged automatically. Every purchase
+      on this service is a single payment you make deliberately.
+    </p>
+
+    <hr class="divider">
+
+    <!-- PRICES -->
+    <h2 id="prices">Prices, tax and payment</h2>
+    <p>
+      Demian is available worldwide. All prices are in euro, whatever country you are in; your bank or
+      card issuer converts to your own currency at its rate, and any conversion fee it charges is
+      between you and them.
+    </p>
+    <p>
+      <strong>Tax.</strong> Where sales tax, VAT, GST or an equivalent is due on a digital service in
+      your country, it is calculated and collected at checkout at the rate applying to you, and shown
+      before you pay. Prices are displayed inclusive of it. Where no such tax applies to you, none is
+      added. You do not need to work out which case you are in — the checkout does it.
+    </p>
+    <p>
+      <strong>Payments are handled entirely by Stripe.</strong> Card details are collected on Stripe's
+      own checkout page and never reach Demian's systems at any point. Stripe's terms and privacy
+      policy apply to the payment itself. A receipt is issued by Stripe to the email address you give
+      at checkout.
+    </p>
+    <p>
+      Prices may change. A change never affects a purchase already made, and never affects credit
+      already in your balance — what you bought at the price you paid is yours on those terms.
+    </p>
+
+    <hr class="divider">
+
+    <!-- WITHDRAWAL — the important one -->
+    <h2 id="withdrawal">Immediate delivery and the 14-day right of withdrawal</h2>
+    <p>
+      Under EU consumer law you normally have <strong>14 days</strong> to withdraw from a contract
+      concluded online, without giving a reason. There is an exception for digital content and digital
+      services delivered immediately, and it is directly relevant here, so it is spelled out rather
+      than buried.
+    </p>
+    <p>
+      Everything sold here is delivered at once: a mantra session begins the moment you return from
+      checkout, and credit is available to spend as soon as it lands. Before you pay, you are asked to
+      confirm two things — that you <strong>expressly request immediate performance</strong>, and that
+      you <strong>acknowledge that you thereby lose your right of withdrawal</strong> once performance
+      has begun. That confirmation is a condition of proceeding to payment, and it is recorded.
+    </p>
+    <p>
+      The practical effect: <strong>once a mantra session has started, or once purchased credit has
+      been used, the 14-day right no longer applies to that purchase.</strong> This is not a waiver of
+      your rights invented here — it is Article 16(m) of Directive 2011/83/EU, and it only holds
+      because you were asked first and told plainly what you were agreeing to.
+    </p>
+    <p>
+      <strong>Where the right does still apply.</strong> If you bought credit and have not spent any of
+      it, performance has not begun and you keep the full 14-day right of withdrawal — write to
+      <a href="mailto:demian@demianism.org">demian@demianism.org</a> within 14 days of purchase and the
+      payment will be refunded in full, no reason needed. The same applies to a mantra you paid for but
+      never began.
+    </p>
+
+    <hr class="divider">
+
+    <!-- CREDIT -->
+    <h2 id="credit">How credit works</h2>
+    <p>
+      Credit is a euro balance. Each exchange debits the real measured cost of producing it, multiplied
+      by a factor that covers infrastructure and the running of the service. The remaining balance is
+      always visible in your usage panel, along with a per-purchase record of what you bought and what
+      it has been spent on. Nothing about the metering is hidden from you.
+    </p>
+    <p>
+      <strong>Credit does not expire.</strong> There is no clock on it, no dormancy fee, no
+      forfeiture for not coming back. It waits.
+    </p>
+    <p>
+      Credit is personal to your account. It cannot be transferred to another account, sold, or
+      exchanged for cash. Different Demian modes cost different amounts per exchange — Demian Plus and
+      a Metatron reading draw more than a standard exchange — and this is shown rather than smoothed
+      over, so that you can see what you are spending.
+    </p>
+    <p>
+      Bonus credit is granted as part of a purchase and has no independent cash value. Where a refund
+      is due on a purchase that carried a bonus, the refund is of the amount you actually paid.
+    </p>
+
+    <hr class="divider">
+
+    <!-- GIFTS -->
+    <h2 id="gifts">Gift codes</h2>
+    <p>
+      Completing a Mantra earns you a code you can give to someone else, which grants them a full
+      Mantra session at no charge. A gift code is an invitation, not a transfer of value: it has no
+      cash value, cannot be sold or exchanged, and is redeemable once. Codes may carry an expiry, which
+      is stated when the code is issued.
+    </p>
+
+    <hr class="divider">
+
+    <!-- REFUNDS -->
+    <h2 id="refunds">Refunds and complaints</h2>
+    <p>
+      Refunds are given on two grounds, both of them things that can be checked rather than argued
+      about:
+    </p>
+    <p>
+      <strong>1. You have not used what you bought.</strong> Credit you have not spent, or a mantra
+      session you paid for and never began, is refunded in full on request — this is the statutory
+      right of withdrawal described <a href="#withdrawal">above</a>, and it needs no reason.
+    </p>
+    <p>
+      <strong>2. The service failed on our side.</strong> A session that broke, credit charged but not
+      granted, a mantra or a reading that never arrived, or a technical fault that materially spoiled
+      what you paid for. Write, say what happened and roughly when, and it will be fixed or refunded.
+      A session ID helps but is not required.
+    </p>
+    <p>
+      <strong>What is not a ground for a refund:</strong> having used the service and not liked the
+      result. The computation was performed, the session ran, and the mantra was built with you and
+      approved by you before delivery. That is what you paid for. This is said plainly here rather than
+      left ambiguous, because an unclear refund policy is worse for you than a strict one — you should
+      know before paying, not after.
+    </p>
+    <p>
+      Beyond those two grounds, whether to refund anything is a decision made case by case, as a matter
+      of goodwill rather than entitlement. Ask if you think you have a case.
+    </p>
+    <p>
+      Nothing in these terms limits your statutory rights as a consumer, including the right to a
+      remedy where a digital service is not supplied at all, or is not in conformity with what was
+      described to you.
+    </p>
+
+    <hr class="divider">
+
+    <!-- ACCEPTABLE USE -->
+    <h2 id="acceptable-use">Acceptable use</h2>
+    <p>
+      Use Demian for yourself, honestly. Specifically, you agree not to:
+    </p>
+    <p>
+      · use it to harm yourself or anyone else, or to plan or facilitate anything illegal;<br>
+      · attempt to extract, reconstruct, or reverse-engineer its system prompts, doctrinal modules, or
+      routing logic, or to use it as a means of accessing the underlying models directly;<br>
+      · automate, scrape, resell, or rebrand access to it;<br>
+      · misrepresent your age, or create an account on behalf of someone under 16;<br>
+      · circumvent the free-tier limits, the credit system, or the safety behaviours;<br>
+      · submit content you have no right to submit, or another person's personal data.
+    </p>
+    <p>
+      Accounts may be suspended or closed for a serious or repeated breach. Where that happens and
+      unused credit remains, the credit is refunded unless the breach involved fraud or a chargeback.
+      A single misjudged message is not a breach — this clause exists for deliberate abuse, not for
+      ordinary human conversation, however difficult its subject.
+    </p>
+
+    <hr class="divider">
+
+    <!-- EMERGENCY -->
+    <h2 id="not-emergency">Not an emergency service</h2>
+    <p>
+      <strong>Demian cannot help in an emergency and must never be relied on as though it could.</strong>
+      It cannot identify you, cannot locate you, cannot contact emergency services, cannot notify anyone,
+      and has no channel through which to send help. It has no human on the other end.
+    </p>
+    <p>
+      If you are in danger, or thinking about harming yourself, contact your local emergency number or a
+      crisis line in your country now. Demian will urge exactly this, and it is the right advice rather
+      than a disclaimer.
+    </p>
+
+    <hr class="divider">
+
+    <!-- IP -->
+    <h2 id="ip">Intellectual property</h2>
+    <p>
+      <strong>What is yours.</strong> What you write stays yours. Your personal mantra, and any Metatron
+      reading produced for you, are yours to keep, print, share, and use however you wish, personally or
+      commercially, with no attribution required and no licence needed. They were made for you. Nothing
+      you write is used to train any AI model — see the <a href="/privacy">Privacy Policy</a>.
+    </p>
+    <p>
+      <strong>What is not.</strong> The Demianist doctrine, the published texts, the site's design,
+      Demian's software, its doctrinal modules, and the names Demian, Demianism and Barabeke remain the
+      property of their author. Site content is published under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a>:
+      you may share it with attribution, but not commercially and not in modified form. That licence
+      covers published content, not the software or the prompts behind Demian, which are not licensed for
+      reuse at all.
+    </p>
+
+    <hr class="divider">
+
+    <!-- AVAILABILITY -->
+    <h2 id="availability">Availability and changes</h2>
+    <p>
+      This is a one-person project running on third-party infrastructure and third-party AI providers.
+      No uptime is promised, and there will be interruptions — for maintenance, for provider outages, and
+      occasionally because something broke. Where an interruption prevents you from using credit you paid
+      for, the credit is still there afterwards; it is not consumed by downtime.
+    </p>
+    <p>
+      Demian evolves. Which AI models sit behind it, how modes are structured, and what the interface
+      looks like may all change, and improvements are made continuously without notice. What will not
+      change without notice is a price you have already paid or credit you already hold.
+    </p>
+    <p>
+      If the service were ever discontinued, notice would be given by email to registered accounts, and
+      unused credit refunded.
+    </p>
+
+    <hr class="divider">
+
+    <!-- LIABILITY -->
+    <h2 id="liability">Liability</h2>
+    <p>
+      Nothing in these terms excludes or limits liability for death or personal injury caused by
+      negligence, for fraud, or for anything else that cannot lawfully be excluded — and your mandatory
+      rights as a consumer are unaffected by anything in this section.
+    </p>
+    <p>
+      Subject to that: Demian is provided as it is. Liability for loss arising from decisions you take in
+      reliance on anything Demian says, from AI output that is inaccurate, or from interruptions to the
+      service, is limited to the amount you paid in the twelve months before the claim arose. This is a
+      €3-to-€50 service run by one person; the limit reflects that honestly rather than claiming a
+      protection that would be unreasonable in either direction.
+    </p>
+
+    <hr class="divider">
+
+    <!-- DATA -->
+    <h2 id="data">Personal data</h2>
+    <p>
+      How your data is handled — what is collected, where conversations are processed, how long anything
+      is kept, and why a conversation cannot be traced back to the person who had it — is set out in
+      full in the <a href="/privacy">Privacy Policy</a>, which forms part of these terms. It is worth
+      reading rather than accepting: it is the part of this project where the most care has gone into
+      something a user will never see.
+    </p>
+
+    <hr class="divider">
+
+    <!-- CHANGES -->
+    <h2 id="changes">Changes to these terms</h2>
+    <p>
+      These terms may be updated as the service evolves. The date at the top reflects the last change.
+      Continued use after a change constitutes acceptance of the updated terms. Where a change materially
+      affects something you have already paid for, registered accounts are notified by email, and the
+      terms in force at the time of your purchase continue to govern that purchase.
+    </p>
+
+    <hr class="divider">
+
+    <!-- LAW -->
+    <h2 id="law">Which law applies, and disputes</h2>
+    <p>
+      No national law is imposed on you here. These terms deliberately contain no choice-of-law clause
+      picking a country convenient to the seller, because that is a clause which mainly serves the
+      seller. Instead: <strong>if you are a consumer, the law of the country where you habitually
+      reside applies to this contract</strong>, and you may bring proceedings in the courts of that
+      country. That is already the default rule for consumer contracts across the EU and in much of the
+      world, and it is stated here rather than worked around.
+    </p>
+    <p>
+      Demian is operated from within the European Union and its rules are built to the EU consumer and
+      data-protection standard. Where your own country requires less than that standard, the EU-level
+      commitments in these terms and in the <a href="/privacy">Privacy Policy</a> still apply to you —
+      the protections are not reduced for buyers outside the EU. Where your own country requires more,
+      your own country wins.
+    </p>
+    <p>
+      <strong>Alternative dispute resolution.</strong> The European Commission's Online Dispute
+      Resolution platform was discontinued on 20 July 2025 and no longer exists; any link to it
+      elsewhere is out of date. There is no obligation on this project to take part in an alternative
+      dispute resolution procedure before a consumer ADR body, and it does not commit in advance to
+      doing so. That is stated because the position has to be stated, not because complaints are
+      unwelcome: in practice, write to <a href="mailto:demian@demianism.org">demian@demianism.org</a>
+      and it will be answered directly by the person who built this. Your right to go to a competent
+      consumer body or court in your own country is unaffected either way.
+    </p>
+
+    <hr class="divider">
+
+    <!-- CONTACT -->
+    <h2 id="contact">Contact</h2>
+    <p>
+      For anything concerning these terms, a purchase, a refund, or a complaint, email
+      <a href="mailto:demian@demianism.org">demian@demianism.org</a>. You can also reach Barabeke via
+      <a href="https://x.com/barabeke" target="_blank">X (@barabeke)</a> or
+      <a href="https://t.me/barabeke" target="_blank">Telegram (t.me/barabeke)</a>. Full provider
+      identification is in the <a href="/impressum">Impressum</a>.
+    </p>
+
+  </main>
+
+  <!-- ================================================================
+       FOOTER
+       ================================================================ -->
+  <hr class="footer-separator">
+  <footer class="site-footer">
+    <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
+    <div>© 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
+    <div class="footer-license">Content licensed under CC BY-NC-ND 4.0</div>
+    <div class="footer-links">
+      <a href="/impressum">Impressum</a> &nbsp;·&nbsp;
+      <a href="/privacy">Privacy Policy</a> &nbsp;·&nbsp;
+      <a href="/terms">Terms &amp; Conditions</a>
+    </div>
+  </footer>
+
+<script>
+  const hamburger = document.getElementById('nav-hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', function() {
+    const open = navLinks.classList.toggle('open');
+    hamburger.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  navLinks.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      navLinks.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', false);
+    });
+  });
+</script>
+
+</body>
+</html>
