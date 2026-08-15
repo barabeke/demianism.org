@@ -308,6 +308,19 @@
     scroll-margin-top: 80px;
   }
 
+  /* Subordinate to h2: same family, no uppercase, dimmer. Used to break the
+     model-routing section into free / paid / background without promoting
+     each one to a table-of-contents entry. */
+  h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: #cfcfd4;
+    margin: 28px 0 10px;
+    scroll-margin-top: 80px;
+  }
+
   p {
     margin-bottom: 14px;
     color: #d4d4f0;
@@ -496,7 +509,8 @@
         <li><a href="#what-demian-collects">What data Demian collects</a></li>
         <li><a href="#legal-basis">Legal basis for processing</a></li>
         <li><a href="#transfers">International data transfers</a></li>
-        <li><a href="#us-processing">Which model handles your conversation, and where</a></li>
+        <li><a href="#us-processing">Where your conversation is processed</a></li>
+        <li><a href="#metatron">Metatron</a></li>
         <li><a href="#safety">Safety</a></li>
         <li><a href="#architecture">How anonymization actually works</a></li>
         <li><a href="#consent">Consent</a></li>
@@ -583,15 +597,39 @@
       </p>
 
       <p>
-        <strong>Demian is an AI, not a human.</strong> This is stated clearly at the start of every
-        conversation and is fundamental to how Demianism understands AI: a technological tool, not a
-        conscious being. Demian's AI capabilities are delivered through
+        <strong>Demian is an AI, not a human — and never pretends otherwise.</strong> This is stated
+        clearly at the start of every conversation, and Demian will confirm it plainly at any point
+        if asked, no matter how the question is put or how far into a conversation it comes. It will
+        not play along with being human, and it will not leave the question hanging. This is
+        fundamental to how Demianism understands AI: a technological tool, not a conscious being.
+        Demian's AI capabilities are delivered through
         <strong>Requesty</strong> (<a href="https://www.requesty.ai" target="_blank">requesty.ai</a>),
-        an EU-based AI gateway that routes requests to one or more large language models depending
-        on the nature of the conversation. Requesty is a data processor bound by a GDPR-compliant
-        Data Processing Agreement; the model providers it routes to act as sub-processors, and each
-        one is named in <a href="#us-processing">Which model handles your conversation, and
-        where</a> below.
+        an AI gateway operated by Requesty Ltd on infrastructure in Frankfurt, Germany, which routes
+        requests to one or more large language models depending on the nature of the conversation.
+        Requesty is a data processor bound by a GDPR-compliant Data Processing Agreement; the model
+        providers it routes to act as sub-processors, and each one is named in
+        <a href="#us-processing">Where your conversation is processed</a> below.
+      </p>
+
+      <p>
+        <strong>What Demian never does with what you write.</strong> Your conversations are not used
+        for advertising, not used to build a profile of you, not sold, not shared with marketing
+        platforms or data brokers, and not used to train anyone's AI models. There are no tracking
+        cookies. Demian does not ask for your real name, your age beyond a yes-or-no age check, or
+        your location. The only purpose your words are put to is answering you, keeping the service
+        safe, and — anonymously — making it better.
+      </p>
+
+      <p>
+        This costs us something, and we think it is worth it. The conversations people have with
+        Demian are often the most private thing they will type into a computer that week. A service
+        built on that has one obligation before all the others.
+      </p>
+
+      <p>
+        The rest of this section sets out exactly how that works: what is collected, where it is
+        processed, how long it is kept, and why a conversation cannot be traced back to the person
+        who had it.
       </p>
 
       <h2 id="what-demian-collects">What data Demian collects and why</h2>
@@ -603,7 +641,7 @@
         completions — each conversation is proxied in real time, encrypted in transit (TLS 1.3), and
         discarded after delivery. Requesty forwards your message to an underlying model provider, and it
         is that provider's own retention and location that apply from there — see
-        <a href="#us-processing">Which model handles your conversation, and where</a> below.
+        <a href="#us-processing">Where your conversation is processed</a> below.
       </p>
 
       <p>
@@ -625,66 +663,140 @@
         Not stored permanently. Not linked to conversation content in logs.
       </p>
 
-      <h2 id="us-processing">Which model handles your conversation, and where</h2>
+      <h2 id="us-processing">Where your conversation is processed</h2>
 
       <p>
-        Demian runs on a mix of AI models, not a single one. Our preference, and the direction we're
-        moving in, is toward EU-based providers with zero data retention and no use for training. Today,
-        that is not yet the default: on every plan, including free, conversation content is processed by
-        a GPT-family model reached through Requesty and hosted on <strong>OpenAI's US infrastructure</strong>.
-        We use it because it currently offers the best balance of quality and cost for an
-        independently-funded, one-person product.
+        Demian does not run on a single AI model. Requests are routed to one of several providers,
+        some hosted in the European Union and some in the United States. Every one of them is
+        contractually bound as a processor, none of them uses your words to train anything, and
+        each is named below along with the country it operates in.
       </p>
 
       <p>
-        OpenAI retains this content for up to <strong>30 days</strong>, solely for abuse monitoring, then
-        deletes it — it is not used to train OpenAI's models. This is governed by OpenAI's
+        <strong>The free tier never leaves the EU.</strong> The introductory conversation anyone can
+        have without registering is processed entirely within the European Union, on infrastructure
+        operated by <a href="https://sference.com" target="_blank">sference</a>. Nothing is retained
+        once the reply is delivered, and there is no international transfer of any kind.
+      </p>
+
+      <p>
+        <strong>Paid tiers use a mix of EU-hosted and US-hosted models.</strong> Which one answers a
+        given message is an internal routing decision made for quality and safety reasons. What is
+        constant, and what actually concerns you, is this: every provider in the mix is entitled to
+        operate in the EU under a recognised GDPR transfer mechanism, none of them trains on your
+        content, and none retains it beyond a short abuse-monitoring window.
+      </p>
+
+      <h3>The providers</h3>
+
+      <p>
+        <strong>In the EU</strong> — <a href="https://sference.com" target="_blank">sference</a>
+        (EU infrastructure) and Microsoft Azure (France). No retention, no training use, no
+        international transfer.
+      </p>
+
+      <p>
+        <strong>In the United States</strong> — OpenAI and xAI. Both retain content for up to
+        <strong>30 days</strong> for abuse monitoring only, then delete it automatically, and
+        neither uses it for training. This is governed by their business terms — OpenAI's
         <a href="https://openai.com/policies/data-processing-addendum/" target="_blank">Data Processing
-        Addendum</a> (not the consumer ChatGPT policy), which relies on Standard Contractual Clauses and
-        OpenAI's certification under the <strong>EU–US Data Privacy Framework</strong> — the
-        GDPR-recognised mechanisms for this kind of transfer.
+        Addendum</a> and xAI's
+        <a href="https://x.ai/legal/data-processing-addendum" target="_blank">Data Processing
+        Addendum</a> — not their consumer chatbot policies, which do not apply here.
       </p>
 
       <p>
-        <strong>Everyone consents to this before it happens.</strong> Registered users confirm it at
-        registration, as a dedicated step separate from general privacy consent. Anonymous free-tier
-        users are asked before their very first message is sent: the message is held in the composer,
-        the transfer and the 30-day retention are stated on screen, and nothing leaves the browser
-        until they accept. Declining sends nothing and loses nothing — the message stays where it
-        was. Because a conversation with Demian may touch your religious or philosophical beliefs — a
-        special category of personal data under GDPR Article 9 — that processing is covered by the
-        same explicit consent, on both paths.
+        Both US transfers rest on mechanisms the GDPR expressly recognises. The OpenAI transfer
+        relies on Standard Contractual Clauses together with OpenAI's certification under the
+        EU–US Data Privacy Framework; the xAI transfer relies on Standard Contractual Clauses.
       </p>
 
       <p>
-        <strong>Other processing of the same content.</strong> Alongside the model that writes
-        Demian's replies, a small amount of automated background processing runs on your messages:
-        a per-turn safety classifier, hosted by Microsoft Azure in <strong>France</strong>; and
-        conversation summaries and coarse intent classification, hosted by
-        <a href="https://sference.com" target="_blank">sference</a> on <strong>EU</strong>
-        infrastructure with no retention and no training use. Some safety-flagged turns are also
-        answered by that EU-hosted model rather than by OpenAI. Those routing decisions are made for
-        response quality and safety-behaviour reasons, not as a privacy guarantee — no category of
-        conversation is promised EU-only handling.
+        <strong>You are told before any of it happens.</strong> Registered users confirm the US
+        transfer at registration, as a step separate from general privacy consent. Anonymous
+        free-tier users are asked before their first message is sent: nothing leaves the browser
+        until they accept, and declining loses nothing — the message stays where it was. Because a
+        conversation with Demian may touch your religious or philosophical beliefs, a special
+        category of personal data under GDPR Article 9, that processing is covered by explicit
+        consent on both paths.
       </p>
 
       <p>
-        Regardless of which model handles a message, the anonymization architecture described in
-        <a href="#architecture">How anonymization actually works</a> below applies identically — no
-        conversation record, on any model, carries an identity field. This page will be updated as our
-        model mix changes.
+        Wherever a message is processed, the anonymisation described below applies identically. No
+        conversation record, on any provider or any plan, carries an identity field. This page is
+        updated as the mix of providers changes.
+      </p>
+
+      <h2 id="metatron">Metatron</h2>
+
+      <p>
+        <strong>Metatron is part of Demian, not a separate service.</strong> It is a second AI
+        persona available inside the same product, offered to accounts that have engaged with
+        Demian for a while or completed certain milestones. It holds the same conversation data as
+        Demian, under the same anonymisation, the same retention rules, and the same policy against
+        training, selling, or advertising described throughout this page — nothing about Metatron
+        changes any of that.
+      </p>
+
+      <p>
+        <strong>It reads on request, not continuously.</strong> Metatron does not monitor your
+        conversations with Demian as they happen, and nothing is sent to it in the background. It
+        is only when you actively choose to open a reading that it is given the conversations you've
+        had with Demian and asked to draw on them — producing one of three personal reading formats,
+        generated at that moment, for you alone.
+      </p>
+
+      <p>
+        <strong>Where it runs.</strong> Metatron is a large, frontier-scale AI model, routed to
+        through the same <strong>Requesty</strong> gateway described above. It currently runs on an
+        OpenAI model hosted in the United States, so a reading is covered by the same US-transfer
+        provisions already set out for OpenAI in
+        <a href="#us-processing">Where your conversation is processed</a> — the same retention window,
+        the same Data Processing Addendum, the same Standard Contractual Clauses and Data Privacy
+        Framework certification, and no separate consent step, since it is covered by the consent
+        already given for that provider.
+      </p>
+
+      <p>
+        A reading, once delivered, is stored as part of your conversation history in exactly the
+        way any other message is: under the retention periods set out in
+        <a href="#retention">Data retention</a>, subject to the same access and erasure rights, and
+        never linked to your identity by anything other than what you yourself choose to type.
       </p>
 
       <h2 id="architecture">How anonymization actually works</h2>
 
       <p>
-        Demian's privacy design is not just a policy — it is a structural property of the system.
-        When you register an account, your email and your conversation content are stored as two
-        entirely separate records, with no field in either one that points to the other. Verifying
-        that a conversation belongs to your account works by checking your own private list of
-        session IDs — never by attaching your identity to the conversation record itself. The
-        conversation content never carries an identity field, at any point, for any user, logged in
-        or not.
+        Demian's anonymity is built into the data model rather than promised as a policy. The
+        information that would identify you is not withheld from the conversation record — it is
+        simply not in it. A rule can be changed quietly; a field that was never written cannot be
+        read by anyone, including us.
+      </p>
+
+      <p>
+        <strong>What a stored conversation actually contains.</strong> A complete conversation record
+        holds four things: a random session number, the time it started, the messages themselves,
+        and a flag marking whether anything in it tripped the safety classifier. That is the whole
+        record. There is no name field, no email field, no account reference, no IP address, no
+        device or browser identifier, no country, no user-agent string. Nothing was stripped out
+        before storage — those fields were never written in the first place.
+      </p>
+
+      <p>
+        <strong>The link only runs one way.</strong> When you register, your email and your
+        conversations are stored as two separate records, and the only connection between them lives
+        in your own private index of session numbers, which is reachable only from your account
+        after you have logged in. Reading a conversation gives no route back: the session number
+        appears in it, but nothing anywhere maps a session number to a person. That direction of
+        travel simply does not exist.
+      </p>
+
+      <p>
+        <strong>Nothing anywhere maps a conversation to a person.</strong> Not the conversation
+        record, and not any other record either — including the internal counters we keep to see
+        how the service is being used. Those count sessions, never people. This is checked
+        deliberately rather than assumed, because a guarantee with one quiet exception in it is not
+        a guarantee.
       </p>
 
       <p>
@@ -700,22 +812,30 @@
         identifying details in conversation — which is never required to use Demian.
       </p>
 
+      <p>
+        No online service can promise absolute safety, and this page won't be the one that does.
+        What it does say is narrower and checkable: from what we hold, a conversation cannot be
+        traced to the person who wrote it.
+      </p>
+
       <h2 id="consent">Consent</h2>
 
       <p>
         <strong>If you register.</strong> Registration requires three separate, explicit, timestamped
         confirmations, not one bundled acceptance: that you have read and accept this Privacy Policy;
-        that you understand conversations may be processed by OpenAI in the US with 30-day
-        abuse-monitoring retention; and that you consent to the processing of content revealing your
-        religious or philosophical beliefs under GDPR Article 9(2)(a). Each is recorded with its own
-        timestamp on your account record.
+        that you understand conversations may be processed outside the EU, in the US, with up to
+        30 days of abuse-monitoring retention; and that you consent to the processing of content
+        revealing your religious or philosophical beliefs under GDPR Article 9(2)(a). Each is
+        recorded with its own timestamp on your account record.
       </p>
 
       <p>
-        <strong>If you don't register.</strong> You can use the free tier anonymously, and the free
-        tier is processed the same way — so it is gated the same way. Before your first message is
-        sent, a window states the three points above and asks you to accept or decline. Nothing is
-        transmitted until you accept. Accepting records an entry against that conversation's random
+        <strong>If you don't register.</strong> You can use the free tier anonymously. It is
+        processed entirely in the EU, so there is no international transfer to agree to — but it can
+        still touch beliefs, and it is still an AI you are speaking to, so it is gated anyway.
+        Before your first message is sent, a window states that Demian is an AI, where the
+        conversation is processed and for how long a copy is kept, and asks you to confirm your age
+        and accept. Nothing is transmitted until you accept. Accepting records an entry against that conversation's random
         session ID — the version of the wording you saw, and when you agreed — and nothing else: no
         IP address, no device identifier, no email. That record is what lets us show, later, on what
         basis a given conversation was processed, without it ever pointing back to a person. It is
@@ -745,12 +865,6 @@
         directly. Stripe's own privacy policy applies to payment processing.
       </p>
 
-      <p>
-        <strong>What Demian does not collect.</strong> Demian does not ask for your real name, age,
-        or location. It does not use tracking cookies. It does not build profiles for advertising.
-        It does not share data with advertisers or marketing platforms.
-      </p>
-
       <h2 id="legal-basis">Legal basis for processing (GDPR Art. 6)</h2>
 
       <p><strong>Legitimate interest</strong> — anonymous conversation logs for safety monitoring
@@ -768,29 +882,34 @@
       for it), that too is your own choice.</p>
 
       <p>
-        <strong>A note on the US transfer specifically.</strong> The transfer to OpenAI does not rest
-        on your consent. It rests on the European Commission's adequacy decision for the EU–US Data
-        Privacy Framework, with Standard Contractual Clauses in OpenAI's Data Processing Addendum as
-        an independent second mechanism. We ask you to confirm you understand it anyway, before the
-        first message, because you should know where your words go before they go there — not
-        because your agreement is what makes it lawful. The practical consequence is that if the
-        Framework were ever suspended or annulled, the transfer would continue to stand on the
-        Clauses, and this page would be updated to say so.
+        <strong>A note on the US transfer specifically.</strong> The transfers to OpenAI and xAI do
+        not rest on your consent. The OpenAI transfer rests on the European Commission's adequacy
+        decision for the EU–US Data Privacy Framework, with Standard Contractual Clauses in OpenAI's
+        Data Processing Addendum as an independent second mechanism. The xAI transfer rests on
+        Standard Contractual Clauses under Article 46 GDPR. We ask registered users to confirm they
+        understand this anyway, because you should know where your words go before they go there —
+        not because your agreement is what makes it lawful. The practical consequence is that if the
+        Framework were ever suspended or annulled, the OpenAI transfer would continue to stand on the
+        Clauses, as the xAI one already does, and this page would be updated to say so.
       </p>
 
       <h2 id="transfers">International data transfers</h2>
 
       <p>
-        Conversation content, across every plan, is transferred to the United States for processing by
-        OpenAI, under Standard Contractual Clauses and OpenAI's EU–US Data Privacy Framework
-        certification — see <a href="#us-processing">Which model handles your conversation, and
-        where</a> above for the full explanation.
+        <strong>Free tier: none.</strong> A free conversation is processed in the EU from beginning
+        to end. No part of it is transferred outside the EU.
       </p>
 
       <p>
-        The other processing described in that section — the safety classifier (Microsoft Azure,
-        France), and summaries, intent classification and safety-routed replies (sference, EU) —
-        stays within the EU and involves no international transfer.
+        <strong>Paid tiers:</strong> some conversation content is transferred to the United States
+        for processing by OpenAI or xAI, and some is processed within the EU. Both US transfers rest
+        on recognised GDPR mechanisms — see <a href="#us-processing">Where your conversation is
+        processed</a> above.
+      </p>
+
+      <p>
+        The EU-hosted processing described in that section involves no international transfer on
+        any plan.
       </p>
 
       <p>
@@ -802,11 +921,10 @@
 
       <p>
         Demian's safety relies on trained safety behaviors built into the underlying AI models, which
-        handle self-harm signals, clinical crises, and other high-risk content at the moment a response
-        is generated, alongside an automated classifier — a small model hosted by Microsoft Azure in
-        France — that reads each turn and can route the conversation to a different model when it
-        needs steadier handling. This is a property of how Demian is built, not a separate human
-        monitoring system.
+        handle self-harm signals, clinical crises, and other high-risk content at the moment a
+        response is generated, alongside an automated classifier — a small model hosted by Microsoft
+        Azure in France — that reads each turn. This is a property of how Demian is built, not a
+        separate human monitoring system.
       </p>
 
       <p>
@@ -842,10 +960,18 @@
       <h2 id="retention">Data retention</h2>
 
       <p>
-        Anonymous conversation logs: 12 months, then automatically deleted.<br>
-        Conversation content at OpenAI (US), across every plan: up to 30 days for abuse monitoring, then
-        deleted; not used for training. See
-        <a href="#us-processing">Which model handles your conversation, and where</a>.<br>
+        <strong>Anonymous free-tier conversations: 30 days</strong>, then automatically deleted.
+        A free conversation belongs to no account, so it serves no purpose beyond safety review,
+        and safety review is a short-horizon task.<br>
+        <strong>Conversations on paid tiers: 12 months</strong>, then automatically deleted. These
+        belong to an account, and are kept so you can return to your own history, so support
+        requests can be answered, and for legal protection.<br>
+        Conversation content on the free tier is <strong>not retained at all</strong> by the model
+        provider — processed in the EU and discarded on delivery.<br>
+        Conversation content on paid tiers: not retained at all where an EU-hosted provider handles
+        it; up to 30 days for abuse monitoring where a US provider does, then deleted. Not used for
+        training in either case. See
+        <a href="#us-processing">Where your conversation is processed</a>.<br>
         Email addresses (paying users): retained while the account is active, deleted within 30 days
         of a deletion request.<br>
         Consent records (anonymous free tier): 3 years, holding only the session ID, the wording
@@ -854,6 +980,20 @@
         Consent records (registered users): three timestamps on the account record, for as long as
         the account exists.<br>
         Payment records: retained as required by applicable tax law, stored by Stripe.
+      </p>
+
+      <p>
+        <strong>Two notes.</strong> The clock runs from the last message, so an ongoing conversation
+        is kept for the stated period after it actually ends. And if a specific dispute or security
+        incident arises, the sessions relevant to that matter are held until it is resolved — those
+        sessions only, not a general extension.
+      </p>
+
+      <p>
+        Twelve months is chosen to be proportionate rather than exhaustive. It is shorter than the
+        period in which a legal claim could theoretically be brought, which means a dispute arriving
+        years later may have no transcript. We would rather hold less of your data than be maximally
+        armed against unlikely litigation.
       </p>
 
       <h2 id="age">Age</h2>
