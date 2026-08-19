@@ -672,6 +672,59 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+  // Converts a data: URL (e.g. from canvas.toDataURL) into a Blob. Needed
+  // because the `download` attribute on an <a> pointing at a data: URL is
+  // unreliable on iOS Safari — tapping "Download" in the native "Do you want
+  // to download…" sheet silently does nothing. Blob/object URLs behave
+  // correctly there instead.
+  function dataUrlToBlob(dataUrl) {
+    const [header, base64] = dataUrl.split(',');
+    const mimeMatch = /data:(.*?);base64/.exec(header || '');
+    const mime = mimeMatch ? mimeMatch[1] : 'image/png';
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new Blob([bytes], { type: mime });
+  }
+
+  // Saves a generated image (as a data: URL) to the user's device, in a way
+  // that actually works on iOS and Android, not just desktop:
+  //  1. Where the Web Share API supports files (iOS Safari 15+, most Android
+  //     browsers), hand the image to the native share sheet — "Save Image" /
+  //     "Save to Photos" from there is the one path that reliably persists a
+  //     file on iOS.
+  //  2. Otherwise, fall back to a Blob URL (not the original data: URL) on a
+  //     temporary, DOM-attached <a download>, which is the reliable pattern
+  //     on desktop browsers.
+  // Returns true if a save/share was initiated, false if the user cancelled
+  // the share sheet.
+  async function saveGeneratedImage(dataUrl, filename) {
+    const blob = dataUrlToBlob(dataUrl);
+
+    if (navigator.canShare) {
+      try {
+        const file = new File([blob], filename, { type: blob.type });
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file] });
+          return true;
+        }
+      } catch (e) {
+        if (e && e.name === 'AbortError') return false; // user cancelled the share sheet
+        // Any other share failure: fall through to the blob-download path below.
+      }
+    }
+
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 4000);
+    return true;
+  }
+
   const MAX_CHARS = 320;
 
   // Three selectable mantra fonts. Noto Serif is the default and the only one
@@ -1060,10 +1113,9 @@
       card.style.maxWidth = prev.maxWidth;
       render();
 
-      const link = document.createElement('a');
-      link.download = 'demian-mantra-' + Date.now() + '.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      const filename = 'demian-mantra-' + Date.now() + '.png';
+      const outDataUrl = canvas.toDataURL('image/png');
+      await saveGeneratedImage(outDataUrl, filename);
     } catch (err) {
       const brandImg = document.getElementById('card-foot-brand-img');
       if (brandImg) brandImg.style.visibility = '';
