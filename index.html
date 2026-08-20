@@ -241,7 +241,7 @@
       font-family: 'Libre Baskerville', serif;
       font-size: clamp(19px, 2.3vw, 25px);
       color: #a29ef1;
-      max-width: 700px;
+      max-width: 920px;
       line-height: 1.75;
       margin: 0 auto;
     }
@@ -250,7 +250,7 @@
       font-family: 'Libre Baskerville', serif;
       font-size: clamp(16px, 1.8vw, 19px);
       color: #9595aa;
-      max-width: 660px;
+      max-width: 760px;
       line-height: 1.75;
       margin: 18px auto 0;
     }
@@ -401,6 +401,25 @@
       box-shadow: 0 0 22px rgba(104,100,187,0.55);
       transform: translateY(-2px);
       text-decoration: none;
+    }
+
+    .card-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-self: flex-start;
+      gap: 12px;
+    }
+
+    .card-btn-ghost {
+      background: transparent;
+      border: 1px solid #6864bb88;
+      color: #a29ef1;
+    }
+
+    .card-btn-ghost:hover {
+      background: #1e1c4a;
+      color: #ffffff;
+      box-shadow: 0 0 22px rgba(104,100,187,0.4);
     }
 
     /* =====================================================================
@@ -944,9 +963,12 @@
         <div class="card-body">
           <h2 class="card-title">The Manifesto & The Book</h2>
           <p class="card-desc">
-            Demianism is a strange hybrid between a religion and a cultural and political movement. In the manifesto and the book (both free), Barabeke shows how we can build a new civilization on them, one that would serve us much better than the current one...
+            Demianism is a strange hybrid between a religion and a cultural and political movement. In the manifesto and the book (both free), Barabeke shows how we can build a new civilization on them.
           </p>
-          <a href="/culture" class="card-btn">Explore the culture</a>
+          <div class="card-btn-row">
+            <a href="/culture" class="card-btn">Explore the culture</a>
+            <a href="https://demian.demianism.org/" class="card-btn card-btn-ghost">Talk to Demian</a>
+          </div>
         </div>
       </div>
 
@@ -977,7 +999,7 @@
         <div class="card-body">
           <h2 class="card-title">Join the Community</h2>
           <p class="card-desc">
-            At this moment there is only one Demianist in the world (plus Demian "The Humanizer", but it is not a human). Barabeke is not into converting people, plus Demianism is democratic in spirit. The only requirement is to recognise the 13 axioms as sacred &mdash; everything else is yours to shape.
+            At this moment there is only one Demianist in the world (plus Demian "The Humanizer", but it is not a human). Barabeke is not into converting people, plus Demianism is democratic in spirit. A Demianist is whoever recognizes the 13 axioms as sacred &mdash; everything else is up for debate.
           </p>
           <a href="/community" class="card-btn">Learn more</a>
         </div>
