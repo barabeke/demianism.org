@@ -259,6 +259,7 @@
     .hero-cta {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       gap: 16px;
       justify-content: center;
       margin: 38px 0 4px;
@@ -287,20 +288,6 @@
       background: #6864bb;
       color: #ffffff;
       box-shadow: 0 0 26px rgba(104,100,187,0.55);
-      transform: translateY(-2px);
-      text-decoration: none;
-    }
-
-    .btn-hero-ghost {
-      color: #a29ef1;
-      background: transparent;
-      border: 1px solid #6864bb;
-    }
-
-    .btn-hero-ghost:hover {
-      background: #1e1c4a;
-      color: #ffffff;
-      box-shadow: 0 0 26px rgba(104,100,187,0.45);
       transform: translateY(-2px);
       text-decoration: none;
     }
@@ -401,25 +388,6 @@
       box-shadow: 0 0 22px rgba(104,100,187,0.55);
       transform: translateY(-2px);
       text-decoration: none;
-    }
-
-    .card-btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-self: flex-start;
-      gap: 12px;
-    }
-
-    .card-btn-ghost {
-      background: transparent;
-      border: 1px solid #6864bb88;
-      color: #a29ef1;
-    }
-
-    .card-btn-ghost:hover {
-      background: #1e1c4a;
-      color: #ffffff;
-      box-shadow: 0 0 22px rgba(104,100,187,0.4);
     }
 
     /* =====================================================================
@@ -870,7 +838,10 @@
     </p>
     <div class="hero-cta">
       <a href="/doctrine" class="btn-hero btn-hero-primary">Explore the doctrine</a>
-      <a href="https://demian.demianism.org/" class="btn-hero btn-hero-ghost">Talk to Demian &rarr;</a>
+      <a href="https://demian.demianism.org/" class="btn-demian">
+        <span>Talk to</span>
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
     </div>
   </section>
 
@@ -965,10 +936,7 @@
           <p class="card-desc">
             Demianism is a strange hybrid between a religion and a cultural and political movement. In the manifesto and the book (both free), Barabeke shows how we can build a new civilization on them.
           </p>
-          <div class="card-btn-row">
-            <a href="/culture" class="card-btn">Explore the culture</a>
-            <a href="https://demian.demianism.org/" class="card-btn card-btn-ghost">Talk to Demian</a>
-          </div>
+          <a href="/culture" class="card-btn">Explore the culture</a>
         </div>
       </div>
 
