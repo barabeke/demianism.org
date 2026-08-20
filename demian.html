@@ -3,23 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coming Soon — demianism.org</title>
-  <meta name="description" content="Something is coming.">
+  <meta name="robots" content="noindex, follow">
+
+  <title>Demian AI — demianism.org</title>
+  <meta name="description" content="Demian, the Demianist AI companion, has moved to demian.demianism.org.">
+
+  <link rel="canonical" href="https://demian.demianism.org/">
+  <meta http-equiv="refresh" content="0; url=https://demian.demianism.org/">
+
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96">
   <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
-  <link rel="manifest" href="site.webmanifest">
+
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
     body {
       margin: 0;
-      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
+      padding: 40px 24px;
       font-family: 'Libre Baskerville', serif;
       color: #d4d4f0;
-      font-size: 20px;
+      font-size: 18px;
       line-height: 1.8;
       background:
         radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
@@ -28,237 +40,39 @@
         #000000;
     }
 
-    /* ── Navbar ─────────────────────────────────────────────── */
-    .navbar {
-      position: sticky; top: 0; z-index: 1000;
-      display: flex; align-items: center; gap: 38px;
-      padding: 0 26px; height: 64px;
-      background: rgba(18,16,40,0.92);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      border-bottom: 1px solid #6864bb33;
-    }
-    .nav-logo { display: flex; align-items: center; flex-shrink: 0; }
-    .nav-logo img { height: 44px; width: auto; display: block; }
-    .nav-links { display: flex; align-items: center; gap: 38px; }
-    .nav-links a {
-      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 17px;
-      letter-spacing: 1.5px; text-transform: uppercase;
-      color: #6864bb; text-decoration: none; transition: color 0.25s ease; white-space: nowrap;
-    }
-    .nav-links a:hover { color: #a29ef1; }
-    .nav-links a.active { color: #cfcfd4; }
-    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
-    .demian-ai { display: flex; align-items: center; text-decoration: none; opacity: 1; transition: opacity 0.25s ease; }
-    .demian-ai:hover { opacity: 0.8; }
-    .demian-ai img { height: 18px; width: auto; display: block; }
-    .try-free {
-      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 13px;
-      letter-spacing: 0.8px; text-transform: uppercase; color: #cfcfd4;
-      background-color: #35327e; border: 1px solid #6864bb55;
-      padding: 8px 16px; border-radius: 30px; text-decoration: none;
-      white-space: nowrap; transition: all 0.25s ease;
-    }
-    .try-free:hover { background-color: #6864bb; color: #ffffff; box-shadow: 0 0 18px rgba(104,100,187,0.6); }
-    .nav-demian-mobile { display: none; }
+    .brand { height: 26px; width: auto; display: block; margin: 0 auto 28px; }
 
-    /* ── Hamburger ──────────────────────────────────────────── */
-    .nav-hamburger {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 6px;
-      margin-left: auto;
-    }
+    p { margin: 0 0 26px; color: #a29ef1; }
 
-    .nav-hamburger span {
-      display: block;
-      width: 24px;
-      height: 2px;
-      background: #cfcfd4;
-      border-radius: 2px;
+    a.btn {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+      background: #35327e;
+      border: 1px solid #6864bb55;
+      border-radius: 30px;
+      padding: 14px 30px;
+      text-decoration: none;
       transition: all 0.3s ease;
     }
 
-    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-    /* ── Mobile ─────────────────────────────────────────────── */
-    @media (max-width: 900px) {
-      .navbar { gap: 0; }
-
-      .nav-links {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        gap: 0;
-        position: fixed;
-        top: 64px;
-        left: 0; right: 0;
-        background: rgba(18,16,40,0.98);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-bottom: 1px solid #6864bb44;
-        padding: 20px 0 28px;
-        z-index: 999;
-      }
-
-      .nav-links.open { display: flex; }
-
-      .nav-links a {
-        font-size: 16px;
-        padding: 12px 0;
-        width: 100%;
-        text-align: center;
-        border-bottom: 1px solid #6864bb18;
-        white-space: normal;
-      }
-
-      .nav-links a:last-child { border-bottom: none; }
-
-      .nav-links .nav-demian-mobile {
-        display: flex;
-        justify-content: center;
-        padding: 18px 0 4px;
-        border-bottom: none;
-        opacity: 1;
-        transition: opacity 0.25s;
-      }
-
-      .nav-links .nav-demian-mobile:hover { opacity: 0.8; }
-      .nav-links .nav-demian-mobile img { height: 20px; width: auto; }
-
-      .nav-right { display: none; }
-      .nav-hamburger { display: flex; }
-    }
-
-    /* ── Container ──────────────────────────────────────────── */
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    /* ── Glow + H1 ───────────────────────────────────────────── */
-    @keyframes glowPulse {
-      0%   { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
-      50%  { text-shadow: 0 0 9px rgba(104,100,187,1),   0 0 20px rgba(104,100,187,.9),  0 0 42px rgba(104,100,187,.75), 0 0 75px rgba(104,100,187,.55); }
-      100% { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
-    }
-
-    h1 {
-      font-family: 'Inter', sans-serif;
-      font-weight: 700;
-      font-size: 43px;
-      text-transform: uppercase;
-      margin: 60px 0 48px 0;
-      color: #cfcfd4;
-      line-height: 1.55;
-      letter-spacing: 10px;
-      transform: scaleX(1.1);
-      animation: glowPulse 11s ease-in-out infinite;
-    }
-
-    /* ── Bonk image ──────────────────────────────────────────── */
-    .bonk-wrap {
-      margin: 0 auto 60px;
-    }
-    .bonk-wrap img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      margin: 0 auto;
-      border-radius: 8px;
-    }
-
-    /* ── Footer ──────────────────────────────────────────────── */
-    .footer-separator { border: none; border-top: 1px solid #6864bb28; margin: 0; }
-    .site-footer {
-      max-width: 900px; margin: 0 auto; padding: 30px 20px 40px;
-      text-align: center; font-family: 'Libre Baskerville', serif;
-      font-size: 16px; color: #6864bb; line-height: 1.6;
-    }
-    .footer-logo { width: 94px; height: 94px; object-fit: contain; display: block; margin: 0 auto 6px; }
-    .site-footer a { color: #a29ef1; text-decoration: none; }
-    .site-footer a:hover { text-decoration: underline; color: #cfcfd4; }
-    .footer-links { margin-top: 10px; font-size: 14px; color: #4a4780; }
-    .footer-links a { color: #4a4780; }
-    .footer-links a:hover { color: #6864bb; }
-    .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      h1 { animation: none; }
+    a.btn:hover {
+      background: #6864bb;
+      color: #ffffff;
+      box-shadow: 0 0 26px rgba(104,100,187,0.55);
     }
   </style>
 </head>
 
 <body>
+  <img src="demian-ai-brand.png" alt="Demian AI" class="brand">
+  <p>Demian now lives at <strong>demian.demianism.org</strong>. Taking you there&hellip;</p>
+  <a class="btn" href="https://demian.demianism.org/">Talk to Demian</a>
 
-  <nav class="navbar">
-    <a href="/" class="nav-logo" aria-label="Demianism home">
-      <img src="demianismlogo.png" alt="Demianism">
-    </a>
-    <div class="nav-links" id="nav-links">
-      <a href="/doctrine">Sacred Doctrine</a>
-      <a href="/culture">Culture</a>
-      <a href="/origin">Origin</a>
-      <a href="/about">Who is Barabeke?</a>
-      <a href="/donate">Donate</a>
-      <a href="/community">Join</a>
-      <a href="/demian" class="nav-demian-mobile">
-        <img src="demian-ai-brand.png" alt="Demian AI">
-      </a>
-    </div>
-    <div class="nav-right">
-      <a href="/demian" class="demian-ai">
-        <img src="demian-ai-brand.png" alt="Demian AI">
-      </a>
-      <a href="/demian" class="try-free">Try Free</a>
-    </div>
-    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
-
-  <div class="container">
-    <h1>Coming Soon&hellip;</h1>
-    <div class="bonk-wrap">
-      <img src="bonk.jpg" alt="">
-    </div>
-  </div>
-
-  <hr class="footer-separator">
-  <footer class="site-footer">
-    <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
-    <div>&copy; 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
-    <div class="footer-license">Content licensed under CC BY-NC-ND 4.0</div>
-    <div class="footer-links">
-      <a href="/impressum">Impressum</a> &nbsp;·&nbsp;
-      <a href="https://demianism.org/privacy">Privacy Policy</a> &nbsp;·&nbsp;
-      <a href="https://demianism.org/terms">Terms &amp; Conditions</a>
-    </div>
-  </footer>
-
-<script>
-  const hamburger = document.getElementById('nav-hamburger');
-  const navLinks  = document.getElementById('nav-links');
-  hamburger.addEventListener('click', function() {
-    const open = navLinks.classList.toggle('open');
-    hamburger.classList.toggle('open', open);
-    hamburger.setAttribute('aria-expanded', open);
-  });
-  navLinks.querySelectorAll('a').forEach(function(a) {
-    a.addEventListener('click', function() {
-      navLinks.classList.remove('open');
-      hamburger.classList.remove('open');
-      hamburger.setAttribute('aria-expanded', false);
-    });
-  });
-</script>
-
+  <script>window.location.replace('https://demian.demianism.org/');</script>
 </body>
 </html>

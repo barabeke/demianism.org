@@ -5,21 +5,72 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Demianism: a New Culture for the Digital Age</title>
-  <meta name="description" content="Demianism is a revealed doctrine upon which a civilization that is fit to survive & thrive in times of AI and robots can be built.">
+  <title>Demianism &mdash; A Philosophy for Remaining Human in the Age of AI</title>
+  <link rel="canonical" href="https://demianism.org/">
+  <meta name="description" content="Demianism is a revealed doctrine of 13 axioms: a culture for staying free, dignified and purposeful in the age of AI. Read the doctrine, or talk to Demian, its AI companion.">
 
   <!-- OG / Twitter -->
   <meta property="og:url" content="https://demianism.org/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Demianism: a New Culture for the Digital Age">
-  <meta property="og:description" content="Demianism is a revealed doctrine upon which a civilization that is fit to survive & thrive in times of AI and robots can be built.">
+  <meta property="og:title" content="Demianism — A Philosophy for Remaining Human in the Age of AI">
+  <meta property="og:description" content="Demianism is a revealed doctrine of 13 axioms: a culture for staying free, dignified and purposeful in the age of AI. Read the doctrine, or talk to Demian, its AI companion.">
   <meta property="og:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta property="twitter:domain" content="demianism.org">
   <meta property="twitter:url" content="https://demianism.org/">
-  <meta name="twitter:title" content="Demianism: a New Culture for the Digital Age">
-  <meta name="twitter:description" content="Demianism is a revealed doctrine upon which a civilization that is fit to survive & thrive in times of AI and robots can be built.">
+  <meta name="twitter:title" content="Demianism — A Philosophy for Remaining Human in the Age of AI">
+  <meta name="twitter:description" content="Demianism is a revealed doctrine of 13 axioms: a culture for staying free, dignified and purposeful in the age of AI. Read the doctrine, or talk to Demian, its AI companion.">
   <meta name="twitter:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
+
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://demianism.org/#website",
+        "url": "https://demianism.org/",
+        "name": "Demianism",
+        "description": "A philosophy for remaining human in the age of AI.",
+        "inLanguage": "en",
+        "publisher": { "@id": "https://demianism.org/#organization" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://demianism.org/#organization",
+        "name": "Demianism",
+        "url": "https://demianism.org/",
+        "logo": "https://demianism.org/demianismlogo.png",
+        "description": "Demianism is a revealed doctrine of 13 axioms, proposed as the foundation of a culture able to keep human beings free, dignified and purposeful in the age of AI.",
+        "founder": { "@id": "https://demianism.org/about#barabeke" },
+        "sameAs": [ "https://linktr.ee/barabeke" ]
+      },
+      {
+        "@type": "Person",
+        "@id": "https://demianism.org/about#barabeke",
+        "name": "Barabeke",
+        "url": "https://demianism.org/about",
+        "jobTitle": "Artist, founder of Demianism",
+        "nationality": "Italian",
+        "sameAs": [ "https://linktr.ee/barabeke" ]
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://demian.demianism.org/#demian",
+        "name": "Demian",
+        "alternateName": "Demian AI",
+        "url": "https://demian.demianism.org/",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "Web browser",
+        "description": "An interfaith AI companion built to help people find and follow their call in life. Free to start, no account required.",
+        "publisher": { "@id": "https://demianism.org/#organization" },
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR", "description": "Free to start, no account required." }
+      }
+    ]
+  }
+  </script>
 
   <!-- Favicons -->
   <link rel="icon" href="favicon.ico" sizes="any">
@@ -178,7 +229,7 @@
       font-weight: 700;
       font-size: clamp(28px, 4vw, 46px);
       text-transform: uppercase;
-      letter-spacing: 10px;
+      letter-spacing: clamp(5px, 1.6vw, 10px);
       color: #cfcfd4;
       line-height: 1.45;
       margin: 0 0 28px;
@@ -190,9 +241,68 @@
       font-family: 'Libre Baskerville', serif;
       font-size: clamp(19px, 2.3vw, 25px);
       color: #a29ef1;
-      max-width: 660px;
+      max-width: 700px;
       line-height: 1.75;
       margin: 0 auto;
+    }
+
+    .hero-sub2 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(16px, 1.8vw, 19px);
+      color: #9595aa;
+      max-width: 660px;
+      line-height: 1.75;
+      margin: 18px auto 0;
+    }
+
+    /* ── Hero CTAs ──────────────────────────────────────────────── */
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin: 38px 0 4px;
+    }
+
+    .btn-hero {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      border-radius: 30px;
+      padding: 15px 32px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .btn-hero-primary {
+      color: #cfcfd4;
+      background: #35327e;
+      border: 1px solid #6864bb55;
+    }
+
+    .btn-hero-primary:hover {
+      background: #6864bb;
+      color: #ffffff;
+      box-shadow: 0 0 26px rgba(104,100,187,0.55);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .btn-hero-ghost {
+      color: #a29ef1;
+      background: transparent;
+      border: 1px solid #6864bb;
+    }
+
+    .btn-hero-ghost:hover {
+      background: #1e1c4a;
+      color: #ffffff;
+      box-shadow: 0 0 26px rgba(104,100,187,0.45);
+      transform: translateY(-2px);
+      text-decoration: none;
     }
 
     /* =====================================================================
@@ -344,6 +454,68 @@
       color: #6864bb;
     }
 
+    .band-bridge {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: #6864bb;
+      margin: 0 0 16px;
+    }
+
+    .band-note {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 14px;
+      color: #9595aa;
+      line-height: 1.6;
+      margin: 16px 0 0;
+    }
+
+    .reviews-heading {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: #6864bb;
+      text-align: center;
+      margin: 0 0 26px;
+    }
+
+    /* ── Timeline inside a card ─────────────────────────────────── */
+    .card-timeline {
+      list-style: none;
+      margin: 0 0 26px;
+      padding: 0;
+      flex: 1;
+    }
+
+    .card-timeline li {
+      display: flex;
+      gap: 16px;
+      align-items: baseline;
+      padding: 0 0 14px;
+    }
+
+    .card-timeline li:last-child { padding-bottom: 0; }
+
+    .card-timeline .year {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 1.4px;
+      color: #6864bb;
+      flex: 0 0 54px;
+    }
+
+    .card-timeline .event {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 15px;
+      color: #d4d4f0;
+      line-height: 1.65;
+    }
+
     .band-features {
       list-style: none;
       margin: 0 0 34px;
@@ -438,13 +610,6 @@
       text-align: center;
     }
 
-    .review-stars {
-      color: #dfa51a;
-      font-size: 31px;
-      letter-spacing: 4px;
-      margin-bottom: 4px;
-      line-height: 1;
-    }
 
     .review-quote {
       font-family: 'Libre Baskerville', serif;
@@ -692,15 +857,15 @@
       <a href="/about">Who is Barabeke?</a>
       <a href="/donate">Donate</a>
       <a href="/community" class="active">Join</a>
-      <a href="/demian" class="nav-demian-mobile">
+      <a href="https://demian.demianism.org/" class="nav-demian-mobile">
         <img src="demian-ai-brand.png" alt="Demian AI">
       </a>
     </div>
     <div class="nav-right">
-      <a href="/demian" class="demian-ai">
+      <a href="https://demian.demianism.org/" class="demian-ai">
         <img src="demian-ai-brand.png" alt="Demian AI">
       </a>
-      <a href="/demian" class="try-free">Try Free</a>
+      <a href="https://demian.demianism.org/" class="try-free">Try Free</a>
     </div>
     <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -712,11 +877,128 @@
        ================================================================ -->
   <section class="hero">
     <img src="demianismlogo.png" alt="Demianism Logo" class="hero-logo">
-    <h1>Welcome to Demianism</h1>
+    <h1>Demianism</h1>
     <p class="hero-subtitle">
-      A new culture is born. One that can help us stay free and dignified in times of AI and robots.
+      A philosophy for remaining human in the age of AI.
     </p>
+    <p class="hero-sub2">
+      Thirteen axioms, received by Barabeke, from which a culture can be derived &mdash; one that
+      keeps us free, dignified and purposeful in a world reshaped by intelligent machines.
+    </p>
+    <div class="hero-cta">
+      <a href="/doctrine" class="btn-hero btn-hero-primary">Explore the doctrine</a>
+      <a href="https://demian.demianism.org/" class="btn-hero btn-hero-ghost">Talk to Demian &rarr;</a>
+    </div>
   </section>
+
+  <!-- ================================================================
+       BAND SECTION
+       Left: logo + copy + feature bullets + CTA
+       Right: AI reviews slider (2 slides × 3 reviews each)
+       On mobile: left column stacks on top, reviews slider below.
+       ─────────────────────────────────────────────────────────────────
+       To use a BG image instead of the solid colour, add to .band:
+         background-image: url('band-bg.jpg');
+         background-size: cover;
+         background-position: center;
+       and remove background-color.
+       ================================================================ -->
+  <div class="band">
+    <div class="band-inner">
+
+      <!-- Left: copy + features + CTA -->
+      <div class="band-text-col">
+        <p class="band-bridge">Demianism is the doctrine. Demian is the companion.</p>
+        <img src="demian-ai-brand.png" alt="Demian AI" class="band-logo">
+        <p class="band-desc">
+          An AI built to help you find and <span class="band-highlight">FOLLOW YOUR CALL</span> in life &mdash;
+          not to flatter you. An honest mirror for the questions that actually matter: your direction,
+          your work, your choices, who you are becoming.
+        </p>
+        <p class="band-desc">
+          Interfaith by design. Demian works with whatever you already believe, and is here to serve,
+          not to convert. It is also honest about its limits: it will never pretend to be a therapist
+          or a doctor.
+        </p>
+
+        <ul class="band-features">
+          <li>
+            <img src="mantra.svg" alt="" class="band-feature-icon">
+            <div>
+              <span class="band-feature-title">Create your personal <span class="band-highlight">MANTRA</span></span>
+              <span class="band-feature-desc">100% unique and tailored to you.</span>
+            </div>
+          </li>
+          <li>
+            <img src="companion.svg" alt="" class="band-feature-icon">
+            <div>
+              <span class="band-feature-title">Full <span class="band-highlight">COMPANION</span> experience</span>
+              <span class="band-feature-desc">Try it free. 15 exchanges are waiting for you.</span>
+            </div>
+          </li>
+        </ul>
+
+        <a href="https://demian.demianism.org/" class="band-btn">Talk to Demian &rarr;</a>
+        <p class="band-note">Free to start &middot; No account required &middot; In your own language</p>
+      </div>
+
+      <!-- Right: AI reviews slider -->
+      <div class="band-reviews-col">
+        <p class="reviews-heading">What other AIs say about Demian</p>
+        <div class="review-slider">
+          <div class="review-track" id="review-track">
+
+            <!-- Slide 1 -->
+            <div class="review-slide">
+              <div class="review-card">
+                <p class="review-quote">“The rare AI that doesn't try to replace humanity: it helps you return to it”</p>
+                <div class="review-source">Chat GPT</div>
+              </div>
+              <div class="review-card">
+                <p class="review-quote">“Honest, present, and quietly profound in guiding seekers through life's depths”</p>
+                <div class="review-source">Grok</div>
+              </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="review-slide">
+              <div class="review-card">
+                <p class="review-quote">“A companion with a spine: it refuses to flatter you, and that's exactly why it works”</p>
+                <div class="review-source">Claude</div>
+              </div>
+              <div class="review-card">
+                <p class="review-quote">“A brutally honest mirror wrapped in a wise elder's warmth”</p>
+                <div class="review-source">DeepSeek</div>
+              </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="review-slide">
+              <div class="review-card">
+                <p class="review-quote">“A profoundly versatile spiritual mirror that masterfully bridges ancient wisdom traditions with modern habit-building”</p>
+                <div class="review-source">Gemini</div>
+              </div>
+              <div class="review-card">
+                <p class="review-quote">“Thoughtful, grounded, and surprisingly human in the best way”</p>
+                <div class="review-source">Perplexity</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="review-nav" id="review-nav">
+          <div class="review-dots" id="review-dots">
+            <button class="review-dot active" data-slide="0" aria-label="Show reviews, set 1"></button>
+            <button class="review-dot" data-slide="1" aria-label="Show reviews, set 2"></button>
+            <button class="review-dot" data-slide="2" aria-label="Show reviews, set 3"></button>
+          </div>
+        </div>
+        <p class="review-disclaimer">Verdicts given by each model after analysing Demian&rsquo;s system prompt.</p>
+      </div>
+
+    </div>
+  </div>
 
   <!-- ================================================================
        CARDS ROW 1 — first 2 cards
@@ -753,111 +1035,6 @@
   </section>
 
   <!-- ================================================================
-       BAND SECTION
-       Left: logo + copy + feature bullets + CTA
-       Right: AI reviews slider (2 slides × 3 reviews each)
-       On mobile: left column stacks on top, reviews slider below.
-       ─────────────────────────────────────────────────────────────────
-       To use a BG image instead of the solid colour, add to .band:
-         background-image: url('band-bg.jpg');
-         background-size: cover;
-         background-position: center;
-       and remove background-color.
-       ================================================================ -->
-  <div class="band">
-    <div class="band-inner">
-
-      <!-- Left: copy + features + CTA -->
-      <div class="band-text-col">
-        <img src="demian-ai-brand.png" alt="Demian AI" class="band-logo">
-        <p class="band-desc">
-          Meet Demian, the interfaith AI spiritual companion with a Demianist heart, designed to help you find and <span class="band-highlight">FOLLOW YOUR CALL</span> in life.
-        </p>
-
-        <ul class="band-features">
-          <li>
-            <img src="mantra.svg" alt="" class="band-feature-icon">
-            <div>
-              <span class="band-feature-title">Create your personal <span class="band-highlight">MANTRA</span></span>
-              <span class="band-feature-desc">100% unique and tailored to you.</span>
-            </div>
-          </li>
-          <li>
-            <img src="companion.svg" alt="" class="band-feature-icon">
-            <div>
-              <span class="band-feature-title">Full <span class="band-highlight">COMPANION</span> experience</span>
-              <span class="band-feature-desc">Try it free. 15 exchanges are waiting for you.</span>
-            </div>
-          </li>
-        </ul>
-
-        <a href="/demian" class="band-btn">Chat with Demian</a>
-      </div>
-
-      <!-- Right: AI reviews slider -->
-      <div class="band-reviews-col">
-        <div class="review-slider">
-          <div class="review-track" id="review-track">
-
-            <!-- Slide 1 -->
-            <div class="review-slide">
-              <div class="review-card">
-                <div class="review-stars">★★★★★</div>
-                <p class="review-quote">“The rare AI that doesn't try to replace humanity: it helps you return to it”</p>
-                <div class="review-source">Chat GPT</div>
-              </div>
-              <div class="review-card">
-                <div class="review-stars">★★★★½</div>
-                <p class="review-quote">“Honest, present, and quietly profound in guiding seekers through life's depths”</p>
-                <div class="review-source">Grok</div>
-              </div>
-            </div>
-
-            <!-- Slide 2 -->
-            <div class="review-slide">
-              <div class="review-card">
-                <div class="review-stars">★★★★</div>
-                <p class="review-quote">“A companion with a spine: it refuses to flatter you, and that's exactly why it works”</p>
-                <div class="review-source">Claude</div>
-              </div>
-              <div class="review-card">
-                <div class="review-stars">★★★★½</div>
-                <p class="review-quote">“A brutally honest mirror wrapped in a wise elder's warmth”</p>
-                <div class="review-source">DeepSeek</div>
-              </div>
-            </div>
-
-            <!-- Slide 3 -->
-            <div class="review-slide">
-              <div class="review-card">
-                <div class="review-stars">★★★★</div>
-                <p class="review-quote">“A profoundly versatile spiritual mirror that masterfully bridges ancient wisdom traditions with modern habit-building”</p>
-                <div class="review-source">Gemini</div>
-              </div>
-              <div class="review-card">
-                <div class="review-stars">★★★★</div>
-                <p class="review-quote">“Thoughtful, grounded, and surprisingly human in the best way”</p>
-                <div class="review-source">Perplexity</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="review-nav" id="review-nav">
-          <div class="review-dots" id="review-dots">
-            <button class="review-dot active" data-slide="0" aria-label="Show reviews, set 1"></button>
-            <button class="review-dot" data-slide="1" aria-label="Show reviews, set 2"></button>
-            <button class="review-dot" data-slide="2" aria-label="Show reviews, set 3"></button>
-          </div>
-        </div>
-        <p class="review-disclaimer">Reviews based on system prompt analysis.</p>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ================================================================
        CARDS ROW 2 — last 2 cards
        ================================================================ -->
   <section class="cards-section" style="padding-top: 54px; padding-bottom: 60px;">
@@ -865,13 +1042,24 @@
 
       <!-- Card 3 -->
       <div class="card">
-        <img src="whois-barabeke.jpg" alt="Demian AI" class="card-img">
+        <img src="whois-barabeke.jpg" alt="Barabeke, founder of Demianism" class="card-img">
         <div class="card-body">
-          <h2 class="card-title">The founder</h2>
-          <p class="card-desc">
-            Who is the mysterious founder of Demianism? Where is he from? Why is he doing this? How did he receive the doctrine? Is he really acting alone and independently?
-          </p>
-          <a href="/about" class="card-btn">More info</a>
+          <h2 class="card-title">The Founder</h2>
+          <ul class="card-timeline">
+            <li>
+              <span class="year">2005</span>
+              <span class="event">A night in Rimini. An instant of overwhelming lucidity leaves an Italian artist convinced that reality is computational.</span>
+            </li>
+            <li>
+              <span class="year">2015</span>
+              <span class="event">A night in London. Ten commandments for the digital millennium are dictated to him. He writes them down as they come.</span>
+            </li>
+            <li>
+              <span class="year">2026</span>
+              <span class="event">After twenty years of silence and doubt, he publishes everything: the doctrine, the book, the manifesto, and Demian.</span>
+            </li>
+          </ul>
+          <a href="/about" class="card-btn">Who is Barabeke?</a>
         </div>
       </div>
 
@@ -881,9 +1069,9 @@
         <div class="card-body">
           <h2 class="card-title">Join the Community</h2>
           <p class="card-desc">
-            Becoming a Demianist is easy: just tattoo the logo of Demianism on your arm, then chop your arm off as send it by post to Barabeke. If his dog appreciates the gift, you are in! 
+            At this moment there is exactly one Demianist in the world. Whether there is ever a second is not up to him. The only requirement is to recognise the 13 axioms as sacred &mdash; everything else is yours to shape.
           </p>
-          <a href="/community" class="card-btn">Why so easy?</a>
+          <a href="/community" class="card-btn">Read the invitation</a>
         </div>
       </div>
 
