@@ -25,28 +25,49 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    "@id": "https://demianism.org/doctrine#doctrine",
-    "name": "Sacred Doctrine of Demianism",
-    "alternateName": "The 13 Axioms of Demianism",
-    "url": "https://demianism.org/doctrine",
-    "description": "The 13 axioms of Demianism: the Cosmotheandric Triad (3 metaphysical axioms) and the 2kTenCom (10 ethical, social and political axioms).",
-    "inLanguage": "en",
-    "author": { "@id": "https://demianism.org/about#barabeke" },
-    "publisher": { "@id": "https://demianism.org/#organization" },
-    "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
-    "hasPart": [
+    "@graph": [
       {
         "@type": "CreativeWork",
-        "name": "Cosmotheandric Triad",
-        "description": "The metaphysical foundation of Demianism: 3 axioms.",
-        "text": "\u03bb. The nature of the universe is computational. \u03b1. An intelligent Creator exists and mankind reflects His nature. \u03c9. It is in the nature of mankind to build a universe inside a machine."
+        "@id": "https://demianism.org/doctrine#doctrine",
+        "name": "Sacred Doctrine of Demianism",
+        "alternateName": "The 13 Axioms of Demianism",
+        "url": "https://demianism.org/doctrine",
+        "description": "The 13 axioms of Demianism: the Cosmotheandric Triad (3 metaphysical axioms) and the 2kTenCom (10 ethical, social and political axioms).",
+        "inLanguage": "en",
+        "author": { "@id": "https://demianism.org/about#barabeke" },
+        "publisher": { "@id": "https://demianism.org/#organization" },
+        "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+        "isPartOf": { "@id": "https://demianism.org/doctrine#book" },
+        "hasPart": [
+          {
+            "@type": "CreativeWork",
+            "name": "Cosmotheandric Triad",
+            "description": "The metaphysical foundation of Demianism: 3 axioms.",
+            "text": "\u03bb. The nature of the universe is computational. \u03b1. An intelligent Creator exists and mankind reflects His nature. \u03c9. It is in the nature of mankind to build a universe inside a machine."
+          },
+          {
+            "@type": "CreativeWork",
+            "name": "2kTenCom",
+            "description": "The Ten Commandments for the Digital Millennium: 10 axioms, received by dictation in 2015.",
+            "text": "I. Follow your call. II. Focus on the present moment. Look for the good in it. III. Love and respect others (no matter who they are) as much as you would love and respect yourself. Don't do to others what you wouldn't want others to do to you. Give everyone at least one chance. Possibly more. IV. Always speak honest words and forgive and forget hurtful words. Don't take words too seriously. Cultivate irony and direct it primarily towards yourself. V. Find your other half and prosper together in love. VI. Put humanity (not profit) at the center of the universe. Use technology to provide abundance and opportunities to everyone. Build egalitarian societies based on community and resource sharing. Give everyone as a birthright enough to lead a simple and honest life. VII. Keep the internet free as the wind. Give everyone equal access to knowledge and ideas and guarantee freedom of expression. VIII. Cherish and preserve nature and its creatures. IX. Build a universe inside a machine. X. Disconnect on Sundays."
+          }
+        ]
       },
       {
-        "@type": "CreativeWork",
-        "name": "2kTenCom",
-        "description": "The Ten Commandments for the Digital Millennium: 10 axioms, received by dictation in 2015.",
-        "text": "I. Follow your call. II. Focus on the present moment. Look for the good in it. III. Love and respect others (no matter who they are) as much as you would love and respect yourself. Don't do to others what you wouldn't want others to do to you. Give everyone at least one chance. Possibly more. IV. Always speak honest words and forgive and forget hurtful words. Don't take words too seriously. Cultivate irony and direct it primarily towards yourself. V. Find your other half and prosper together in love. VI. Put humanity (not profit) at the center of the universe. Use technology to provide abundance and opportunities to everyone. Build egalitarian societies based on community and resource sharing. Give everyone as a birthright enough to lead a simple and honest life. VII. Keep the internet free as the wind. Give everyone equal access to knowledge and ideas and guarantee freedom of expression. VIII. Cherish and preserve nature and its creatures. IX. Build a universe inside a machine. X. Disconnect on Sundays."
+        "@type": "Book",
+        "@id": "https://demianism.org/doctrine#book",
+        "name": "Demianism 1.0",
+        "author": { "@id": "https://demianism.org/about#barabeke" },
+        "publisher": { "@id": "https://demianism.org/#organization" },
+        "description": "Barabeke's commentary on each of the 13 axioms of Demianism, the story behind the doctrine, and its implications for civilization. Free as an eBook/PDF, also available in paperback and hardcover.",
+        "url": "https://demianism.org/culture",
+        "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+        "workExample": [
+          { "@type": "Book", "bookFormat": "https://schema.org/EBook", "inLanguage": "en", "url": "https://archive.org/details/demianism/" },
+          { "@type": "Book", "bookFormat": "https://schema.org/EBook", "inLanguage": "it", "url": "https://archive.org/details/demianesimo" },
+          { "@type": "Book", "bookFormat": "https://schema.org/Paperback", "inLanguage": "en", "url": "https://mybook.to/2VGW" },
+          { "@type": "Book", "bookFormat": "https://schema.org/Paperback", "inLanguage": "it", "url": "https://mybook.to/qdVLiF" }
+        ]
       }
     ]
   }
