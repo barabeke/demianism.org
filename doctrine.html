@@ -21,6 +21,37 @@
   <meta name="twitter:description" content="The 13 sacred axioms of Demianism: the Cosmotheandric Triad and the 2kTenCom. A revealed doctrine for the digital age.">
   <meta name="twitter:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
 
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "@id": "https://demianism.org/doctrine#doctrine",
+    "name": "Sacred Doctrine of Demianism",
+    "alternateName": "The 13 Axioms of Demianism",
+    "url": "https://demianism.org/doctrine",
+    "description": "The 13 axioms of Demianism: the Cosmotheandric Triad (3 metaphysical axioms) and the 2kTenCom (10 ethical, social and political axioms).",
+    "inLanguage": "en",
+    "author": { "@id": "https://demianism.org/about#barabeke" },
+    "publisher": { "@id": "https://demianism.org/#organization" },
+    "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+    "hasPart": [
+      {
+        "@type": "CreativeWork",
+        "name": "Cosmotheandric Triad",
+        "description": "The metaphysical foundation of Demianism: 3 axioms.",
+        "text": "\u03bb. The nature of the universe is computational. \u03b1. An intelligent Creator exists and mankind reflects His nature. \u03c9. It is in the nature of mankind to build a universe inside a machine."
+      },
+      {
+        "@type": "CreativeWork",
+        "name": "2kTenCom",
+        "description": "The Ten Commandments for the Digital Millennium: 10 axioms, received by dictation in 2015.",
+        "text": "I. Follow your call. II. Focus on the present moment. Look for the good in it. III. Love and respect others (no matter who they are) as much as you would love and respect yourself. Don't do to others what you wouldn't want others to do to you. Give everyone at least one chance. Possibly more. IV. Always speak honest words and forgive and forget hurtful words. Don't take words too seriously. Cultivate irony and direct it primarily towards yourself. V. Find your other half and prosper together in love. VI. Put humanity (not profit) at the center of the universe. Use technology to provide abundance and opportunities to everyone. Build egalitarian societies based on community and resource sharing. Give everyone as a birthright enough to lead a simple and honest life. VII. Keep the internet free as the wind. Give everyone equal access to knowledge and ideas and guarantee freedom of expression. VIII. Cherish and preserve nature and its creatures. IX. Build a universe inside a machine. X. Disconnect on Sundays."
+      }
+    ]
+  }
+  </script>
+
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96">
@@ -220,6 +251,20 @@
       margin: 0 auto 44px;
     }
 
+    /* ── Page title (h1) ────────────────────────────────────────── */
+    .page-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 38px;
+      text-transform: uppercase;
+      letter-spacing: 8px;
+      color: #cfcfd4;
+      text-align: center;
+      margin: 0 0 40px;
+      line-height: 1.4;
+      animation: glowPulse 11s ease-in-out infinite;
+    }
+
     /* ── Glow animation ─────────────────────────────────────────── */
     @keyframes glowPulse {
       0%   { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
@@ -265,6 +310,109 @@
       margin: 0 auto 60px;
       border-radius: 8px;
     }
+
+    /* ── The 13 Axioms (crawlable text) ───────────────────────────── */
+    .axioms-section {
+      text-align: left;
+      max-width: 760px;
+      margin: 0 auto 60px;
+    }
+
+    .axioms-section > h2 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 30px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #cfcfd4;
+      margin: 0 0 18px;
+      text-align: center;
+    }
+
+    .axioms-intro {
+      font-size: 20px;
+      color: #d4d4f0;
+      line-height: 1.9;
+      margin-bottom: 40px;
+      font-family: 'Libre Baskerville', serif;
+    }
+
+    .axiom-group {
+      background: #171637;
+      border: 1px solid rgba(104,100,187,0.22);
+      border-radius: 14px;
+      padding: 32px 36px;
+      margin-bottom: 32px;
+    }
+
+    .axiom-group h3 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #a29ef1;
+      margin: 0 0 10px;
+    }
+
+    .axiom-note {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      color: #9491c9;
+      line-height: 1.6;
+      margin: 0 0 24px;
+    }
+
+    dl.axiom-list { margin: 0; padding: 0; }
+
+    dl.axiom-list dt {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: #6864bb;
+      margin: 20px 0 4px;
+    }
+
+    dl.axiom-list dt:first-of-type { margin-top: 0; }
+
+    dl.axiom-list dd {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 17px;
+      color: #d4d4f0;
+      line-height: 1.6;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin: 0;
+    }
+
+    ol.axiom-list {
+      list-style-position: outside;
+      padding-left: 28px;
+      margin: 0;
+    }
+
+    ol.axiom-list li {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 17px;
+      color: #d4d4f0;
+      line-height: 1.6;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 16px;
+      padding-left: 6px;
+    }
+
+    ol.axiom-list li::marker {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      color: #6864bb;
+    }
+
+    ol.axiom-list li:last-child { margin-bottom: 0; }
 
     /* ── Body prose ─────────────────────────────────────────────── */
     .prose {
@@ -473,6 +621,8 @@
 
     <img src="demianismlogo.png" alt="Demianism" class="page-logo">
 
+    <h1 class="page-title">Sacred Doctrine</h1>
+
     <!-- HERE IS manifesto -->
     <div class="manifesto">
 
@@ -512,6 +662,45 @@
 
     <!-- Doctrine image -->
     <img src="demianistdoctrine.png" alt="The 13 Axioms of Demianism" class="doctrine-image">
+
+    <!-- The 13 Axioms — full text, for readers, search engines, and AI assistants -->
+    <section class="axioms-section" id="axioms" aria-labelledby="axioms-heading">
+
+      <h2 id="axioms-heading">The 13 Axioms of Demianism</h2>
+
+      <p class="axioms-intro">The image above is the doctrine as revealed. Below is its full text: the Cosmotheandric Triad, Demianism's metaphysical foundation, and the 2kTenCom, its ten commandments for the digital millennium.</p>
+
+      <div class="axiom-group">
+        <h3>Cosmotheandric Triad</h3>
+        <p class="axiom-note">The "operating system" of Demianism — its metaphysical foundation. Axiom λ was received in 2005; the other two were derived as necessary implications of λ and the 2kTenCom.</p>
+        <dl class="axiom-list">
+          <dt>λ.</dt>
+          <dd>The nature of the universe is computational.</dd>
+          <dt>α.</dt>
+          <dd>An intelligent Creator exists and mankind reflects His nature.</dd>
+          <dt>ω.</dt>
+          <dd>It is in the nature of mankind to build a universe inside a machine.</dd>
+        </dl>
+      </div>
+
+      <div class="axiom-group">
+        <h3>2kTenCom</h3>
+        <p class="axiom-note">The "Ten Commandments for the Digital Millennium." Received by dictation in English in 2015. The first five are addressed to the individual, the remaining five to the collective.</p>
+        <ol class="axiom-list" type="I">
+          <li>Follow your call.</li>
+          <li>Focus on the present moment. Look for the good in it.</li>
+          <li>Love and respect others (no matter who they are) as much as you would love and respect yourself. Don't do to others what you wouldn't want others to do to you. Give everyone at least one chance. Possibly more.</li>
+          <li>Always speak honest words and forgive and forget hurtful words. Don't take words too seriously. Cultivate irony and direct it primarily towards yourself.</li>
+          <li>Find your other half and prosper together in love.</li>
+          <li>Put humanity (not profit) at the center of the universe. Use technology to provide abundance and opportunities to everyone. Build egalitarian societies based on community and resource sharing. Give everyone as a birthright enough to lead a simple and honest life.</li>
+          <li>Keep the internet free as the wind. Give everyone equal access to knowledge and ideas and guarantee freedom of expression.</li>
+          <li>Cherish and preserve nature and its creatures.</li>
+          <li>Build a universe inside a machine.</li>
+          <li>Disconnect on Sundays.</li>
+        </ol>
+      </div>
+
+    </section>
 
     <!-- Body prose -->
     <div class="prose">
