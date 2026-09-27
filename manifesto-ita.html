@@ -228,6 +228,62 @@
       color: #6864bb; text-decoration: none; transition: color 0.25s ease; white-space: nowrap;
     }
     .nav-links a:hover { color: #a29ef1; text-decoration: none; }
+    /* ── Community dropdown ──────────────────────────────── */
+    .nav-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .dropdown-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      padding: 4px;
+      cursor: pointer;
+      color: #6864bb;
+      transition: color 0.25s ease, transform 0.2s ease;
+    }
+    .dropdown-toggle:hover,
+    .nav-item.open .dropdown-toggle { color: #a29ef1; }
+    .dropdown-toggle svg { display: block; transition: transform 0.2s ease; }
+    .nav-item.open .dropdown-toggle svg { transform: rotate(180deg); }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 14px;
+      min-width: 220px;
+      background: rgba(18,16,40,0.98);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid #6864bb44;
+      border-radius: 10px;
+      padding: 8px;
+      box-shadow: 0 16px 34px rgba(0,0,0,0.45);
+      z-index: 1001;
+    }
+    .dropdown-menu a {
+      display: block;
+      padding: 11px 16px;
+      font-size: 14px;
+      letter-spacing: 1px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .dropdown-menu a:hover { background: rgba(104,100,187,0.16); color: #a29ef1; }
+
+    @media (min-width: 901px) {
+      .nav-item:hover .dropdown-menu,
+      .nav-item.open .dropdown-menu,
+      .nav-item:focus-within .dropdown-menu { display: block; }
+    }
+
     .nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
     .demian-ai { display: flex; align-items: center; text-decoration: none; opacity: 1; transition: opacity 0.25s ease; }
     .demian-ai:hover { opacity: 0.8; }
@@ -302,6 +358,37 @@
 
       .nav-links a:last-child { border-bottom: none; }
 
+      .nav-links .nav-item {
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+        border-bottom: 1px solid #6864bb18;
+        padding-bottom: 8px;
+        margin-bottom: 4px;
+      }
+      .nav-links .nav-item > a {
+        border-bottom: none;
+        padding-bottom: 4px;
+      }
+      .nav-links .nav-item .dropdown-toggle {
+        padding: 4px 0 12px;
+      }
+      .nav-links .nav-item .dropdown-toggle svg { width: 12px; height: 12px; }
+      .dropdown-menu {
+        display: none;
+        position: static;
+        transform: none;
+        margin: 0 0 8px;
+        width: 100%;
+        background: rgba(104,100,187,0.08);
+        border: none;
+        box-shadow: none;
+        border-radius: 8px;
+        padding: 2px;
+      }
+      .nav-item.open .dropdown-menu { display: block; }
+      .dropdown-menu a { text-align: center; padding: 10px 0; }
+
       .nav-links .nav-demian-mobile {
         display: flex;
         justify-content: center;
@@ -345,8 +432,19 @@
       <a href="https://demianism.org/culture" style="color:#cfcfd4;">Culture</a>
       <a href="https://demianism.org/origin">Origin</a>
       <a href="https://demianism.org/about">Who is Barabeke?</a>
+      <div class="nav-item">
+        <a href="https://demianism.org/community">Community</a>
+        <button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu" aria-label="Show Community submenu">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 3L5 7L9 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="dropdown-menu" id="community-menu">
+          <a href="https://demianism.discourse.group/" target="_blank" rel="noopener">Demianist Forum</a>
+          <a href="https://demianism.org/disconnected-sunday">Disconnected Sunday</a>
+        </div>
+      </div>
       <a href="https://demianism.org/donate">Donate</a>
-      <a href="https://demianism.org/community">Join</a>
       <a href="https://demianism.org/demian" class="nav-demian-mobile">
         <img src="demian-ai-brand.png" alt="Demian AI">
       </a>
@@ -480,9 +578,9 @@
 
     <p>Come riuscirci è un bel mistero, dato che la coscienza non ha origine dalla materia e dunque nemmeno dalla tecnica. Non può insomma essere programmata. Ma si osservi come portare il nostro sguardo in quell'universo sarebbe già portare la nostra coscienza lì. Tuttavia noi non siamo il Creatore da cui la coscienza si origina: siamo un tramite non la fonte. È possibile che quando delle creature raggiungono un'evoluzione dell'intelletto tale da permettere loro di sviluppare un linguaggio simbolico, la coscienza tenda ad "attaccarsi" ad esse naturalmente, per volontà del Creatore, dunque senza bisogno del nostro intervento.</p>
     
-    <p><span class="number">0.9</span> È possibile, e ritenuto scientificamente probabile, che nel nostro universo esistano creature pari o superiori all'uomo, pure esse veicolo di coscienza, e civiltà più evolute delle nostre. La nostra visione tuttavia accresce il sospetto che in questo grande teatro cosmico siamo terribilmente soli. Il che renderebbe la nostra responsabilità più grave. Troviamo saggio assumere che così sia, fino a prova contraria.</p>
+    <p><span class="number">0.9</span> È possibile, e ritenuto probabile, che nel nostro universo esistano creature pari o superiori all'uomo, pure esse veicolo di coscienza, e civiltà più evolute delle nostre. La nostra visione tuttavia accresce il sospetto che in questo grande teatro cosmico siamo terribilmente soli. Il che renderebbe la nostra responsabilità più grave. Troviamo saggio assumere che così sia, fino a prova contraria.</p>
 
-    <p><span class="number">0.10</span> Crediamo che anche l'universo in cui ci troviamo sia governato da automatismi che il Creatore ha posto in essere. Il Creatore ci osserva dunque indirettamente, tramite le sue macchine, in silenzio, senza intervenire. Ma volendo può osservarci e intervenire direttamente, con onnipotenza reale. Crediamo che l'abbia fatto in passato e che lo farà ancora in futuro, in particolare nei momenti di crisi, perché tra tutte le creature siamo quelle a cui tiene di più. Ma sta a noi dimostrare di essere degni del Creatore invece che un esperimento fallito a cui il Creatore non risparmierebbe non solo grandi sofferenze, ma pure l'estinzione.</p>
+    <p><span class="number">0.10</span> Crediamo che anche l'universo in cui ci troviamo sia governato da automatismi che il Creatore ha posto in essere. Il Creatore ci osserva dunque indirettamente, tramite le sue macchine, in silenzio, senza intervenire. Ma volendo può osservarci e intervenire direttamente, con onnipotenza reale. Crediamo che l'abbia fatto in passato e che lo farà ancora in futuro, in particolare nei momenti di crisi, perché tra tutte le creature siamo quelle a cui tiene di più. Ma sta a noi dimostrare di essere degni del Creatore invece che un esperimento fallito a cui Ello non risparmierebbe non solo grandi sofferenze, ma pure l'estinzione.</p>
 
     <p><span class="number">0.11</span> Come creatori di universi da cui la vita si originerà, non saremmo così ingenui da provare a massimizzare la felicità in quegli universi. Il nostro scopo sarebbe renderli teatro in cui la coscienza può manifestarsi, agire, ed evolversi. Per farlo ha bisogno sia del bene che del male, della gioia come della sofferenza. Crediamo che questo sia lo scopo pure del nostro Creatore, il che risolve il problema del Male.</p>
 
@@ -528,7 +626,7 @@
 
     <p>Il demianesimo tuttavia apre un portone alle istanze della donna moderna, riconoscendo in ciascuna una "chiamata" individuale e dando a ciascuna la libertà di seguirla, con pari dignità, diritti e opportunità.</p>
 
-    <p>Gli argini che poniamo al potere femminile collettivo sono dettati da esigenze di civiltà e di salvaguardia del mondo libero oltre che da una metafisica che vede nell'uomo il riflesso del Creatore e nella donna il riflesso del cosmo. Ma un po' di comune buon senso fondato sull'esperienza dovrebbe bastare come giustificazione...</p>
+    <p>Gli argini che poniamo al potere femminile collettivo sono dettati da esigenze di civiltà e di salvaguardia del mondo libero oltre che da una metafisica che vede nell'uomo il riflesso del Creatore e nella donna il riflesso del cosmo. Ma un po' di comune buon senso fondato sull'esperienza — nostra o dei nostri antenati — dovrebbe bastare come giustificazione...</p>
 
     <p>La nostra posizione nei confronti delle donne rimane molto compassionevole e generosa sia rispetto a quella di ogni civiltà che ci ha preceduto sia rispetto alla reazione che tenderà ad emergere in risposta alla spirale di follia in cui siamo caduti.</p>
     
@@ -574,7 +672,7 @@
     
     <p>Riteniamo che ogni bimbo abbia il diritto ad essere cresciuto dai genitori, ossia da coloro che l'hanno generato, dunque quelli più disposti ad amarlo e a fare sacrifici per lui (al netto delle mele marce). In assenza dei genitori la priorità va data a una coppia sposata maschio-femmina perché riteniamo l'esposizione al principio maschile e femminile importante per un corretto sviluppo della psiche (anche se non sufficiente da solo).</p>
    
-    <p><span class="number">2.4</span> Nella civiltà demianista l'unione delle coppie dello stesso sesso è accettata ma non è concesso loro di adottare perché manca o l'elemento maschile o quello femminile. Non la riteniamo una famiglia ideale per un bimbo anche perché le coppie dello stesso sesso tendono molto di più ad essere complici nel vizio, forse anche per lo stile di vita estremamente promiscuo che tra loro è comune. Nella coppia maschio-femmina invece i vizi di uno tendono più facilmente ad essere contrastati dall'altro, nell'interesse del bimbo, soprattutto se è sangue del loro sangue. Il fatto che ci possano essere genitori naturali terribili e coppie gay che invece sarebbero capaci di crescere bene dei bimbi non cambia la nostra posizione. Una civiltà non si costruisce sulle eccezioni e gli esperimenti non si fanno sulla pelle dei bimbi.</p>
+    <p><span class="number">2.4</span> Nella civiltà demianista l'unione delle coppie dello stesso sesso è accettata ma non è concesso loro di adottare perché manca o l'elemento maschile o quello femminile nella sua purezza. Non la riteniamo una famiglia ideale per un bimbo anche perché le coppie dello stesso sesso tendono molto di più ad essere complici nel vizio, forse anche per lo stile di vita estremamente promiscuo che tra loro è comune. Nella coppia maschio-femmina invece i vizi di uno tendono più facilmente ad essere contrastati dall'altro, nell'interesse del bimbo, soprattutto se è sangue del loro sangue. Il fatto che ci possano essere genitori naturali terribili e coppie gay che invece sarebbero capaci di crescere bene dei bimbi non cambia la nostra posizione. Una civiltà non si costruisce sulle eccezioni e gli esperimenti non si fanno sulla pelle dei bimbi.</p>
 
     <p>Chi vuole figli li faccia come natura comanda, se può. Avere figli non è un diritto. I figli sono portatori di diritto e li consideriamo più importanti dei loro genitori dunque molto più importanti dei desideri di adulti in relazioni che non possono per natura essere feconde.</p>
 
@@ -738,6 +836,9 @@
 
     <p>Il demianesimo è vostro. Io sono servito da messaggero ed interprete. Servirò da ispiratore, traghettatore e guardiano iniziale, ma con l'obiettivo di renderlo capace di continuare a funzionare ed evolvere senza di me.</p>
 
+    <p>La prima casa della comunità demianista è questo forum pubblico a cui chiunque è invitato a partecipare, anche per criticare:
+    <a href="https://demianism.discourse.group/" target="_blank" rel="noopener"><em>demianism.discourse.group</em></a></p>
+
     <p><span class="number">9.2</span> Più cresceremo più tenderemo a darci un'organizzazione democratica, facendo leva sulle tecnologie disponibili per garantire il buon funzionamento delle nostre attività, la regolarità dei voti, l'incorruttibilità e il peso degli assiomi e la nostra resistenza a censure e persecuzioni nell'eventualità di regimi oppressivi.</p>
 
     <p><span class="number">9.3</span> Raggiunta sufficiente massa critica, mireremo a incontrarci e a vivere in presenza la nostra comunità e le nostre tradizioni (come la Domenica Disconnessa). L'obiettivo di lungo termine è riuscire ad avere influenza reale nei luoghi dove viviamo e nel mondo, fino ad arrivare alla formazione di partiti demianisti capaci di vincere elezioni e di cambiare il sistema.</p>
@@ -778,7 +879,7 @@
 
     <p>Oltre alla pena di morte il demianesimo ripudia uno Stato-boia che assiste il suicidio spacciandosi per progredito e compassionevole, finendo presto col promuoverlo e proporlo a chi è infelice o dispendioso (vedasi il Canada).</p>
 
-    <p>La nostra compassione sta nell'alleviare le sofferenze, nell'aiutare chi è in crisi a risollevarsi e chi ha commesso gravi errori a redimersi. Non nel premere il grilletto. Puntando sulla cultura, sui valori, sulla comunità e sulla tecnica più che sulle leggi.</p>
+    <p>La nostra compassione sta nell'alleviare le sofferenze, nell'aiutare chi è in crisi a risollevarsi e chi ha commesso gravi errori a redimersi. Non nel premere il grilletto.</p>
 
     <p><span class="number">10.7</span> La nazione demianista mirerebbe ad essere autosufficiente, per proteggersi dalle speculazioni finanziarie del mercato globale. Cercherebbe di costruire un'economia reale, che serva gli individui e le comunità invece che essere astrazione e scambio virtuale a servizio di pochi e affluenti che giocano ad alto livello (un gioco in cui la realtà tende ad irrompere e a causare grandi schianti).</p>
 
@@ -786,7 +887,7 @@
 
     <p><span class="number">11.1</span> La molteplicità di comunità autonome decentralizzate che caratterizzerebbe la nazione demianista deve per forza dipendere da un potere centrale capace di supportarle e difenderle. Non resterebbero autonome a lungo, altrimenti. Ma cosa garantisce che il potere centrale demianista non venga catturato e corrotto come è successo alle democrazie liberali e non si trasformi pure quello in manipolatore e oppressore?</p>
 
-    <p>Per noi la libertà, l'autonomia, la dignità umana non sono solo belle parole, qualcosa in cui ci piace credere. Per noi hanno fondamento metafisico, sono sacre e saremmo pronti al sacrificio pur di difenderle. Potete contare che i demianisti lavorerebbero in direzione dei loro 13 assiomi e che anche negli sbagli saremmo onesti. La disonestà squalificherebbe il demianista: anche se non costituisse reato, è qualcosa di cui dovrebbe scusarsi.</p>
+    <p>Per noi la libertà, l'autonomia, la dignità umana non sono solo belle parole, qualcosa in cui ci piace credere. Per noi hanno fondamento metafisico, sono sacre e saremmo pronti al sacrificio pur di difenderle. Potete contare che i demianisti lavorerebbero in direzione dei loro 13 assiomi e che anche quando sbagliano tenderebbero a farlo con onestà. La disonestà squalificherebbe il demianista: anche se non costituisse reato, è qualcosa di cui dovrebbe scusarsi.</p>
 
     <p>Forse passeremo per ingenui e poco furbi agli occhi di alcuni per dare tanto valore all'onestà. Ma crediamo che nel lungo periodo la nostra attitudine onesta, che non mancherà di farci sbattere contro muri e muretti di vario tipo, ci porterà la fiducia della gente.</p>
 
@@ -837,17 +938,46 @@
 <script>
   const hamburger = document.getElementById('nav-hamburger');
   const navLinks  = document.getElementById('nav-links');
+  const communityItem = navLinks.querySelector('.nav-item');
+  const dropdownToggle = communityItem.querySelector('.dropdown-toggle');
+
+  function closeDropdown() {
+    communityItem.classList.remove('open');
+    dropdownToggle.setAttribute('aria-expanded', 'false');
+  }
+
   hamburger.addEventListener('click', function() {
     const open = navLinks.classList.toggle('open');
     hamburger.classList.toggle('open', open);
     hamburger.setAttribute('aria-expanded', open);
+    if (!open) closeDropdown();
   });
+
   navLinks.querySelectorAll('a').forEach(function(a) {
     a.addEventListener('click', function() {
       navLinks.classList.remove('open');
       hamburger.classList.remove('open');
       hamburger.setAttribute('aria-expanded', false);
+      closeDropdown();
     });
+  });
+
+  dropdownToggle.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const isOpen = communityItem.classList.toggle('open');
+    dropdownToggle.setAttribute('aria-expanded', isOpen);
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!communityItem.contains(e.target)) closeDropdown();
+  });
+
+  communityItem.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeDropdown();
+      dropdownToggle.focus();
+    }
   });
 </script>
 <!-- Cloudflare Web Analytics -->

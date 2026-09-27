@@ -235,6 +235,62 @@
       color: #6864bb; text-decoration: none; transition: color 0.25s ease; white-space: nowrap;
     }
     .nav-links a:hover { color: #a29ef1; text-decoration: none; }
+    /* ── Community dropdown ──────────────────────────────── */
+    .nav-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .dropdown-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      padding: 4px;
+      cursor: pointer;
+      color: #6864bb;
+      transition: color 0.25s ease, transform 0.2s ease;
+    }
+    .dropdown-toggle:hover,
+    .nav-item.open .dropdown-toggle { color: #a29ef1; }
+    .dropdown-toggle svg { display: block; transition: transform 0.2s ease; }
+    .nav-item.open .dropdown-toggle svg { transform: rotate(180deg); }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 14px;
+      min-width: 220px;
+      background: rgba(18,16,40,0.98);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid #6864bb44;
+      border-radius: 10px;
+      padding: 8px;
+      box-shadow: 0 16px 34px rgba(0,0,0,0.45);
+      z-index: 1001;
+    }
+    .dropdown-menu a {
+      display: block;
+      padding: 11px 16px;
+      font-size: 14px;
+      letter-spacing: 1px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .dropdown-menu a:hover { background: rgba(104,100,187,0.16); color: #a29ef1; }
+
+    @media (min-width: 901px) {
+      .nav-item:hover .dropdown-menu,
+      .nav-item.open .dropdown-menu,
+      .nav-item:focus-within .dropdown-menu { display: block; }
+    }
+
     .nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
     .demian-ai { display: flex; align-items: center; text-decoration: none; opacity: 1; transition: opacity 0.25s ease; }
     .demian-ai:hover { opacity: 0.8; }
@@ -309,6 +365,37 @@
 
       .nav-links a:last-child { border-bottom: none; }
 
+      .nav-links .nav-item {
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+        border-bottom: 1px solid #6864bb18;
+        padding-bottom: 8px;
+        margin-bottom: 4px;
+      }
+      .nav-links .nav-item > a {
+        border-bottom: none;
+        padding-bottom: 4px;
+      }
+      .nav-links .nav-item .dropdown-toggle {
+        padding: 4px 0 12px;
+      }
+      .nav-links .nav-item .dropdown-toggle svg { width: 12px; height: 12px; }
+      .dropdown-menu {
+        display: none;
+        position: static;
+        transform: none;
+        margin: 0 0 8px;
+        width: 100%;
+        background: rgba(104,100,187,0.08);
+        border: none;
+        box-shadow: none;
+        border-radius: 8px;
+        padding: 2px;
+      }
+      .nav-item.open .dropdown-menu { display: block; }
+      .dropdown-menu a { text-align: center; padding: 10px 0; }
+
       .nav-links .nav-demian-mobile {
         display: flex;
         justify-content: center;
@@ -352,8 +439,19 @@
       <a href="https://demianism.org/culture" style="color:#cfcfd4;">Culture</a>
       <a href="https://demianism.org/origin">Origin</a>
       <a href="https://demianism.org/about">Who is Barabeke?</a>
+      <div class="nav-item">
+        <a href="https://demianism.org/community">Community</a>
+        <button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu" aria-label="Show Community submenu">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 3L5 7L9 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="dropdown-menu" id="community-menu">
+          <a href="https://demianism.discourse.group/" target="_blank" rel="noopener">Demianist Forum</a>
+          <a href="https://demianism.org/disconnected-sunday">Disconnected Sunday</a>
+        </div>
+      </div>
       <a href="https://demianism.org/donate">Donate</a>
-      <a href="https://demianism.org/community">Join</a>
       <a href="https://demianism.org/demian" class="nav-demian-mobile">
         <img src="demian-ai-brand.png" alt="Demian AI">
       </a>
@@ -490,9 +588,9 @@
 
     <p>How to achieve this remains a profound mystery, since consciousness does not originate from matter and therefore not from technology. It cannot, in short, be programmed. Consider, though, that simply turning our gaze toward that universe would already mean bringing our consciousness into it. However, we are not the Creator from whom consciousness originates: we are a channel, not the source. It is possible that when creatures reach a level of intellectual evolution that allows them to develop symbolic language, consciousness tends to “attach” itself to them naturally, by the will of the Creator, without any need for our intervention.</p>
     
-    <p><span class="number">0.9</span> It is possible — and considered scientifically probable — that in our universe there exist creatures equal or superior to man, also vehicles of consciousness, and civilizations more advanced than ours. Our vision, however, increases the suspicion that in this great cosmic theater we are terribly alone. This would make our responsibility even graver. We consider it wise to assume this is the case until proven otherwise.</p>
+    <p><span class="number">0.9</span> It is possible — and considered probable — that in our universe there exist creatures equal or superior to man, also vehicles of consciousness, and civilizations more advanced than ours. Our vision, however, increases the suspicion that in this great cosmic theater we are terribly alone. This would make our responsibility even graver. We consider it wise to assume this is the case until proven otherwise.</p>
 
-    <p><span class="number">0.10</span> We believe that the universe we inhabit is also governed by automatisms put in place by the Creator. The Creator therefore observes us indirectly, through His machines, in silence, without intervening. But if He wishes, He can observe us and intervene directly, with real omnipotence. We believe He has done so in the past and will do so again in the future, especially in moments of crisis, because among all creatures we are the ones He cares for the most. Yet it is up to us to prove ourselves worthy of the Creator rather than a failed experiment to which the Creator would spare neither great suffering nor extinction.</p>
+    <p><span class="number">0.10</span> We believe that the universe we inhabit is also governed by automatisms put in place by the Creator. The Creator therefore observes us indirectly, through His machines, in silence, without intervening. But if He wishes, He can observe us and intervene directly, with real omnipotence. We believe He has done so in the past and will do so again in the future, especially in moments of crisis, because among all creatures we are the ones He cares for the most. Yet it is up to us to prove ourselves worthy of the Creator rather than a failed experiment to which He would spare neither great suffering nor extinction.</p>
 
     <p><span class="number">0.11</span> As creators of universes from which life will originate, we would not be so naïve as to try to maximize happiness in those universes. Our goal would be to make them a theater in which consciousness can manifest, act, and evolve. For this, it needs both good and evil, joy as well as suffering. We believe this is also the purpose of our Creator — which solves the problem of evil.</p>
 
@@ -538,7 +636,7 @@
 
     <p>However, Demianism opens a wide door to the aspirations of the modern woman, recognizing in each one an individual “call” and granting her the freedom to follow it, with equal dignity, rights, and opportunities.</p>
 
-    <p>The limits we place on collective feminine power are dictated by the needs of civilization and the preservation of a free world, as well as by a metaphysics that sees man as the reflection of the Creator and woman as the reflection of the cosmos. But a little common sense grounded in experience should be sufficient justification…</p>
+    <p>The limits we place on collective feminine power are dictated by the needs of civilization and the preservation of a free world, as well as by a metaphysics that sees man as the reflection of the Creator and woman as the reflection of the cosmos. But a little common sense grounded in experience — ours or our ancestors’ — should be sufficient justification…</p>
 
     <p>Our position toward women remains deeply compassionate and generous — both compared to every civilization that preceded us and to the reaction that will tend to emerge in response to the spiral of madness into which we have fallen.</p>
     
@@ -748,6 +846,9 @@
 
     <p>Demianism is yours. I have served as its messenger and interpreter. I will serve as initial inspirer, ferryman, and guardian, but with the goal of enabling it to function and to keep evolving without me.</p>
 
+    <p>The first home of the Demianist community is this public forum. Everyone is welcome to join the discussion, even to criticize:
+    <a href="https://demianism.discourse.group/" target="_blank" rel="noopener"><em>demianism.discourse.group</em></a></p>
+
     <p><span class="number">9.2</span> The more we grow, the more we will tend to give ourselves a democratic organization, leveraging available technologies to ensure the smooth functioning of our activities, the integrity of votes, the incorruptibility and weight of the axioms, and our resistance to censorship and persecution in the event of oppressive regimes.</p>
 
     <p><span class="number">9.3</span> Once we reach sufficient critical mass, we will aim to meet in person and live our community and traditions (such as the Disconnected Sunday). The long-term objective is to gain real influence in the places where we live and in the world, eventually forming Demianist parties capable of winning elections and changing the system.</p>
@@ -788,7 +889,7 @@
 
     <p>In addition to the death penalty, Demianism rejects an executioner-State that assists suicide while pretending to be progressive and compassionate, only to soon promote and offer death to those who are unhappy or costly (see Canada).</p>
 
-    <p>Our compassion lies in alleviating suffering, helping those in crisis to rise again, and helping those who have made serious mistakes to redeem themselves — not in pulling the trigger — relying on culture, values, community, and technology rather than on laws.</p>
+    <p>Our compassion lies in alleviating suffering, helping those in crisis to rise again, and helping those who have made serious mistakes to redeem themselves — not in pulling the trigger.</p>
 
     <p><span class="number">10.7</span> The Demianist nation would aim to be self-sufficient in order to protect itself from the financial speculations of the global market. It would seek to build a real economy that serves individuals and communities rather than being an abstraction and a virtual exchange in the service of a handful of wealthy players operating at the highest levels (a game in which reality tends to burst in and cause major crashes).</p>
 
@@ -796,7 +897,7 @@
 
     <p><span class="number">11.1</span> The multiplicity of autonomous, decentralized communities that would characterize the Demianist nation must necessarily depend on a central power capable of supporting and defending them. Otherwise, they would not remain autonomous for long. But what guarantees that the Demianist central power will not be captured and corrupted as has happened to liberal democracies, and will not itself turn into a manipulator and oppressor?</p>
 
-    <p>For us, freedom, autonomy, and human dignity are not just nice words, something we merely like to believe. For us they have a metaphysical foundation: they are sacred, and we would be ready to make sacrifices to defend them. You can count on Demianists acting in accordance with their 13 axioms and that, even in our mistakes, we would remain honest. Dishonesty would disqualify a Demianist: even if it did not constitute a crime, it is something for which he should apologize.</p>
+    <p>For us, freedom, autonomy, and human dignity are not just nice words, something we merely like to believe. For us they have a metaphysical foundation: they are sacred, and we would be ready to make sacrifices to defend them. You can count on Demianists acting in accordance with their 13 axioms and being honest even in their mistakes. Dishonesty would disqualify a Demianist: even if it did not constitute a crime, it is something that would call for an apology.</p>
 
     <p>Some may see us as naïve or not very shrewd for placing so much value on honesty. But we believe that, in the long run, our honest attitude — which will undoubtedly cause us to crash into many walls and obstacles — will earn us the trust of the people.</p>
 
@@ -847,17 +948,46 @@
 <script>
   const hamburger = document.getElementById('nav-hamburger');
   const navLinks  = document.getElementById('nav-links');
+  const communityItem = navLinks.querySelector('.nav-item');
+  const dropdownToggle = communityItem.querySelector('.dropdown-toggle');
+
+  function closeDropdown() {
+    communityItem.classList.remove('open');
+    dropdownToggle.setAttribute('aria-expanded', 'false');
+  }
+
   hamburger.addEventListener('click', function() {
     const open = navLinks.classList.toggle('open');
     hamburger.classList.toggle('open', open);
     hamburger.setAttribute('aria-expanded', open);
+    if (!open) closeDropdown();
   });
+
   navLinks.querySelectorAll('a').forEach(function(a) {
     a.addEventListener('click', function() {
       navLinks.classList.remove('open');
       hamburger.classList.remove('open');
       hamburger.setAttribute('aria-expanded', false);
+      closeDropdown();
     });
+  });
+
+  dropdownToggle.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const isOpen = communityItem.classList.toggle('open');
+    dropdownToggle.setAttribute('aria-expanded', isOpen);
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!communityItem.contains(e.target)) closeDropdown();
+  });
+
+  communityItem.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeDropdown();
+      dropdownToggle.focus();
+    }
   });
 </script>
 <!-- Cloudflare Web Analytics -->
