@@ -184,6 +184,15 @@
     .dropdown-menu a:hover { background: rgba(104,100,187,0.16); color: #a29ef1; }
 
     @media (min-width: 901px) {
+      .nav-item::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 220px;
+        height: 14px;
+      }
       .nav-item:hover .dropdown-menu,
       .nav-item.open .dropdown-menu,
       .nav-item:focus-within .dropdown-menu { display: block; }
