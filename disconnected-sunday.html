@@ -176,7 +176,7 @@
 
     /* ── Poster image ────────────────────────────────────────── */
     .poster-wrap {
-      max-width: 340px;
+      max-width: 442px;
       margin: 0 auto 12px;
     }
     .poster-wrap img {
@@ -219,34 +219,46 @@
     }
 
     /* ── NORMAL / HARDCORE cards ─────────────────────────────── */
-    .mode-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
+    .mode-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
       max-width: 720px;
       margin: 0 auto 8px;
       text-align: left;
     }
 
-    @media (max-width: 640px) {
-      .mode-grid { grid-template-columns: 1fr; }
-    }
-
     .mode-card {
+      display: flex;
+      align-items: stretch;
       background: #171637;
       border: 1px solid rgba(104,100,187,0.22);
       border-radius: 14px;
-      padding: 26px 28px;
+      overflow: hidden;
     }
 
-    .mode-card h3 {
+    .mode-badge {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
       font-family: 'Inter', sans-serif;
       font-weight: 700;
-      font-size: 17px;
-      letter-spacing: 2.5px;
+      font-size: 15px;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      color: #a29ef1;
-      margin: 0 0 12px;
+      padding: 18px 12px;
+      color: #fff;
+    }
+
+    .mode-card--normal .mode-badge { background: #35327e; }
+    .mode-card--hardcore .mode-badge { background: #7a1f1f; }
+
+    .mode-body {
+      padding: 22px 26px;
+      flex: 1 1 auto;
     }
 
     .mode-card p {
@@ -257,14 +269,27 @@
       margin: 0;
     }
 
+    .mode-card .exceptions-note {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(104,100,187,0.18);
+    }
+
+    @media (max-width: 500px) {
+      .mode-badge {
+        writing-mode: horizontal-tb;
+        transform: none;
+        padding: 10px 0;
+      }
+      .mode-card { flex-direction: column; }
+    }
+
     .exceptions-note {
-      max-width: 720px;
-      margin: 22px auto 0;
       font-family: 'Libre Baskerville', serif;
-      font-size: 16px;
+      font-size: 15px;
       color: rgba(212,212,240,0.75);
       text-align: left;
-      line-height: 1.75;
+      line-height: 1.7;
     }
 
     .exceptions-note strong { color: #d4d4f0; }
@@ -393,28 +418,32 @@
     <h1>Disconnected Sunday</h1>
     <div class="prose">
 
-    <p class="hero-subtitle">Our lives are increasingly sucked into digital screens, in a way that risks costing us our humanity. Demianism holds disconnection as sacred: its 10th axiom simply says &ldquo;Disconnect on Sundays.&rdquo;</p>
+    <p class="hero-subtitle">Our lives are increasingly sucked into digital screens, in a way that risks costing us our humanity. Demianism holds weekly disconnection as sacred: its 10th axiom simply says &ldquo;Disconnect on Sundays&rdquo;.</p>
 
-    <p>That's something everybody should try at least once and see what it does to them. Therefore I propose the Disconnected Challenge as a standing challenge, open to anybody, Demianist or not.</p>
+    <p>That's something everybody should try at least once and see what it does to them. Therefore I propose the Disconnected Sunday as a standing challenge, open to anybody, Demianist or not.</p>
 
     <div class="poster-wrap">
       <img src="disconnected_sunday.jpg" alt="Disconnected Sunday Challenge poster — can you stay 24 hours without connection and digital devices?">
     </div>
-    <div class="poster-caption">#DisconnectedSunday</div>
+    <div class="poster-caption">Disconnected Sunday poster</div>
 
     <h2>How it works</h2>
 
-      <p>It starts on Sunday, when you wake up, and ends when you go to sleep &mdash; a full waking day. Two versions:</p>
+      <p>It starts on a Sunday, when you wake up, and ends when you go to sleep &mdash; a full waking day. Two versions:</p>
 
-      <div class="mode-grid">
-        <div class="mode-card">
-          <h3>Normal</h3>
-          <p>No Wi-Fi, no mobile internet, no Bluetooth. No TV, no video games, no AI, no digital devices used the normal way.</p><br>
-          <p class="exceptions-note"><strong>Exceptions</strong> (Normal mode only): your disconnected devices can still take photos or video, play music you already have, or help you navigate if you&rsquo;re driving. Reading and writing are always allowed.</p>
+      <div class="mode-stack">
+        <div class="mode-card mode-card--normal">
+          <div class="mode-badge">Normal</div>
+          <div class="mode-body">
+            <p>No Wi-Fi, no mobile internet, no Bluetooth. No TV, no video games, no AI, no use of digital devices in general.</p>
+            <p class="exceptions-note"><strong>Exceptions:</strong> with your disconnected devices you can still take photos or videos, play music, or navigate if you&rsquo;re driving. Reading and writing are always allowed. Watching videos is not — unless you go to the movie theater.</p>
+          </div>
         </div>
-        <div class="mode-card">
-          <h3>Hardcore</h3>
-          <p>No digital devices at all. Full stop.</p>
+        <div class="mode-card mode-card--hardcore">
+          <div class="mode-badge">Hardcore</div>
+          <div class="mode-body">
+            <p>No use of digital devices at all. Full stop.</p>
+          </div>
         </div>
       </div>
 
@@ -422,12 +451,15 @@
 
       <h2>Share your experience</h2>
 
-      <p>What did you do with your day? Was it hard to stay disconnected? Which challenges did you face? What did you learn? Share your experience however you want &mdash; text, photos, audio, video &mdash; with the hashtag #DisconnectedSunday. Feel welcome to share your experience also on the <a href="https://demianism.discourse.group" target="_blank" rel="noopener">Demianist forum</a></p>
+      <p>What did you do with your day? Was it hard to stay disconnected? Which challenges did you face? What did you learn?</p>
+      
+      <p>Share your experience however you want &mdash; text, photos, audio, video &mdash; with the hashtag #DisconnectedSunday. Obviously you cannot do it on Sunday, you have to way for the next day! Feel welcome to share also on the <a href="https://demianism.discourse.group" target="_blank" rel="noopener">Demianist forum</a>.</p>
+
+      <h2>Purpose of this challenge</h2>
     
-      <p>This isn&rsquo;t a stunt. It&rsquo;s an open experiment. The more people try it and share what happened, the more we learn about how a hyper-connected species reacts to a day without its screens &mdash; whether we reconnect with something real, or just feel bored and lost. Enough of these accounts, and it stops being anecdote and starts being data worth studying and learning from.</p>
+      <p>This isn&rsquo;t a stunt. It&rsquo;s an open experiment. The more people try it and share what happened, the more we learn about how hyper-connected humans react to a day without screens &mdash; whether we reconnect with something real, or just feel bored and lost. Enough experiences shared, and it stops being anecdote and starts being data worth studying and learning from.</p>
 
-      <p>This challenge exists because Demianism holds weekly disconnection as a commandment, therefore we have to build a tradition around it. Your experience and feedback can help shape what that tradition should actually look like.</p>
-
+      <p>This challenge also exists because Demianism holds Sunday disconnection as sacred, therefore we have to build a tradition around it. Your experience and feedback can help shape what that tradition should actually look like.</p>
     </div>
 
     <div class="hashtag-box">
