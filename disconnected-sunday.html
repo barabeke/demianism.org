@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Disconnected Sunday Challenge — demianism.org</title>
+  <link rel="canonical" href="https://demianism.org/disconnected-sunday">
+  <meta name="description" content="Can you stay 24 hours without connection and digital devices? Take the Disconnected Sunday Challenge — a Demianist tradition open to everyone.">
+  <meta property="og:url" content="https://demianism.org/disconnected-sunday">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The Disconnected Sunday Challenge — demianism.org">
+  <meta property="og:description" content="Can you stay 24 hours without connection and digital devices? Take the Disconnected Sunday Challenge — a Demianist tradition open to everyone.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/barabeke/demianism.org/refs/heads/main/demianism-logo-open-graph.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="demianism.org">
+
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="site.webmanifest">
+
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Libre Baskerville', serif;
+      color: #d4d4f0;
+      font-size: 20px;
+      line-height: 1.8;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(53,50,126,0.28), transparent 60%),
+        radial-gradient(circle at 80% 30%, rgba(53,50,126,0.22), transparent 65%),
+        radial-gradient(circle at 50% 80%, rgba(53,50,126,0.35), transparent 70%),
+        #000000;
+    }
+
+    /* ── Navbar ─────────────────────────────────────────────── */
+    .navbar {
+      position: sticky; top: 0; z-index: 1000;
+      display: flex; align-items: center; gap: 38px;
+      padding: 0 26px; height: 64px;
+      background: rgba(18,16,40,0.92);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid #6864bb33;
+    }
+    .nav-logo { display: flex; align-items: center; flex-shrink: 0; }
+    .nav-logo img { height: 44px; width: auto; display: block; }
+    .nav-links { display: flex; align-items: center; gap: 38px; }
+    .nav-links a {
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 17px;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: #6864bb; text-decoration: none; transition: color 0.25s ease; white-space: nowrap;
+    }
+    .nav-links a:hover { color: #a29ef1; }
+    .nav-links a.active { color: #cfcfd4; }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .demian-ai { display: flex; align-items: center; text-decoration: none; opacity: 1; transition: opacity 0.25s ease; }
+    .demian-ai:hover { opacity: 0.8; text-decoration: none; }
+    .demian-ai img { height: 18px; width: auto; display: block; }
+    .try-free {
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 13px;
+      letter-spacing: 0.8px; text-transform: uppercase; color: #cfcfd4;
+      background-color: #35327e; border: 1px solid #6864bb55;
+      padding: 8px 16px; border-radius: 30px; text-decoration: none;
+      white-space: nowrap; transition: all 0.25s ease;
+    }
+    .try-free:hover { background-color: #6864bb; color: #ffffff; box-shadow: 0 0 18px rgba(104,100,187,0.6); text-decoration: none; }
+    .nav-demian-mobile { display: none; }
+
+    /* ── Hamburger ──────────────────────────────────────────── */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      margin-left: auto;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #cfcfd4;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── Mobile ─────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .navbar { gap: 0; }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        position: fixed;
+        top: 64px;
+        left: 0; right: 0;
+        background: rgba(18,16,40,0.98);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid #6864bb44;
+        padding: 20px 0 28px;
+        z-index: 999;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a {
+        font-size: 16px;
+        padding: 12px 0;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #6864bb18;
+        white-space: normal;
+      }
+      .nav-links a:last-child { border-bottom: none; }
+      .nav-links .nav-demian-mobile {
+        display: flex;
+        justify-content: center;
+        padding: 18px 0 4px;
+        border-bottom: none;
+        opacity: 1;
+        transition: opacity 0.25s;
+      }
+      .nav-links .nav-demian-mobile:hover { opacity: 0.8; }
+      .nav-links .nav-demian-mobile img { height: 20px; width: auto; }
+      .nav-right { display: none; }
+      .nav-hamburger { display: flex; }
+    }
+
+    /* ── Page layout ─────────────────────────────────────────── */
+    .wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+      text-align: center;
+    }
+
+    @keyframes glowPulse {
+      0%   { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
+      50%  { text-shadow: 0 0 9px rgba(104,100,187,1),   0 0 20px rgba(104,100,187,.9),  0 0 42px rgba(104,100,187,.75), 0 0 75px rgba(104,100,187,.55); }
+      100% { text-shadow: 0 0 6px rgba(104,100,187,.85), 0 0 13px rgba(104,100,187,.75), 0 0 27px rgba(104,100,187,.6),  0 0 55px rgba(104,100,187,.45); }
+    }
+
+    h1 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: clamp(28px, 4vw, 40px);
+      text-transform: uppercase;
+      letter-spacing: clamp(3px, 1vw, 7px);
+      color: #cfcfd4;
+      line-height: 1.35;
+      margin: 0 0 22px;
+      transform: scaleX(1.08);
+      animation: glowPulse 11s ease-in-out infinite;
+    }
+
+    .hero-subtitle {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(18px, 2vw, 22px);
+      color: #a29ef1;
+      max-width: 720px;
+      line-height: 1.75;
+      margin: 0 auto 36px;
+    }
+
+    /* ── Poster image ────────────────────────────────────────── */
+    .poster-wrap {
+      max-width: 340px;
+      margin: 0 auto 12px;
+    }
+    .poster-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+      box-shadow: 0 0 40px rgba(104,100,187,0.25);
+    }
+    .poster-caption {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(162,158,241,0.6);
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    /* ── Prose ───────────────────────────────────────────────── */
+    .prose {
+      text-align: left;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .prose p { font-size: 19px; color: #d4d4f0; line-height: 1.85; margin: 0 0 22px; }
+    .prose p:last-of-type { margin-bottom: 0; }
+
+    h2 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 26px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #cfcfd4;
+      text-align: left;
+      max-width: 720px;
+      margin: 56px auto 20px;
+    }
+
+    /* ── NORMAL / HARDCORE cards ─────────────────────────────── */
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      max-width: 720px;
+      margin: 0 auto 8px;
+      text-align: left;
+    }
+
+    @media (max-width: 640px) {
+      .mode-grid { grid-template-columns: 1fr; }
+    }
+
+    .mode-card {
+      background: #171637;
+      border: 1px solid rgba(104,100,187,0.22);
+      border-radius: 14px;
+      padding: 26px 28px;
+    }
+
+    .mode-card h3 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #a29ef1;
+      margin: 0 0 12px;
+    }
+
+    .mode-card p {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 16px;
+      color: #d4d4f0;
+      line-height: 1.75;
+      margin: 0;
+    }
+
+    .exceptions-note {
+      max-width: 720px;
+      margin: 22px auto 0;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 16px;
+      color: rgba(212,212,240,0.75);
+      text-align: left;
+      line-height: 1.75;
+    }
+
+    .exceptions-note strong { color: #d4d4f0; }
+
+    /* ── Questions list ──────────────────────────────────────── */
+    .prose ul {
+      max-width: 720px;
+      margin: 0 0 24px;
+      padding-left: 26px;
+    }
+    .prose ul li {
+      font-size: 19px;
+      color: #d4d4f0;
+      line-height: 1.85;
+      margin-bottom: 10px;
+    }
+    .prose ul li::marker { color: #6864bb; }
+
+    a { color: #7b79d4; text-decoration: none; }
+    a:hover { color: #b8b6f5; text-decoration: underline; }
+
+    /* ── Hashtag callout ─────────────────────────────────────── */
+    .hashtag-box {
+      background: #171637;
+      border: 1px solid rgba(104,100,187,0.22);
+      border-radius: 14px;
+      padding: 28px 32px;
+      max-width: 720px;
+      margin: 40px auto;
+      text-align: center;
+    }
+    .hashtag-box .tag {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: 1px;
+      color: #6864bb;
+      margin-bottom: 10px;
+    }
+    .hashtag-box p {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 16px;
+      color: rgba(212,212,240,0.75);
+      margin: 0;
+    }
+
+    /* ── CTA ─────────────────────────────────────────────────── */
+    .cta-wrap {
+      margin: 12px 0 0;
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #cfcfd4;
+      background: #35327e;
+      border: 1px solid #6864bb44;
+      border-radius: 30px;
+      padding: 14px 30px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      background: #6864bb;
+      color: #ffffff;
+      box-shadow: 0 0 26px rgba(104,100,187,0.55);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    .footer-separator { border: none; border-top: 1px solid #6864bb28; margin: 0; }
+    .site-footer {
+      max-width: 900px; margin: 0 auto; padding: 30px 20px 40px;
+      text-align: center; font-family: 'Libre Baskerville', serif;
+      font-size: 16px; color: #6864bb; line-height: 1.6;
+    }
+    .footer-logo { width: 94px; height: 94px; object-fit: contain; display: block; margin: 0 auto 6px; }
+    .site-footer a { color: #a29ef1; text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; color: #cfcfd4; }
+    .footer-links { margin-top: 10px; font-size: 14px; color: #4a4780; }
+    .footer-links a { color: #4a4780; }
+    .footer-links a:hover { color: #6864bb; }
+    .footer-license { color: #4a4780; font-size: 14px; margin-top: 4px; }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="/" class="nav-logo" aria-label="Demianism home">
+      <img src="demianismlogo.png" alt="Demianism">
+    </a>
+    <div class="nav-links" id="nav-links">
+      <a href="/doctrine">Sacred Doctrine</a>
+      <a href="/culture">Culture</a>
+      <a href="/origin">Origin</a>
+      <a href="/about">Who is Barabeke?</a>
+      <a href="/community" class="active">Community</a>
+      <a href="/donate">Donate</a>
+      <a href="https://demian.demianism.org/" class="nav-demian-mobile">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="https://demian.demianism.org/" class="demian-ai">
+        <img src="demian-ai-brand.png" alt="Demian AI">
+      </a>
+      <a href="https://demian.demianism.org/" class="try-free">Try Free</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <main class="wrap">
+
+    <h1>Disconnected Sunday</h1>
+    <div class="prose">
+
+    <p class="hero-subtitle">Our lives are increasingly sucked into digital screens, in a way that risks costing us our humanity. Demianism holds disconnection as sacred: its 10th axiom simply says &ldquo;Disconnect on Sundays.&rdquo;</p>
+
+    <p>That's something everybody should try at least once and see what it does to them. Therefore I propose the Disconnected Challenge as a standing challenge, open to anybody, Demianist or not.</p>
+
+    <div class="poster-wrap">
+      <img src="disconnected_sunday.jpg" alt="Disconnected Sunday Challenge poster — can you stay 24 hours without connection and digital devices?">
+    </div>
+    <div class="poster-caption">#DisconnectedSunday</div>
+
+    <h2>How it works</h2>
+
+      <p>It starts on Sunday, when you wake up, and ends when you go to sleep &mdash; a full waking day. Two versions:</p>
+
+      <div class="mode-grid">
+        <div class="mode-card">
+          <h3>Normal</h3>
+          <p>No Wi-Fi, no mobile internet, no Bluetooth. No TV, no video games, no AI, no digital devices used the normal way.</p><br>
+          <p class="exceptions-note"><strong>Exceptions</strong> (Normal mode only): your disconnected devices can still take photos or video, play music you already have, or help you navigate if you&rsquo;re driving. Reading and writing are always allowed.</p>
+        </div>
+        <div class="mode-card">
+          <h3>Hardcore</h3>
+          <p>No digital devices at all. Full stop.</p>
+        </div>
+      </div>
+
+      <p>What would you do in your Disconnected Sunday? That&rsquo;s yours to decide. Plan it in advance if you can &mdash; ideally with someone else, a partner, a friend, a family member.</p>
+
+      <h2>Share your experience</h2>
+
+      <p>What did you do with your day? Was it hard to stay disconnected? Which challenges did you face? What did you learn? Share your experience however you want &mdash; text, photos, audio, video &mdash; with the hashtag #DisconnectedSunday. Feel welcome to share your experience also on the <a href="https://demianism.discourse.group" target="_blank" rel="noopener">Demianist forum</a></p>
+    
+      <p>This isn&rsquo;t a stunt. It&rsquo;s an open experiment. The more people try it and share what happened, the more we learn about how a hyper-connected species reacts to a day without its screens &mdash; whether we reconnect with something real, or just feel bored and lost. Enough of these accounts, and it stops being anecdote and starts being data worth studying and learning from.</p>
+
+      <p>This challenge exists because Demianism holds weekly disconnection as a commandment, therefore we have to build a tradition around it. Your experience and feedback can help shape what that tradition should actually look like.</p>
+
+    </div>
+
+    <div class="hashtag-box">
+      <span class="tag">#DisconnectedSunday</span>
+      <p>Tag your experience so it can be found and shared.</p>
+    </div>
+
+    <div class="cta-wrap">
+      <a href="/doctrine#axioms" class="btn">Read the 13 axioms of Demianism</a>
+    </div>
+
+  </main>
+
+  <hr class="footer-separator">
+  <footer class="site-footer">
+    <img src="demianismlogo.png" alt="Demianism Logo" class="footer-logo">
+    <div>&copy; 2026 <a href="https://linktr.ee/barabeke" target="_blank">Barabeke</a></div>
+    <div class="footer-license">Content licensed under CC BY-NC-ND 4.0</div>
+    <div class="footer-links">
+      <a href="/impressum">Impressum</a> &nbsp;·&nbsp;
+      <a href="https://demianism.org/privacy">Privacy Policy</a> &nbsp;·&nbsp;
+      <a href="https://demianism.org/terms">Terms &amp; Conditions</a>
+    </div>
+  </footer>
+
+<script>
+  const hamburger = document.getElementById('nav-hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', function() {
+    const open = navLinks.classList.toggle('open');
+    hamburger.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  navLinks.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      navLinks.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', false);
+    });
+  });
+</script>
+
+<!-- Cloudflare Web Analytics -->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "f418eddb6cd141e8b689bf462dfed582"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
