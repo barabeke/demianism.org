@@ -311,6 +311,27 @@
       animation: glowPulse 11s ease-in-out infinite;
     }
 
+    .hero h1.hero-title {
+      margin: 0 0 28px;
+      line-height: 0;
+      transform: none;
+      animation: none;
+    }
+
+    .hero-wordmark {
+      height: clamp(28px, 4vw, 46px);
+      width: auto;
+      display: inline-block;
+      vertical-align: middle;
+      animation: glowPulseImg 11s ease-in-out infinite;
+    }
+
+    @keyframes glowPulseImg {
+      0%   { filter: drop-shadow(0 0 3px rgba(104,100,187,.65)) drop-shadow(0 0 8px rgba(104,100,187,.5)) drop-shadow(0 0 16px rgba(104,100,187,.35)); }
+      50%  { filter: drop-shadow(0 0 4px rgba(104,100,187,.75)) drop-shadow(0 0 11px rgba(104,100,187,.6)) drop-shadow(0 0 22px rgba(104,100,187,.4)); }
+      100% { filter: drop-shadow(0 0 3px rgba(104,100,187,.65)) drop-shadow(0 0 8px rgba(104,100,187,.5)) drop-shadow(0 0 16px rgba(104,100,187,.35)); }
+    }
+
     .hero-subtitle {
       font-family: 'Libre Baskerville', serif;
       font-size: clamp(19px, 2.3vw, 25px);
@@ -945,7 +966,7 @@
        ================================================================ -->
   <section class="hero">
     <img src="demianismlogo.png" alt="Demianism Logo" class="hero-logo">
-    <h1>Demianism</h1>
+    <h1 class="hero-title"><img src="demianism-logo-name.png" alt="Demianism" class="hero-wordmark"></h1>
     <p class="hero-subtitle">
       A new culture to stay free and dignified in the age of AI.
     </p>
